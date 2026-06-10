@@ -1,0 +1,58 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap");
+@import "./styles/tokens.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    margin: 0;
+    min-width: 320px;
+    overflow-x: hidden;
+    background: #f7f9ff;
+    color: var(--color-text);
+    font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+  }
+
+  button,
+  input,
+  select {
+    font: inherit;
+  }
+
+  ::-webkit-scrollbar {
+    height: 6px;
+    width: 6px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #d9e3f1;
+    border-radius: 999px;
+  }
+}
+
+@layer components {
+  .surface-card {
+    @apply max-w-full overflow-hidden rounded-lg border border-border bg-panel shadow-soft;
+  }
+
+  .focus-ring {
+    @apply outline-none focus-visible:ring-2 focus-visible:ring-primary/35 focus-visible:ring-offset-2;
+  }
+}
+
+@media (max-width: 640px) {
+  .surface-card {
+    width: calc(100vw - 32px);
+  }
+
+  .surface-card p,
+  .surface-card h1,
+  .surface-card h2,
+  .surface-card h3,
+  .surface-card a {
+    max-width: calc(100vw - 120px);
+    overflow-wrap: anywhere;
+  }
+}
