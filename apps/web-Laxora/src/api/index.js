@@ -25,6 +25,7 @@ export * from "./normalizers.js";
 export * from "./payments.js";
 export * from "./paymentWorkspace.js";
 export * from "./peopleWorkspace.js";
+export * from "./payrollWorkspace.js";
 export * from "./profiles.js";
 export * from "./rateCards.js";
 export * from "./recordings.js";

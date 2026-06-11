@@ -310,3 +310,11 @@ The frontend connects GST settings, invoice tax review, and GST summaries to ava
 
 The frontend connects HR dashboard, team directory, employee profile, and workload views to available users, role profiles, time entries, and work sessions. Attendance is represented as a not-turned-on state until a dedicated HR attendance resource exists.
 
+## Payroll Branch Usage
+
+- `GET /api/users`
+- `GET /api/time-entries`
+- `GET /api/work-sessions`
+
+The frontend uses people and workload records to show payroll setup readiness. Payroll runs, compensation records, approvals, and payslip delivery use `backendGapAdapters.payrollRuns` until payroll resources are available.
+
