@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>BillSync Legal | Extension Setup</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+                  "on-secondary-container": "#735a00",
+                  "surface-container-lowest": "#ffffff",
+                  "primary-fixed-dim": "#a6c9f9",
+                  "on-primary-fixed-variant": "#234871",
+                  "inverse-on-surface": "#e8f2ff",
+                  "on-primary-fixed": "#001c37",
+                  "tertiary-fixed": "#d6e3ff",
+                  "surface": "#f7f9ff",
+                  "secondary-fixed": "#ffe08e",
+                  "tertiary-container": "#283a56",
+                  "primary-container": "#123b63",
+                  "tertiary-fixed-dim": "#b5c7ea",
+                  "surface-dim": "#d1dbe8",
+                  "surface-container-low": "#edf4ff",
+                  "on-tertiary-fixed": "#071c36",
+                  "on-background": "#121d26",
+                  "on-error-container": "#93000a",
+                  "error": "#ba1a1a",
+                  "background": "#f7f9ff",
+                  "outline": "#73777f",
+                  "on-error": "#ffffff",
+                  "on-primary": "#ffffff",
+                  "surface-variant": "#d9e3f1",
+                  "on-tertiary-fixed-variant": "#364764",
+                  "surface-container-high": "#dfe9f7",
+                  "on-surface-variant": "#43474e",
+                  "on-surface": "#121d26",
+                  "on-primary-container": "#83a6d4",
+                  "primary-fixed": "#d2e4ff",
+                  "on-secondary": "#ffffff",
+                  "tertiary": "#11243f",
+                  "on-tertiary-container": "#92a4c5",
+                  "surface-bright": "#f7f9ff",
+                  "secondary-container": "#fed255",
+                  "error-container": "#ffdad6",
+                  "primary": "#002546",
+                  "inverse-surface": "#27313c",
+                  "surface-container-highest": "#d9e3f1",
+                  "secondary": "#755b00",
+                  "surface-container": "#e4effd",
+                  "on-secondary-fixed": "#241a00",
+                  "secondary-fixed-dim": "#ecc246",
+                  "outline-variant": "#c3c6cf",
+                  "on-tertiary": "#ffffff",
+                  "on-secondary-fixed-variant": "#584400",
+                  "inverse-primary": "#a6c9f9",
+                  "surface-tint": "#3d608a"
+          },
+          "borderRadius": {
+                  "DEFAULT": "0.125rem",
+                  "lg": "0.25rem",
+                  "xl": "0.5rem",
+                  "full": "0.75rem"
+          },
+          "spacing": {
+                  "base": "8px",
+                  "xl": "32px",
+                  "xs": "4px",
+                  "lg": "24px",
+                  "sm": "12px",
+                  "xxl": "48px",
+                  "gutter-desktop": "24px",
+                  "md": "16px",
+                  "margin-desktop": "40px",
+                  "sidebar-width": "260px"
+          },
+          "fontFamily": {
+                  "body-sm": ["Inter"],
+                  "label-md": ["Inter"],
+                  "headline-lg-mobile": ["Inter"],
+                  "headline-lg": ["Inter"],
+                  "headline-sm": ["Inter"],
+                  "display-lg": ["Inter"],
+                  "body-md": ["Inter"],
+                  "label-sm": ["Inter"],
+                  "body-lg": ["Inter"],
+                  "headline-md": ["Inter"]
+          },
+          "fontSize": {
+                  "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                  "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                  "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                  "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                  "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                  "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                  "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                  "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "600"}],
+                  "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                  "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    body { font-family: 'Inter', sans-serif; background-color: #F8F5EF; }
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+    .glass-card {
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(229, 231, 235, 0.5);
+    }
+    .step-active {
+      border-color: #755b00;
+      background-color: #ffffff;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+    }
+  </style>
+</head>
+<body class="text-on-surface">
+<!-- Side Navigation (Suppressed per task context of specific setup flow, but keeping for structural consistency with Brand Anchors) -->
+<aside class="fixed left-0 top-0 h-screen w-[260px] bg-primary text-secondary hidden md:flex flex-col py-lg border-r border-outline-variant/10 z-50">
+<div class="px-lg mb-xxl">
+<h1 class="font-headline-sm text-headline-sm font-bold text-surface">LexisPremium</h1>
+<p class="font-body-sm text-body-sm text-surface-variant opacity-70">Elite Law Management</p>
+</div>
+<nav class="flex-1 space-y-1">
+<div class="flex items-center px-lg py-sm text-surface-variant/50 cursor-not-allowed">
+<span class="material-symbols-outlined mr-md">dashboard</span>
+<span class="font-body-md text-body-md">Dashboard</span>
+</div>
+<div class="flex items-center px-lg py-sm text-surface-variant/50 cursor-not-allowed">
+<span class="material-symbols-outlined mr-md">folder_open</span>
+<span class="font-body-md text-body-md">Matters</span>
+</div>
+<div class="flex items-center px-lg py-sm text-surface-variant/50 cursor-not-allowed">
+<span class="material-symbols-outlined mr-md">timer</span>
+<span class="font-body-md text-body-md">Time Tracking</span>
+</div>
+<!-- Settings Active for Setup Flow -->
+<div class="flex items-center px-lg py-sm text-surface dark:text-surface border-l-2 border-secondary-container bg-primary-container/30 transition-all duration-200">
+<span class="material-symbols-outlined mr-md">settings</span>
+<span class="font-body-md text-body-md font-medium">Setup</span>
+</div>
+</nav>
+<div class="px-lg mt-auto space-y-4">
+<button class="w-full py-sm bg-secondary-container text-on-secondary-container font-label-sm text-label-sm rounded-lg hover:opacity-90 transition-all">
+        New Matter
+      </button>
+<div class="flex items-center space-x-3 py-sm border-t border-outline-variant/10">
+<div class="w-8 h-8 rounded-full bg-surface-variant/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-surface-variant">person</span>
+</div>
+<div class="flex-1 overflow-hidden">
+<p class="font-label-sm text-label-sm text-surface truncate">Attorney Profile</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Canvas -->
+<main class="md:ml-[260px] min-h-screen relative overflow-hidden">
+<!-- Header -->
+<header class="h-16 flex items-center justify-between px-margin-desktop bg-surface/80 backdrop-blur-md sticky top-0 z-40 border-b border-outline-variant/30">
+<div class="flex items-center space-x-4">
+<span class="material-symbols-outlined text-primary">extension</span>
+<h2 class="font-headline-sm text-headline-sm text-primary font-bold">Extension Setup</h2>
+</div>
+<div class="flex items-center space-x-6">
+<div class="flex space-x-4 items-center">
+<span class="material-symbols-outlined text-on-surface-variant hover:text-primary cursor-pointer transition-colors">notifications</span>
+<span class="material-symbols-outlined text-on-surface-variant hover:text-primary cursor-pointer transition-colors">help_outline</span>
+</div>
+<button class="bg-primary text-on-primary px-lg py-2 rounded-full font-label-md text-label-md hover:bg-primary/90 transition-all shadow-sm">
+          Create Invoice
+        </button>
+</div>
+</header>
+<!-- Content Area -->
+<section class="max-w-[1200px] mx-auto px-margin-desktop py-xxl">
+<!-- Welcome Hero Section -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-xl items-center mb-xxl">
+<div class="space-y-md">
+<span class="px-sm py-1 bg-secondary-container/20 text-secondary font-label-sm text-label-sm rounded-full inline-block">Workflow Efficiency</span>
+<h3 class="font-display-lg text-display-lg text-primary leading-tight">Capture every billable minute with BillSync.</h3>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-lg">
+            Our legal extension integrates seamlessly with Gmail and Westlaw to automatically suggest time entries based on your active research and communications.
+          </p>
+<div class="flex items-center space-x-4 pt-md">
+<button class="px-xl py-md bg-primary text-on-primary rounded-xl font-headline-sm text-headline-sm flex items-center space-x-2 hover:shadow-lg transition-all">
+<span>Install for Chrome</span>
+<span class="material-symbols-outlined">arrow_forward</span>
+</button>
+<p class="font-body-sm text-body-sm text-on-surface-variant italic">Over 500 law firms connected.</p>
+</div>
+</div>
+<div class="relative">
+<div class="absolute -inset-4 bg-secondary-container/10 rounded-full blur-3xl"></div>
+<div class="relative glass-card p-lg rounded-xxl shadow-2xl overflow-hidden">
+<img class="w-full h-auto rounded-xl" data-alt="A professional lawyer's workspace with a high-end laptop showing a modern legal software interface. The screen displays a minimalist browser extension overlay with golden accents on a navy background. Soft morning sunlight filters through a large window, illuminating a marble desk with a gold pen and a leather-bound notebook. The atmosphere is sophisticated, quiet, and highly productive." src="https://lh3.googleusercontent.com/aida-public/AB6AXuARCG6ne7JehIbcERL4LGFzFkNkVmcw4PBnwfCMlUiCeT7RgrFM1OEaiHcjwlNgVBZa-Jfh2PYwxVB0bkevjMXwV-foGFh33k6vRUQIvyEJMFN_La-J5Ext_EipgCsHhJw13EAisgiIiJn_VVKpdwpCogE4T7-DBc5_ijPWbv3oSy7AzRmiATtKohbE-njkPRGGm5YZ-GugrFlqibKSzdVFu1EI76JP9ng4qX0kr41C5Dk-gMys1EbIum4Sovbh2bNGOTHVORr42OcM"/>
+<div class="absolute bottom-6 right-6 bg-white/90 p-md rounded-xl shadow-lg border border-outline-variant flex items-center space-x-3">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">timer</span>
+<div>
+<p class="font-label-sm text-label-sm text-primary">Time Tracked</p>
+<p class="font-headline-sm text-headline-sm text-on-surface">0.4 hrs (Gmail)</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Step-by-Step Guide (Bento Grid Style) -->
+<div class="space-y-xl">
+<div class="flex items-end justify-between">
+<div class="space-y-xs">
+<h4 class="font-headline-md text-headline-md text-primary">Setup in 3 Simple Steps</h4>
+<p class="font-body-md text-body-md text-on-surface-variant">Configure your extension to start syncing instantly.</p>
+</div>
+<div class="flex space-x-2">
+<div class="w-2 h-2 rounded-full bg-secondary"></div>
+<div class="w-2 h-2 rounded-full bg-outline-variant"></div>
+<div class="w-2 h-2 rounded-full bg-outline-variant"></div>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-lg">
+<!-- Step 1 -->
+<div class="glass-card p-lg rounded-xxl space-y-md border-b-4 border-b-secondary-container transition-all hover:translate-y-[-4px]">
+<div class="w-12 h-12 bg-primary text-on-primary rounded-full flex items-center justify-center font-headline-sm text-headline-sm">1</div>
+<h5 class="font-headline-sm text-headline-sm text-primary">Download</h5>
+<p class="font-body-md text-body-md text-on-surface-variant">Add the BillSync Legal extension from the Chrome Web Store with one click.</p>
+<div class="pt-sm">
+<a class="text-secondary font-label-md text-label-md flex items-center hover:underline" href="#">
+                Visit Web Store <span class="material-symbols-outlined text-[18px] ml-1">open_in_new</span>
+</a>
+</div>
+</div>
+<!-- Step 2 -->
+<div class="glass-card p-lg rounded-xxl space-y-md border-b-4 border-b-outline-variant transition-all hover:translate-y-[-4px]">
+<div class="w-12 h-12 bg-surface-container-high text-primary rounded-full flex items-center justify-center font-headline-sm text-headline-sm">2</div>
+<h5 class="font-headline-sm text-headline-sm text-primary">Pin to Browser</h5>
+<p class="font-body-md text-body-md text-on-surface-variant">Click the puzzle icon and pin BillSync for instant access from your toolbar.</p>
+<div class="bg-surface-container-lowest p-sm rounded-lg flex items-center space-x-3">
+<span class="material-symbols-outlined text-on-surface-variant">extension</span>
+<div class="flex-1 h-2 bg-outline-variant/30 rounded-full"></div>
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">keep</span>
+</div>
+</div>
+<!-- Step 3 -->
+<div class="glass-card p-lg rounded-xxl space-y-md border-b-4 border-b-outline-variant transition-all hover:translate-y-[-4px]">
+<div class="w-12 h-12 bg-surface-container-high text-primary rounded-full flex items-center justify-center font-headline-sm text-headline-sm">3</div>
+<h5 class="font-headline-sm text-headline-sm text-primary">Sign In</h5>
+<p class="font-body-md text-body-md text-on-surface-variant">Log in once to link your billable matters and start capturing your activity.</p>
+<div class="pt-sm">
+<button class="w-full py-sm border border-primary text-primary rounded-lg font-label-md text-label-md hover:bg-primary/5 transition-colors">
+                Connect Account
+              </button>
+</div>
+</div>
+</div>
+</div>
+<!-- Feature Highlight -->
+<div class="mt-xxl grid grid-cols-1 md:grid-cols-2 gap-xxl items-center bg-primary rounded-xxl p-xl text-surface overflow-hidden relative">
+<div class="absolute top-0 right-0 w-64 h-64 bg-secondary-container/10 rounded-full blur-[100px]"></div>
+<div class="space-y-lg relative z-10">
+<h4 class="font-headline-lg text-headline-lg">Intelligent Tracking Anywhere</h4>
+<div class="space-y-md">
+<div class="flex items-start space-x-md">
+<div class="mt-1 w-8 h-8 bg-surface/10 rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary">mail</span>
+</div>
+<div>
+<p class="font-label-md text-label-md text-surface">Gmail Integration</p>
+<p class="font-body-sm text-body-sm text-surface-variant opacity-80">Detects recipient matter numbers and drafting time automatically.</p>
+</div>
+</div>
+<div class="flex items-start space-x-md">
+<div class="mt-1 w-8 h-8 bg-surface/10 rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary">search</span>
+</div>
+<div>
+<p class="font-label-md text-label-md text-surface">Research Platforms</p>
+<p class="font-body-sm text-body-sm text-surface-variant opacity-80">Seamlessly logs research sessions on Westlaw, LexisNexis, and court portals.</p>
+</div>
+</div>
+<div class="flex items-start space-x-md">
+<div class="mt-1 w-8 h-8 bg-surface/10 rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary">security</span>
+</div>
+<div>
+<p class="font-label-md text-label-md text-surface">Bank-Grade Privacy</p>
+<p class="font-body-sm text-body-sm text-surface-variant opacity-80">Content is never stored; only active duration and matter metadata are captured.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="relative h-[300px] flex items-center justify-center">
+<div class="w-full max-w-md bg-white/5 backdrop-blur-xl border border-white/10 p-lg rounded-xxl shadow-2xl">
+<div class="space-y-sm">
+<div class="flex items-center justify-between">
+<div class="flex items-center space-x-2">
+<span class="material-symbols-outlined text-secondary text-[20px]">check_circle</span>
+<p class="font-label-sm text-label-sm">Active Session: Westlaw</p>
+</div>
+<span class="text-xs font-mono text-secondary bg-secondary/10 px-2 py-0.5 rounded">00:14:32</span>
+</div>
+<div class="h-[1px] bg-white/10 w-full"></div>
+<p class="text-xs text-white/60">Matter #2024-XP-890 (Smith v. TechCorp)</p>
+<div class="flex justify-end pt-md">
+<button class="bg-secondary text-on-secondary-fixed px-md py-1.5 rounded-md text-[13px] font-semibold">Post to Billing</button>
+</div>
+</div>
+</div>
+<!-- Decorative element -->
+<div class="absolute -bottom-10 -right-10 w-40 h-40 border-4 border-secondary/20 rounded-full"></div>
+</div>
+</div>
+</section>
+<!-- Footer -->
+<footer class="mt-xxl border-t border-outline-variant/30 py-xl px-margin-desktop bg-surface-container-low">
+<div class="max-w-[1200px] mx-auto flex flex-col md:flex-row justify-between items-center space-y-md md:space-y-0">
+<div class="flex items-center space-x-2">
+<span class="font-label-sm text-label-sm font-bold text-primary">LexisPremium</span>
+<span class="text-on-surface-variant/40">|</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant">© 2024 LexisPremium Legal Systems. All rights reserved.</p>
+</div>
+<nav class="flex space-x-lg">
+<a class="font-body-sm text-body-sm text-on-surface-variant hover:text-secondary transition-colors" href="#">Privacy Policy</a>
+<a class="font-body-sm text-body-sm text-on-surface-variant hover:text-secondary transition-colors" href="#">Terms of Service</a>
+<a class="font-body-sm text-body-sm text-on-surface-variant hover:text-secondary transition-colors" href="#">Security</a>
+<a class="font-body-sm text-body-sm text-on-surface-variant hover:text-secondary transition-colors" href="#">Compliance</a>
+</nav>
+</div>
+</footer>
+</main>
+<script>
+    // Micro-interactions
+    document.addEventListener('DOMContentLoaded', () => {
+      const cards = document.querySelectorAll('.glass-card');
+      cards.forEach(card => {
+        card.addEventListener('mouseenter', () => {
+          card.style.boxShadow = "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)";
+        });
+        card.addEventListener('mouseleave', () => {
+          card.style.boxShadow = "";
+        });
+      });
+    });
+  </script>
+</body></html>

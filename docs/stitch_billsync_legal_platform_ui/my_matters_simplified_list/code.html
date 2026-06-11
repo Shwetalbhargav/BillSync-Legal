@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>BillSync Legal - Matter List</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f7f9ff;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        /* Custom scrollbar for clean UI */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #d9e3f1;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #c3c6cf;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "secondary-container": "#c8dbfe",
+                      "surface-container-high": "#dfe9f7",
+                      "inverse-on-surface": "#e8f2ff",
+                      "on-error-container": "#93000a",
+                      "secondary-fixed-dim": "#b5c7ea",
+                      "on-secondary": "#ffffff",
+                      "outline-variant": "#c3c6cf",
+                      "surface-tint": "#3d608a",
+                      "primary-fixed": "#d2e4ff",
+                      "outline": "#73777f",
+                      "on-surface": "#121d26",
+                      "on-tertiary-fixed-variant": "#584400",
+                      "on-secondary-container": "#4e607e",
+                      "surface-bright": "#f7f9ff",
+                      "primary-container": "#123b63",
+                      "error-container": "#ffdad6",
+                      "on-primary-container": "#83a6d4",
+                      "primary-fixed-dim": "#a6c9f9",
+                      "error": "#ba1a1a",
+                      "background": "#f7f9ff",
+                      "tertiary-fixed-dim": "#ecc246",
+                      "tertiary-fixed": "#ffe08e",
+                      "secondary-fixed": "#d6e3ff",
+                      "on-secondary-fixed": "#071c36",
+                      "on-primary": "#ffffff",
+                      "inverse-surface": "#27313c",
+                      "primary": "#002546",
+                      "surface-container-lowest": "#ffffff",
+                      "on-tertiary": "#ffffff",
+                      "on-tertiary-fixed": "#241a00",
+                      "surface-container-highest": "#d9e3f1",
+                      "surface-dim": "#d1dbe8",
+                      "surface-container-low": "#edf4ff",
+                      "inverse-primary": "#a6c9f9",
+                      "on-primary-fixed": "#001c37",
+                      "on-error": "#ffffff",
+                      "on-surface-variant": "#43474e",
+                      "tertiary": "#755b00",
+                      "on-primary-fixed-variant": "#234871",
+                      "tertiary-container": "#cea72c",
+                      "on-background": "#121d26",
+                      "on-tertiary-container": "#4f3d00",
+                      "surface-variant": "#d9e3f1",
+                      "secondary": "#4d5f7d",
+                      "surface-container": "#e4effd",
+                      "surface": "#f7f9ff",
+                      "on-secondary-fixed-variant": "#364764"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "sidebar-width": "260px",
+                      "xxl": "48px",
+                      "md": "24px",
+                      "base": "4px",
+                      "xl": "48px",
+                      "margin-desktop": "40px",
+                      "xs": "8px",
+                      "lg": "32px",
+                      "gutter": "24px",
+                      "sm": "16px"
+              },
+              "fontFamily": {
+                      "body-md": ["Inter"],
+                      "label-sm": ["Inter"],
+                      "headline-md": ["Inter"],
+                      "headline-lg-mobile": ["Inter"],
+                      "headline-lg": ["Inter"],
+                      "body-lg": ["Inter"],
+                      "body-sm": ["Inter"],
+                      "display-lg": ["Inter"],
+                      "label-md": ["Inter"],
+                      "headline-sm": ["Inter"]
+              },
+              "fontSize": {
+                      "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "600"}],
+                      "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                      "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "600"}],
+                      "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                      "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                      "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                      "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                      "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}]
+              }
+            },
+          },
+        }
+      </script>
+</head>
+<body class="bg-background text-on-surface">
+<!-- Sidebar Navigation -->
+<aside class="fixed left-0 top-0 h-full w-sidebar-width bg-primary flex flex-col py-lg z-50">
+<div class="px-lg mb-xl">
+<h1 class="font-headline-sm text-headline-sm text-surface-container-lowest">BillSync Legal</h1>
+<p class="font-label-md text-label-md text-primary-fixed-dim opacity-70">Law Firm Management</p>
+</div>
+<nav class="flex-1 overflow-y-auto space-y-xs px-sm">
+<a class="flex items-center gap-sm px-md py-sm rounded text-primary-fixed-dim hover:text-surface-container-lowest transition-colors group" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-sm px-md py-sm rounded text-primary-fixed-dim hover:text-surface-container-lowest transition-colors group" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="font-label-md text-label-md">Clients</span>
+</a>
+<!-- ACTIVE: Matters -->
+<a class="flex items-center gap-sm px-md py-sm rounded text-surface-container-lowest bg-primary-container font-bold transition-colors" href="#">
+<span class="material-symbols-outlined">folder_open</span>
+<span class="font-label-md text-label-md">Matters</span>
+</a>
+<a class="flex items-center gap-sm px-md py-sm rounded text-primary-fixed-dim hover:text-surface-container-lowest transition-colors" href="#">
+<span class="material-symbols-outlined">assignment</span>
+<span class="font-label-md text-label-md">Tasks</span>
+</a>
+<a class="flex items-center gap-sm px-md py-sm rounded text-primary-fixed-dim hover:text-surface-container-lowest transition-colors" href="#">
+<span class="material-symbols-outlined">timer</span>
+<span class="font-label-md text-label-md">Work Meter</span>
+</a>
+<a class="flex items-center gap-sm px-md py-sm rounded text-primary-fixed-dim hover:text-surface-container-lowest transition-colors" href="#">
+<span class="material-symbols-outlined">calendar_today</span>
+<span class="font-label-md text-label-md">Calendar</span>
+</a>
+<a class="flex items-center gap-sm px-md py-sm rounded text-primary-fixed-dim hover:text-surface-container-lowest transition-colors" href="#">
+<span class="material-symbols-outlined">history_edu</span>
+<span class="font-label-md text-label-md">Captured Work</span>
+</a>
+<a class="flex items-center gap-sm px-md py-sm rounded text-primary-fixed-dim hover:text-surface-container-lowest transition-colors" href="#">
+<span class="material-symbols-outlined">payments</span>
+<span class="font-label-md text-label-md">Billing</span>
+</a>
+<a class="flex items-center gap-sm px-md py-sm rounded text-primary-fixed-dim hover:text-surface-container-lowest transition-colors" href="#">
+<span class="material-symbols-outlined">description</span>
+<span class="font-label-md text-label-md">Documents</span>
+</a>
+<a class="flex items-center gap-sm px-md py-sm rounded text-primary-fixed-dim hover:text-surface-container-lowest transition-colors" href="#">
+<span class="material-symbols-outlined">smart_toy</span>
+<span class="font-label-md text-label-md">AI Assistant</span>
+</a>
+</nav>
+<div class="px-sm mt-auto space-y-xs pt-lg border-t border-primary-container">
+<a class="flex items-center gap-sm px-md py-sm rounded text-primary-fixed-dim hover:text-surface-container-lowest transition-colors" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-md text-label-md">Settings</span>
+</a>
+<div class="flex items-center gap-sm px-md py-sm">
+<img alt="User Profile" class="w-8 h-8 rounded-full bg-surface-container-highest" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDE8hkyApnyr9QFB1bSHikSUupV3GpjjDrOclD5CMFv3h_kvmxphNVxptE4h29GFNcP9uFnJF3k009CFYkMrUb0e92WlggB3Lh41kphKuYr7Og7zc9rL_TvGkQRftD8c2zTO5Uue_soCwSAXRss7sAKpkFpmx4qbmdzQhPLcL_-coI1jyRqgLnBFLP3cumkur6Em6Gkv6Cszu2SiWrPdT1K5JMT4pP86SmPyOO3MpufrDtjA10gbhV9-iU1f0iT83vyjscvssJbfZ2P"/>
+<div class="overflow-hidden">
+<p class="font-label-md text-label-md text-surface-container-lowest truncate">Julian Thorne, Esq.</p>
+<p class="text-[10px] text-primary-fixed-dim opacity-60 truncate">Senior Partner</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Wrapper -->
+<main class="ml-sidebar-width min-h-screen flex flex-col">
+<!-- Top Navigation Bar -->
+<header class="flex justify-between items-center w-full h-16 px-margin-desktop bg-surface border-b border-outline-variant sticky top-0 z-40">
+<div class="flex items-center flex-1 max-w-2xl">
+<div class="relative w-full">
+<span class="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-outline">search</span>
+<input class="w-full pl-xl pr-md py-xs bg-surface-container-low border border-outline-variant rounded font-body-sm text-on-surface focus:outline-none focus:ring-1 focus:ring-primary" placeholder="Search case name, client..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-lg ml-xl">
+<button class="flex items-center gap-xs text-on-surface-variant hover:bg-surface-container-low p-xs rounded transition-all">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="flex items-center gap-xs text-on-surface-variant hover:bg-surface-container-low p-xs rounded transition-all">
+<span class="material-symbols-outlined">timer</span>
+</button>
+<button class="flex items-center gap-xs text-on-surface-variant hover:bg-surface-container-low p-xs rounded transition-all">
+<span class="material-symbols-outlined">account_circle</span>
+</button>
+</div>
+</header>
+<!-- Content Canvas -->
+<div class="p-margin-desktop space-y-xl">
+<!-- Page Header & Stats -->
+<div class="flex justify-between items-end">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-primary">Case List</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">You are currently managing 42 active cases.</p>
+</div>
+<div class="flex gap-md">
+<div class="bg-surface-container-lowest p-md rounded shadow-sm border border-outline-variant flex flex-col min-w-[140px]">
+<span class="font-label-md text-label-md text-outline uppercase">Ongoing</span>
+<span class="font-headline-sm text-headline-sm text-primary">28</span>
+</div>
+<div class="bg-surface-container-lowest p-md rounded shadow-sm border border-outline-variant flex flex-col min-w-[140px]">
+<span class="font-label-md text-label-md text-outline uppercase">Needs Attention</span>
+<span class="font-headline-sm text-headline-sm text-tertiary">14</span>
+</div>
+</div>
+</div>
+<!-- Filters & Actions -->
+<div class="flex items-center justify-between bg-surface-container-lowest p-md rounded border border-outline-variant">
+<div class="flex items-center gap-lg">
+<div class="flex flex-col gap-xs">
+<label class="font-label-sm text-label-sm text-on-surface-variant">Status</label>
+<select class="border border-outline-variant bg-surface-container-low font-body-sm text-body-sm rounded px-sm py-xs focus:ring-0">
+<option>Show All</option>
+<option>Active</option>
+<option>Needs Attention</option>
+<option>Completed</option>
+</select>
+</div>
+<div class="flex flex-col gap-xs">
+<label class="font-label-sm text-label-sm text-on-surface-variant">Assigned Lawyer</label>
+<select class="border border-outline-variant bg-surface-container-low font-body-sm text-body-sm rounded px-sm py-xs focus:ring-0">
+<option>All Staff</option>
+<option>Julian Thorne</option>
+<option>Sarah Jenkins</option>
+</select>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<button class="flex items-center gap-xs px-md py-sm rounded border border-outline-variant hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined text-[20px]">filter_list</span>
+<span class="font-label-md text-label-md">Filter</span>
+</button>
+<button class="flex items-center gap-xs px-md py-sm rounded border border-outline-variant hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined text-[20px]">file_download</span>
+<span class="font-label-md text-label-md">Export</span>
+</button>
+</div>
+</div>
+<!-- Matters Table -->
+<div class="bg-surface-container-lowest rounded shadow-sm border border-outline-variant overflow-hidden">
+<table class="w-full text-left border-collapse">
+<thead class="bg-surface-container-low border-b border-outline-variant">
+<tr>
+<th class="px-lg py-md font-label-md text-label-md text-on-surface-variant uppercase">Matter Name</th>
+<th class="px-lg py-md font-label-md text-label-md text-on-surface-variant uppercase">Client</th>
+<th class="px-lg py-md font-label-md text-label-md text-on-surface-variant uppercase">Status</th>
+<th class="px-lg py-md font-label-md text-label-md text-on-surface-variant uppercase text-right">Last Action</th>
+<th class="px-lg py-md"></th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant">
+<!-- Row 1 -->
+<tr class="hover:bg-surface-container-low transition-all cursor-pointer group">
+<td class="px-lg py-lg">
+<div class="flex flex-col">
+<span class="font-body-md text-body-md text-primary font-bold">Acme Corp Merger v2</span>
+<span class="text-[12px] text-outline">MTR-2024-001</span>
+</div>
+</td>
+<td class="px-lg py-lg">
+<span class="font-body-sm text-body-sm">Acme Corporation Ltd.</span>
+</td>
+<td class="px-lg py-lg">
+<span class="inline-flex items-center px-sm py-[2px] rounded bg-green-100 text-green-800 text-[12px] font-bold">
+                                    Active
+                                </span>
+</td>
+<td class="px-lg py-lg text-right">
+<span class="font-body-sm text-body-sm text-on-surface-variant">2 hours ago</span>
+</td>
+<td class="px-lg py-lg text-right">
+<div class="flex items-center justify-end gap-md">
+<button class="px-md py-sm bg-primary text-on-primary font-label-md text-label-md rounded hover:bg-primary-container transition-all">Start Work</button>
+<button class="text-outline hover:text-primary transition-colors">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-surface-container-low transition-all cursor-pointer group">
+<td class="px-lg py-lg">
+<div class="flex flex-col">
+<span class="font-body-md text-body-md text-primary font-bold">Estate Planning - Henderson</span>
+<span class="text-[12px] text-outline">MTR-2024-015</span>
+</div>
+</td>
+<td class="px-lg py-lg">
+<span class="font-body-sm text-body-sm">Robert Henderson</span>
+</td>
+<td class="px-lg py-lg">
+<span class="inline-flex items-center px-sm py-[2px] rounded bg-error-container text-on-error-container text-[12px] font-bold">
+                                    Needs Attention
+                                </span>
+</td>
+<td class="px-lg py-lg text-right">
+<span class="font-body-sm text-body-sm text-on-surface-variant">Yesterday, 4:30 PM</span>
+</td>
+<td class="px-lg py-lg text-right">
+<div class="flex items-center justify-end gap-md">
+<button class="px-md py-sm border border-primary text-primary font-label-md text-label-md rounded hover:bg-surface-container-low transition-all">Review</button>
+<button class="text-outline hover:text-primary transition-colors">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-surface-container-low transition-all cursor-pointer group">
+<td class="px-lg py-lg">
+<div class="flex flex-col">
+<span class="font-body-md text-body-md text-primary font-bold">TechStar IP Portfolio</span>
+<span class="text-[12px] text-outline">MTR-2023-882</span>
+</div>
+</td>
+<td class="px-lg py-lg">
+<span class="font-body-sm text-body-sm">TechStar Innovations</span>
+</td>
+<td class="px-lg py-lg">
+<span class="inline-flex items-center px-sm py-[2px] rounded bg-green-100 text-green-800 text-[12px] font-bold">
+                                    Active
+                                </span>
+</td>
+<td class="px-lg py-lg text-right">
+<span class="font-body-sm text-body-sm text-on-surface-variant">Jan 12, 2024</span>
+</td>
+<td class="px-lg py-lg text-right">
+<div class="flex items-center justify-end gap-md">
+<button class="px-md py-sm bg-primary text-on-primary font-label-md text-label-md rounded hover:bg-primary-container transition-all">Start Work</button>
+<button class="text-outline hover:text-primary transition-colors">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="hover:bg-surface-container-low transition-all cursor-pointer group">
+<td class="px-lg py-lg">
+<div class="flex flex-col">
+<span class="font-body-md text-body-md text-primary font-bold">Real Estate Closing - 5th Ave</span>
+<span class="text-[12px] text-outline">MTR-2024-022</span>
+</div>
+</td>
+<td class="px-lg py-lg">
+<span class="font-body-sm text-body-sm">Global Realties Inc.</span>
+</td>
+<td class="px-lg py-lg">
+<span class="inline-flex items-center px-sm py-[2px] rounded bg-surface-container-highest text-on-surface-variant text-[12px] font-bold">
+                                    On Hold
+                                </span>
+</td>
+<td class="px-lg py-lg text-right">
+<span class="font-body-sm text-body-sm text-on-surface-variant">Jan 10, 2024</span>
+</td>
+<td class="px-lg py-lg text-right">
+<div class="flex items-center justify-end gap-md">
+<button class="px-md py-sm border border-outline text-on-surface-variant font-label-md text-label-md rounded hover:bg-surface-container-low transition-all">Resume</button>
+<button class="text-outline hover:text-primary transition-colors">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+<!-- Pagination -->
+<div class="px-lg py-md border-t border-outline-variant flex items-center justify-between">
+<p class="font-label-sm text-label-sm text-on-surface-variant">Page 1 of 6 (42 total cases)</p>
+<div class="flex gap-xs">
+<button class="w-8 h-8 flex items-center justify-center rounded border border-outline-variant hover:bg-surface-container-low transition-colors disabled:opacity-30" disabled="">
+<span class="material-symbols-outlined text-[18px]">chevron_left</span>
+</button>
+<button class="w-8 h-8 flex items-center justify-center rounded bg-primary text-on-primary font-label-sm text-label-sm">1</button>
+<button class="w-8 h-8 flex items-center justify-center rounded border border-outline-variant hover:bg-surface-container-low font-label-sm text-label-sm">2</button>
+<button class="w-8 h-8 flex items-center justify-center rounded border border-outline-variant hover:bg-surface-container-low font-label-sm text-label-sm">3</button>
+<button class="w-8 h-8 flex items-center justify-center rounded border border-outline-variant hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined text-[18px]">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Bento Grid - Related Insights -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-lg mt-xxl">
+<div class="bg-primary-container text-on-primary-container p-lg rounded flex flex-col justify-between h-48 relative overflow-hidden group">
+<div class="z-10">
+<h4 class="font-headline-sm text-headline-sm mb-xs">Deadlines</h4>
+<p class="font-body-sm text-body-sm opacity-80">3 cases need immediate attention due to upcoming filings.</p>
+</div>
+<button class="z-10 font-label-md text-label-md flex items-center gap-xs mt-auto hover:underline transition-all">
+                        View Details <span class="material-symbols-outlined">arrow_forward</span>
+</button>
+<div class="absolute -right-8 -bottom-8 w-32 h-32 bg-on-primary-container opacity-10 rounded-full group-hover:scale-110 transition-transform duration-500"></div>
+</div>
+<div class="md:col-span-2 bg-surface-container-lowest border border-outline-variant p-lg rounded flex items-center gap-xl h-48 shadow-sm">
+<div class="flex-1">
+<h4 class="font-headline-sm text-headline-sm text-primary mb-xs">System Status</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant">We've updated 12 cases with today's court filings. Everything is current.</p>
+<div class="mt-md flex gap-sm">
+<span class="px-sm py-xs bg-surface-container rounded text-[10px] font-bold uppercase text-primary">Updated at 09:15 AM</span>
+<span class="px-sm py-xs bg-green-50 text-green-700 rounded text-[10px] font-bold uppercase">Up to Date</span>
+</div>
+</div>
+<div class="w-32 h-32 flex items-center justify-center bg-surface-container-low rounded">
+<span class="material-symbols-outlined text-primary text-[48px]">sync</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Floating Action Button -->
+<button class="fixed bottom-lg right-lg bg-tertiary text-on-tertiary w-14 h-14 rounded-full shadow-lg flex items-center justify-center hover:scale-105 active:scale-95 transition-all z-50 group">
+<span class="material-symbols-outlined text-[28px]">add</span>
+<span class="absolute right-full mr-md bg-inverse-surface text-inverse-on-surface px-md py-xs rounded text-[12px] font-bold whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">New Matter</span>
+</button>
+<!-- Footer -->
+<footer class="mt-auto flex justify-between items-center py-md px-margin-desktop bg-background border-t border-surface-variant">
+<p class="font-label-sm text-label-sm text-on-surface-variant">© 2024 BillSync Legal.</p>
+<div class="flex gap-lg">
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Terms</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Privacy</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Support</a>
+</div>
+</footer>
+</main>
+<script>
+        // Simple logic for table rows
+        document.querySelectorAll('tr').forEach(row => {
+            row.addEventListener('click', (e) => {
+                if (e.target.tagName !== 'BUTTON' && e.target.parentElement.tagName !== 'BUTTON') {
+                    const name = row.querySelector('.font-bold')?.innerText;
+                    if(name) console.log(`Opening: ${name}`);
+                }
+            });
+        });
+    </script>
+</body></html>

@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+
+<html class="scroll-smooth" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Matter Detail | BillSync Legal</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .active-tab-underline {
+            position: relative;
+        }
+        .active-tab-underline::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: #755b00; /* gold color from config secondary */
+        }
+        /* Custom scrollbar for a cleaner feel */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f7f9ff;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #d9e3f1;
+            border-radius: 10px;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "background": "#f7f9ff",
+                      "surface-variant": "#d9e3f1",
+                      "tertiary": "#11243f",
+                      "tertiary-fixed-dim": "#b5c7ea",
+                      "inverse-primary": "#a6c9f9",
+                      "on-error": "#ffffff",
+                      "surface": "#f7f9ff",
+                      "on-secondary": "#ffffff",
+                      "error": "#ba1a1a",
+                      "on-primary": "#ffffff",
+                      "tertiary-container": "#283a56",
+                      "on-tertiary-fixed": "#071c36",
+                      "tertiary-fixed": "#d6e3ff",
+                      "secondary-fixed": "#ffe08e",
+                      "on-tertiary-fixed-variant": "#364764",
+                      "on-error-container": "#93000a",
+                      "surface-tint": "#3d608a",
+                      "primary": "#002546",
+                      "on-secondary-container": "#735a00",
+                      "on-secondary-fixed": "#241a00",
+                      "outline-variant": "#c3c6cf",
+                      "inverse-surface": "#27313c",
+                      "surface-container-highest": "#d9e3f1",
+                      "surface-dim": "#d1dbe8",
+                      "inverse-on-surface": "#e8f2ff",
+                      "primary-container": "#123b63",
+                      "on-surface-variant": "#43474e",
+                      "surface-container": "#e4effd",
+                      "secondary": "#755b00",
+                      "surface-bright": "#f7f9ff",
+                      "surface-container-lowest": "#ffffff",
+                      "on-primary-fixed-variant": "#234871",
+                      "on-surface": "#121d26",
+                      "error-container": "#ffdad6",
+                      "on-tertiary-container": "#92a4c5",
+                      "outline": "#73777f",
+                      "on-primary-fixed": "#001c37",
+                      "primary-fixed-dim": "#a6c9f9",
+                      "surface-container-low": "#edf4ff",
+                      "on-tertiary": "#ffffff",
+                      "on-secondary-fixed-variant": "#584400",
+                      "on-primary-container": "#83a6d4",
+                      "primary-fixed": "#d2e4ff",
+                      "secondary-fixed-dim": "#ecc246",
+                      "surface-container-high": "#dfe9f7",
+                      "secondary-container": "#fed255",
+                      "on-background": "#121d26"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "sidebar-width": "260px",
+                      "xxl": "48px",
+                      "md": "16px",
+                      "base": "8px",
+                      "xl": "32px",
+                      "margin-desktop": "40px",
+                      "xs": "4px",
+                      "lg": "24px",
+                      "gutter-desktop": "24px",
+                      "sm": "12px"
+              },
+              "fontFamily": {
+                      "body-md": ["Inter"],
+                      "label-sm": ["Inter"],
+                      "headline-md": ["Inter"],
+                      "headline-lg": ["Inter"],
+                      "body-lg": ["Inter"],
+                      "body-sm": ["Inter"],
+                      "display-lg": ["Inter"],
+                      "label-md": ["Inter"],
+                      "headline-sm": ["Inter"]
+              },
+              "fontSize": {
+                      "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "600"}],
+                      "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                      "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                      "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                      "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                      "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                      "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}]
+              }
+            },
+          },
+        }
+    </script>
+</head>
+<body class="bg-background text-on-surface font-body-md overflow-x-hidden">
+<!-- Sidebar Navigation -->
+<aside class="fixed left-0 top-0 h-full w-sidebar-width bg-tertiary flex flex-col py-lg z-50">
+<div class="px-lg mb-xl">
+<h1 class="font-headline-sm text-headline-sm text-surface-container-lowest tracking-tight">BillSync Legal</h1>
+<p class="font-label-sm text-label-sm text-tertiary-fixed-dim opacity-70">Law Firm Management</p>
+</div>
+<nav class="flex-grow flex flex-col gap-xs">
+<!-- Active State: Matters -->
+<a class="flex items-center gap-md px-lg py-sm text-tertiary-fixed-dim hover:text-surface-container-lowest transition-colors group" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-md px-lg py-sm text-tertiary-fixed-dim hover:text-surface-container-lowest transition-colors" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="font-label-md text-label-md">Clients</span>
+</a>
+<a class="flex items-center gap-md px-lg py-sm text-surface-container-lowest border-l-2 border-secondary font-bold bg-white/5" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">folder_open</span>
+<span class="font-label-md text-label-md">Matters</span>
+</a>
+<a class="flex items-center gap-md px-lg py-sm text-tertiary-fixed-dim hover:text-surface-container-lowest transition-colors" href="#">
+<span class="material-symbols-outlined">assignment</span>
+<span class="font-label-md text-label-md">Tasks</span>
+</a>
+<a class="flex items-center gap-md px-lg py-sm text-tertiary-fixed-dim hover:text-surface-container-lowest transition-colors" href="#">
+<span class="material-symbols-outlined">timer</span>
+<span class="font-label-md text-label-md">Work Meter</span>
+</a>
+<a class="flex items-center gap-md px-lg py-sm text-tertiary-fixed-dim hover:text-surface-container-lowest transition-colors" href="#">
+<span class="material-symbols-outlined">payments</span>
+<span class="font-label-md text-label-md">Billing</span>
+</a>
+<a class="flex items-center gap-md px-lg py-sm text-tertiary-fixed-dim hover:text-surface-container-lowest transition-colors" href="#">
+<span class="material-symbols-outlined">description</span>
+<span class="font-label-md text-label-md">Documents</span>
+</a>
+</nav>
+<div class="mt-auto px-lg pt-lg border-t border-white/10">
+<a class="flex items-center gap-md py-sm text-tertiary-fixed-dim hover:text-surface-container-lowest transition-colors" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-md text-label-md">Settings</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="ml-sidebar-width flex flex-col min-h-screen">
+<!-- Top Navigation Bar -->
+<header class="flex justify-between items-center w-full h-16 px-margin-desktop bg-surface sticky top-0 z-40">
+<div class="flex items-center gap-md w-1/3">
+<div class="relative w-full max-w-xs">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="w-full bg-surface-container-low border-none rounded-xl pl-10 pr-4 py-2 text-body-sm focus:ring-1 focus:ring-primary" placeholder="Search matters..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-lg">
+<button class="relative p-2 hover:bg-surface-container-low rounded-full transition-all active:scale-95 duration-150">
+<span class="material-symbols-outlined text-primary">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-error rounded-full border-2 border-surface"></span>
+</button>
+<button class="p-2 hover:bg-surface-container-low rounded-full transition-all active:scale-95 duration-150">
+<span class="material-symbols-outlined text-primary">timer</span>
+</button>
+<div class="flex items-center gap-sm cursor-pointer hover:bg-surface-container-low p-1 rounded-full pr-4 transition-all">
+<img alt="Avatar" class="w-8 h-8 rounded-full bg-surface-variant" data-alt="A professional headshot of a corporate lawyer wearing a navy suit, with a clean and bright blurred office background, soft studio lighting, ultra-realistic digital photography style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCDL0a_93AnWlU-CGdWviHhpR4CcFTTtO3JnXw_5RQjizBmfDxCgZhYE46ahuMojdr00ltlaQY0IwGt_W-fAzkgUHAg-xRdRapS-uwHNkLKmm621_qa32DTI4wMhOpQtai5ZGHOu0CUwoVtKFGtyPTeIqm0hM81M5yjqb9ka9h1O-WL2zE2eX02u4rCRojm9WGvNHDiaDz3Hnc8-nnwNfuf4XdM9W_pfZiOT3tclmXypxGqsf4x79asVAQGtwyscBTl_1x1H-iTt_zg"/>
+<span class="font-label-md text-label-md text-primary">Alex Sterling</span>
+</div>
+</div>
+</header>
+<!-- Content Canvas -->
+<div class="flex-grow p-margin-desktop max-w-[1440px] mx-auto w-full">
+<!-- Breadcrumbs & Title Section -->
+<div class="mb-xl">
+<nav class="flex items-center gap-xs text-on-surface-variant font-label-sm text-label-sm mb-base">
+<a class="hover:text-primary transition-colors" href="#">Matters</a>
+<span class="material-symbols-outlined text-[14px]">chevron_right</span>
+<span class="text-primary font-bold">Matter #2024-0812</span>
+</nav>
+<div class="flex justify-between items-start">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-primary mb-xs">Estate Planning: Harrison Trust Revision</h2>
+<div class="flex items-center gap-sm">
+<span class="px-sm py-1 bg-secondary-container text-on-secondary-container font-label-sm text-label-sm rounded-full">ACTIVE</span>
+<span class="text-on-surface-variant font-body-sm text-body-sm">Client: Marcus Harrison &amp; Co.</span>
+<span class="w-1 h-1 bg-outline-variant rounded-full"></span>
+<span class="text-on-surface-variant font-body-sm text-body-sm">Lead: Alex Sterling</span>
+</div>
+</div>
+<button class="bg-primary text-on-primary px-lg py-2 rounded-xl font-label-md text-label-md hover:bg-primary-container transition-colors flex items-center gap-sm">
+<span class="material-symbols-outlined text-[18px]">add</span>
+                        New Time Entry
+                    </button>
+</div>
+</div>
+<!-- Tabbed Navigation -->
+<div class="flex border-b border-surface-variant mb-xl gap-xl">
+<a class="pb-sm font-label-md text-label-md text-primary active-tab-underline flex items-center gap-sm" href="#">
+                    Overview
+                </a>
+<a class="pb-sm font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors flex items-center gap-sm" href="#">
+                    Timeline
+                </a>
+<a class="pb-sm font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors flex items-center gap-sm" href="#">
+                    Team
+                </a>
+<a class="pb-sm font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors flex items-center gap-sm" href="#">
+                    Documents <span class="bg-surface-container-highest px-1.5 rounded-md text-[10px]">12</span>
+</a>
+<a class="pb-sm font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors flex items-center gap-sm" href="#">
+                    Billing
+                </a>
+<a class="pb-sm font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors flex items-center gap-sm" href="#">
+                    Audit
+                </a>
+</div>
+<!-- Bento Grid Content -->
+<div class="grid grid-cols-12 gap-lg items-start">
+<!-- Left Column: Primary Details & Budget -->
+<div class="col-span-12 lg:col-span-8 space-y-lg">
+<!-- Budget Status Card -->
+<div class="bg-surface-container-lowest rounded-xl border border-surface-variant p-lg shadow-sm">
+<div class="flex justify-between items-center mb-lg">
+<h3 class="font-headline-sm text-headline-sm text-primary">Budget Status</h3>
+<span class="material-symbols-outlined text-on-surface-variant">info</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-xl mb-xl">
+<div>
+<p class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-xs">Billed to Date</p>
+<p class="font-headline-md text-headline-md text-primary">$12,450.00</p>
+</div>
+<div>
+<p class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-xs">Budget Limit</p>
+<p class="font-headline-md text-headline-md text-primary">$25,000.00</p>
+</div>
+<div>
+<p class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-xs">Unbilled Time</p>
+<p class="font-headline-md text-headline-md text-secondary">$3,820.00</p>
+</div>
+</div>
+<div class="relative w-full h-3 bg-surface-container rounded-full overflow-hidden">
+<div class="absolute left-0 top-0 h-full bg-primary rounded-full" style="width: 50%;"></div>
+<div class="absolute left-[50%] top-0 h-full bg-secondary-fixed-dim rounded-full" style="width: 15%;"></div>
+</div>
+<div class="flex justify-between items-center mt-sm font-label-sm text-label-sm text-on-surface-variant">
+<span>65% total utilization (Billed + Unbilled)</span>
+<span>$8,730.00 remaining</span>
+</div>
+</div>
+<!-- Key Details List -->
+<div class="bg-surface-container-lowest rounded-xl border border-surface-variant p-lg shadow-sm">
+<h3 class="font-headline-sm text-headline-sm text-primary mb-lg">Matter Overview</h3>
+<div class="grid grid-cols-2 gap-y-xl gap-x-lg">
+<div>
+<h4 class="font-label-sm text-label-sm text-on-surface-variant mb-xs">Practice Area</h4>
+<p class="font-body-md text-body-md">Estate &amp; Wealth Management</p>
+</div>
+<div>
+<h4 class="font-label-sm text-label-sm text-on-surface-variant mb-xs">Matter Type</h4>
+<p class="font-body-md text-body-md">Trust Modification (Complex)</p>
+</div>
+<div>
+<h4 class="font-label-sm text-label-sm text-on-surface-variant mb-xs">Opened Date</h4>
+<p class="font-body-md text-body-md">August 12, 2024</p>
+</div>
+<div>
+<h4 class="font-label-sm text-label-sm text-on-surface-variant mb-xs">Estimated Completion</h4>
+<p class="font-body-md text-body-md">December 20, 2024</p>
+</div>
+<div class="col-span-2">
+<h4 class="font-label-sm text-label-sm text-on-surface-variant mb-xs">Matter Description</h4>
+<p class="font-body-md text-body-md text-on-surface/80 leading-relaxed">
+                                    Strategic revision of the Harrison Family Revocable Living Trust to incorporate new tax legislation updates and adjust beneficiary distributions following the 2023 asset acquisition. Requires coordination with external financial advisors.
+                                </p>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Column: Setup Checklist & Stats -->
+<div class="col-span-12 lg:col-span-4 space-y-lg">
+<!-- Matter Setup Checklist Card -->
+<div class="bg-primary text-on-primary rounded-xl p-lg shadow-lg relative overflow-hidden group">
+<div class="relative z-10">
+<h3 class="font-headline-sm text-headline-sm mb-md">Matter Onboarding</h3>
+<div class="space-y-md">
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-secondary-fixed">check_circle</span>
+<span class="font-label-md text-label-md line-through opacity-70">Conflict Check Cleared</span>
+</div>
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-secondary-fixed">check_circle</span>
+<span class="font-label-md text-label-md line-through opacity-70">Engagement Letter Signed</span>
+</div>
+<div class="flex items-center gap-md">
+<div class="w-6 h-6 rounded-full border-2 border-secondary-fixed flex items-center justify-center">
+<div class="w-2 h-2 bg-secondary-fixed rounded-full"></div>
+</div>
+<span class="font-label-md text-label-md">Upload Retainer Proof</span>
+</div>
+<div class="flex items-center gap-md">
+<div class="w-6 h-6 rounded-full border-2 border-white/30"></div>
+<span class="font-label-md text-label-md text-white/60">Configure Billing Cycles</span>
+</div>
+<div class="flex items-center gap-md">
+<div class="w-6 h-6 rounded-full border-2 border-white/30"></div>
+<span class="font-label-md text-label-md text-white/60">Define Team Access Roles</span>
+</div>
+</div>
+<button class="mt-xl w-full py-2 bg-secondary text-on-secondary rounded-xl font-label-md text-label-md hover:opacity-90 transition-opacity">
+                                Complete Setup
+                            </button>
+</div>
+<!-- Subtle Pattern Decoration -->
+<div class="absolute -bottom-8 -right-8 w-32 h-32 bg-white/5 rounded-full blur-2xl"></div>
+</div>
+<!-- Activity Summary Card -->
+<div class="bg-surface-container-lowest rounded-xl border border-surface-variant p-lg shadow-sm">
+<h3 class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-lg">Recent Activity</h3>
+<ul class="space-y-lg">
+<li class="flex gap-md">
+<div class="mt-1 w-2 h-2 bg-primary rounded-full shrink-0"></div>
+<div>
+<p class="font-label-md text-label-md text-on-surface">New Document Uploaded</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Asset_Schedule_Draft.pdf • 2h ago</p>
+</div>
+</li>
+<li class="flex gap-md">
+<div class="mt-1 w-2 h-2 bg-secondary rounded-full shrink-0"></div>
+<div>
+<p class="font-label-md text-label-md text-on-surface">Time Entry Created</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Alex Sterling • 3.5 hrs • 5h ago</p>
+</div>
+</li>
+<li class="flex gap-md">
+<div class="mt-1 w-2 h-2 bg-outline-variant rounded-full shrink-0"></div>
+<div>
+<p class="font-label-md text-label-md text-on-surface">Client Communication</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Email sent to Marcus H. • Yesterday</p>
+</div>
+</li>
+</ul>
+<a class="mt-xl block text-center font-label-md text-label-md text-primary hover:underline" href="#">View Full Timeline</a>
+</div>
+<!-- Atmosphere Placeholder Animation -->
+<div class="rounded-xl overflow-hidden h-40 relative group">
+
+<div class="absolute inset-0 bg-gradient-to-t from-primary/20 to-transparent"></div>
+<div class="absolute bottom-4 left-4 z-10">
+<p class="font-label-sm text-label-sm text-primary font-bold">Smart Insights</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">AI is reviewing 4 new emails for potential billing.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Sticky Mobile Bottom Nav (Suppressed on large screens by logic) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full bg-surface-container-lowest flex justify-around py-md shadow-[0_-4px_10px_rgba(0,0,0,0.05)] border-t border-surface-variant z-50">
+<a class="flex flex-col items-center text-primary" href="#">
+<span class="material-symbols-outlined">folder_open</span>
+<span class="text-[10px] font-bold">Matter</span>
+</a>
+<a class="flex flex-col items-center text-on-surface-variant" href="#">
+<span class="material-symbols-outlined">assignment</span>
+<span class="text-[10px]">Tasks</span>
+</a>
+<a class="flex flex-col items-center text-on-surface-variant" href="#">
+<span class="material-symbols-outlined">description</span>
+<span class="text-[10px]">Files</span>
+</a>
+<a class="flex flex-col items-center text-on-surface-variant" href="#">
+<span class="material-symbols-outlined">payments</span>
+<span class="text-[10px]">Billing</span>
+</a>
+</nav>
+<!-- Footer -->
+<footer class="mt-auto flex justify-between items-center py-md px-margin-desktop ml-sidebar-width bg-background border-t border-surface-variant">
+<div class="flex items-center gap-xl">
+<span class="font-label-sm text-label-sm text-on-surface-variant">© 2024 BillSync Legal. All rights reserved.</span>
+<div class="flex gap-lg">
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Terms of Service</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Privacy Policy</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Contact Support</a>
+</div>
+</div>
+<div class="flex items-center gap-sm">
+<span class="w-2 h-2 bg-green-500 rounded-full"></span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">System Status: Optimal</span>
+</div>
+</footer>
+</main>
+<!-- Micro-interaction Scripts -->
+<script>
+        // Tab switching logic (visual only for this demo)
+        const tabs = document.querySelectorAll('.active-tab-underline, .text-on-surface-variant.hover\\:text-primary');
+        tabs.forEach(tab => {
+            tab.addEventListener('click', (e) => {
+                e.preventDefault();
+                tabs.forEach(t => {
+                    t.classList.remove('active-tab-underline', 'text-primary');
+                    t.classList.add('text-on-surface-variant');
+                });
+                tab.classList.add('active-tab-underline', 'text-primary');
+                tab.classList.remove('text-on-surface-variant');
+            });
+        });
+
+        // Simple Fade In for cards on load
+        document.addEventListener('DOMContentLoaded', () => {
+            const cards = document.querySelectorAll('.bg-surface-container-lowest, .bg-primary');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(10px)';
+                card.style.transition = 'all 0.4s ease-out';
+                setTimeout(() => {
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, 100 * index);
+            });
+        });
+    </script>
+</body></html>

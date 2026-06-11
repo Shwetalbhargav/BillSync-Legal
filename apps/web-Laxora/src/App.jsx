@@ -4,6 +4,7 @@ import { AuthLayout } from "./components/layout/AuthLayout";
 import { AppShell } from "./components/layout/AppShell";
 import { defaultRole } from "./constants/roles";
 import { allRoutes, appRoutes, fallbackRoutes } from "./routes/routeConfig";
+import { ComponentGalleryPage } from "./pages/ComponentGalleryPage";
 import { FallbackStatePage } from "./pages/FallbackStatePage";
 import { LoginPage } from "./pages/LoginPage";
 import { NotFoundPage } from "./pages/NotFoundPage";
@@ -26,7 +27,11 @@ function App() {
         <Route index element={<Navigate to="/app/dashboard" replace />} />
         <Route path="/" element={<Navigate to="/app/dashboard" replace />} />
         {appRoutes.map((route) => (
-          <Route key={route.path} path={route.path} element={<PlaceholderPage route={route} />} />
+          <Route
+            key={route.path}
+            path={route.path}
+            element={route.path === "/app/design-system" ? <ComponentGalleryPage /> : <PlaceholderPage route={route} />}
+          />
         ))}
         {fallbackRoutes.map((route) => (
           <Route key={route.path} path={route.path} element={<FallbackStatePage route={route} />} />

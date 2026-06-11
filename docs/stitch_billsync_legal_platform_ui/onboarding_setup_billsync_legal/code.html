@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "tertiary-fixed-dim": "#b5c7ea",
+                    "primary-fixed": "#d2e4ff",
+                    "on-tertiary": "#ffffff",
+                    "tertiary-container": "#283a56",
+                    "tertiary-fixed": "#d6e3ff",
+                    "on-secondary-fixed-variant": "#584400",
+                    "primary-container": "#123b63",
+                    "on-secondary": "#ffffff",
+                    "secondary-fixed-dim": "#ecc246",
+                    "on-tertiary-fixed-variant": "#364764",
+                    "surface-variant": "#d9e3f1",
+                    "on-primary-container": "#83a6d4",
+                    "surface-dim": "#d1dbe8",
+                    "surface": "#f7f9ff",
+                    "primary": "#002546",
+                    "primary-fixed-dim": "#a6c9f9",
+                    "on-error": "#ffffff",
+                    "error-container": "#ffdad6",
+                    "on-surface-variant": "#43474e",
+                    "on-background": "#121d26",
+                    "on-secondary-fixed": "#241a00",
+                    "inverse-surface": "#27313c",
+                    "on-secondary-container": "#735a00",
+                    "inverse-on-surface": "#e8f2ff",
+                    "background": "#f7f9ff",
+                    "on-tertiary-container": "#92a4c5",
+                    "on-error-container": "#93000a",
+                    "secondary": "#755b00",
+                    "error": "#ba1a1a",
+                    "on-tertiary-fixed": "#071c36",
+                    "surface-container-high": "#dfe9f7",
+                    "on-primary-fixed-variant": "#234871",
+                    "surface-tint": "#3d608a",
+                    "surface-container-highest": "#d9e3f1",
+                    "secondary-container": "#fed255",
+                    "tertiary": "#11243f",
+                    "on-primary-fixed": "#001c37",
+                    "inverse-primary": "#a6c9f9",
+                    "outline": "#73777f",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-container-low": "#edf4ff",
+                    "on-surface": "#121d26",
+                    "surface-container": "#e4effd",
+                    "secondary-fixed": "#ffe08e",
+                    "outline-variant": "#c3c6cf",
+                    "on-primary": "#ffffff",
+                    "surface-bright": "#f7f9ff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "margin-desktop": "40px",
+                    "xs": "4px",
+                    "gutter-desktop": "24px",
+                    "base": "8px",
+                    "xl": "32px",
+                    "lg": "24px",
+                    "sm": "12px",
+                    "xxl": "48px",
+                    "sidebar-width": "260px",
+                    "md": "16px"
+            },
+            "fontFamily": {
+                    "headline-sm": ["Inter"],
+                    "label-md": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "label-sm": ["Inter"],
+                    "headline-lg-mobile": ["Inter"],
+                    "body-md": ["Inter"],
+                    "display-lg": ["Inter"],
+                    "body-sm": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "body-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "600"}],
+                    "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; background-color: #F8F5EF; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .step-active { border-color: #ffe08e; }
+        .tonal-layer { background: #FFFFFF; border: 1px solid #E5E7EB; }
+        .glass-card { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(8px); }
+    </style>
+</head>
+<body class="text-on-surface">
+<!-- Suppression of Top/Side Nav for Transactional/Onboarding focus -->
+<main class="min-h-screen flex items-center justify-center py-xxl px-md">
+<div class="max-w-[1200px] w-full grid grid-cols-1 lg:grid-cols-12 gap-gutter-desktop">
+<!-- Left Column: Welcome Message & Brand Anchor -->
+<div class="lg:col-span-5 flex flex-col justify-center space-y-xl">
+<div class="flex items-center gap-sm mb-md">
+<div class="w-12 h-12 bg-primary rounded-xl flex items-center justify-center text-secondary-fixed">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">balance</span>
+</div>
+<span class="font-headline-md text-headline-md tracking-tight text-primary">LexPremium</span>
+</div>
+<div class="space-y-md">
+<h1 class="font-display-lg text-display-lg text-primary">Welcome to the firm, Counselor.</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-md">
+                        We’re honored to have you join our elite team of practitioners. Your expertise is the engine of our collective success.
+                    </p>
+</div>
+<!-- Managing Partner Message Card -->
+<div class="tonal-layer p-lg rounded-xl flex flex-col gap-md relative overflow-hidden shadow-sm">
+<div class="absolute top-0 right-0 w-32 h-32 bg-secondary-fixed/10 rounded-full -mr-16 -mt-16"></div>
+<div class="flex items-start gap-md relative z-10">
+<img alt="Managing Partner" class="w-16 h-16 rounded-full object-cover border-2 border-surface" data-alt="A professional portrait of a senior law firm managing partner in a tailored navy suit. The background is a blurred, high-end law library with leather-bound books and warm ambient lighting. The atmosphere conveys trust, leadership, and decades of legal experience in a modern, corporate environment. The lighting is soft and flattering, highlighting the partner's welcoming yet authoritative expression." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD-DNImRqX_GdX15XUWLLwtgl5gXJTpVat2VIRWm9IKsTV0e4kZOFYw2Fj5VpdxgxkThGVn45eaD7YjkRO_BQEDj45oK_QwvloSJfzrByJ5y-_o3Txrsl4WO5XyTjFw0fd0sJpXH69HJecq1AusRCSlaaD0_J8UGvJeHf34xmRtc6fAW2JS8oQXpCjwlOIiDvZJKYcGZmeLet-Zv2CJ-huE3CNFH4ScSMAp1GvMMbbpffd-THGhvCrkTcPCiEJ6ite3Z8xfXxnW_3Hi"/>
+<div>
+<p class="font-body-md text-body-md italic text-on-surface mb-xs">
+                                "Our mission is to provide unparalleled clarity to our clients. LexPremium is your companion in achieving that excellence."
+                            </p>
+<p class="font-label-md text-label-md text-primary">— Arthur Sterling</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Managing Partner, London Office</p>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-sm pt-md">
+<button class="bg-primary text-white font-label-md text-label-md px-xl py-md rounded-lg hover:bg-primary-container transition-all duration-300 shadow-md">
+                        Get Started
+                    </button>
+<button class="bg-transparent text-primary font-label-md text-label-md px-xl py-md rounded-lg hover:bg-surface-container-low transition-all duration-300">
+                        View Firm Handbook
+                    </button>
+</div>
+</div>
+<!-- Right Column: Interactive Setup Checklist (Bento Grid Style) -->
+<div class="lg:col-span-7 space-y-gutter-desktop">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-gutter-desktop">
+<!-- Step 1: Profile Completion (Active) -->
+<div class="tonal-layer p-lg rounded-xl flex flex-col gap-md border-l-4 border-secondary-fixed shadow-lg transform transition-transform hover:scale-[1.02]">
+<div class="flex justify-between items-start">
+<div class="p-base bg-secondary-fixed/20 rounded-lg">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">person_pin</span>
+</div>
+<span class="font-label-sm text-label-sm bg-secondary-container text-on-secondary-container px-sm py-xs rounded-full">In Progress</span>
+</div>
+<div>
+<h3 class="font-headline-sm text-headline-sm text-primary mb-xs">Profile Completion</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Setup your legal credentials, bar association numbers, and digital signature.</p>
+</div>
+<div class="mt-auto pt-md border-t border-outline-variant/30 flex justify-between items-center">
+<span class="font-label-sm text-label-sm text-on-surface-variant">2 mins remaining</span>
+<span class="material-symbols-outlined text-primary cursor-pointer hover:translate-x-1 transition-transform">arrow_forward</span>
+</div>
+</div>
+<!-- Step 2: Email/Calendar Sync -->
+<div class="tonal-layer p-lg rounded-xl flex flex-col gap-md opacity-80 hover:opacity-100 transition-opacity">
+<div class="flex justify-between items-start">
+<div class="p-base bg-surface-container rounded-lg">
+<span class="material-symbols-outlined text-outline">sync</span>
+</div>
+</div>
+<div>
+<h3 class="font-headline-sm text-headline-sm text-primary mb-xs">Email/Calendar Sync</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Connect Outlook or G-Suite to automate billable hours and meeting tracking.</p>
+</div>
+<div class="mt-auto pt-md border-t border-outline-variant/30 flex justify-between items-center">
+<span class="font-label-sm text-label-sm text-outline">Pending</span>
+<span class="material-symbols-outlined text-outline">lock</span>
+</div>
+</div>
+<!-- Step 3: Matter Assignment (Wide Card) -->
+<div class="md:col-span-2 tonal-layer p-lg rounded-xl flex flex-col md:flex-row gap-lg group cursor-pointer">
+<div class="md:w-1/3 flex items-center justify-center bg-primary-container rounded-xl overflow-hidden relative">
+<img alt="Matter Assignment" class="absolute inset-0 w-full h-full object-cover opacity-40 group-hover:scale-105 transition-transform duration-700" data-alt="A clean, minimalist workspace with a high-end fountain pen resting on a blank legal docket. The desk is made of light oak, bathed in natural morning light streaming through a large window. The aesthetic is professional, quiet, and focused, emphasizing the start of a new legal case. The color palette is composed of soft beige, charcoal, and warm wood tones." src="https://lh3.googleusercontent.com/aida-public/AB6AXuALbKg-uGiJFErqqrvJEJ6jhiZ72AlodZBBFB8bHP2ohKyIVe4yClYxCrFewV1sbYKDV7P8O8ft7SivnK_htSEqJMmECPf2uH1LdgmzJEq8s-wtQYQhZwNCalIufr_Sw1_QfcZUCfwXmf0_YWPhVEnbSIqPTdB20NLYlQkGrogOquX1UsAyIjVFYvqLPrcCR48YYROU1LqcYkeDRIFVGEsoldX773NUOiTPpll00nbM5eOGonBPdhcXbxpHpriyErnd6JVhBvKTQQ7Z"/>
+<span class="material-symbols-outlined text-white text-4xl relative z-10" style="font-variation-settings: 'FILL' 1;">folder_special</span>
+</div>
+<div class="md:w-2/3 flex flex-col py-base">
+<h3 class="font-headline-sm text-headline-sm text-primary mb-xs">Matter Assignment</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-md">Review and accept your first assigned cases from the firm’s active portfolio.</p>
+<div class="flex flex-wrap gap-xs">
+<span class="font-label-sm text-label-sm px-sm py-xs bg-surface-container text-on-surface-variant rounded-full">Corporate Law</span>
+<span class="font-label-sm text-label-sm px-sm py-xs bg-surface-container text-on-surface-variant rounded-full">M&amp;A</span>
+</div>
+</div>
+</div>
+<!-- Step 4: Training Module -->
+<div class="tonal-layer p-lg rounded-xl flex flex-col gap-md">
+<div class="flex justify-between items-start">
+<div class="p-base bg-surface-container rounded-lg">
+<span class="material-symbols-outlined text-outline">school</span>
+</div>
+</div>
+<div>
+<h3 class="font-headline-sm text-headline-sm text-primary mb-xs">Training Module</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">A 10-minute guide to billing accuracy and compliance at the firm.</p>
+</div>
+<div class="w-full bg-surface-container rounded-full h-1.5 mt-md">
+<div class="bg-outline-variant h-1.5 rounded-full w-0 transition-all duration-1000" id="progress-bar"></div>
+</div>
+</div>
+<!-- Help & Support Small Bento Card -->
+<div class="bg-primary p-lg rounded-xl flex flex-col gap-md text-white">
+<div class="flex items-center gap-base">
+<span class="material-symbols-outlined text-secondary-fixed">support_agent</span>
+<h3 class="font-label-md text-label-md">Need Assistance?</h3>
+</div>
+<p class="font-body-sm text-body-sm text-on-primary-container">Our IT and HR concierges are available 24/7 to help you settle in.</p>
+<a class="text-secondary-fixed font-label-sm text-label-sm hover:underline mt-auto" href="#">Connect with Concierge</a>
+</div>
+</div>
+<!-- Setup Progress Indicator -->
+<div class="flex items-center justify-between px-md py-sm bg-surface-container-low rounded-lg border border-outline-variant/20">
+<div class="flex items-center gap-md">
+<span class="font-label-md text-label-md text-on-surface">Overall Progress</span>
+<div class="flex gap-1">
+<div class="w-8 h-2 bg-secondary-fixed rounded-full"></div>
+<div class="w-8 h-2 bg-outline-variant rounded-full opacity-30"></div>
+<div class="w-8 h-2 bg-outline-variant rounded-full opacity-30"></div>
+<div class="w-8 h-2 bg-outline-variant rounded-full opacity-30"></div>
+</div>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Step 1 of 4 completed</span>
+</div>
+</div>
+</div>
+</main>
+<script>
+        // Micro-interaction: Progress bar animation on load
+        window.addEventListener('load', () => {
+            const progress = document.getElementById('progress-bar');
+            if (progress) {
+                setTimeout(() => {
+                    progress.style.width = '10%';
+                }, 500);
+            }
+        });
+
+        // Interactive card lift effect
+        document.querySelectorAll('.tonal-layer').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.boxShadow = '0 10px 25px -5px rgba(0, 37, 70, 0.08)';
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.boxShadow = '0 1px 3px 0 rgba(0, 0, 0, 0.1)';
+            });
+        });
+    </script>
+</body></html>

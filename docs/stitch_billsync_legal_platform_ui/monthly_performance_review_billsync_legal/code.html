@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Monthly Performance Review | Lexington &amp; Associates</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary-fixed-variant": "#584400",
+                        "secondary-fixed": "#ffe08e",
+                        "tertiary": "#11243f",
+                        "on-primary-container": "#83a6d4",
+                        "primary": "#002546",
+                        "background": "#f7f9ff",
+                        "surface-dim": "#d1dbe8",
+                        "surface-container-high": "#dfe9f7",
+                        "primary-fixed": "#d2e4ff",
+                        "on-tertiary-fixed": "#071c36",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary-container": "#92a4c5",
+                        "inverse-primary": "#a6c9f9",
+                        "on-background": "#121d26",
+                        "on-secondary-fixed": "#241a00",
+                        "tertiary-fixed-dim": "#b5c7ea",
+                        "tertiary-fixed": "#d6e3ff",
+                        "surface": "#f7f9ff",
+                        "surface-tint": "#3d608a",
+                        "surface-bright": "#f7f9ff",
+                        "inverse-on-surface": "#e8f2ff",
+                        "error-container": "#ffdad6",
+                        "secondary-container": "#fed255",
+                        "primary-container": "#123b63",
+                        "inverse-surface": "#27313c",
+                        "on-error": "#ffffff",
+                        "on-surface-variant": "#43474e",
+                        "on-error-container": "#93000a",
+                        "primary-fixed-dim": "#a6c9f9",
+                        "on-tertiary-fixed-variant": "#364764",
+                        "tertiary-container": "#283a56",
+                        "on-primary": "#ffffff",
+                        "on-secondary": "#ffffff",
+                        "surface-container-low": "#edf4ff",
+                        "secondary-fixed-dim": "#ecc246",
+                        "surface-container-highest": "#d9e3f1",
+                        "on-primary-fixed-variant": "#234871",
+                        "error": "#ba1a1a",
+                        "outline": "#73777f",
+                        "secondary": "#755b00",
+                        "surface-container": "#e4effd",
+                        "on-surface": "#121d26",
+                        "on-secondary-container": "#735a00",
+                        "on-tertiary": "#ffffff",
+                        "outline-variant": "#c3c6cf",
+                        "surface-variant": "#d9e3f1",
+                        "on-primary-fixed": "#001c37"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "md": "16px",
+                        "xxl": "48px",
+                        "sidebar-width": "260px",
+                        "gutter-desktop": "24px",
+                        "xs": "4px",
+                        "sm": "12px",
+                        "margin-desktop": "40px",
+                        "xl": "32px",
+                        "lg": "24px",
+                        "base": "8px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "headline-sm": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "label-md": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "body-md": ["Inter"],
+                        "label-sm": ["Inter"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            background-color: #f7f9ff;
+            color: #121d26;
+        }
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 24px;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(8px);
+            border: 1px solid #e5e7eb;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .glass-card:hover {
+            box-shadow: 0 4px 15px rgba(31, 41, 51, 0.06);
+        }
+    </style>
+</head>
+<body class="font-body-md overflow-x-hidden">
+<!-- TopNavBar -->
+<header class="bg-surface dark:bg-inverse-surface border-b border-outline-variant dark:border-outline sticky top-0 z-50">
+<div class="flex justify-between items-center w-full px-margin-desktop max-w-[1440px] mx-auto h-20">
+<div class="font-headline-md text-headline-md font-bold text-primary dark:text-inverse-primary">
+                Lexington &amp; Associates
+            </div>
+<nav class="hidden md:flex items-center gap-xl h-full">
+<a class="h-full flex items-center text-primary dark:text-inverse-primary font-bold border-b-2 border-secondary-fixed font-body-md text-body-md transition-colors duration-200 ease-in-out" href="#">Overview</a>
+<a class="h-full flex items-center text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-inverse-primary font-body-md text-body-md transition-colors duration-200 ease-in-out" href="#">Matters</a>
+<a class="h-full flex items-center text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-inverse-primary font-body-md text-body-md transition-colors duration-200 ease-in-out" href="#">Invoices</a>
+<a class="h-full flex items-center text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-inverse-primary font-body-md text-body-md transition-colors duration-200 ease-in-out" href="#">Payments</a>
+</nav>
+<div class="flex items-center gap-md">
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors">notifications</button>
+<div class="w-8 h-8 rounded-full bg-primary-fixed flex items-center justify-center text-on-primary-fixed">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">account_circle</span>
+</div>
+</div>
+</div>
+</header>
+<main class="max-w-[1440px] mx-auto px-margin-desktop py-xl">
+<!-- Header Section -->
+<div class="flex flex-col md:flex-row justify-between items-end mb-xxl gap-lg">
+<div>
+<p class="text-label-md font-label-md text-secondary uppercase tracking-widest mb-xs">Performance Review</p>
+<h1 class="text-display-lg font-display-lg text-primary">October 2023 Summary</h1>
+<p class="text-body-lg font-body-lg text-on-surface-variant mt-sm">Comprehensive value assessment and billing analysis for Global Tech Corp.</p>
+</div>
+<div class="flex gap-md">
+<button class="px-lg py-sm border border-outline text-primary rounded-lg font-label-md text-label-md flex items-center gap-xs hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-[18px]">share</span> Share Access
+                </button>
+<button class="px-lg py-sm bg-primary text-on-primary rounded-lg font-label-md text-label-md flex items-center gap-xs hover:opacity-90 transition-opacity shadow-sm">
+<span class="material-symbols-outlined text-[18px]">download</span> Download PDF Report
+                </button>
+</div>
+</div>
+<!-- Bento Grid Layout -->
+<div class="bento-grid">
+<!-- Summary Stats -->
+<div class="col-span-12 md:col-span-8 glass-card p-xl rounded-xl">
+<h3 class="text-headline-sm font-headline-sm text-primary mb-lg">Billing Cycle Overview</h3>
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-xl">
+<div class="space-y-xs">
+<span class="text-label-sm font-label-sm text-on-surface-variant uppercase">Total Billable Hours</span>
+<div class="flex items-baseline gap-xs">
+<span class="text-headline-lg font-headline-lg text-primary">142.5</span>
+<span class="text-body-sm font-body-sm text-error flex items-center">
+<span class="material-symbols-outlined text-[14px]">arrow_upward</span> 12%
+                            </span>
+</div>
+<p class="text-label-sm font-label-sm text-outline">vs. September Average</p>
+</div>
+<div class="space-y-xs">
+<span class="text-label-sm font-label-sm text-on-surface-variant uppercase">Month-to-Date Fees</span>
+<div class="flex items-baseline gap-xs">
+<span class="text-headline-lg font-headline-lg text-primary">$48,250</span>
+</div>
+<p class="text-label-sm font-label-sm text-outline">Net 30 terms</p>
+</div>
+<div class="space-y-xs">
+<span class="text-label-sm font-label-sm text-on-surface-variant uppercase">Efficiency Ratio</span>
+<div class="flex items-baseline gap-xs">
+<span class="text-headline-lg font-headline-lg text-primary">94%</span>
+</div>
+<div class="w-full bg-surface-container h-1 rounded-full overflow-hidden">
+<div class="bg-secondary h-full" style="width: 94%;"></div>
+</div>
+</div>
+</div>
+<!-- Simple Hour Chart Placeholder -->
+<div class="mt-xxl h-48 w-full bg-surface-container-low rounded-lg flex items-end p-md gap-sm overflow-hidden relative group">
+<div class="flex-1 bg-primary-container opacity-20 h-[40%] rounded-t-sm"></div>
+<div class="flex-1 bg-primary-container opacity-30 h-[55%] rounded-t-sm"></div>
+<div class="flex-1 bg-primary-container opacity-40 h-[70%] rounded-t-sm"></div>
+<div class="flex-1 bg-primary-container opacity-50 h-[65%] rounded-t-sm"></div>
+<div class="flex-1 bg-primary h-[85%] rounded-t-sm"></div>
+<div class="flex-1 bg-primary-container opacity-60 h-[45%] rounded-t-sm"></div>
+<div class="flex-1 bg-primary-container opacity-20 h-[30%] rounded-t-sm"></div>
+<div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-white/40 backdrop-blur-[1px]">
+<span class="text-label-md font-label-md text-primary bg-white px-md py-xs rounded-full shadow-sm border border-outline-variant">Activity Peak: Oct 14 - Oct 21</span>
+</div>
+</div>
+</div>
+<!-- Value Delivered Card -->
+<div class="col-span-12 md:col-span-4 glass-card p-xl rounded-xl bg-primary text-on-primary">
+<h3 class="text-headline-sm font-headline-sm mb-lg">Value Delivered</h3>
+<div class="space-y-lg">
+<div class="flex gap-md">
+<div class="w-10 h-10 rounded-full bg-secondary-fixed flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-on-secondary-fixed" style="font-variation-settings: 'FILL' 1;">verified</span>
+</div>
+<div>
+<h4 class="text-label-md font-label-md text-secondary-fixed">IP Protection</h4>
+<p class="text-body-sm font-body-sm text-on-primary-container mt-xs leading-relaxed">Successfully filed 4 patent applications and completed the global trademark audit for the Q4 product line.</p>
+</div>
+</div>
+<div class="flex gap-md">
+<div class="w-10 h-10 rounded-full bg-secondary-fixed flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-on-secondary-fixed" style="font-variation-settings: 'FILL' 1;">gavel</span>
+</div>
+<div>
+<h4 class="text-label-md font-label-md text-secondary-fixed">Litigation Win</h4>
+<p class="text-body-sm font-body-sm text-on-primary-container mt-xs leading-relaxed">Secured a favorable dismissal in the mid-market vendor dispute, mitigating an estimated $250k liability.</p>
+</div>
+</div>
+<div class="flex gap-md">
+<div class="w-10 h-10 rounded-full bg-secondary-fixed flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-on-secondary-fixed" style="font-variation-settings: 'FILL' 1;">handshake</span>
+</div>
+<div>
+<h4 class="text-label-md font-label-md text-secondary-fixed">Compliance Audit</h4>
+<p class="text-body-sm font-body-sm text-on-primary-container mt-xs leading-relaxed">Finished 100% of the GDPR compliance review for the European expansion phase ahead of schedule.</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Matter Breakdown -->
+<div class="col-span-12 md:col-span-7 glass-card p-xl rounded-xl">
+<div class="flex justify-between items-center mb-lg">
+<h3 class="text-headline-sm font-headline-sm text-primary">Hours by Matter</h3>
+<button class="text-label-md font-label-md text-primary hover:underline">View All Details</button>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead>
+<tr class="border-b border-outline-variant">
+<th class="pb-md text-label-sm font-label-sm text-on-surface-variant uppercase">Matter Name</th>
+<th class="pb-md text-label-sm font-label-sm text-on-surface-variant uppercase">Lead Counsel</th>
+<th class="pb-md text-label-sm font-label-sm text-on-surface-variant uppercase text-right">Hours</th>
+<th class="pb-md text-label-sm font-label-sm text-on-surface-variant uppercase text-right">Amount</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant">
+<tr class="group hover:bg-surface-container-low transition-colors">
+<td class="py-md">
+<div class="flex flex-col">
+<span class="text-label-md font-label-md text-primary">Project Titan Merger</span>
+<span class="text-body-sm font-body-sm text-on-surface-variant">M&amp;A Advisory</span>
+</div>
+</td>
+<td class="py-md text-body-sm font-body-sm text-on-surface">Sarah Sterling</td>
+<td class="py-md text-body-sm font-body-sm text-on-surface text-right">62.0</td>
+<td class="py-md text-body-sm font-body-sm text-primary font-semibold text-right">$22,400</td>
+</tr>
+<tr class="group hover:bg-surface-container-low transition-colors">
+<td class="py-md">
+<div class="flex flex-col">
+<span class="text-label-md font-label-md text-primary">Employment Contracts</span>
+<span class="text-body-sm font-body-sm text-on-surface-variant">General Corporate</span>
+</div>
+</td>
+<td class="py-md text-body-sm font-body-sm text-on-surface">Marcus Chen</td>
+<td class="py-md text-body-sm font-body-sm text-on-surface text-right">24.5</td>
+<td class="py-md text-body-sm font-body-sm text-primary font-semibold text-right">$7,800</td>
+</tr>
+<tr class="group hover:bg-surface-container-low transition-colors">
+<td class="py-md">
+<div class="flex flex-col">
+<span class="text-label-md font-label-md text-primary">Real Estate Lease (SFO)</span>
+<span class="text-body-sm font-body-sm text-on-surface-variant">Real Estate</span>
+</div>
+</td>
+<td class="py-md text-body-sm font-body-sm text-on-surface">Elena Rodriguez</td>
+<td class="py-md text-body-sm font-body-sm text-on-surface text-right">18.0</td>
+<td class="py-md text-body-sm font-body-sm text-primary font-semibold text-right">$6,500</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- Next Steps & Team -->
+<div class="col-span-12 md:col-span-5 flex flex-col gap-lg">
+<!-- Next Steps -->
+<div class="glass-card p-xl rounded-xl flex-1 border-l-4 border-l-secondary">
+<h3 class="text-headline-sm font-headline-sm text-primary mb-lg">Next Steps</h3>
+<ul class="space-y-md">
+<li class="flex items-start gap-md">
+<div class="mt-1 w-5 h-5 rounded border border-outline flex items-center justify-center shrink-0"></div>
+<p class="text-body-sm font-body-sm text-on-surface">Approve final term sheet for Titan Merger (Due Friday)</p>
+</li>
+<li class="flex items-start gap-md">
+<div class="mt-1 w-5 h-5 rounded border border-outline flex items-center justify-center shrink-0"></div>
+<p class="text-body-sm font-body-sm text-on-surface">Schedule board review for Q4 Compliance Audit</p>
+</li>
+<li class="flex items-start gap-md">
+<div class="mt-1 w-5 h-5 rounded border border-outline flex items-center justify-center shrink-0"></div>
+<p class="text-body-sm font-body-sm text-on-surface">Review vendor dispute settlement agreement</p>
+</li>
+</ul>
+<button class="mt-xl w-full py-md border border-primary text-primary rounded-lg font-label-md text-label-md hover:bg-primary hover:text-on-primary transition-all">
+                        Schedule Sync Call
+                    </button>
+</div>
+<!-- Firm Contact Card -->
+<div class="bg-surface-container-low p-xl rounded-xl flex items-center gap-lg">
+<div class="relative">
+<img alt="Lead Partner" class="w-16 h-16 rounded-full object-cover" data-alt="A professional headshot of a female attorney in her 40s wearing a navy suit, smiling confidently in a modern, sunlit law office. The photography is sharp with a shallow depth of field, emphasizing trust and competence. Soft, natural lighting creates a warm and accessible professional persona." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBEFX_L8pWejDYPKEGnnfxF06AMXL4tNU6Ex06HrVOLLy-8swGSKC0vbUAydwZ1hlr_GEQxDP2WDYoW9Gj3Q3qs5R09Ibr3ryRA2awbNUTSuD6zvKagC2_S3AwTvDGec0EXlP-0aZNKq7CnnwuEHhpZOC63DbEbVghIfHyrAdw5tp0q7vr1bBvWrO0w0G-XeRxX0hnQY3PgmVPycTkXMMKvwMueksKQN6KpGyoenSMkvSj9-gE6rn8vif0PdWTlAcn5vyehhxI3l4z2"/>
+<div class="absolute bottom-0 right-0 w-4 h-4 bg-green-500 border-2 border-white rounded-full"></div>
+</div>
+<div>
+<h4 class="text-label-md font-label-md text-primary">Sarah Sterling</h4>
+<p class="text-label-sm font-label-sm text-on-surface-variant">Senior Partner, M&amp;A</p>
+<div class="flex gap-md mt-sm">
+<span class="material-symbols-outlined text-primary text-[18px] cursor-pointer">mail</span>
+<span class="material-symbols-outlined text-primary text-[18px] cursor-pointer">call</span>
+<span class="material-symbols-outlined text-primary text-[18px] cursor-pointer">calendar_today</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-container-low dark:bg-surface-container-highest mt-xxl border-t border-outline-variant">
+<div class="w-full py-xl px-margin-desktop flex flex-col md:flex-row justify-between items-center gap-md max-w-[1440px] mx-auto">
+<div class="font-label-md text-label-md font-semibold text-on-surface dark:text-inverse-on-surface">
+                Lexington &amp; Associates
+            </div>
+<div class="flex gap-xl">
+<a class="font-label-sm text-label-sm text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-inverse-primary underline transition-opacity duration-200" href="#">Support</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-inverse-primary underline transition-opacity duration-200" href="#">Privacy Policy</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-inverse-primary underline transition-opacity duration-200" href="#">Terms of Service</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-inverse-primary underline transition-opacity duration-200" href="#">Contact Us</a>
+</div>
+<div class="font-label-sm text-label-sm text-on-surface-variant dark:text-surface-variant">
+                © 2024 Lexington &amp; Associates. All rights reserved.
+            </div>
+</div>
+</footer>
+<script>
+        // Simple interactivity for checkmarks
+        document.querySelectorAll('ul li div').forEach(checkbox => {
+            checkbox.addEventListener('click', function() {
+                const isChecked = this.innerHTML.includes('check');
+                if (isChecked) {
+                    this.innerHTML = '';
+                    this.classList.remove('bg-secondary', 'border-secondary');
+                    this.nextElementSibling.classList.remove('line-through', 'opacity-50');
+                } else {
+                    this.innerHTML = '<span class="material-symbols-outlined text-[14px] text-on-secondary">check</span>';
+                    this.classList.add('bg-secondary', 'border-secondary');
+                    this.nextElementSibling.classList.add('line-through', 'opacity-50');
+                }
+            });
+        });
+
+        // Simple smooth entrance animation
+        document.addEventListener('DOMContentLoaded', () => {
+            const cards = document.querySelectorAll('.glass-card');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                setTimeout(() => {
+                    card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, 100 * index);
+            });
+        });
+    </script>
+</body></html>

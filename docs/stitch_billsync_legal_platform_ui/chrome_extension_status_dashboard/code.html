@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>BillSync Legal | Extension Status</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .status-pulse {
+            animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes pulse-ring {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "secondary-container": "#c8dbfe",
+                      "surface-container-high": "#dfe9f7",
+                      "inverse-on-surface": "#e8f2ff",
+                      "on-error-container": "#93000a",
+                      "secondary-fixed-dim": "#b5c7ea",
+                      "on-secondary": "#ffffff",
+                      "outline-variant": "#c3c6cf",
+                      "surface-tint": "#3d608a",
+                      "primary-fixed": "#d2e4ff",
+                      "outline": "#73777f",
+                      "on-surface": "#121d26",
+                      "on-tertiary-fixed-variant": "#584400",
+                      "on-secondary-container": "#4e607e",
+                      "surface-bright": "#f7f9ff",
+                      "primary-container": "#123b63",
+                      "error-container": "#ffdad6",
+                      "on-primary-container": "#83a6d4",
+                      "primary-fixed-dim": "#a6c9f9",
+                      "error": "#ba1a1a",
+                      "background": "#f7f9ff",
+                      "tertiary-fixed-dim": "#ecc246",
+                      "tertiary-fixed": "#ffe08e",
+                      "secondary-fixed": "#d6e3ff",
+                      "on-secondary-fixed": "#071c36",
+                      "on-primary": "#ffffff",
+                      "inverse-surface": "#27313c",
+                      "primary": "#002546",
+                      "surface-container-lowest": "#ffffff",
+                      "on-tertiary": "#ffffff",
+                      "on-tertiary-fixed": "#241a00",
+                      "surface-container-highest": "#d9e3f1",
+                      "surface-dim": "#d1dbe8",
+                      "surface-container-low": "#edf4ff",
+                      "inverse-primary": "#a6c9f9",
+                      "on-primary-fixed": "#001c37",
+                      "on-error": "#ffffff",
+                      "on-surface-variant": "#43474e",
+                      "tertiary": "#755b00",
+                      "on-primary-fixed-variant": "#234871",
+                      "tertiary-container": "#cea72c",
+                      "on-background": "#121d26",
+                      "on-tertiary-container": "#4f3d00",
+                      "surface-variant": "#d9e3f1",
+                      "secondary": "#4d5f7d",
+                      "surface-container": "#e4effd",
+                      "surface": "#f7f9ff",
+                      "on-secondary-fixed-variant": "#364764"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "xl": "48px",
+                      "margin-desktop": "40px",
+                      "xs": "8px",
+                      "gutter": "24px",
+                      "lg": "32px",
+                      "sm": "16px",
+                      "md": "24px",
+                      "margin-mobile": "16px",
+                      "base": "4px"
+              },
+              "fontFamily": {
+                      "headline-md": ["Inter"],
+                      "label-md": ["Inter"],
+                      "headline-lg-mobile": ["Inter"],
+                      "display-lg": ["Inter"],
+                      "body-lg": ["Inter"],
+                      "body-md": ["Inter"],
+                      "headline-lg": ["Inter"],
+                      "body-sm": ["Inter"],
+                      "headline-sm": ["Inter"]
+              },
+              "fontSize": {
+                      "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                      "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                      "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "600"}],
+                      "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                      "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                      "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                      "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}]
+              }
+            }
+          }
+        }
+    </script>
+</head>
+<body class="bg-background text-on-surface font-body-md overflow-x-hidden">
+<!-- Sidebar Navigation -->
+<aside class="fixed left-0 top-0 h-screen w-[260px] bg-primary border-r border-outline-variant/10 flex flex-col py-lg z-50">
+<div class="px-lg mb-xl">
+<div class="flex items-center gap-sm">
+<div class="w-8 h-8 rounded bg-secondary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-on-secondary-container" style="font-variation-settings: 'FILL' 1;">account_balance</span>
+</div>
+<div>
+<h1 class="text-headline-sm font-bold text-surface">BillSync Legal</h1>
+<p class="text-[10px] text-surface-variant/70 tracking-widest uppercase">Elite Law Management</p>
+</div>
+</div>
+</div>
+<nav class="flex-1 px-sm space-y-1">
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-surface-variant hover:bg-primary-container/20 hover:text-surface transition-colors font-label-md" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span>Dashboard</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-surface border-l-2 border-secondary-container bg-primary-container/30 font-label-md" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span>Settings</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-surface-variant hover:bg-primary-container/20 hover:text-surface transition-colors font-label-md" href="#">
+<span class="material-symbols-outlined">folder_open</span>
+<span>Matters</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-surface-variant hover:bg-primary-container/20 hover:text-surface transition-colors font-label-md" href="#">
+<span class="material-symbols-outlined">timer</span>
+<span>Time Tracking</span>
+</a>
+</nav>
+<div class="px-sm mt-auto space-y-1">
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-surface-variant hover:bg-primary-container/20 hover:text-surface transition-colors font-label-md" href="#">
+<span class="material-symbols-outlined">help_outline</span>
+<span>Help Center</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-surface-variant hover:bg-primary-container/20 hover:text-surface transition-colors font-label-md" href="#">
+<span class="material-symbols-outlined">logout</span>
+<span>Log Out</span>
+</a>
+</div>
+</aside>
+<!-- Top Navigation Bar -->
+<header class="fixed top-0 right-0 left-[260px] h-16 bg-surface border-b border-outline-variant shadow-sm flex justify-between items-center px-margin-desktop z-40">
+<div class="flex items-center gap-lg">
+<div class="relative">
+<span class="absolute inset-y-0 left-3 flex items-center text-on-surface-variant">
+<span class="material-symbols-outlined text-[20px]">search</span>
+</span>
+<input class="pl-10 pr-4 py-2 bg-surface-container-low border border-outline-variant rounded-full text-body-sm w-80 focus:ring-1 focus:ring-primary focus:border-primary outline-none transition-all" placeholder="Search matters..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<button class="bg-primary text-on-primary px-lg py-2 rounded-lg font-label-md hover:opacity-90 active:scale-95 transition-all">
+                Create Invoice
+            </button>
+<div class="w-10 h-10 rounded-full bg-surface-container-highest border border-outline-variant overflow-hidden ml-sm cursor-pointer">
+<img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCWLWFtayH2gmvN-Q5tAK2-ryFADoE1nEF_rm5e9fcgncY3Ikq6drw7l-T-xOa_YFvj7f8jXxEYLMKJYf1oTifJFpC9L22JbFQVN_w9kBkMxaeU5wGkvSVFvgzdAQKtZR2zHXAhZZXCZBFc1GcqmzGFQxdklg0sxiFiar-MTcYVZ_hRYz13S9lcZbwmUrOOLsq7bqzLdilHHo4nwgtWFdAZ8GxJAPDHeTAUysPqOtx4T59gk1ErBvQ6PJ9jjoQffrMn80LHo-qvgQik"/>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="ml-[260px] pt-xl px-margin-desktop pb-xl min-h-screen">
+<div class="max-w-[1100px] mx-auto mt-lg">
+<!-- Breadcrumbs -->
+<nav class="flex items-center gap-xs text-on-surface-variant font-label-md mb-lg">
+<a class="hover:text-primary transition-colors" href="#">Settings</a>
+<span class="material-symbols-outlined text-[14px]">chevron_right</span>
+<span class="text-primary font-bold">Extension Status</span>
+</nav>
+<!-- Header Section -->
+<div class="mb-lg flex flex-col md:flex-row md:items-center justify-between gap-md">
+<div>
+<h2 class="font-headline-lg text-primary mb-base">Chrome Extension Status</h2>
+<p class="text-body-md text-on-surface-variant">Check if your browser extension is active and capturing your billable time correctly.</p>
+</div>
+<button class="flex items-center gap-sm px-lg py-2 border border-outline text-primary rounded-lg font-label-md hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined">refresh</span>
+                    Refresh Status
+                </button>
+</div>
+<!-- Main Status Grid -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-lg">
+<!-- Status Dashboard Card -->
+<div class="md:col-span-8 bg-surface-container-lowest rounded-xl border border-outline-variant p-lg shadow-sm">
+<div class="flex items-center justify-between mb-xl pb-md border-b border-outline-variant/30">
+<div class="flex items-center gap-md">
+<div class="w-12 h-12 rounded-full bg-[#e8f5e9] flex items-center justify-center text-[#2e7d32]">
+<span class="material-symbols-outlined text-[32px]">check_circle</span>
+</div>
+<div>
+<p class="text-headline-sm text-primary">Extension is Working</p>
+<p class="text-body-sm text-on-surface-variant">Version 2.4.1 installed and active</p>
+</div>
+</div>
+<div class="text-right">
+<p class="text-label-md text-on-surface-variant uppercase mb-base">Connected Account</p>
+<p class="font-bold text-primary flex items-center gap-xs">
+<span class="material-symbols-outlined text-[18px]">person</span>
+                                Jonathan Sterling, Esq.
+                            </p>
+</div>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-lg mb-xl">
+<!-- Connection 1 -->
+<div class="p-md bg-surface-container-low rounded-lg border border-outline-variant/50">
+<div class="flex items-center justify-between mb-sm">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary">sync</span>
+<span class="font-label-md text-primary">BillSync Connection</span>
+</div>
+<span class="w-2.5 h-2.5 rounded-full bg-[#2e7d32] status-pulse"></span>
+</div>
+<p class="text-body-sm text-on-surface-variant mb-md">Connected to secure cloud servers and syncing data.</p>
+<div class="flex items-center gap-xs text-label-md text-[#2e7d32]">
+<span class="material-symbols-outlined text-[14px]">check</span>
+                                Active
+                            </div>
+</div>
+<!-- Connection 2 -->
+<div class="p-md bg-surface-container-low rounded-lg border border-outline-variant/50">
+<div class="flex items-center justify-between mb-sm">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary">mail</span>
+<span class="font-label-md text-primary">Gmail Capture</span>
+</div>
+<span class="w-2.5 h-2.5 rounded-full bg-[#2e7d32] status-pulse"></span>
+</div>
+<p class="text-body-sm text-on-surface-variant mb-md">Tracking time spent on legal correspondence in Gmail.</p>
+<div class="flex items-center gap-xs text-label-md text-[#2e7d32]">
+<span class="material-symbols-outlined text-[14px]">check</span>
+                                Working
+                            </div>
+</div>
+<!-- Connection 3 -->
+<div class="p-md bg-surface-container-low rounded-lg border border-outline-variant/50">
+<div class="flex items-center justify-between mb-sm">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary">travel_explore</span>
+<span class="font-label-md text-primary">Research Capture</span>
+</div>
+<span class="w-2.5 h-2.5 rounded-full bg-[#2e7d32] status-pulse"></span>
+</div>
+<p class="text-body-sm text-on-surface-variant mb-md">Capturing research sessions on LexisNexis and Westlaw.</p>
+<div class="flex items-center gap-xs text-label-md text-[#2e7d32]">
+<span class="material-symbols-outlined text-[14px]">check</span>
+                                Working
+                            </div>
+</div>
+<!-- Potential Issue State (Example for "Fix" button requirement) -->
+<div class="p-md bg-error-container/20 rounded-lg border border-error/20">
+<div class="flex items-center justify-between mb-sm">
+<div class="flex items-center gap-sm text-error">
+<span class="material-symbols-outlined">warning</span>
+<span class="font-label-md">External Permissions</span>
+</div>
+</div>
+<p class="text-body-sm text-on-surface-variant mb-md">Additional site permissions are needed for local court filings.</p>
+<button class="w-full py-2 bg-error text-on-error rounded-lg font-label-md hover:bg-on-error-container transition-colors shadow-sm">
+                                Fix Now
+                            </button>
+</div>
+</div>
+<!-- Last Captured Item -->
+<div class="bg-surface-container-high rounded-xl p-lg">
+<div class="flex items-center gap-sm mb-md text-primary">
+<span class="material-symbols-outlined text-[20px]">history</span>
+<h3 class="font-label-md uppercase tracking-wider">Last Captured Item</h3>
+</div>
+<div class="flex items-center justify-between bg-surface-container-lowest p-md rounded-lg border border-outline-variant/30">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded bg-primary-container/10 flex items-center justify-center text-primary-container">
+<span class="material-symbols-outlined">description</span>
+</div>
+<div>
+<p class="font-bold text-primary">Case Research: Anderson vs. TechCorp International</p>
+<p class="text-body-sm text-on-surface-variant">Captured 14 minutes ago via Westlaw</p>
+</div>
+</div>
+<div class="text-right">
+<p class="text-headline-sm font-bold text-primary">0.4 hrs</p>
+<p class="text-label-md text-[#2e7d32]">Auto-recorded</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Support & Help Card -->
+<div class="md:col-span-4 flex flex-col gap-lg">
+<div class="bg-primary text-surface p-lg rounded-xl shadow-lg relative overflow-hidden h-full">
+<div class="absolute -bottom-6 -right-6 opacity-10">
+<span class="material-symbols-outlined text-[160px]">support_agent</span>
+</div>
+<div class="relative z-10 flex flex-col h-full">
+<h3 class="font-headline-sm mb-sm">Need Help?</h3>
+<p class="text-surface-variant/90 text-body-md mb-xl">If something isn't working as expected, our technical specialists can help you troubleshoot.</p>
+<div class="space-y-md mt-auto">
+<button class="w-full py-3 bg-secondary-container text-on-secondary-container rounded-lg font-label-md hover:opacity-90 transition-all flex items-center justify-center gap-sm">
+<span class="material-symbols-outlined text-[20px]">chat_bubble</span>
+                                    Live Chat Support
+                                </button>
+<button class="w-full py-3 border border-surface-variant/30 text-surface rounded-lg font-label-md hover:bg-white/10 transition-all flex items-center justify-center gap-sm">
+<span class="material-symbols-outlined text-[20px]">library_books</span>
+                                    Knowledge Base
+                                </button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Common Resolutions -->
+<div class="mt-xl">
+<h3 class="font-headline-sm text-primary mb-lg">How to keep BillSync running smoothly</h3>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-lg">
+<div class="p-lg bg-surface-container-lowest border border-outline-variant rounded-xl">
+<div class="w-10 h-10 bg-surface-container rounded-lg flex items-center justify-center mb-md text-primary">
+<span class="material-symbols-outlined">browser_updated</span>
+</div>
+<h4 class="font-bold text-primary mb-sm">Keep Chrome Updated</h4>
+<p class="text-body-sm text-on-surface-variant">The extension works best on the latest version of Google Chrome. Check for updates in your browser settings.</p>
+</div>
+<div class="p-lg bg-surface-container-lowest border border-outline-variant rounded-xl">
+<div class="w-10 h-10 bg-surface-container rounded-lg flex items-center justify-center mb-md text-primary">
+<span class="material-symbols-outlined">vpn_key</span>
+</div>
+<h4 class="font-bold text-primary mb-sm">Stay Signed In</h4>
+<p class="text-body-sm text-on-surface-variant">Logging out of the main dashboard will pause extension syncing. Keep your session active for continuous capture.</p>
+</div>
+<div class="p-lg bg-surface-container-lowest border border-outline-variant rounded-xl">
+<div class="w-10 h-10 bg-surface-container rounded-lg flex items-center justify-center mb-md text-primary">
+<span class="material-symbols-outlined">push_pin</span>
+</div>
+<h4 class="font-bold text-primary mb-sm">Pin the Extension</h4>
+<p class="text-body-sm text-on-surface-variant">Pin the BillSync icon to your toolbar to quickly check status and manually start timers when needed.</p>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="ml-[260px] bg-surface-container-low border-t border-outline-variant p-lg flex flex-col md:flex-row justify-between items-center gap-md">
+<div class="flex items-center gap-md">
+<span class="text-label-md font-bold text-primary">BillSync Legal</span>
+<p class="text-body-sm text-on-surface-variant">© 2024 LexisPremium Legal Systems. All rights reserved.</p>
+</div>
+<div class="flex gap-lg">
+<a class="text-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Privacy Policy</a>
+<a class="text-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Terms of Service</a>
+<a class="text-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Security</a>
+</div>
+</footer>
+</body></html>

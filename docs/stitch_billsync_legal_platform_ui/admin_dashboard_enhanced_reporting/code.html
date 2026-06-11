@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>BillSync Legal Admin | Firm Management</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary-fixed-dim": "#a6c9f9",
+                        "surface-container-highest": "#d9e3f1",
+                        "primary-fixed": "#d2e4ff",
+                        "tertiary-fixed": "#d6e3ff",
+                        "secondary-container": "#fed255",
+                        "on-error": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "outline": "#73777f",
+                        "on-secondary-container": "#735a00",
+                        "surface-bright": "#f7f9ff",
+                        "secondary": "#755b00",
+                        "on-surface-variant": "#43474e",
+                        "primary-container": "#123b63",
+                        "on-tertiary": "#ffffff",
+                        "inverse-primary": "#a6c9f9",
+                        "background": "#f7f9ff",
+                        "on-secondary": "#ffffff",
+                        "on-primary-container": "#83a6d4",
+                        "surface-variant": "#d9e3f1",
+                        "primary": "#002546",
+                        "surface-dim": "#d1dbe8",
+                        "surface-container-low": "#edf4ff",
+                        "on-primary": "#ffffff",
+                        "surface-container": "#e4effd",
+                        "error": "#ba1a1a",
+                        "on-secondary-fixed-variant": "#584400",
+                        "secondary-fixed": "#ffe08e",
+                        "surface-container-high": "#dfe9f7",
+                        "on-tertiary-fixed-variant": "#364764",
+                        "on-primary-fixed-variant": "#234871",
+                        "tertiary-container": "#283a56",
+                        "outline-variant": "#c3c6cf",
+                        "tertiary": "#11243f",
+                        "tertiary-fixed-dim": "#b5c7ea",
+                        "on-tertiary-fixed": "#071c36",
+                        "on-background": "#121d26",
+                        "on-error-container": "#93000a",
+                        "inverse-surface": "#27313c",
+                        "surface-container-lowest": "#ffffff",
+                        "on-surface": "#121d26",
+                        "surface-tint": "#3d608a",
+                        "secondary-fixed-dim": "#ecc246",
+                        "on-primary-fixed": "#001c37",
+                        "inverse-on-surface": "#e8f2ff",
+                        "on-tertiary-container": "#92a4c5",
+                        "surface": "#f7f9ff",
+                        "on-secondary-fixed": "#241a00"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "gutter-desktop": "24px",
+                        "sidebar-width": "260px",
+                        "base": "8px",
+                        "xl": "32px",
+                        "md": "16px",
+                        "sm": "12px",
+                        "lg": "24px",
+                        "xxl": "48px",
+                        "margin-desktop": "40px",
+                        "xs": "4px"
+                    },
+                    "fontFamily": {
+                        "headline-sm": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "body-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "label-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "600"}],
+                        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            background-color: #F8F5EF; 
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .custom-shadow {
+            box-shadow: 0 4px 15px rgba(31, 41, 51, 0.06);
+        }
+        .sidebar-active-gradient {
+            background: linear-gradient(90deg, rgba(254, 210, 85, 0.1) 0%, rgba(254, 210, 85, 0) 100%);
+        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #d9e3f1; border-radius: 10px; }
+    </style>
+</head>
+<body class="flex min-h-screen text-on-surface">
+<!-- SideNavBar Component -->
+<aside class="fixed left-0 top-0 h-full w-sidebar-width bg-tertiary dark:bg-tertiary-container flex flex-col py-lg z-50">
+<div class="px-md mb-xl">
+<h1 class="font-headline-sm text-headline-sm text-surface-container-lowest">BillSync Legal</h1>
+<p class="font-label-md text-label-md text-tertiary-fixed-dim opacity-70">Law Firm Management</p>
+</div>
+<nav class="flex-grow space-y-xs overflow-y-auto px-xs">
+<a class="flex items-center px-md py-sm text-surface-container-lowest border-l-2 border-secondary font-bold sidebar-active-gradient transition-all duration-200" href="#">
+<span class="material-symbols-outlined mr-md">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</a>
+<a class="flex items-center px-md py-sm text-tertiary-fixed-dim hover:text-surface-container-lowest transition-colors" href="#">
+<span class="material-symbols-outlined mr-md">group</span>
+<span class="font-label-md text-label-md">Clients</span>
+</a>
+<a class="flex items-center px-md py-sm text-tertiary-fixed-dim hover:text-surface-container-lowest transition-colors" href="#">
+<span class="material-symbols-outlined mr-md">folder_open</span>
+<span class="font-label-md text-label-md">Matters</span>
+</a>
+<a class="flex items-center px-md py-sm text-tertiary-fixed-dim hover:text-surface-container-lowest transition-colors" href="#">
+<span class="material-symbols-outlined mr-md">assignment</span>
+<span class="font-label-md text-label-md">Tasks</span>
+</a>
+<a class="flex items-center px-md py-sm text-tertiary-fixed-dim hover:text-surface-container-lowest transition-colors" href="#">
+<span class="material-symbols-outlined mr-md">timer</span>
+<span class="font-label-md text-label-md">Work Meter</span>
+</a>
+<a class="flex items-center px-md py-sm text-tertiary-fixed-dim hover:text-surface-container-lowest transition-colors" href="#">
+<span class="material-symbols-outlined mr-md">calendar_today</span>
+<span class="font-label-md text-label-md">Calendar</span>
+</a>
+<a class="flex items-center px-md py-sm text-tertiary-fixed-dim hover:text-surface-container-lowest transition-colors" href="#">
+<span class="material-symbols-outlined mr-md">history_edu</span>
+<span class="font-label-md text-label-md">Captured Work</span>
+</a>
+<a class="flex items-center px-md py-sm text-tertiary-fixed-dim hover:text-surface-container-lowest transition-colors" href="#">
+<span class="material-symbols-outlined mr-md">payments</span>
+<span class="font-label-md text-label-md">Billing</span>
+</a>
+<a class="flex items-center px-md py-sm text-tertiary-fixed-dim hover:text-surface-container-lowest transition-colors" href="#">
+<span class="material-symbols-outlined mr-md">account_balance_wallet</span>
+<span class="font-label-md text-label-md">Finance</span>
+</a>
+<a class="flex items-center px-md py-sm text-tertiary-fixed-dim hover:text-surface-container-lowest transition-colors" href="#">
+<span class="material-symbols-outlined mr-md">description</span>
+<span class="font-label-md text-label-md">Documents</span>
+</a>
+<a class="flex items-center px-md py-sm text-tertiary-fixed-dim hover:text-surface-container-lowest transition-colors" href="#">
+<span class="material-symbols-outlined mr-md">smart_toy</span>
+<span class="font-label-md text-label-md">AI Assistant</span>
+</a>
+<a class="flex items-center px-md py-sm text-tertiary-fixed-dim hover:text-surface-container-lowest transition-colors" href="#">
+<span class="material-symbols-outlined mr-md">chat</span>
+<span class="font-label-md text-label-md">Communications</span>
+</a>
+<a class="flex items-center px-md py-sm text-tertiary-fixed-dim hover:text-surface-container-lowest transition-colors" href="#">
+<span class="material-symbols-outlined mr-md">sync</span>
+<span class="font-label-md text-label-md">Court Sync</span>
+</a>
+<div class="pt-lg pb-sm px-md">
+<span class="font-label-sm text-label-sm text-tertiary-fixed-dim opacity-40 uppercase tracking-widest">Administration</span>
+</div>
+<a class="flex items-center px-md py-sm text-tertiary-fixed-dim hover:text-surface-container-lowest transition-colors" href="#">
+<span class="material-symbols-outlined mr-md">person</span>
+<span class="font-label-md text-label-md">People</span>
+</a>
+<a class="flex items-center px-md py-sm text-tertiary-fixed-dim hover:text-surface-container-lowest transition-colors" href="#">
+<span class="material-symbols-outlined mr-md">extension</span>
+<span class="font-label-md text-label-md">Integrations</span>
+</a>
+<a class="flex items-center px-md py-sm text-tertiary-fixed-dim hover:text-surface-container-lowest transition-colors" href="#">
+<span class="material-symbols-outlined mr-md">settings</span>
+<span class="font-label-md text-label-md">Settings</span>
+</a>
+</nav>
+<div class="px-md mt-auto pt-md border-t border-tertiary-container">
+<div class="flex items-center gap-sm">
+<img alt="Admin Profile" class="w-8 h-8 rounded-full border border-secondary" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAmgs5OuX36RSQTDpePX9W4s01o3yXy7D_MxGbEAXRlOD_e15QxHyP0KTjQC6wtef_htSDtww8vWxcRsLrN2GM-OD8sWYU1u16AHq3_82mljBagqJQlLO4cHMeJWFZLKC4K72YAZqkNp0t5HhYX9cucu0BrCUtgGofB56YwWY-LUae5Mk0uwUfA8Q5xOmxV__wLDGAFWYuE4P1jaTI6HNYNUpRL9_gyVwnJFi35vf13EIXszZWlEEYRhimebXezJT0E57P6Kek-GFX8"/>
+<div class="overflow-hidden">
+<p class="font-label-md text-label-md text-surface-container-lowest truncate">Sarah Jenkins</p>
+<p class="font-label-sm text-label-sm text-tertiary-fixed-dim truncate">Managing Partner</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="ml-sidebar-width flex-grow flex flex-col min-h-screen">
+<!-- TopNavBar Component -->
+<header class="sticky top-0 z-40 bg-surface flex justify-between items-center w-full h-16 px-margin-desktop border-b border-surface-variant">
+<div class="flex items-center gap-xl w-full">
+<div class="flex items-center gap-md bg-surface-container-low px-md py-xs rounded-full w-full max-w-md border border-outline-variant">
+<span class="material-symbols-outlined text-on-surface-variant">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-body-md font-body-md w-full placeholder:text-outline" placeholder="Search firm, matters, or staff..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-lg">
+<button class="flex items-center gap-xs text-on-surface-variant hover:bg-surface-container-low p-xs rounded-lg transition-all">
+<span class="material-symbols-outlined">timer</span>
+</button>
+<button class="relative flex items-center gap-xs text-on-surface-variant hover:bg-surface-container-low p-xs rounded-lg transition-all">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-0 right-0 w-2 h-2 bg-error rounded-full border border-surface"></span>
+</button>
+<button class="flex items-center gap-xs text-on-surface-variant hover:bg-surface-container-low p-xs rounded-lg transition-all">
+<span class="material-symbols-outlined">account_circle</span>
+</button>
+</div>
+</header>
+<!-- Content Area -->
+<div class="p-margin-desktop max-w-[1440px] mx-auto w-full">
+<!-- Welcome Header -->
+<header class="mb-xxl flex justify-between items-end">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-primary">Firm Overview</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant mt-xs">Good morning, Sarah. Here's how your firm is performing today.</p>
+</div>
+<div class="flex items-center gap-md bg-surface-container-high p-xs rounded-lg">
+<button class="px-md py-xs bg-primary text-white rounded-md font-label-md">Week</button>
+<button class="px-md py-xs text-on-surface-variant hover:bg-surface-container-lowest rounded-md transition-colors font-label-md">Month</button>
+</div>
+</header>
+<!-- Financial Report Section -->
+<section class="mb-xxl">
+<div class="flex items-center justify-between mb-lg">
+<h3 class="font-headline-sm text-headline-sm text-primary">Financial Summary</h3>
+<div class="flex gap-sm">
+<button class="flex items-center gap-xs px-md py-sm border border-outline-variant rounded-lg font-label-md text-on-surface-variant hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined text-[18px]">download</span> Export Report
+                    </button>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-gutter-desktop">
+<div class="bg-surface-container-lowest p-lg rounded-xl border border-surface-variant custom-shadow">
+<h4 class="font-label-md text-label-md text-on-surface-variant">Total Billable</h4>
+<p class="font-display-lg text-[32px] font-bold text-primary mt-sm">$142,500</p>
+<div class="flex items-center gap-xs text-green-700 mt-xs">
+<span class="material-symbols-outlined text-[16px]">trending_up</span>
+<span class="font-label-sm">8.2% vs last period</span>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-lg rounded-xl border border-surface-variant custom-shadow">
+<h4 class="font-label-md text-label-md text-on-surface-variant">Collections</h4>
+<p class="font-display-lg text-[32px] font-bold text-primary mt-sm">$118,200</p>
+<div class="flex items-center gap-xs text-secondary mt-xs">
+<span class="material-symbols-outlined text-[16px]">schedule</span>
+<span class="font-label-sm">92% collection rate</span>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-lg rounded-xl border border-surface-variant custom-shadow">
+<h4 class="font-label-md text-label-md text-on-surface-variant">Outstanding AR</h4>
+<p class="font-display-lg text-[32px] font-bold text-error mt-sm">$24,300</p>
+<div class="flex items-center gap-xs text-on-surface-variant mt-xs">
+<span class="material-symbols-outlined text-[16px]">info</span>
+<span class="font-label-sm">14 invoices overdue</span>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-lg rounded-xl border border-surface-variant custom-shadow">
+<h4 class="font-label-md text-label-md text-on-surface-variant">Realization Rate</h4>
+<p class="font-display-lg text-[32px] font-bold text-primary mt-sm">94.5%</p>
+<div class="flex items-center gap-xs text-green-700 mt-xs">
+<span class="material-symbols-outlined text-[16px]">check_circle</span>
+<span class="font-label-sm">Above target (90%)</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Quick Stats Bento Grid -->
+<div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-gutter-desktop mb-xxl">
+<div class="bg-surface-container-lowest p-lg rounded-xl border border-surface-variant custom-shadow transition-all hover:translate-y-[-4px]">
+<div class="flex justify-between items-start mb-md">
+<div class="p-sm bg-primary-container rounded-lg">
+<span class="material-symbols-outlined text-on-primary-container">groups</span>
+</div>
+<span class="text-secondary font-label-md">+4 this month</span>
+</div>
+<h3 class="font-label-md text-label-md text-on-surface-variant">Active Users</h3>
+<p class="font-display-lg text-display-lg text-primary mt-xs">42</p>
+<p class="font-body-sm text-body-sm text-outline mt-sm">28 Lawyers, 14 Support Staff</p>
+</div>
+<div class="bg-surface-container-lowest p-lg rounded-xl border border-surface-variant custom-shadow transition-all hover:translate-y-[-4px]">
+<div class="flex justify-between items-start mb-md">
+<div class="p-sm bg-secondary-container rounded-lg">
+<span class="material-symbols-outlined text-on-secondary-container">person_add</span>
+</div>
+</div>
+<h3 class="font-label-md text-label-md text-on-surface-variant">Pending Invites</h3>
+<p class="font-display-lg text-display-lg text-primary mt-xs">06</p>
+<button class="mt-sm text-primary font-label-md flex items-center gap-xs hover:underline">
+                    Review list <span class="material-symbols-outlined text-[18px]">chevron_right</span>
+</button>
+</div>
+<div class="bg-surface-container-lowest p-lg rounded-xl border border-surface-variant custom-shadow transition-all hover:translate-y-[-4px]">
+<div class="flex justify-between items-start mb-md">
+<div class="p-sm bg-surface-container-high rounded-lg">
+<span class="material-symbols-outlined text-primary">health_and_safety</span>
+</div>
+<div class="flex items-center gap-xs bg-green-100 text-green-800 px-sm py-xs rounded-full">
+<div class="w-1.5 h-1.5 bg-green-600 rounded-full animate-pulse"></div>
+<span class="text-[10px] font-bold uppercase tracking-wider">Optimal</span>
+</div>
+</div>
+<h3 class="font-label-md text-label-md text-on-surface-variant">System Health</h3>
+<p class="font-display-lg text-display-lg text-primary mt-xs">99.8%</p>
+<p class="font-body-sm text-body-sm text-outline mt-sm">All integrations functional</p>
+</div>
+<div class="bg-primary p-lg rounded-xl custom-shadow text-white transition-all hover:translate-y-[-4px] relative overflow-hidden group">
+<div class="relative z-10">
+<h3 class="font-label-md text-label-md text-primary-fixed-dim">Productivity Score</h3>
+<p class="font-display-lg text-display-lg mt-xs">84</p>
+<p class="font-body-sm text-body-sm opacity-80 mt-sm">Up 12% vs. last week</p>
+<div class="mt-md w-full bg-white/20 h-1.5 rounded-full overflow-hidden">
+<div class="bg-secondary-fixed h-full w-[84%]"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Performance Analysis by Role -->
+<section class="mb-xxl">
+<div class="bg-surface-container-lowest rounded-xl border border-surface-variant custom-shadow overflow-hidden">
+<div class="p-lg border-b border-surface-variant flex justify-between items-center bg-surface-bright">
+<div>
+<h3 class="font-headline-sm text-headline-sm text-primary">Performance Analysis by Role</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Comparative efficiency and revenue metrics across firm hierarchy.</p>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead class="bg-surface-container-low border-b border-surface-variant">
+<tr>
+<th class="px-lg py-md font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Staff Role</th>
+<th class="px-lg py-md font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider text-center">Avg. Billable Hrs</th>
+<th class="px-lg py-md font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider text-center">Efficiency Score</th>
+<th class="px-lg py-md font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider text-right">Revenue Contribution</th>
+<th class="px-lg py-md font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Utilization</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-surface-variant">
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="px-lg py-md font-label-md text-primary">Partner</td>
+<td class="px-lg py-md text-center font-body-md">32.5 hrs/wk</td>
+<td class="px-lg py-md text-center">
+<span class="px-md py-xs rounded-full bg-green-100 text-green-700 font-label-sm">98%</span>
+</td>
+<td class="px-lg py-md text-right font-body-md font-bold">$425,000</td>
+<td class="px-lg py-md">
+<div class="w-24 bg-surface-container h-1.5 rounded-full"><div class="bg-primary h-full w-[95%] rounded-full"></div></div>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="px-lg py-md font-label-md text-primary">Senior Associate</td>
+<td class="px-lg py-md text-center font-body-md">44.0 hrs/wk</td>
+<td class="px-lg py-md text-center">
+<span class="px-md py-xs rounded-full bg-green-100 text-green-700 font-label-sm">94%</span>
+</td>
+<td class="px-lg py-md text-right font-body-md font-bold">$312,000</td>
+<td class="px-lg py-md">
+<div class="w-24 bg-surface-container h-1.5 rounded-full"><div class="bg-primary h-full w-[88%] rounded-full"></div></div>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="px-lg py-md font-label-md text-primary">Associate</td>
+<td class="px-lg py-md text-center font-body-md">48.5 hrs/wk</td>
+<td class="px-lg py-md text-center">
+<span class="px-md py-xs rounded-full bg-yellow-100 text-yellow-700 font-label-sm">89%</span>
+</td>
+<td class="px-lg py-md text-right font-body-md font-bold">$245,000</td>
+<td class="px-lg py-md">
+<div class="w-24 bg-surface-container h-1.5 rounded-full"><div class="bg-primary h-full w-[92%] rounded-full"></div></div>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="px-lg py-md font-label-md text-primary">Staff / Paralegal</td>
+<td class="px-lg py-md text-center font-body-md">28.0 hrs/wk</td>
+<td class="px-lg py-md text-center">
+<span class="px-md py-xs rounded-full bg-green-100 text-green-700 font-label-sm">92%</span>
+</td>
+<td class="px-lg py-md text-right font-body-md font-bold">$128,000</td>
+<td class="px-lg py-md">
+<div class="w-24 bg-surface-container h-1.5 rounded-full"><div class="bg-primary h-full w-[75%] rounded-full"></div></div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<!-- Main Panels (Existing Layout Restored) -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-gutter-desktop">
+<!-- User Management Section -->
+<div class="lg:col-span-2 space-y-gutter-desktop">
+<section class="bg-surface-container-lowest rounded-xl border border-surface-variant custom-shadow overflow-hidden">
+<div class="p-lg border-b border-surface-variant flex justify-between items-center bg-surface-bright">
+<div>
+<h3 class="font-headline-sm text-headline-sm text-primary">User Management</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Review and manage firm access for your team.</p>
+</div>
+<button class="bg-primary text-white px-lg py-sm rounded-lg font-label-md flex items-center gap-sm hover:bg-primary-container transition-colors">
+<span class="material-symbols-outlined">add</span> Invite Member
+                        </button>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead class="bg-surface-container-low border-b border-surface-variant">
+<tr>
+<th class="px-lg py-md font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Member</th>
+<th class="px-lg py-md font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Role</th>
+<th class="px-lg py-md font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Status</th>
+<th class="px-lg py-md font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Last Active</th>
+<th class="px-lg py-md"></th>
+</tr>
+</thead>
+<tbody class="divide-y divide-surface-variant">
+<tr class="hover:bg-surface-container-lowest transition-colors group">
+<td class="px-lg py-md flex items-center gap-md">
+<img alt="User" class="w-10 h-10 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAcCM9ImS_zXcewxWjhePu3GrzsJ4F8DWO5XzgIqXvk6oE-ppmuf2gyqLbtYKMtfNwyIzVLvmoa1u4lZGSeyZGRgYZDygGsOLul3LHMgou0WMByIYL9QgyHFdtIvHtpYKGG5QP82VAmkXQEDynunb-hDRrRfZBZUYTk3jHWrsi0bNOoWMRMvzBmo93jRF_2niC--c2toC0Qm6ixPaO3wW-k--zLfo-IJiDMu1Td_X9JrR80cc6xwYa6SFy5wqIBk1M_TeiDpTS9ifvb"/>
+<div>
+<p class="font-label-md text-label-md text-primary">Marcus Thorne</p>
+<p class="font-body-sm text-body-sm text-outline">m.thorne@billsync.com</p>
+</div>
+</td>
+<td class="px-lg py-md font-body-sm text-body-sm text-on-surface">Senior Associate</td>
+<td class="px-lg py-md">
+<span class="px-md py-xs rounded-full bg-green-100 text-green-700 font-label-sm text-label-sm">Active</span>
+</td>
+<td class="px-lg py-md font-body-sm text-body-sm text-on-surface-variant">Today, 9:24 AM</td>
+<td class="px-lg py-md text-right">
+<button class="text-outline hover:text-primary transition-colors">
+<span class="material-symbols-outlined">more_horiz</span>
+</button>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-lowest transition-colors group">
+<td class="px-lg py-md flex items-center gap-md">
+<img alt="User" class="w-10 h-10 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAwN_wknM-3AVbPGV1PkWFy85C-JY_k8xZJHqVbVV92as5YCTifHdoGO2XyPEOnv_x2G7hoMN6JTQEG8458LtNQl1ua7254a0TRIoQjaBX-lzaogClToQlK_oFyVNHYS6rj9Lq9NuAiWO8TJXHeYY41Wxq7RKzho64eCnHUQGOUeRVE7BtjGReydKIyAFVEcq1qJ6c2kPMfkje21TYjjmor5TEdfzEn_guuGqNqdWbpn1JsdG_oLd8yslHEzcogO3ZFckiUm7vNGaq"/>
+<div>
+<p class="font-label-md text-label-md text-primary">Elena Rodriguez</p>
+<p class="font-body-sm text-body-sm text-outline">e.rodriguez@billsync.com</p>
+</div>
+</td>
+<td class="px-lg py-md font-body-sm text-body-sm text-on-surface">Staff</td>
+<td class="px-lg py-md">
+<span class="px-md py-xs rounded-full bg-yellow-100 text-yellow-700 font-label-sm text-label-sm">Pending</span>
+</td>
+<td class="px-lg py-md font-body-sm text-body-sm text-on-surface-variant">Never</td>
+<td class="px-lg py-md text-right">
+<button class="text-outline hover:text-primary transition-colors">
+<span class="material-symbols-outlined">more_horiz</span>
+</button>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-lowest transition-colors group">
+<td class="px-lg py-md flex items-center gap-md">
+<img alt="User" class="w-10 h-10 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBEpjQSmbF2FboQwVZYAba4ufWrkYJaYTQGqBiJfonyjsMeQXhgD0rmbaBmEx_WCQAPpCbk_ZMSmAzSXKNYVZZdGS1k2zJWMvxHwD-r3HJKPxPW1m07YLTZ7jgs9YO922-cNY6doDFoZnpa85jCduLKOAXV9PuyqaweoICJU4ajK9VckJ0bGOi_ofWRCo0z7LMOwzesfAhfcWMsKucexcirMZN_jzLNf7kS-kC2uCcLZpzLJMs-sfkTcHUvPEP9hwvW1hz7cFEpyo8j"/>
+<div>
+<p class="font-label-md text-label-md text-primary">David Chen</p>
+<p class="font-body-sm text-body-sm text-outline">d.chen@billsync.com</p>
+</div>
+</td>
+<td class="px-lg py-md font-body-sm text-body-sm text-on-surface">Admin</td>
+<td class="px-lg py-md">
+<span class="px-md py-xs rounded-full bg-green-100 text-green-700 font-label-sm text-label-sm">Active</span>
+</td>
+<td class="px-lg py-md font-body-sm text-body-sm text-on-surface-variant">Yesterday</td>
+<td class="px-lg py-md text-right">
+<button class="text-outline hover:text-primary transition-colors">
+<span class="material-symbols-outlined">more_horiz</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</div>
+<!-- Firm-wide Setup & Productivity Sidebars -->
+<div class="space-y-gutter-desktop">
+<!-- Setup Status -->
+<section class="bg-surface-container-lowest p-lg rounded-xl border border-surface-variant custom-shadow">
+<h3 class="font-headline-sm text-headline-sm text-primary mb-md">Firm Setup</h3>
+<div class="space-y-lg">
+<div>
+<div class="flex justify-between items-center mb-xs">
+<span class="font-label-md text-label-md text-on-surface">Integrations Coverage</span>
+<span class="font-label-md text-label-md text-secondary">88%</span>
+</div>
+<div class="w-full bg-surface-container h-2 rounded-full overflow-hidden">
+<div class="bg-secondary h-full w-[88%]"></div>
+</div>
+</div>
+<ul class="space-y-md mt-lg">
+<li class="flex items-center gap-md">
+<span class="material-symbols-outlined text-green-600" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<div class="flex-grow">
+<p class="font-label-md text-label-md text-on-surface">Cloud Storage</p>
+<p class="font-body-sm text-body-sm text-outline">Box &amp; Google Drive linked</p>
+</div>
+</li>
+<li class="flex items-center gap-md">
+<span class="material-symbols-outlined text-green-600" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<div class="flex-grow">
+<p class="font-label-md text-label-md text-on-surface">Email Sync</p>
+<p class="font-body-sm text-body-sm text-outline">Outlook integration active</p>
+</div>
+</li>
+<li class="flex items-center gap-md opacity-60">
+<span class="material-symbols-outlined text-outline">circle</span>
+<div class="flex-grow">
+<p class="font-label-md text-label-md text-on-surface">Legal Research</p>
+<p class="font-body-sm text-body-sm text-outline">Westlaw connection pending</p>
+</div>
+<button class="text-primary font-label-sm text-label-sm">Finish</button>
+</li>
+</ul>
+</div>
+</section>
+<!-- Office Productivity Trends -->
+<section class="bg-surface-container-lowest p-lg rounded-xl border border-surface-variant custom-shadow relative overflow-hidden">
+<h3 class="font-headline-sm text-headline-sm text-primary mb-md">Work Velocity</h3>
+<div class="h-32 w-full mt-md">
+<div class="flex items-end justify-between h-full gap-xs">
+<div class="w-full bg-surface-container-high hover:bg-secondary-container transition-colors rounded-t-sm" style="height: 40%;"></div>
+<div class="w-full bg-surface-container-high hover:bg-secondary-container transition-colors rounded-t-sm" style="height: 60%;"></div>
+<div class="w-full bg-surface-container-high hover:bg-secondary-container transition-colors rounded-t-sm" style="height: 55%;"></div>
+<div class="w-full bg-surface-container-high hover:bg-secondary-container transition-colors rounded-t-sm" style="height: 75%;"></div>
+<div class="w-full bg-surface-container-high hover:bg-secondary-container transition-colors rounded-t-sm" style="height: 90%;"></div>
+<div class="w-full bg-secondary-container rounded-t-sm" style="height: 85%;"></div>
+<div class="w-full bg-surface-container-high hover:bg-secondary-container transition-colors rounded-t-sm" style="height: 70%;"></div>
+</div>
+</div>
+<div class="flex justify-between mt-sm">
+<span class="font-label-sm text-label-sm text-outline">Mon</span>
+<span class="font-label-sm text-label-sm text-outline">Sun</span>
+</div>
+<div class="mt-lg p-md bg-surface-container-low rounded-lg border border-surface-variant">
+<p class="font-body-sm text-body-sm text-on-surface-variant italic">"The firm's billable capture rate is currently 15% higher than last quarter. Excellent team momentum."</p>
+<p class="font-label-sm text-label-sm text-primary mt-sm">— AI Insights</p>
+</div>
+</section>
+</div>
+</div>
+</div>
+<!-- Footer Component -->
+<footer class="mt-auto flex justify-between items-center py-md px-margin-desktop border-t border-surface-variant bg-background">
+<div class="flex items-center gap-xl">
+<span class="font-label-md text-label-md font-bold text-on-surface">BillSync Legal</span>
+<p class="font-label-sm text-label-sm text-on-surface-variant">© 2024 BillSync Legal. All rights reserved.</p>
+</div>
+<div class="flex gap-lg">
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Terms of Service</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Privacy Policy</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Contact Support</a>
+</div>
+</footer>
+</main>
+<!-- Floating Action Button -->
+<button class="fixed bottom-margin-desktop right-margin-desktop bg-secondary text-on-secondary-fixed p-lg rounded-full shadow-xl flex items-center gap-sm hover:scale-105 active:scale-95 transition-all z-50">
+<span class="material-symbols-outlined">bolt</span>
+<span class="font-label-md text-label-md">Firm Wizard</span>
+</button>
+<script>
+    document.querySelectorAll('.hover\\:translate-y-\\[-4px\\]').forEach(card => {
+        card.addEventListener('mouseenter', () => {
+            card.style.borderColor = 'var(--secondary)';
+        });
+        card.addEventListener('mouseleave', () => {
+            card.style.borderColor = '';
+        });
+    });
+
+    const searchInput = document.querySelector('input[type="text"]');
+    if(searchInput) {
+        searchInput.addEventListener('focus', () => {
+            searchInput.parentElement.classList.add('border-primary');
+            searchInput.parentElement.classList.remove('border-outline-variant');
+        });
+        searchInput.addEventListener('blur', () => {
+            searchInput.parentElement.classList.remove('border-primary');
+            searchInput.parentElement.classList.add('border-outline-variant');
+        });
+    }
+</script>
+</body></html>

@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>BillSync Legal - Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .sidebar-active {
+            opacity: 0.9;
+        }
+        .btn-hover-scale:active {
+            transform: scale(0.95);
+        }
+        body {
+            background-color: #F8F5EF; /* Explicit background color from style guidance Level 0 */
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container": "#e4effd",
+                        "on-tertiary-fixed-variant": "#364764",
+                        "on-primary-fixed": "#001c37",
+                        "tertiary-fixed": "#d6e3ff",
+                        "on-surface": "#121d26",
+                        "surface-container-highest": "#d9e3f1",
+                        "primary-container": "#123b63",
+                        "primary-fixed": "#d2e4ff",
+                        "tertiary-fixed-dim": "#b5c7ea",
+                        "secondary-fixed-dim": "#ecc246",
+                        "primary": "#002546",
+                        "on-tertiary-container": "#92a4c5",
+                        "on-secondary": "#ffffff",
+                        "surface-container-lowest": "#ffffff",
+                        "outline": "#73777f",
+                        "on-secondary-container": "#735a00",
+                        "inverse-on-surface": "#e8f2ff",
+                        "on-secondary-fixed": "#241a00",
+                        "surface-variant": "#d9e3f1",
+                        "surface-dim": "#d1dbe8",
+                        "tertiary": "#11243f",
+                        "secondary": "#755b00",
+                        "secondary-fixed": "#ffe08e",
+                        "surface-container-low": "#edf4ff",
+                        "surface": "#f7f9ff",
+                        "inverse-surface": "#27313c",
+                        "error-container": "#ffdad6",
+                        "tertiary-container": "#283a56",
+                        "outline-variant": "#c3c6cf",
+                        "on-tertiary": "#ffffff",
+                        "on-primary": "#ffffff",
+                        "surface-bright": "#f7f9ff",
+                        "on-error-container": "#93000a",
+                        "surface-container-high": "#dfe9f7",
+                        "on-primary-container": "#83a6d4",
+                        "background": "#f7f9ff",
+                        "on-secondary-fixed-variant": "#584400",
+                        "inverse-primary": "#a6c9f9",
+                        "secondary-container": "#fed255",
+                        "on-background": "#121d26",
+                        "surface-tint": "#3d608a",
+                        "on-primary-fixed-variant": "#234871",
+                        "error": "#ba1a1a",
+                        "primary-fixed-dim": "#a6c9f9",
+                        "on-surface-variant": "#43474e",
+                        "on-tertiary-fixed": "#071c36",
+                        "on-error": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "sidebar-width": "260px",
+                        "md": "16px",
+                        "xxl": "48px",
+                        "xs": "4px",
+                        "gutter-desktop": "24px",
+                        "xl": "32px",
+                        "base": "8px",
+                        "margin-desktop": "40px",
+                        "sm": "12px",
+                        "lg": "24px"
+                    },
+                    "fontFamily": {
+                        "body-sm": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "label-md": ["Inter"],
+                        "headline-sm": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "headline-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500" }],
+                        "headline-sm": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "fontWeight": "600" }],
+                        "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }]
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+<body class="flex min-h-screen overflow-x-hidden">
+<!-- SideNavBar Component -->
+<aside class="fixed left-0 top-0 h-full w-sidebar-width bg-tertiary dark:bg-tertiary-container flex flex-col py-lg z-50">
+<div class="px-lg mb-xxl">
+<h1 class="font-headline-sm text-headline-sm text-surface-container-lowest">BillSync Legal</h1>
+<p class="font-label-sm text-label-sm text-on-tertiary-container opacity-70">Law Firm Management</p>
+</div>
+<nav class="flex-1 space-y-xs overflow-y-auto px-sm">
+<a class="flex items-center gap-md px-md py-sm transition-colors hover:text-surface-container-lowest text-surface-container-lowest border-l-2 border-secondary font-bold sidebar-active" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm transition-colors hover:text-surface-container-lowest text-tertiary-fixed-dim" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="font-label-md text-label-md">Clients</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm transition-colors hover:text-surface-container-lowest text-tertiary-fixed-dim" href="#">
+<span class="material-symbols-outlined">folder_open</span>
+<span class="font-label-md text-label-md">Matters</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm transition-colors hover:text-surface-container-lowest text-tertiary-fixed-dim" href="#">
+<span class="material-symbols-outlined">assignment</span>
+<span class="font-label-md text-label-md">Tasks</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm transition-colors hover:text-surface-container-lowest text-tertiary-fixed-dim" href="#">
+<span class="material-symbols-outlined">timer</span>
+<span class="font-label-md text-label-md">Work Meter</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm transition-colors hover:text-surface-container-lowest text-tertiary-fixed-dim" href="#">
+<span class="material-symbols-outlined">calendar_today</span>
+<span class="font-label-md text-label-md">Calendar</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm transition-colors hover:text-surface-container-lowest text-tertiary-fixed-dim" href="#">
+<span class="material-symbols-outlined">history_edu</span>
+<span class="font-label-md text-label-md">Captured Work</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm transition-colors hover:text-surface-container-lowest text-tertiary-fixed-dim" href="#">
+<span class="material-symbols-outlined">payments</span>
+<span class="font-label-md text-label-md">Billing</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm transition-colors hover:text-surface-container-lowest text-tertiary-fixed-dim" href="#">
+<span class="material-symbols-outlined">account_balance_wallet</span>
+<span class="font-label-md text-label-md">Finance</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm transition-colors hover:text-surface-container-lowest text-tertiary-fixed-dim" href="#">
+<span class="material-symbols-outlined">description</span>
+<span class="font-label-md text-label-md">Documents</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm transition-colors hover:text-surface-container-lowest text-tertiary-fixed-dim" href="#">
+<span class="material-symbols-outlined">smart_toy</span>
+<span class="font-label-md text-label-md">AI Assistant</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm transition-colors hover:text-surface-container-lowest text-tertiary-fixed-dim" href="#">
+<span class="material-symbols-outlined">chat</span>
+<span class="font-label-md text-label-md">Communications</span>
+</a>
+</nav>
+<div class="px-sm pt-lg border-t border-tertiary-container mt-auto">
+<a class="flex items-center gap-md px-md py-sm transition-colors hover:text-surface-container-lowest text-tertiary-fixed-dim" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-md text-label-md">Settings</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Cluster -->
+<main class="ml-sidebar-width flex-1 flex flex-col min-h-screen">
+<!-- TopNavBar Component -->
+<header class="flex justify-between items-center w-full h-16 px-margin-desktop bg-surface dark:bg-background border-b border-surface-variant dark:border-outline-variant sticky top-0 z-40">
+<div class="flex items-center gap-lg">
+<span class="font-headline-md text-headline-md font-bold text-primary dark:text-inverse-primary">Dashboard</span>
+<div class="hidden md:flex items-center bg-surface-container-low px-md py-xs rounded-full border border-outline-variant w-80">
+<span class="material-symbols-outlined text-on-surface-variant mr-base">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-body-sm w-full" placeholder="Search matters, clients..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-lg">
+<button class="material-symbols-outlined text-on-surface-variant hover:bg-surface-container-low p-xs rounded-full transition-all active:scale-95 duration-150">notifications</button>
+<button class="material-symbols-outlined text-on-surface-variant hover:bg-surface-container-low p-xs rounded-full transition-all active:scale-95 duration-150">timer</button>
+<button class="material-symbols-outlined text-primary hover:bg-surface-container-low p-xs rounded-full transition-all active:scale-95 duration-150" style="font-variation-settings: 'FILL' 1;">account_circle</button>
+</div>
+</header>
+<!-- Page Canvas -->
+<div class="flex-1 flex flex-col items-center justify-center p-margin-desktop">
+<!-- Empty State Bento/Asymmetric Layout -->
+<div class="max-w-4xl w-full grid grid-cols-1 md:grid-cols-12 gap-lg items-center">
+<!-- Illustration Side -->
+<div class="md:col-span-6 flex flex-col items-center justify-center relative">
+<div class="absolute -z-10 w-[120%] h-[120%] bg-surface-container opacity-20 blur-3xl rounded-full"></div>
+<div class="relative bg-surface rounded-xl p-xl shadow-sm border border-outline-variant group hover:shadow-lg transition-all duration-300">
+<div class="w-48 h-48 flex items-center justify-center bg-surface-container-low rounded-lg mb-lg">
+<span class="material-symbols-outlined text-[120px] text-primary-container opacity-20">event_available</span>
+</div>
+<div class="space-y-sm">
+<div class="h-2 w-1/2 bg-outline-variant opacity-20 rounded-full"></div>
+<div class="h-2 w-3/4 bg-outline-variant opacity-20 rounded-full"></div>
+<div class="h-2 w-1/3 bg-outline-variant opacity-20 rounded-full"></div>
+</div>
+<div class="absolute -top-4 -right-4 bg-secondary-container text-on-secondary-container px-md py-xs rounded-full shadow-md font-label-sm border border-secondary">
+                            Status: Clear
+                        </div>
+</div>
+</div>
+<!-- Text & Action Side -->
+<div class="md:col-span-6 text-center md:text-left space-y-lg">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-primary mb-sm">Your desk is clear for today.</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant">No tasks or matters requiring immediate attention. Enjoy the quiet moment or start preparing for the week ahead.</p>
+</div>
+<div class="flex flex-col sm:flex-row gap-md">
+<button class="px-xl py-md bg-primary text-on-primary rounded-lg font-label-md transition-all hover:bg-primary-container active:scale-95 flex items-center justify-center gap-sm">
+<span class="material-symbols-outlined">add</span>
+                            Create New Matter
+                        </button>
+<button class="px-xl py-md bg-surface text-primary border border-outline-variant rounded-lg font-label-md transition-all hover:bg-surface-container-low active:scale-95 flex items-center justify-center gap-sm">
+                            View All Tasks
+                        </button>
+</div>
+<!-- Subtle Guided Prompt -->
+<div class="pt-xl mt-xxl border-t border-outline-variant/30">
+<p class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest mb-md">Quick Suggestions</p>
+<div class="grid grid-cols-2 gap-md">
+<div class="p-md bg-white border border-outline-variant rounded-lg hover:border-secondary transition-colors cursor-pointer group">
+<span class="material-symbols-outlined text-secondary mb-xs">history_edu</span>
+<p class="font-label-md text-label-md text-primary group-hover:text-secondary">Capture work time</p>
+</div>
+<div class="p-md bg-white border border-outline-variant rounded-lg hover:border-secondary transition-colors cursor-pointer group">
+<span class="material-symbols-outlined text-secondary mb-xs">description</span>
+<p class="font-label-md text-label-md text-primary group-hover:text-secondary">Review templates</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Footer Component -->
+<footer class="flex justify-between items-center py-md px-margin-desktop border-t border-surface-variant bg-background dark:bg-surface-dim">
+<p class="font-label-sm text-label-sm text-on-surface-variant">© 2024 BillSync Legal. All rights reserved.</p>
+<div class="flex gap-lg">
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Terms of Service</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Privacy Policy</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Contact Support</a>
+</div>
+</footer>
+</main>
+<!-- Background Atmospheric Elements -->
+<div class="fixed inset-0 pointer-events-none -z-20 overflow-hidden">
+<div class="absolute top-[-10%] right-[-5%] w-[40vw] h-[40vw] bg-surface-container opacity-30 blur-[120px] rounded-full"></div>
+<div class="absolute bottom-[-5%] left-[-5%] w-[30vw] h-[30vw] bg-surface-container opacity-20 blur-[100px] rounded-full"></div>
+</div>
+<script>
+        // Micro-interactions for dashboard hover effects
+        document.querySelectorAll('.sidebar-active').forEach(item => {
+            item.addEventListener('mouseenter', () => {
+                item.style.transition = 'opacity 0.2s';
+                item.classList.add('opacity-90');
+            });
+            item.addEventListener('mouseleave', () => {
+                item.classList.remove('opacity-90');
+            });
+        });
+    </script>
+</body></html>

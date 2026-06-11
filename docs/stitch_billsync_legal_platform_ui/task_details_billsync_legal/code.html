@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Task Detail - LawConnect</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-highest": "#d9e3f1",
+                        "on-tertiary-container": "#92a4c5",
+                        "error": "#ba1a1a",
+                        "inverse-surface": "#27313c",
+                        "tertiary": "#11243f",
+                        "on-tertiary-fixed": "#071c36",
+                        "tertiary-container": "#283a56",
+                        "secondary-fixed": "#ffe08e",
+                        "tertiary-fixed-dim": "#b5c7ea",
+                        "surface": "#f7f9ff",
+                        "on-tertiary": "#ffffff",
+                        "surface-variant": "#d9e3f1",
+                        "background": "#f7f9ff",
+                        "on-error": "#ffffff",
+                        "inverse-on-surface": "#e8f2ff",
+                        "tertiary-fixed": "#d6e3ff",
+                        "outline": "#73777f",
+                        "surface-container-low": "#edf4ff",
+                        "secondary-fixed-dim": "#ecc246",
+                        "secondary-container": "#fed255",
+                        "on-background": "#121d26",
+                        "primary-container": "#123b63",
+                        "error-container": "#ffdad6",
+                        "inverse-primary": "#a6c9f9",
+                        "on-secondary-fixed": "#241a00",
+                        "primary-fixed": "#d2e4ff",
+                        "on-surface-variant": "#43474e",
+                        "on-primary-fixed-variant": "#234871",
+                        "on-error-container": "#93000a",
+                        "on-surface": "#121d26",
+                        "on-secondary": "#ffffff",
+                        "on-tertiary-fixed-variant": "#364764",
+                        "on-secondary-fixed-variant": "#584400",
+                        "surface-container-lowest": "#ffffff",
+                        "primary-fixed-dim": "#a6c9f9",
+                        "on-secondary-container": "#735a00",
+                        "surface-dim": "#d1dbe8",
+                        "surface-tint": "#3d608a",
+                        "primary": "#002546",
+                        "on-primary-container": "#83a6d4",
+                        "surface-container-high": "#dfe9f7",
+                        "outline-variant": "#c3c6cf",
+                        "surface-container": "#e4effd",
+                        "on-primary-fixed": "#001c37",
+                        "on-primary": "#ffffff",
+                        "secondary": "#755b00",
+                        "surface-bright": "#f7f9ff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "sm": "12px",
+                        "margin-desktop": "40px",
+                        "xxl": "48px",
+                        "xs": "4px",
+                        "lg": "24px",
+                        "sidebar-width": "260px",
+                        "md": "16px",
+                        "gutter-desktop": "24px",
+                        "xl": "32px",
+                        "base": "8px"
+                    },
+                    "fontFamily": {
+                        "label-sm": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "label-md": ["Inter"],
+                        "body-md": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "headline-sm": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "600"}],
+                        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; background-color: #f7f9ff; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .sidebar-active { position: relative; }
+        .sidebar-active::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 2px; background-color: #ffe08e; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #d9e3f1; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #c3c6cf; }
+    </style>
+</head>
+<body class="text-on-surface">
+<!-- Global Side Navigation (Shared Component) -->
+<aside class="fixed left-0 top-0 h-full w-[260px] bg-primary dark:bg-primary-container shadow-sm flex flex-col py-xl z-50">
+<div class="px-lg mb-xxl">
+<h1 class="font-headline-md text-headline-md font-bold text-surface-bright">LawConnect</h1>
+<p class="font-label-md text-label-md text-on-tertiary-container">Partner View</p>
+</div>
+<nav class="flex-1 space-y-xs px-md">
+<a class="flex items-center gap-md px-md py-sm font-label-md text-label-md text-on-tertiary-container hover:text-surface-bright hover:bg-tertiary-container/20 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+                Dashboard
+            </a>
+<a class="flex items-center gap-md px-md py-sm font-label-md text-label-md text-on-tertiary-container hover:text-surface-bright hover:bg-tertiary-container/20 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">group</span>
+                Clients
+            </a>
+<a class="flex items-center gap-md px-md py-sm font-label-md text-label-md text-on-tertiary-container hover:text-surface-bright hover:bg-tertiary-container/20 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">folder_open</span>
+                Matters
+            </a>
+<a class="flex items-center gap-md px-md py-sm font-label-md text-label-md text-surface-bright bg-tertiary-container/30 sidebar-active transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">assignment</span>
+                Tasks
+            </a>
+<a class="flex items-center gap-md px-md py-sm font-label-md text-label-md text-on-tertiary-container hover:text-surface-bright hover:bg-tertiary-container/20 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">payments</span>
+                Billing
+            </a>
+<a class="flex items-center gap-md px-md py-sm font-label-md text-label-md text-on-tertiary-container hover:text-surface-bright hover:bg-tertiary-container/20 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">description</span>
+                Documents
+            </a>
+</nav>
+<div class="mt-auto px-md space-y-xs">
+<button class="w-full mb-lg py-sm px-md bg-secondary-container text-on-secondary-container font-label-md text-label-md rounded-xl active:scale-95 transition-transform">
+                New Matter
+            </button>
+<a class="flex items-center gap-md px-md py-sm font-label-md text-label-md text-on-tertiary-container hover:text-surface-bright hover:bg-tertiary-container/20 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">settings</span>
+                Settings
+            </a>
+<a class="flex items-center gap-md px-md py-sm font-label-md text-label-md text-on-tertiary-container hover:text-surface-bright hover:bg-tertiary-container/20 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">help</span>
+                Support
+            </a>
+</div>
+</aside>
+<!-- Global Top Bar (Shared Component) -->
+<header class="fixed top-0 right-0 w-[calc(100%-260px)] h-16 flex items-center justify-between px-margin-desktop bg-surface dark:bg-background z-40 border-b border-outline-variant/30">
+<div class="flex items-center gap-xl flex-1">
+<div class="relative w-full max-w-md">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">search</span>
+<input class="w-full bg-surface-container-low border-none rounded-full pl-10 py-2 font-body-sm text-body-sm focus:ring-1 focus:ring-primary" placeholder="Search tasks, matters, or documents..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-lg">
+<button class="p-2 text-on-surface-variant hover:bg-surface-container-low rounded-full transition-colors relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-error rounded-full"></span>
+</button>
+<button class="p-2 text-on-surface-variant hover:bg-surface-container-low rounded-full transition-colors">
+<span class="material-symbols-outlined">chat_bubble</span>
+</button>
+<div class="h-8 w-[1px] bg-outline-variant/30 mx-xs"></div>
+<div class="flex items-center gap-sm cursor-pointer group">
+<div class="text-right">
+<p class="font-label-md text-label-md text-on-surface font-bold">Marcus Sterling, Esq.</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Senior Partner</p>
+</div>
+<img alt="Marcus Sterling" class="w-10 h-10 rounded-full bg-primary-container" data-alt="A professional portrait of a senior lawyer in a crisp navy blue suit, set against a blurred background of a sophisticated modern law library with floor-to-ceiling glass and soft warm ambient lighting. The atmosphere is professional, authoritative, and minimalist, echoing the premium branding of LawConnect." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAfF_PBBv6TSzhwCg2rm4CbMDNJsPmD56QUsaYbEGSm4z_Ds9R8sfFcpczaJGAuI6ybH0KgoXDzsN8c-FRdVrI5pPb-Pj9cKgoIuDBM7pbAJ-tuhTNTKlzsFIIXXZHf9C4LN-VMMDNMBGN-wC094qAjsHI9Bn31cM7-WBm1PIAkPFrjlActWcnQ7bYp30kUgpMwSibd69whHXh9gXpOEGX7YJ_NzalmoXZL4tREfmB6aq8yXTlWthygtjTIWknF4PY6YLP4lLpNxPiS"/>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="ml-[260px] pt-16 min-h-screen">
+<div class="p-margin-desktop">
+<!-- Background Content (Simulated Task List) -->
+<div class="max-w-6xl">
+<div class="flex justify-between items-center mb-xl">
+<h2 class="font-headline-lg text-headline-lg text-primary">Task Management</h2>
+<div class="flex gap-md">
+<button class="flex items-center gap-xs px-md py-sm bg-surface-container-high rounded-lg text-on-surface font-label-md">
+<span class="material-symbols-outlined text-[18px]">filter_list</span> Filter
+                        </button>
+<button class="flex items-center gap-xs px-md py-sm bg-primary text-on-primary rounded-lg font-label-md">
+<span class="material-symbols-outlined text-[18px]">add</span> Create Task
+                        </button>
+</div>
+</div>
+<div class="grid grid-cols-1 gap-md opacity-60">
+<div class="bg-surface-container-lowest p-lg rounded-xl shadow-sm border border-outline-variant/20 flex items-center justify-between">
+<div class="flex items-center gap-lg">
+<span class="material-symbols-outlined text-secondary">radio_button_unchecked</span>
+<div>
+<h4 class="font-label-md text-label-md font-bold">Draft Merger Agreement</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Matter: Horizon Acquisition (HA-2024-08)</p>
+</div>
+</div>
+<div class="flex items-center gap-xl">
+<span class="font-label-sm text-label-sm bg-error-container text-on-error-container px-sm py-xs rounded-full">High Priority</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Due Tomorrow</span>
+</div>
+</div>
+<!-- Blurred context items for side panel focus -->
+<div class="bg-surface-container-lowest p-lg rounded-xl shadow-sm border border-outline-variant/20 flex items-center justify-between">
+<div class="flex items-center gap-lg">
+<span class="material-symbols-outlined text-secondary">radio_button_unchecked</span>
+<div>
+<h4 class="font-label-md text-label-md font-bold">Review Intellectual Property Disclosure</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Matter: NexaGen Tech Patent (NXT-012)</p>
+</div>
+</div>
+<div class="flex items-center gap-xl text-on-surface-variant">
+<span class="font-label-sm text-label-sm bg-surface-container-highest px-sm py-xs rounded-full">Medium Priority</span>
+<span class="font-label-sm text-label-sm">Due in 3 days</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Task Detail Side Panel (The Focus) -->
+<div class="fixed top-0 right-0 h-screen w-[580px] bg-white shadow-2xl z-50 transform transition-transform duration-300 ease-in-out border-l border-outline-variant/30 flex flex-col translate-x-0" id="taskDetailPanel">
+<!-- Header -->
+<div class="p-lg border-b border-outline-variant/20 flex items-center justify-between bg-surface-container-low">
+<div class="flex items-center gap-md">
+<button class="p-2 hover:bg-surface-container-highest rounded-full transition-colors">
+<span class="material-symbols-outlined">close</span>
+</button>
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Task Detail</span>
+</div>
+<div class="flex items-center gap-sm">
+<button class="p-2 hover:bg-surface-container-highest rounded-full transition-colors text-on-surface-variant">
+<span class="material-symbols-outlined">share</span>
+</button>
+<button class="p-2 hover:bg-surface-container-highest rounded-full transition-colors text-on-surface-variant">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+</div>
+<!-- Panel Content (Scrollable) -->
+<div class="flex-1 overflow-y-auto p-lg space-y-xl">
+<!-- Title & Matter Context -->
+<section>
+<div class="flex items-center gap-sm mb-xs">
+<span class="material-symbols-outlined text-primary text-[20px]">folder_special</span>
+<span class="font-label-md text-label-md font-bold text-primary">Horizon Acquisition (HA-2024-08)</span>
+<span class="mx-xs text-outline-variant">•</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Corporate Law</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-primary font-bold mb-md">Draft Initial Merger Agreement and Escrow Provisions</h3>
+<div class="grid grid-cols-2 gap-lg bg-surface-container-low/50 p-md rounded-xl border border-outline-variant/10">
+<div class="flex items-center gap-md">
+<img alt="Assignee" class="w-8 h-8 rounded-full" data-alt="Close up of a professional male in a corporate setting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCKZc1CwV2Bm93UmzF9AXbPAUDxX69hsXrtYXRcnqGpmmMBE-f2VjB1SeTdULPVJJlo5rsWxccyo-IOlzVNYa06bHfVqc1L4gpgGqC3p3rDYhVl-T855DqblPeZ-mCfG1EYDepmWt5pRdlXB4fb8VCXTHcTOKezXCLG_d5ZYowuz0Oqxy2CtTkOQu4YR-GChxFD1-LCCrj7y0PNR1ft2pxt_i_o25nuLFseQ2LjRvAU4IteEFqcCusg7As68s5IqFlYO8KF0jt12_gQ"/>
+<div>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Assigned To</p>
+<p class="font-label-md text-label-md font-bold">Marcus Sterling, Esq.</p>
+</div>
+</div>
+<div class="flex items-center gap-md border-l border-outline-variant/30 pl-lg">
+<span class="material-symbols-outlined text-error">event</span>
+<div>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Due Date</p>
+<p class="font-label-md text-label-md font-bold text-error">Oct 24, 2024</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Time Tracking Integration -->
+<section class="bg-primary p-lg rounded-xl text-on-primary shadow-lg relative overflow-hidden">
+<div class="relative z-10 flex items-center justify-between">
+<div>
+<p class="font-label-sm text-label-sm opacity-80 mb-xs">Time Spent Today</p>
+<h4 class="font-display-lg text-display-lg leading-tight font-bold tracking-tight" id="timerDisplay">00:42:18</h4>
+</div>
+<button class="bg-secondary-container text-on-secondary-container h-14 w-14 rounded-full flex items-center justify-center hover:scale-105 active:scale-95 transition-all shadow-md" id="timerBtn">
+<span class="material-symbols-outlined text-[32px]" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+</button>
+</div>
+<div class="mt-lg flex gap-lg relative z-10">
+<div class="flex-1 bg-white/10 rounded-lg p-sm">
+<p class="font-label-sm text-label-sm opacity-70">Effort Estimate</p>
+<p class="font-label-md text-label-md font-bold">4.0 hrs</p>
+</div>
+<div class="flex-1 bg-white/10 rounded-lg p-sm">
+<p class="font-label-sm text-label-sm opacity-70">Actual Total</p>
+<p class="font-label-md text-label-md font-bold">1.2 hrs</p>
+</div>
+</div>
+<!-- Subtle pattern background -->
+<div class="absolute inset-0 opacity-10 pointer-events-none">
+<svg height="100%" width="100%"><pattern height="20" id="grid" patternunits="userSpaceOnUse" width="20"><path d="M 20 0 L 0 0 0 20" fill="none" stroke="white" stroke-width="1"></path></pattern><rect fill="url(#grid)" height="100%" width="100%"></rect></svg>
+</div>
+</section>
+<!-- Description -->
+<section>
+<div class="flex items-center justify-between mb-sm">
+<h5 class="font-label-md text-label-md font-bold text-on-surface flex items-center gap-xs">
+<span class="material-symbols-outlined text-[18px]">notes</span> Description
+                        </h5>
+<button class="text-primary font-label-sm text-label-sm hover:underline">Edit</button>
+</div>
+<div class="prose prose-sm font-body-md text-body-md text-on-surface-variant leading-relaxed">
+                        Prepare a comprehensive first draft of the merger agreement for Project Horizon. Pay specific attention to the indemnification clauses and the escrow distribution timeline as discussed in the partner meeting on Tuesday. Ensure all cross-references to Schedule 4.1 are updated.
+                    </div>
+</section>
+<!-- Sub-tasks Checklist -->
+<section>
+<div class="flex items-center justify-between mb-sm">
+<h5 class="font-label-md text-label-md font-bold text-on-surface flex items-center gap-xs">
+<span class="material-symbols-outlined text-[18px]">checklist</span> Sub-tasks
+                        </h5>
+<p class="font-label-sm text-label-sm text-on-surface-variant">2 of 4 complete</p>
+</div>
+<div class="space-y-sm">
+<label class="flex items-start gap-md p-sm rounded-lg hover:bg-surface-container-low cursor-pointer transition-colors border border-transparent hover:border-outline-variant/30 group">
+<input checked="" class="mt-1 rounded text-primary focus:ring-primary h-5 w-5" type="checkbox"/>
+<div class="flex-1">
+<span class="font-body-md text-body-md text-on-surface-variant line-through">Review previous agreement template</span>
+</div>
+</label>
+<label class="flex items-start gap-md p-sm rounded-lg hover:bg-surface-container-low cursor-pointer transition-colors border border-transparent hover:border-outline-variant/30">
+<input checked="" class="mt-1 rounded text-primary focus:ring-primary h-5 w-5" type="checkbox"/>
+<div class="flex-1">
+<span class="font-body-md text-body-md text-on-surface-variant line-through">Check Schedule 4.1 for technical accuracy</span>
+</div>
+</label>
+<label class="flex items-start gap-md p-sm rounded-lg hover:bg-surface-container-low cursor-pointer transition-colors border border-transparent hover:border-outline-variant/30">
+<input class="mt-1 rounded text-primary focus:ring-primary h-5 w-5" type="checkbox"/>
+<div class="flex-1">
+<span class="font-body-md text-body-md text-on-surface">Draft Section 8.2 (Indemnification)</span>
+<p class="font-label-sm text-label-sm text-secondary-container bg-on-secondary px-2 py-0.5 rounded inline-block mt-xs">Pending input from Client</p>
+</div>
+</label>
+<label class="flex items-start gap-md p-sm rounded-lg hover:bg-surface-container-low cursor-pointer transition-colors border border-transparent hover:border-outline-variant/30">
+<input class="mt-1 rounded text-primary focus:ring-primary h-5 w-5" type="checkbox"/>
+<div class="flex-1">
+<span class="font-body-md text-body-md text-on-surface">Final review for typos and cross-references</span>
+</div>
+</label>
+<button class="flex items-center gap-xs font-label-md text-label-md text-primary mt-sm px-sm py-xs hover:bg-primary-container/10 rounded-lg transition-colors">
+<span class="material-symbols-outlined text-[20px]">add</span> Add Sub-task
+                        </button>
+</div>
+</section>
+<!-- Attachments -->
+<section>
+<div class="flex items-center justify-between mb-sm">
+<h5 class="font-label-md text-label-md font-bold text-on-surface flex items-center gap-xs">
+<span class="material-symbols-outlined text-[18px]">attachment</span> Attachments
+                        </h5>
+<button class="text-primary font-label-sm text-label-sm hover:underline">Upload</button>
+</div>
+<div class="grid grid-cols-2 gap-md">
+<div class="flex items-center gap-md p-sm bg-surface-container-low rounded-lg border border-outline-variant/20 hover:border-primary/40 transition-colors cursor-pointer group">
+<div class="h-10 w-10 bg-primary/10 text-primary flex items-center justify-center rounded-lg">
+<span class="material-symbols-outlined">description</span>
+</div>
+<div class="flex-1 min-w-0">
+<p class="font-label-sm text-label-sm font-bold truncate">Draft_V1.docx</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant">2.4 MB • Oct 22</p>
+</div>
+</div>
+<div class="flex items-center gap-md p-sm bg-surface-container-low rounded-lg border border-outline-variant/20 hover:border-primary/40 transition-colors cursor-pointer group">
+<div class="h-10 w-10 bg-error/10 text-error flex items-center justify-center rounded-lg">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">picture_as_pdf</span>
+</div>
+<div class="flex-1 min-w-0">
+<p class="font-label-sm text-label-sm font-bold truncate">Instructions.pdf</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant">1.1 MB • Oct 20</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Activity Log / Comments -->
+<section class="pb-xl">
+<div class="flex items-center justify-between mb-lg border-b border-outline-variant/10 pb-md">
+<h5 class="font-label-md text-label-md font-bold text-on-surface flex items-center gap-xs">
+<span class="material-symbols-outlined text-[18px]">forum</span> Activity Log
+                        </h5>
+<div class="flex gap-md">
+<button class="font-label-sm text-label-sm text-primary font-bold">Comments (2)</button>
+<button class="font-label-sm text-label-sm text-on-surface-variant">Audit (8)</button>
+</div>
+</div>
+<!-- Comment Feed -->
+<div class="space-y-lg">
+<div class="flex gap-md">
+<img alt="Emily" class="w-8 h-8 rounded-full h-fit" data-alt="A photo of a professional female lawyer in a bright, modern glass-walled office, her expression thoughtful yet friendly. Professional business casual attire." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBrQlnH7UIqT6xNWcaPtKaRO_FZZiOZe9k0Y0NlCt431SdGoyKRfZzJKslXwjedx9p_ANXcu5ZoS-BTbbZjpkv6c5cNgyT-gZXYoEbRwu4WzEYr4PE3cY13Dsw3AYqRI-Kqurg1rkgBke2M_WFsruO62Pbu1NvR0yhqeYsevf-guxFp4msAt3l7wb2LJZvAQT1XVtDNluHJpSNTM0tyw7xYTAprz8jGU_efam4zHoJF4SeSuA85JZKVGyiP-H-oXgooo6nXMAnLr4QL"/>
+<div class="flex-1 bg-surface-container-low p-md rounded-xl rounded-tl-none">
+<div class="flex justify-between items-center mb-xs">
+<span class="font-label-sm text-label-sm font-bold">Emily Stone (Associate)</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">2 hours ago</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface">@Marcus, I've updated the escrow figures in the shared spreadsheet. Please cross-reference them with Clause 9.2 in the draft.</p>
+<div class="flex gap-md mt-sm">
+<button class="text-on-surface-variant font-label-sm text-label-sm flex items-center gap-xs hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[16px]">thumb_up</span> Like
+                                    </button>
+<button class="text-on-surface-variant font-label-sm text-label-sm flex items-center gap-xs hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[16px]">reply</span> Reply
+                                    </button>
+</div>
+</div>
+</div>
+<div class="flex gap-md">
+<div class="h-8 w-8 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary-container font-bold text-[10px]">SYSTEM</div>
+<div class="flex-1 pt-xs">
+<p class="font-label-sm text-label-sm text-on-surface-variant italic">
+                                    Marcus Sterling added an attachment <span class="text-primary font-bold">Draft_V1.docx</span> • 4 hours ago
+                                </p>
+</div>
+</div>
+</div>
+<!-- Comment Input -->
+<div class="mt-xl relative">
+<textarea class="w-full bg-white border border-outline-variant/40 rounded-xl p-md font-body-sm text-body-sm focus:ring-1 focus:ring-primary resize-none h-24" placeholder="Write a comment or mention others with @..."></textarea>
+<div class="absolute bottom-3 right-3 flex gap-sm">
+<button class="p-2 text-on-surface-variant hover:bg-surface-container-low rounded-lg transition-colors">
+<span class="material-symbols-outlined text-[20px]">alternate_email</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:bg-surface-container-low rounded-lg transition-colors">
+<span class="material-symbols-outlined text-[20px]">mood</span>
+</button>
+<button class="bg-primary text-on-primary px-md py-xs rounded-lg font-label-md text-label-md shadow-sm active:scale-95 transition-all">
+                                Send
+                            </button>
+</div>
+</div>
+</section>
+</div>
+<!-- Panel Footer Action Bar -->
+<div class="p-lg bg-surface border-t border-outline-variant/30 flex items-center justify-between">
+<div class="flex gap-md">
+<button class="px-lg py-sm bg-surface-container-highest text-on-surface font-label-md text-label-md rounded-lg hover:bg-outline-variant/40 transition-colors">
+                        Mark as Complete
+                    </button>
+</div>
+<div class="flex gap-sm">
+<button class="p-2 text-on-surface-variant hover:bg-surface-container-low rounded-lg transition-colors" title="Print Task">
+<span class="material-symbols-outlined">print</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:bg-surface-container-low rounded-lg transition-colors" title="Download Log">
+<span class="material-symbols-outlined">download</span>
+</button>
+</div>
+</div>
+</div>
+</main>
+<!-- Micro-interactions Script -->
+<script>
+        // Timer Logic
+        let timerSeconds = 2538; // 42m 18s
+        let timerInterval = null;
+        const timerDisplay = document.getElementById('timerDisplay');
+        const timerBtn = document.getElementById('timerBtn');
+        const timerIcon = timerBtn.querySelector('.material-symbols-outlined');
+
+        function formatTime(totalSeconds) {
+            const h = Math.floor(totalSeconds / 3600);
+            const m = Math.floor((totalSeconds % 3600) / 60);
+            const s = totalSeconds % 60;
+            return [h, m, s].map(v => v < 10 ? "0" + v : v).join(":");
+        }
+
+        timerBtn.addEventListener('click', () => {
+            if (timerInterval) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+                timerIcon.textContent = 'play_arrow';
+                timerBtn.classList.replace('bg-on-secondary', 'bg-secondary-container');
+                timerBtn.classList.replace('text-secondary-container', 'text-on-secondary-container');
+            } else {
+                timerIcon.textContent = 'pause';
+                timerBtn.classList.replace('bg-secondary-container', 'bg-on-secondary');
+                timerBtn.classList.replace('text-on-secondary-container', 'text-secondary-container');
+                timerInterval = setInterval(() => {
+                    timerSeconds++;
+                    timerDisplay.textContent = formatTime(timerSeconds);
+                }, 1000);
+            }
+        });
+
+        // Close Panel Simulation (Escape key)
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                const panel = document.getElementById('taskDetailPanel');
+                panel.classList.toggle('translate-x-full');
+                panel.classList.toggle('translate-x-0');
+            }
+        });
+    </script>
+</body></html>

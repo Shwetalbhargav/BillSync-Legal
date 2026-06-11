@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Manual Time Entry - BillSync Legal</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F8F5EF; /* Tonal background from Style Guidance */
+        }
+        .focus-ring:focus {
+            outline: none;
+            border-color: #002546; /* primary color */
+            box-shadow: 0 0 0 2px rgba(0, 37, 70, 0.1);
+        }
+        .court-section-transition {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+        }
+        .court-section-transition.active {
+            max-height: 400px;
+            opacity: 1;
+            padding-top: 24px;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-lowest": "#ffffff",
+                        "inverse-surface": "#27313c",
+                        "on-secondary-container": "#735a00",
+                        "on-primary-fixed": "#001c37",
+                        "on-error": "#ffffff",
+                        "surface-tint": "#3d608a",
+                        "surface-variant": "#d9e3f1",
+                        "secondary": "#755b00",
+                        "inverse-primary": "#a6c9f9",
+                        "surface-container": "#e4effd",
+                        "on-primary-fixed-variant": "#234871",
+                        "on-tertiary-fixed-variant": "#364764",
+                        "surface-dim": "#d1dbe8",
+                        "surface-container-highest": "#d9e3f1",
+                        "tertiary-fixed-dim": "#b5c7ea",
+                        "on-secondary-fixed-variant": "#584400",
+                        "primary-fixed": "#d2e4ff",
+                        "on-surface": "#121d26",
+                        "on-tertiary": "#ffffff",
+                        "secondary-container": "#fed255",
+                        "on-surface-variant": "#43474e",
+                        "outline-variant": "#c3c6cf",
+                        "on-background": "#121d26",
+                        "on-secondary-fixed": "#241a00",
+                        "on-primary-container": "#83a6d4",
+                        "on-tertiary-fixed": "#071c36",
+                        "on-tertiary-container": "#92a4c5",
+                        "inverse-on-surface": "#e8f2ff",
+                        "error-container": "#ffdad6",
+                        "surface": "#f7f9ff",
+                        "secondary-fixed": "#ffe08e",
+                        "tertiary-container": "#283a56",
+                        "error": "#ba1a1a",
+                        "on-error-container": "#93000a",
+                        "primary-container": "#123b63",
+                        "surface-bright": "#f7f9ff",
+                        "tertiary-fixed": "#d6e3ff",
+                        "secondary-fixed-dim": "#ecc246",
+                        "tertiary": "#11243f",
+                        "surface-container-low": "#edf4ff",
+                        "surface-container-high": "#dfe9f7",
+                        "outline": "#73777f",
+                        "primary-fixed-dim": "#a6c9f9",
+                        "primary": "#002546",
+                        "background": "#f7f9ff",
+                        "on-primary": "#ffffff",
+                        "on-secondary": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "md": "16px",
+                        "xl": "32px",
+                        "sm": "12px",
+                        "xs": "4px",
+                        "sidebar-width": "260px",
+                        "base": "8px",
+                        "lg": "24px",
+                        "margin-desktop": "40px",
+                        "gutter-desktop": "24px",
+                        "xxl": "48px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "headline-sm": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "label-md": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "headline-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "600"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background text-on-background min-h-screen flex overflow-hidden">
+<!-- SideNavBar Anchor -->
+<aside class="fixed left-0 top-0 h-full w-sidebar-width bg-tertiary flex flex-col py-lg z-50">
+<div class="px-md mb-xl">
+<h1 class="font-headline-sm text-headline-sm text-surface-container-lowest">BillSync Legal</h1>
+<p class="font-label-sm text-label-sm text-tertiary-fixed-dim">Law Firm Management</p>
+</div>
+<nav class="flex-1 overflow-y-auto space-y-1">
+<!-- Active Tab: Captured Work (or Tasks/Billing - we'll choose Captured Work as it relates to time entry) -->
+<a class="flex items-center px-md py-sm text-tertiary-fixed-dim hover:text-surface-container-lowest transition-colors group" href="#">
+<span class="material-symbols-outlined mr-md">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</a>
+<a class="flex items-center px-md py-sm text-tertiary-fixed-dim hover:text-surface-container-lowest transition-colors group" href="#">
+<span class="material-symbols-outlined mr-md">group</span>
+<span class="font-label-md text-label-md">Clients</span>
+</a>
+<a class="flex items-center px-md py-sm text-tertiary-fixed-dim hover:text-surface-container-lowest transition-colors group" href="#">
+<span class="material-symbols-outlined mr-md">folder_open</span>
+<span class="font-label-md text-label-md">Matters</span>
+</a>
+<a class="flex items-center px-md py-sm text-surface-container-lowest border-l-2 border-secondary font-bold transition-colors group" href="#">
+<span class="material-symbols-outlined mr-md">timer</span>
+<span class="font-label-md text-label-md">Work Meter</span>
+</a>
+<a class="flex items-center px-md py-sm text-tertiary-fixed-dim hover:text-surface-container-lowest transition-colors group" href="#">
+<span class="material-symbols-outlined mr-md">history_edu</span>
+<span class="font-label-md text-label-md">Captured Work</span>
+</a>
+<!-- ... Rest of tabs suppressed for focus ... -->
+</nav>
+<div class="px-md mt-auto pt-lg border-t border-primary-container">
+<a class="flex items-center px-md py-sm text-tertiary-fixed-dim hover:text-surface-container-lowest transition-colors" href="#">
+<span class="material-symbols-outlined mr-md">settings</span>
+<span class="font-label-md text-label-md">Settings</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="ml-sidebar-width flex-1 flex flex-col h-screen overflow-hidden">
+<!-- TopNavBar Anchor -->
+<header class="flex justify-between items-center w-full h-16 px-margin-desktop bg-surface border-b border-surface-variant">
+<div class="flex items-center flex-1 max-w-xl">
+<div class="relative w-full">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="w-full bg-surface-container-low border-none rounded-xl pl-10 pr-4 py-2 font-body-md text-body-md focus:ring-2 focus:ring-primary-container" placeholder="Search matters, clients, or codes..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-lg ml-xl">
+<button class="text-on-surface-variant hover:bg-surface-container-low p-2 rounded-full transition-all active:scale-95">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="text-on-surface-variant hover:bg-surface-container-low p-2 rounded-full transition-all active:scale-95">
+<span class="material-symbols-outlined">timer</span>
+</button>
+<div class="h-8 w-8 rounded-full bg-primary-container text-surface-container-lowest flex items-center justify-center font-bold text-label-sm">
+                    JD
+                </div>
+</div>
+</header>
+<!-- Canvas -->
+<div class="flex-1 overflow-y-auto bg-[#F8F5EF] p-margin-desktop">
+<div class="max-w-4xl mx-auto">
+<!-- Page Header -->
+<div class="mb-xxl flex justify-between items-end">
+<div>
+<nav class="flex gap-2 text-label-sm text-on-surface-variant mb-2">
+<span>Time Tracking</span>
+<span>/</span>
+<span class="text-secondary font-bold">New Entry</span>
+</nav>
+<h2 class="font-headline-lg text-headline-lg text-primary tracking-tight">Record Billable Time</h2>
+</div>
+<div class="text-right">
+<p class="font-label-sm text-label-sm text-on-surface-variant">Daily Total</p>
+<p class="font-headline-md text-headline-md text-secondary">6.4 hrs</p>
+</div>
+</div>
+<!-- Form Container -->
+<form class="bg-surface-container-lowest rounded-xl border border-outline-variant shadow-sm p-xl space-y-lg">
+<!-- Row 1: Matter & Date -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-lg">
+<div class="md:col-span-8">
+<label class="block font-label-md text-label-md text-on-surface-variant mb-xs" for="matter">Matter Name / File Number</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">folder</span>
+<select class="w-full pl-10 pr-4 py-3 bg-surface border-outline-variant rounded-lg font-body-md focus-ring appearance-none" id="matter" required="">
+<option value="">Select an active matter...</option>
+<option value="1">Smith v. TechCorp (2023-0948)</option>
+<option value="2">Estate of Miller - Probate (2024-0122)</option>
+<option value="3">Acme Merger Acquisition (2024-0015)</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-outline pointer-events-none">expand_more</span>
+</div>
+</div>
+<div class="md:col-span-4">
+<label class="block font-label-md text-label-md text-on-surface-variant mb-xs" for="date">Date</label>
+<input class="w-full px-4 py-3 bg-surface border-outline-variant rounded-lg font-body-md focus-ring" id="date" required="" type="date" value="2024-05-24"/>
+</div>
+</div>
+<!-- Row 2: Duration & Activity Code -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-lg">
+<div class="md:col-span-6 flex gap-base">
+<div class="flex-1">
+<label class="block font-label-md text-label-md text-on-surface-variant mb-xs" for="hours">Hours</label>
+<input class="w-full px-4 py-3 bg-surface border-outline-variant rounded-lg font-body-md focus-ring" id="hours" max="24" min="0" placeholder="0" required="" type="number"/>
+</div>
+<div class="flex-1">
+<label class="block font-label-md text-label-md text-on-surface-variant mb-xs" for="minutes">Minutes</label>
+<select class="w-full px-4 py-3 bg-surface border-outline-variant rounded-lg font-body-md focus-ring appearance-none" id="minutes">
+<option value="00">00</option>
+<option value="06">06 (.1)</option>
+<option value="12">12 (.2)</option>
+<option value="18">18 (.3)</option>
+<option value="24">24 (.4)</option>
+<option value="30">30 (.5)</option>
+<option value="36">36 (.6)</option>
+<option value="42">42 (.7)</option>
+<option value="48">48 (.8)</option>
+<option value="54">54 (.9)</option>
+</select>
+</div>
+</div>
+<div class="md:col-span-6">
+<label class="block font-label-md text-label-md text-on-surface-variant mb-xs" for="activity">Activity Code (LEDES)</label>
+<select class="w-full px-4 py-3 bg-surface border-outline-variant rounded-lg font-body-md focus-ring appearance-none" id="activity" required="">
+<option value="A101">A101 - Plan and Prepare</option>
+<option value="A103">A103 - Fact Investigation</option>
+<option value="A104">A104 - Legal Research</option>
+<option value="A105">A105 - Communications</option>
+<option selected="" value="A106">A106 - Court Appearances</option>
+<option value="A107">A107 - Trial and Hearing</option>
+<option value="A108">A108 - Depositions</option>
+</select>
+</div>
+</div>
+<!-- Row 3: Description -->
+<div>
+<label class="block font-label-md text-label-md text-on-surface-variant mb-xs" for="description">Description / Narrative</label>
+<textarea class="w-full px-4 py-3 bg-surface border-outline-variant rounded-lg font-body-md focus-ring resize-none" id="description" placeholder="Drafted initial response to discovery requests and consulted with client regarding..." required="" rows="3"></textarea>
+<p class="mt-2 text-label-sm text-on-surface-variant italic">Tip: Use '#' for matter shorthand or '@' to tag staff.</p>
+</div>
+<!-- Court Time Toggle -->
+<div class="pt-md border-t border-surface-variant">
+<label class="inline-flex items-center cursor-pointer group">
+<div class="relative">
+<input class="sr-only peer" id="courtToggle" onchange="toggleCourtSection()" type="checkbox"/>
+<div class="w-11 h-6 bg-surface-variant peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-secondary"></div>
+</div>
+<span class="ml-3 font-label-md text-label-md text-primary font-bold">This is Court Time</span>
+<span class="ml-2 text-label-sm text-on-surface-variant">(Adds Judge, Room, Hearing details)</span>
+</label>
+</div>
+<!-- Court Time Expanded Section -->
+<div class="court-section-transition" id="courtSection">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-lg p-lg bg-surface-container-low rounded-lg">
+<div>
+<label class="block font-label-md text-label-md text-on-surface-variant mb-xs" for="judge">Judge</label>
+<input class="w-full px-4 py-3 bg-surface border-outline-variant rounded-lg font-body-md focus-ring" id="judge" placeholder="Hon. Sarah Jenkins" type="text"/>
+</div>
+<div>
+<label class="block font-label-md text-label-md text-on-surface-variant mb-xs" for="courtroom">Courtroom</label>
+<input class="w-full px-4 py-3 bg-surface border-outline-variant rounded-lg font-body-md focus-ring" id="courtroom" placeholder="Dept. 402" type="text"/>
+</div>
+<div>
+<label class="block font-label-md text-label-md text-on-surface-variant mb-xs" for="hearing">Hearing Type</label>
+<select class="w-full px-4 py-3 bg-surface border-outline-variant rounded-lg font-body-md focus-ring appearance-none" id="hearing">
+<option value="">Select type...</option>
+<option value="status">Status Conference</option>
+<option value="motion">Motion Hearing</option>
+<option value="trial">Trial</option>
+<option value="mediation">Mediation</option>
+<option value="arbitration">Arbitration</option>
+</select>
+</div>
+</div>
+</div>
+<!-- Footer Actions -->
+<div class="pt-xl flex flex-col md:flex-row justify-between items-center gap-md">
+<div class="flex items-center text-label-sm text-on-surface-variant">
+<span class="material-symbols-outlined mr-xs text-secondary" style="font-variation-settings: 'FILL' 1;">info</span>
+                            Entry will be saved to "Pending Approval"
+                        </div>
+<div class="flex gap-md w-full md:w-auto">
+<button class="flex-1 md:flex-none px-xl py-3 border border-outline text-primary font-label-md text-label-md rounded-lg hover:bg-surface-container-low transition-all active:scale-95" type="button">
+                                Save and Add Another
+                            </button>
+<button class="flex-1 md:flex-none px-xl py-3 bg-primary text-on-primary font-label-md text-label-md rounded-lg hover:opacity-90 transition-all active:scale-95 shadow-lg shadow-primary/20" type="submit">
+                                Save Entry
+                            </button>
+</div>
+</div>
+</form>
+<!-- Shortcut Legend -->
+<div class="mt-xl grid grid-cols-2 md:grid-cols-4 gap-md">
+<div class="bg-surface rounded-lg p-md border border-outline-variant/30 flex items-center gap-sm">
+<kbd class="bg-surface-container-highest px-2 py-1 rounded text-label-sm font-mono border border-outline-variant">Tab</kbd>
+<span class="text-label-sm text-on-surface-variant">Next Field</span>
+</div>
+<div class="bg-surface rounded-lg p-md border border-outline-variant/30 flex items-center gap-sm">
+<kbd class="bg-surface-container-highest px-2 py-1 rounded text-label-sm font-mono border border-outline-variant">Cmd + S</kbd>
+<span class="text-label-sm text-on-surface-variant">Save Entry</span>
+</div>
+<div class="bg-surface rounded-lg p-md border border-outline-variant/30 flex items-center gap-sm">
+<kbd class="bg-surface-container-highest px-2 py-1 rounded text-label-sm font-mono border border-outline-variant">Cmd + G</kbd>
+<span class="text-label-sm text-on-surface-variant">Toggle Court</span>
+</div>
+<div class="bg-surface rounded-lg p-md border border-outline-variant/30 flex items-center gap-sm">
+<kbd class="bg-surface-container-highest px-2 py-1 rounded text-label-sm font-mono border border-outline-variant">Esc</kbd>
+<span class="text-label-sm text-on-surface-variant">Cancel</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Footer Anchor -->
+<footer class="flex justify-between items-center py-md px-margin-desktop bg-background border-t border-surface-variant">
+<span class="font-label-sm text-label-sm text-on-surface-variant">© 2024 BillSync Legal. All rights reserved.</span>
+<div class="flex gap-lg">
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Terms of Service</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Privacy Policy</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Contact Support</a>
+</div>
+</footer>
+</main>
+<script>
+        function toggleCourtSection() {
+            const toggle = document.getElementById('courtToggle');
+            const section = document.getElementById('courtSection');
+            if (toggle.checked) {
+                section.classList.add('active');
+                // Optional: Focus the first court field after short delay for animation
+                setTimeout(() => document.getElementById('judge').focus(), 300);
+            } else {
+                section.classList.remove('active');
+            }
+        }
+
+        // Global keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            // Cmd/Ctrl + S to Save
+            if ((e.metaKey || e.ctrlKey) && e.key === 's') {
+                e.preventDefault();
+                alert('Time entry saved!');
+            }
+            // Cmd/Ctrl + G to Toggle Court
+            if ((e.metaKey || e.ctrlKey) && e.key === 'g') {
+                e.preventDefault();
+                const toggle = document.getElementById('courtToggle');
+                toggle.checked = !toggle.checked;
+                toggleCourtSection();
+            }
+        });
+
+        // Initialize with first field focus
+        window.onload = () => {
+            document.getElementById('matter').focus();
+        };
+    </script>
+</body></html>

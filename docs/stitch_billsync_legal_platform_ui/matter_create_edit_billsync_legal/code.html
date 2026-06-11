@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>BillSync Legal - Matter Configuration</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F8F5EF; /* Level 0 Background per Style Guidance */
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #d9e3f1;
+            border-radius: 10px;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-error-container": "#93000a",
+                      "inverse-surface": "#27313c",
+                      "tertiary-fixed": "#d6e3ff",
+                      "on-error": "#ffffff",
+                      "on-secondary-fixed-variant": "#584400",
+                      "secondary-fixed": "#ffe08e",
+                      "secondary": "#755b00",
+                      "surface-variant": "#d9e3f1",
+                      "primary": "#002546",
+                      "on-primary-fixed-variant": "#234871",
+                      "on-secondary": "#ffffff",
+                      "surface": "#f7f9ff",
+                      "on-tertiary-container": "#92a4c5",
+                      "tertiary": "#11243f",
+                      "outline-variant": "#c3c6cf",
+                      "surface-container-highest": "#d9e3f1",
+                      "primary-container": "#123b63",
+                      "on-primary-container": "#83a6d4",
+                      "on-tertiary-fixed-variant": "#364764",
+                      "on-primary-fixed": "#001c37",
+                      "tertiary-container": "#283a56",
+                      "surface-container-lowest": "#ffffff",
+                      "tertiary-fixed-dim": "#b5c7ea",
+                      "surface-container-high": "#dfe9f7",
+                      "primary-fixed-dim": "#a6c9f9",
+                      "inverse-primary": "#a6c9f9",
+                      "on-tertiary": "#ffffff",
+                      "surface-bright": "#f7f9ff",
+                      "secondary-fixed-dim": "#ecc246",
+                      "on-surface-variant": "#43474e",
+                      "on-primary": "#ffffff",
+                      "surface-container": "#e4effd",
+                      "surface-tint": "#3d608a",
+                      "on-secondary-fixed": "#241a00",
+                      "on-background": "#121d26",
+                      "error-container": "#ffdad6",
+                      "background": "#f7f9ff",
+                      "outline": "#73777f",
+                      "surface-container-low": "#edf4ff",
+                      "surface-dim": "#d1dbe8",
+                      "secondary-container": "#fed255",
+                      "on-secondary-container": "#735a00",
+                      "inverse-on-surface": "#e8f2ff",
+                      "primary-fixed": "#d2e4ff",
+                      "on-tertiary-fixed": "#071c36",
+                      "error": "#ba1a1a",
+                      "on-surface": "#121d26"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "gutter-desktop": "24px",
+                      "md": "16px",
+                      "sidebar-width": "260px",
+                      "base": "8px",
+                      "xs": "4px",
+                      "xl": "32px",
+                      "xxl": "48px",
+                      "lg": "24px",
+                      "sm": "12px",
+                      "margin-desktop": "40px"
+              },
+              "fontFamily": {
+                      "label-md": ["Inter"],
+                      "headline-lg-mobile": ["Inter"],
+                      "label-sm": ["Inter"],
+                      "headline-sm": ["Inter"],
+                      "display-lg": ["Inter"],
+                      "body-lg": ["Inter"],
+                      "headline-lg": ["Inter"],
+                      "headline-md": ["Inter"],
+                      "body-md": ["Inter"],
+                      "body-sm": ["Inter"]
+              },
+              "fontSize": {
+                      "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                      "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                      "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "600"}],
+                      "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                      "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                      "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                      "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                      "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}]
+              }
+            },
+          },
+        }
+      </script>
+</head>
+<body class="bg-surface-bright text-on-surface">
+<!-- Navigation Shell (Suppressed for Task-Focused View per Mandate) -->
+<!-- Content starts directly with the Focused Workspace Layout -->
+<main class="min-h-screen flex flex-col">
+<!-- Top Sticky Actions Bar -->
+<header class="sticky top-0 z-50 bg-surface/80 backdrop-blur-md border-b border-outline-variant px-margin-desktop py-md flex items-center justify-between">
+<div class="flex items-center gap-md">
+<button class="p-base hover:bg-surface-container-low transition-colors rounded-full">
+<span class="material-symbols-outlined text-primary">arrow_back</span>
+</button>
+<div>
+<h1 class="font-headline-sm text-headline-sm text-primary font-bold">New Matter Configuration</h1>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Client: Apex Global Logistics (AGL-2024)</p>
+</div>
+</div>
+<div class="flex items-center gap-sm">
+<button class="px-lg py-sm font-label-md text-label-md text-primary border border-outline hover:bg-surface-container-low transition-all rounded-lg">Save Draft</button>
+<button class="px-lg py-sm font-label-md text-label-md text-on-primary bg-primary hover:bg-primary-container transition-all rounded-lg shadow-sm">Publish Matter</button>
+</div>
+</header>
+<div class="flex-1 px-margin-desktop py-xl max-w-[1440px] mx-auto w-full grid grid-cols-12 gap-lg">
+<!-- Left Side: Progressive Form Modules (8 Columns) -->
+<div class="col-span-12 lg:col-span-8 space-y-xl">
+<!-- Section 1: Matter Essentials -->
+<section class="bg-surface-container-lowest p-xl rounded-xl border border-outline-variant shadow-sm transition-shadow hover:shadow-md">
+<div class="flex items-center gap-sm mb-lg">
+<span class="material-symbols-outlined text-secondary-container bg-primary p-xs rounded-lg">folder_shared</span>
+<h2 class="font-headline-md text-headline-md text-primary">Matter Essentials</h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-lg">
+<div class="space-y-xs">
+<label class="font-label-md text-label-md text-on-surface-variant px-xs">Matter Name</label>
+<input class="w-full bg-surface border border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary/20 rounded-lg py-sm px-md transition-all font-body-md text-body-md" placeholder="e.g., Intellectual Property Dispute Q4" type="text" value="Apex vs. Zenith - Tech Patent Infringement"/>
+</div>
+<div class="space-y-xs">
+<label class="font-label-md text-label-md text-on-surface-variant px-xs">Case ID / Reference</label>
+<input class="w-full bg-surface border border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary/20 rounded-lg py-sm px-md transition-all font-body-md text-body-md" placeholder="REF-000-00" type="text" value="LIT-2024-089-AZ"/>
+</div>
+<div class="space-y-xs">
+<label class="font-label-md text-label-md text-on-surface-variant px-xs">Practice Area</label>
+<select class="w-full bg-surface border border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary/20 rounded-lg py-sm px-md transition-all font-body-md text-body-md">
+<option>Commercial Litigation</option>
+<option selected="">Intellectual Property</option>
+<option>Corporate M&amp;A</option>
+<option>Employment Law</option>
+</select>
+</div>
+<div class="space-y-xs">
+<label class="font-label-md text-label-md text-on-surface-variant px-xs">Lead Attorney</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-md top-1/2 -translate-y-1/2 text-on-surface-variant text-body-md">person</span>
+<input class="w-full bg-surface border border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary/20 rounded-lg py-sm pl-xl pr-md transition-all font-body-md text-body-md" type="text" value="Eleanor Vance"/>
+</div>
+</div>
+</div>
+</section>
+<!-- Section 2: Budgeting & Rate Cards -->
+<section class="bg-surface-container-lowest p-xl rounded-xl border border-outline-variant shadow-sm transition-shadow hover:shadow-md">
+<div class="flex items-center justify-between mb-lg">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-secondary-container bg-primary p-xs rounded-lg">payments</span>
+<h2 class="font-headline-md text-headline-md text-primary">Financial Guardrails</h2>
+</div>
+<span class="px-md py-xs bg-secondary-container/10 text-on-secondary-container font-label-sm text-label-sm rounded-full">Currency: USD</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-lg mb-xl">
+<div class="p-lg bg-surface-container-low rounded-lg border border-outline-variant">
+<label class="font-label-md text-label-md text-on-surface-variant block mb-sm">Total Matter Budget</label>
+<div class="flex items-center gap-sm">
+<span class="font-headline-md text-headline-md text-primary">$</span>
+<input class="bg-transparent border-b-2 border-primary focus:outline-none w-full font-headline-md text-headline-md text-primary" type="number" value="150000"/>
+</div>
+<p class="mt-md font-label-sm text-label-sm text-on-surface-variant">Notifications will trigger at 80% threshold ($120k).</p>
+</div>
+<div class="p-lg bg-surface-container-low rounded-lg border border-outline-variant">
+<label class="font-label-md text-label-md text-on-surface-variant block mb-sm">Preferred Rate Card</label>
+<div class="flex items-center justify-between mt-sm">
+<div>
+<span class="font-body-md text-body-md text-primary font-bold">Tier 1 National (2024)</span>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Global Master Agreement Rates</p>
+</div>
+<button class="text-primary hover:underline font-label-sm text-label-sm">Change</button>
+</div>
+</div>
+</div>
+<div class="space-y-md">
+<h3 class="font-label-md text-label-md text-primary font-bold uppercase tracking-wider">AFAs &amp; Special Billing</h3>
+<div class="flex gap-md">
+<label class="flex-1 flex items-center gap-md p-md border border-outline-variant rounded-lg cursor-pointer hover:bg-surface-container-low transition-colors group">
+<input checked="" class="w-5 h-5 rounded text-primary focus:ring-primary border-outline-variant" type="checkbox"/>
+<div>
+<p class="font-label-md text-label-md text-primary">Monthly Phase Caps</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Cap billing at $25k per month</p>
+</div>
+</label>
+<label class="flex-1 flex items-center gap-md p-md border border-outline-variant rounded-lg cursor-pointer hover:bg-surface-container-low transition-colors group">
+<input class="w-5 h-5 rounded text-primary focus:ring-primary border-outline-variant" type="checkbox"/>
+<div>
+<p class="font-label-md text-label-md text-primary">Success Bonus</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant">15% on favorable summary judgment</p>
+</div>
+</label>
+</div>
+</div>
+</section>
+<!-- Section 3: Timeline & Milestones -->
+<section class="bg-surface-container-lowest p-xl rounded-xl border border-outline-variant shadow-sm">
+<div class="flex items-center justify-between mb-lg">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-secondary-container bg-primary p-xs rounded-lg">insights</span>
+<h2 class="font-headline-md text-headline-md text-primary">Strategic Timeline</h2>
+</div>
+<button class="flex items-center gap-xs font-label-md text-label-md text-primary hover:bg-surface-container-low px-md py-sm rounded-lg transition-colors">
+<span class="material-symbols-outlined text-body-md">add_circle</span>
+                            Add Milestone
+                        </button>
+</div>
+<div class="relative border-l-2 border-outline-variant ml-4 space-y-xl py-base">
+<!-- Milestone 1 -->
+<div class="relative pl-lg">
+<div class="absolute -left-[11px] top-0 w-5 h-5 rounded-full bg-primary ring-4 ring-surface-container-lowest"></div>
+<div class="grid grid-cols-12 gap-md">
+<div class="col-span-8">
+<input class="bg-transparent border-none p-0 focus:ring-0 font-body-lg text-body-lg text-primary font-bold w-full" type="text" value="Complaint Filed"/>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Commencement of formal proceedings</p>
+</div>
+<div class="col-span-4 text-right">
+<input class="bg-surface border-none p-0 focus:ring-0 font-label-md text-label-md text-primary" type="date" value="2024-05-12"/>
+</div>
+</div>
+</div>
+<!-- Milestone 2 -->
+<div class="relative pl-lg">
+<div class="absolute -left-[11px] top-0 w-5 h-5 rounded-full bg-secondary-container ring-4 ring-surface-container-lowest"></div>
+<div class="grid grid-cols-12 gap-md">
+<div class="col-span-8">
+<input class="bg-transparent border-none p-0 focus:ring-0 font-body-lg text-body-lg text-primary font-bold w-full" type="text" value="Discovery Deadline"/>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Production of all digital evidence</p>
+</div>
+<div class="col-span-4 text-right">
+<input class="bg-surface border-none p-0 focus:ring-0 font-label-md text-label-md text-primary" type="date" value="2024-09-20"/>
+</div>
+</div>
+</div>
+<!-- Milestone 3 -->
+<div class="relative pl-lg">
+<div class="absolute -left-[11px] top-0 w-5 h-5 rounded-full bg-outline ring-4 ring-surface-container-lowest"></div>
+<div class="grid grid-cols-12 gap-md opacity-60">
+<div class="col-span-8">
+<input class="bg-transparent border-none p-0 focus:ring-0 font-body-lg text-body-lg text-primary font-bold w-full" placeholder="Trial Start" type="text"/>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Projected court date</p>
+</div>
+<div class="col-span-4 text-right">
+<input class="bg-surface border-none p-0 focus:ring-0 font-label-md text-label-md text-primary" type="date"/>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+<!-- Right Side: Sidebar Configuration (4 Columns) -->
+<div class="col-span-12 lg:col-span-4 space-y-lg">
+<!-- Team Assignment Card -->
+<section class="bg-surface-container-lowest p-lg rounded-xl border border-outline-variant shadow-sm sticky top-24">
+<div class="flex items-center gap-sm mb-lg">
+<span class="material-symbols-outlined text-primary">group</span>
+<h3 class="font-label-md text-label-md text-primary font-bold uppercase">Team &amp; Assignments</h3>
+</div>
+<div class="space-y-md">
+<div class="flex items-center justify-between p-sm hover:bg-surface-container-low rounded-lg transition-colors">
+<div class="flex items-center gap-sm">
+<img class="w-10 h-10 rounded-full object-cover" data-alt="A professional headshot of a middle-aged male attorney in a navy tailored suit, smiling confidently in a high-end modern law office setting with blurred glass partitions and warm, focused lighting. The aesthetic is corporate and sophisticated, maintaining a high-key light-mode palette." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAo_6AFuAIOGR0lP8-LfvIm7bP2NMIm7mfrpLyb1nloKhRaLjZwAG4aiKoYur06q-GmJPqqXtCod90XOXMjiXQSESa2fXZyXEppX-KQvXNJDKkuRVdSrIDpQHJtMuKSuudcSWB75fFweqv9C8qAYrvMmuH7dAAVJ9-_KswxB9hZRqh_6b9wcIUvxahJsVo3Y1uAqwMrxOOtJZwiXWeZzdnndYUON5A8AXbU5P7d02u9CJZYVX2bhuhfhKjmPMkXt7WFPBnb-r-NdaZn"/>
+<div>
+<p class="font-label-md text-label-md text-primary">Julian Thorne</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Senior Associate</p>
+</div>
+</div>
+<button class="material-symbols-outlined text-body-md text-outline hover:text-error transition-colors">cancel</button>
+</div>
+<div class="flex items-center justify-between p-sm hover:bg-surface-container-low rounded-lg transition-colors">
+<div class="flex items-center gap-sm">
+<img class="w-10 h-10 rounded-full object-cover" data-alt="A detailed professional portrait of a female legal consultant wearing a minimalist white blouse, looking directly at the camera with an expression of competence. The background is a bright, airy office with minimalist wooden accents and soft sunlight streaming through a window, creating a calm and premium visual tone." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC1jozBBq3upbNKaiLiksE0f_4CbYlbM3l-CTn3yi6TVOTBTdSmX1sW6cYO5ntFV51U991OZN-9WNFspNGTqqurIln_WOU7bcSFUGnxfLjmIIg0IcOU2AgXeCx6a8-_vIsoT8jQLDnZBLLdqX50u6snz6zcUqfBj88jBObwRrS245KyLBNUx2kT0cDIzKygdbJHV0TaduS6Dr5_q8pc7mQHQEfAe3UpN9EY9nnsj-g6BWUUYNIhV7WtNlMNmv5xrMPDRnsSrqkAzvrf"/>
+<div>
+<p class="font-label-md text-label-md text-primary">Sarah Chen</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Paralegal</p>
+</div>
+</div>
+<button class="material-symbols-outlined text-body-md text-outline hover:text-error transition-colors">cancel</button>
+</div>
+<button class="w-full py-md border-2 border-dashed border-outline-variant rounded-lg text-on-surface-variant hover:border-primary hover:text-primary transition-all flex items-center justify-center gap-sm mt-lg">
+<span class="material-symbols-outlined">person_add</span>
+<span class="font-label-md text-label-md">Invite Collaborator</span>
+</button>
+</div>
+<div class="mt-xl pt-lg border-t border-outline-variant">
+<h4 class="font-label-sm text-label-sm text-on-surface-variant font-bold uppercase mb-md">Quick Summary</h4>
+<div class="space-y-sm">
+<div class="flex justify-between font-label-md text-label-md">
+<span class="text-on-surface-variant">Est. Duration</span>
+<span class="text-primary font-bold">18 Months</span>
+</div>
+<div class="flex justify-between font-label-md text-label-md">
+<span class="text-on-surface-variant">Complexity</span>
+<span class="px-xs bg-error-container text-on-error-container rounded">High</span>
+</div>
+<div class="flex justify-between font-label-md text-label-md">
+<span class="text-on-surface-variant">External Counsel</span>
+<span class="text-primary">Thorne &amp; Co.</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Documents Preview Card -->
+<section class="bg-surface-container-lowest p-lg rounded-xl border border-outline-variant shadow-sm">
+<div class="flex items-center gap-sm mb-lg">
+<span class="material-symbols-outlined text-primary">description</span>
+<h3 class="font-label-md text-label-md text-primary font-bold uppercase">Linked Entities</h3>
+</div>
+<div class="p-md bg-surface border border-outline-variant rounded-lg hover:border-primary transition-colors cursor-pointer group">
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-headline-sm text-primary group-hover:scale-110 transition-transform">article</span>
+<div>
+<p class="font-label-md text-label-md text-primary truncate">Retention_Letter_v2.pdf</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Added 2 hours ago</p>
+</div>
+</div>
+</div>
+</section>
+</div>
+</div>
+</main>
+<!-- Success Feedback Overlay (Hidden by default) -->
+<div class="fixed bottom-lg right-lg translate-y-24 opacity-0 transition-all duration-300 pointer-events-none" id="save-toast">
+<div class="bg-primary text-on-primary px-xl py-md rounded-lg shadow-xl flex items-center gap-md">
+<span class="material-symbols-outlined text-secondary-container">check_circle</span>
+<span class="font-label-md text-label-md">Matter progress saved to cloud.</span>
+</div>
+</div>
+<script>
+        // Micro-interaction for Save button
+        const saveButton = document.querySelector('button:contains("Save Draft")') || document.querySelectorAll('button')[1];
+        const toast = document.getElementById('save-toast');
+
+        saveButton.addEventListener('click', () => {
+            toast.classList.remove('translate-y-24', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+            
+            setTimeout(() => {
+                toast.classList.add('translate-y-24', 'opacity-0');
+                toast.classList.remove('translate-y-0', 'opacity-100');
+            }, 3000);
+        });
+
+        // Hover effects for cards simulating "physical lift"
+        const cards = document.querySelectorAll('section');
+        cards.forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.transform = 'translateY(-2px)';
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'translateY(0)';
+            });
+        });
+    </script>
+</body></html>

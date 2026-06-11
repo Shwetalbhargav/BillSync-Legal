@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-container": "#c8dbfe",
+                        "surface-container-high": "#dfe9f7",
+                        "inverse-on-surface": "#e8f2ff",
+                        "on-error-container": "#93000a",
+                        "secondary-fixed-dim": "#b5c7ea",
+                        "on-secondary": "#ffffff",
+                        "outline-variant": "#c3c6cf",
+                        "surface-tint": "#3d608a",
+                        "primary-fixed": "#d2e4ff",
+                        "outline": "#73777f",
+                        "on-surface": "#121d26",
+                        "on-tertiary-fixed-variant": "#584400",
+                        "on-secondary-container": "#4e607e",
+                        "surface-bright": "#f7f9ff",
+                        "primary-container": "#123b63",
+                        "error-container": "#ffdad6",
+                        "on-primary-container": "#83a6d4",
+                        "primary-fixed-dim": "#a6c9f9",
+                        "error": "#ba1a1a",
+                        "background": "#f7f9ff",
+                        "tertiary-fixed-dim": "#ecc246",
+                        "tertiary-fixed": "#ffe08e",
+                        "secondary-fixed": "#d6e3ff",
+                        "on-secondary-fixed": "#071c36",
+                        "on-primary": "#ffffff",
+                        "inverse-surface": "#27313c",
+                        "primary": "#002546",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary": "#ffffff",
+                        "on-tertiary-fixed": "#241a00",
+                        "surface-container-highest": "#d9e3f1",
+                        "surface-dim": "#d1dbe8",
+                        "surface-container-low": "#edf4ff",
+                        "inverse-primary": "#a6c9f9",
+                        "on-primary-fixed": "#001c37",
+                        "on-error": "#ffffff",
+                        "on-surface-variant": "#43474e",
+                        "tertiary": "#755b00",
+                        "on-primary-fixed-variant": "#234871",
+                        "tertiary-container": "#cea72c",
+                        "on-background": "#121d26",
+                        "on-tertiary-container": "#4f3d00",
+                        "surface-variant": "#d9e3f1",
+                        "secondary": "#4d5f7d",
+                        "surface-container": "#e4effd",
+                        "surface": "#f7f9ff",
+                        "on-secondary-fixed-variant": "#364764"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "xl": "48px",
+                        "margin-desktop": "40px",
+                        "xs": "8px",
+                        "gutter": "24px",
+                        "lg": "32px",
+                        "sm": "16px",
+                        "md": "24px",
+                        "margin-mobile": "16px",
+                        "base": "4px",
+                        "sidebar-width": "260px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Inter"],
+                        "label-md": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "headline-sm": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "600"}],
+                        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .timer-glow {
+            text-shadow: 0 0 20px rgba(0, 37, 70, 0.15);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #d9e3f1;
+            border-radius: 10px;
+        }
+        @keyframes pulse-red {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
+        }
+        .animate-pulse-red {
+            animation: pulse-red 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+    </style>
+</head>
+<body class="bg-background font-body-md text-on-surface">
+<!-- Sidebar Navigation Shell -->
+<aside class="fixed left-0 top-0 h-full w-sidebar-width bg-primary flex flex-col py-lg z-50">
+<div class="px-lg mb-xl">
+<h1 class="font-headline-sm text-headline-sm text-surface-container-lowest tracking-tight">BillSync Legal</h1>
+<p class="font-label-md text-label-md text-primary-fixed-dim opacity-70">Law Firm Management</p>
+</div>
+<nav class="flex-1 overflow-y-auto custom-scrollbar px-sm space-y-base">
+<a class="flex items-center gap-md px-md py-sm rounded text-primary-fixed-dim hover:text-surface-container-lowest transition-colors group" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-label-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded text-primary-fixed-dim hover:text-surface-container-lowest transition-colors group" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="font-label-md">Clients</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded text-primary-fixed-dim hover:text-surface-container-lowest transition-colors group" href="#">
+<span class="material-symbols-outlined">folder_open</span>
+<span class="font-label-md">Matters</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded text-primary-fixed-dim hover:text-surface-container-lowest transition-colors group" href="#">
+<span class="material-symbols-outlined">assignment</span>
+<span class="font-label-md">Tasks</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded text-surface-container-lowest border-l-2 border-secondary-fixed font-bold bg-white/5" href="#">
+<span class="material-symbols-outlined">timer</span>
+<span class="font-label-md">Work Meter</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded text-primary-fixed-dim hover:text-surface-container-lowest transition-colors group" href="#">
+<span class="material-symbols-outlined">calendar_today</span>
+<span class="font-label-md">Calendar</span>
+</a>
+</nav>
+<div class="px-lg mt-auto border-t border-white/10 pt-md">
+<div class="flex items-center gap-sm">
+<div class="w-8 h-8 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary-container font-bold text-xs">JS</div>
+<div class="flex-1 min-w-0">
+<p class="text-surface-container-lowest font-label-md truncate">Julian Sterling</p>
+<p class="text-primary-fixed-dim text-[10px] truncate uppercase tracking-wider">Senior Partner</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="ml-sidebar-width min-h-screen flex flex-col">
+<!-- Top Nav Bar Shell -->
+<header class="flex justify-between items-center w-full h-16 px-margin-desktop bg-surface border-b border-surface-variant">
+<div class="flex items-center gap-xl w-1/2">
+<div class="relative w-full max-w-md group">
+<span class="material-symbols-outlined absolute left-md top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="w-full bg-surface-container-low border-none rounded-lg py-xs pl-xl pr-md text-body-sm focus:ring-2 focus:ring-primary/20 transition-all" placeholder="Search matters or client files..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-lg">
+<button class="material-symbols-outlined text-on-surface-variant hover:bg-surface-container-low p-xs rounded-lg transition-all">notifications</button>
+<button class="material-symbols-outlined text-on-surface-variant hover:bg-surface-container-low p-xs rounded-lg transition-all">settings</button>
+<div class="w-px h-6 bg-outline-variant"></div>
+<button class="material-symbols-outlined text-on-surface-variant hover:bg-surface-container-low p-xs rounded-lg transition-all">help_outline</button>
+</div>
+</header>
+<section class="flex-1 p-margin-desktop max-w-[1000px] mx-auto w-full">
+<!-- Header Section -->
+<div class="mb-lg flex justify-between items-end">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-primary mb-xs">Work Meter</h2>
+<p class="font-body-md text-on-surface-variant">Standalone time tracking for high-precision legal billing.</p>
+</div>
+<div class="hidden flex items-center gap-sm bg-error-container text-on-error-container px-md py-sm rounded-lg border border-error/20" id="save-failed-alert">
+<span class="material-symbols-outlined text-error">cloud_off</span>
+<span class="text-label-md">Save Failed: Connection lost</span>
+<button class="bg-error text-white px-sm py-1 rounded text-[10px] font-bold uppercase hover:bg-on-error-container transition-colors">Retry</button>
+</div>
+</div>
+<!-- Standalone Work Meter Card -->
+<div class="bg-white rounded-xl border border-outline-variant shadow-sm overflow-hidden flex flex-col">
+<!-- Live Timer Header -->
+<div class="bg-surface-container-low p-xl flex flex-col items-center justify-center border-b border-surface-variant relative">
+<div class="absolute top-md right-md flex items-center gap-xs">
+<div class="w-2 h-2 rounded-full bg-error animate-pulse-red" id="status-dot"></div>
+<span class="font-label-md text-on-surface-variant uppercase tracking-widest text-[10px]" id="status-text">Recording</span>
+</div>
+<div class="font-display-lg text-[64px] leading-tight text-primary tabular-nums timer-glow mb-xs" id="timer-display">
+                        00:42:15
+                    </div>
+<div class="flex gap-md mt-sm">
+<button class="hidden flex items-center gap-sm px-lg py-sm bg-primary text-white font-label-md rounded hover:bg-primary-container transition-all active:scale-95" id="start-btn">
+<span class="material-symbols-outlined">play_arrow</span>
+                            START WORK
+                        </button>
+<button class="flex items-center gap-sm px-lg py-sm bg-surface-container-highest text-primary font-label-md border border-outline-variant rounded hover:bg-surface-variant transition-all active:scale-95" id="stop-btn">
+<span class="material-symbols-outlined">stop</span>
+                            STOP WORK
+                        </button>
+</div>
+</div>
+<!-- Form Fields -->
+<div class="p-xl grid grid-cols-1 md:grid-cols-2 gap-lg border-b border-surface-variant">
+<div class="space-y-base">
+<label class="font-label-md text-primary uppercase tracking-wider text-[11px]">Client</label>
+<div class="relative">
+<select class="w-full border border-outline-variant rounded p-md bg-surface-container-lowest font-body-md focus:border-primary focus:ring-0 transition-all appearance-none">
+<option>AeroSpace Dynamics Inc.</option>
+<option>Global Retail Partners</option>
+<option>Northstar Ventures</option>
+</select>
+<span class="material-symbols-outlined absolute right-md top-1/2 -translate-y-1/2 pointer-events-none text-outline">expand_more</span>
+</div>
+</div>
+<div class="space-y-base">
+<label class="font-label-md text-primary uppercase tracking-wider text-[11px]">Matter</label>
+<div class="relative">
+<select class="w-full border border-outline-variant rounded p-md bg-surface-container-lowest font-body-md focus:border-primary focus:ring-0 transition-all appearance-none">
+<option>Matter #2024-881: Harrison Acquisition</option>
+<option>Matter #2024-912: IP Litigation</option>
+<option>Matter #2024-703: Contract Renewal</option>
+</select>
+<span class="material-symbols-outlined absolute right-md top-1/2 -translate-y-1/2 pointer-events-none text-outline">expand_more</span>
+</div>
+</div>
+<div class="space-y-base">
+<label class="font-label-md text-primary uppercase tracking-wider text-[11px]">Task</label>
+<div class="relative">
+<select class="w-full border border-outline-variant rounded p-md bg-surface-container-lowest font-body-md focus:border-primary focus:ring-0 transition-all appearance-none">
+<option>L110 - Case Assessment &amp; Development</option>
+<option>L120 - Research &amp; Analysis</option>
+<option>L210 - Client Communication</option>
+<option>L410 - Trial Preparation</option>
+</select>
+<span class="material-symbols-outlined absolute right-md top-1/2 -translate-y-1/2 pointer-events-none text-outline">expand_more</span>
+</div>
+</div>
+<div class="space-y-base">
+<label class="font-label-md text-primary uppercase tracking-wider text-[11px]">Activity Type</label>
+<div class="relative">
+<select class="w-full border border-outline-variant rounded p-md bg-surface-container-lowest font-body-md focus:border-primary focus:ring-0 transition-all appearance-none">
+<option>Billable Work</option>
+<option>Non-Billable / Pro Bono</option>
+<option>Internal Administrative</option>
+<option>Business Development</option>
+</select>
+<span class="material-symbols-outlined absolute right-md top-1/2 -translate-y-1/2 pointer-events-none text-outline">expand_more</span>
+</div>
+</div>
+</div>
+<!-- Notes Area -->
+<div class="p-xl space-y-base">
+<label class="font-label-md text-primary uppercase tracking-wider text-[11px]">Work Session Notes</label>
+<textarea class="w-full h-32 border border-outline-variant rounded p-md bg-surface-container-lowest font-body-md focus:border-primary focus:ring-0 transition-all resize-none placeholder:text-outline/50" placeholder="Describe the specific work performed for the client ledger..."></textarea>
+</div>
+<!-- Footer Actions -->
+<div class="px-xl py-lg bg-surface-container-low flex items-center justify-between">
+<button class="flex items-center gap-sm text-on-surface-variant font-label-md hover:text-error transition-colors">
+<span class="material-symbols-outlined">delete</span>
+                        Discard
+                    </button>
+<button class="flex items-center gap-sm px-xl py-md bg-primary text-white font-label-md rounded shadow-md hover:bg-primary-container transition-all active:scale-95">
+<span class="material-symbols-outlined">send_and_archive</span>
+                        SUBMIT FOR BILLING
+                    </button>
+</div>
+</div>
+<!-- Helpful Context for Testing -->
+<div class="mt-lg grid grid-cols-1 md:grid-cols-3 gap-md">
+<div class="p-md bg-surface-container-high rounded-lg border border-outline-variant flex items-center gap-md">
+<div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">history</span>
+</div>
+<div>
+<p class="text-[10px] text-on-surface-variant uppercase font-bold tracking-tight">Daily Total</p>
+<p class="text-headline-sm text-primary">6.4h</p>
+</div>
+</div>
+<div class="p-md bg-surface-container-high rounded-lg border border-outline-variant flex items-center gap-md">
+<div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">account_balance_wallet</span>
+</div>
+<div>
+<p class="text-[10px] text-on-surface-variant uppercase font-bold tracking-tight">Realizable Value</p>
+<p class="text-headline-sm text-primary">$3,200.00</p>
+</div>
+</div>
+<div class="p-md bg-surface-container-high rounded-lg border border-outline-variant flex items-center gap-md">
+<div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">speed</span>
+</div>
+<div>
+<p class="text-[10px] text-on-surface-variant uppercase font-bold tracking-tight">Efficiency</p>
+<p class="text-headline-sm text-primary">92%</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Footer Shell -->
+<footer class="mt-auto flex justify-between items-center py-md px-margin-desktop bg-surface border-t border-surface-variant">
+<div class="flex items-center gap-xl">
+<span class="font-label-md font-bold text-primary">BillSync</span>
+<p class="text-label-md text-on-surface-variant opacity-70">© 2024 BillSync Legal. Precision Meter v2.4.1</p>
+</div>
+<div class="flex gap-lg">
+<a class="text-label-md text-on-surface-variant hover:text-primary transition-colors" href="#">System Status</a>
+<a class="text-label-md text-on-surface-variant hover:text-primary transition-colors" href="#">Support Desk</a>
+</div>
+</footer>
+</main>
+<script>
+        let seconds = 2535; // 00:42:15
+        const timerDisplay = document.getElementById('timer-display');
+        const startBtn = document.getElementById('start-btn');
+        const stopBtn = document.getElementById('stop-btn');
+        const statusDot = document.getElementById('status-dot');
+        const statusText = document.getElementById('status-text');
+        const saveFailedAlert = document.getElementById('save-failed-alert');
+        let isRunning = true;
+
+        const updateTimer = () => {
+            if (isRunning) {
+                seconds++;
+                const hrs = Math.floor(seconds / 3600);
+                const mins = Math.floor((seconds % 3600) / 60);
+                const secs = seconds % 60;
+                timerDisplay.innerText = 
+                    `${hrs.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            }
+        };
+
+        let timerInterval = setInterval(updateTimer, 1000);
+
+        stopBtn.addEventListener('click', () => {
+            isRunning = false;
+            stopBtn.classList.add('hidden');
+            startBtn.classList.remove('hidden');
+            statusDot.classList.remove('bg-error', 'animate-pulse-red');
+            statusDot.classList.add('bg-outline');
+            statusText.innerText = 'Paused';
+            timerDisplay.classList.add('opacity-50');
+            timerDisplay.classList.remove('timer-glow');
+            
+            // Randomly simulate a save failure for tester visibility
+            if(Math.random() > 0.5) {
+                saveFailedAlert.classList.remove('hidden');
+            }
+        });
+
+        startBtn.addEventListener('click', () => {
+            isRunning = true;
+            startBtn.classList.add('hidden');
+            stopBtn.classList.remove('hidden');
+            statusDot.classList.add('bg-error', 'animate-pulse-red');
+            statusDot.classList.remove('bg-outline');
+            statusText.innerText = 'Recording';
+            timerDisplay.classList.remove('opacity-50');
+            timerDisplay.classList.add('timer-glow');
+            saveFailedAlert.classList.add('hidden');
+        });
+
+        // Retry logic
+        saveFailedAlert.querySelector('button').addEventListener('click', () => {
+            saveFailedAlert.innerHTML = `
+                <span class="material-symbols-outlined text-primary animate-spin">sync</span>
+                <span class="text-label-md">Re-syncing data...</span>
+            `;
+            setTimeout(() => {
+                saveFailedAlert.classList.add('hidden');
+            }, 1500);
+        });
+    </script>
+</body></html>

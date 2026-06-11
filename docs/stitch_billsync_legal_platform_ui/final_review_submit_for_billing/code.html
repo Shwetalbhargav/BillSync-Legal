@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Review and Send to Billing | BillSync Legal</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-container": "#c8dbfe",
+                        "surface-container-high": "#dfe9f7",
+                        "inverse-on-surface": "#e8f2ff",
+                        "on-error-container": "#93000a",
+                        "secondary-fixed-dim": "#b5c7ea",
+                        "on-secondary": "#ffffff",
+                        "outline-variant": "#c3c6cf",
+                        "surface-tint": "#3d608a",
+                        "primary-fixed": "#d2e4ff",
+                        "outline": "#73777f",
+                        "on-surface": "#121d26",
+                        "on-tertiary-fixed-variant": "#584400",
+                        "on-secondary-container": "#4e607e",
+                        "surface-bright": "#f7f9ff",
+                        "primary-container": "#123b63",
+                        "error-container": "#ffdad6",
+                        "on-primary-container": "#83a6d4",
+                        "primary-fixed-dim": "#a6c9f9",
+                        "error": "#ba1a1a",
+                        "background": "#f7f9ff",
+                        "tertiary-fixed-dim": "#ecc246",
+                        "tertiary-fixed": "#ffe08e",
+                        "secondary-fixed": "#d6e3ff",
+                        "on-secondary-fixed": "#071c36",
+                        "on-primary": "#ffffff",
+                        "inverse-surface": "#27313c",
+                        "primary": "#002546",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary": "#ffffff",
+                        "on-tertiary-fixed": "#241a00",
+                        "surface-container-highest": "#d9e3f1",
+                        "surface-dim": "#d1dbe8",
+                        "surface-container-low": "#edf4ff",
+                        "inverse-primary": "#a6c9f9",
+                        "on-primary-fixed": "#001c37",
+                        "on-error": "#ffffff",
+                        "on-surface-variant": "#43474e",
+                        "tertiary": "#755b00",
+                        "on-primary-fixed-variant": "#234871",
+                        "tertiary-container": "#cea72c",
+                        "on-background": "#121d26",
+                        "on-tertiary-container": "#4f3d00",
+                        "surface-variant": "#d9e3f1",
+                        "secondary": "#4d5f7d",
+                        "surface-container": "#e4effd",
+                        "surface": "#f7f9ff",
+                        "on-secondary-fixed-variant": "#364764"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "xl": "48px",
+                        "margin-desktop": "40px",
+                        "xs": "8px",
+                        "gutter": "24px",
+                        "lg": "32px",
+                        "sm": "16px",
+                        "md": "24px",
+                        "margin-mobile": "16px",
+                        "base": "4px",
+                        "sidebar-width": "260px",
+                        "xxl": "64px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Inter"],
+                        "label-md": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "headline-sm": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "600"}],
+                        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        body {
+            background-color: #f7f9ff;
+        }
+        .bento-card {
+            background-color: #FFFFFF;
+            border: 1px solid #dfe9f7;
+            transition: all 0.2s ease-in-out;
+        }
+        .bento-card:hover {
+            box-shadow: 0 4px 15px rgba(18, 59, 99, 0.08);
+        }
+    </style>
+</head>
+<body class="font-body-md text-on-surface">
+<!-- Sidebar Navigation -->
+<aside class="fixed left-0 top-0 h-full w-sidebar-width bg-primary flex flex-col py-lg z-50">
+<div class="px-md mb-xl">
+<h1 class="font-headline-sm text-headline-sm text-white tracking-tight">BillSync Legal</h1>
+<p class="font-label-md text-primary-fixed-dim opacity-70">Law Firm Management</p>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center px-md py-sm text-primary-fixed-dim hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined mr-md">dashboard</span>
+<span class="font-label-md">Dashboard</span>
+</a>
+<a class="flex items-center px-md py-sm text-white border-l-4 border-secondary-container font-bold transition-colors bg-white/5" href="#">
+<span class="material-symbols-outlined mr-md">history_edu</span>
+<span class="font-label-md">My Work</span>
+</a>
+<a class="flex items-center px-md py-sm text-primary-fixed-dim hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined mr-md">payments</span>
+<span class="font-label-md">Billing</span>
+</a>
+<a class="flex items-center px-md py-sm text-primary-fixed-dim hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined mr-md">folder_open</span>
+<span class="font-label-md">Matters</span>
+</a>
+<a class="flex items-center px-md py-sm text-primary-fixed-dim hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined mr-md">group</span>
+<span class="font-label-md">Clients</span>
+</a>
+</nav>
+<div class="px-md mt-auto pt-xl">
+<a class="flex items-center px-md py-sm text-primary-fixed-dim hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined mr-md">settings</span>
+<span class="font-label-md">Settings</span>
+</a>
+</div>
+</aside>
+<!-- Top Navigation Bar -->
+<header class="fixed top-0 left-sidebar-width right-0 h-16 bg-white border-b border-surface-container-high flex justify-between items-center px-margin-desktop z-40">
+<div class="flex items-center gap-xl flex-1">
+<div class="relative w-full max-w-md">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">search</span>
+<input class="w-full pl-10 pr-4 py-2 bg-surface-container-low border-none rounded-full focus:ring-2 focus:ring-primary-container text-body-sm" placeholder="Search work entries..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<button class="p-2 text-on-surface-variant hover:bg-surface-container-low rounded-full transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:bg-surface-container-low rounded-full transition-colors">
+<span class="material-symbols-outlined">timer</span>
+</button>
+<div class="h-8 w-8 rounded-full overflow-hidden border border-outline-variant ml-md">
+<img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBATOKQq8QT4h8XBq3k57-IH6Y2sjYtfTWkaIzrbv_dkxI4rVKTDUSLD1_o_RtjR9pDbrcRnsz7-CUExsFY8ttyKMX-ITGXN8O1ZGgLbE2zwiNsSmZorHw-Iy4RQLCm5qBZWrtBlo2DG0gdOhf8riw4x6N2_JDtUihRRV0drXuCiNDf0aTxKzV97y0Aqh1SG1hYgNsOwELUtkETa_IVGFrlaHeP9TOtsjVuSdOyxyUEFIH0bcqWDQb4u72u8p15pfFwls1IDSENq4oe"/>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="ml-sidebar-width pt-24 pb-xxl px-margin-desktop min-h-screen">
+<!-- Page Header -->
+<div class="flex flex-col md:flex-row md:items-end justify-between mb-xl gap-md">
+<div>
+<nav class="flex items-center gap-xs text-label-md text-outline mb-xs">
+<span>Billing</span>
+<span class="material-symbols-outlined text-[14px]">chevron_right</span>
+<span class="text-primary font-bold">Review &amp; Send</span>
+</nav>
+<h2 class="font-headline-lg text-headline-lg text-primary tracking-tight">Review and Send to Billing</h2>
+<p class="text-body-md text-on-surface-variant">Check your work for <span class="font-semibold text-on-surface">Oct 23 — Oct 29, 2023</span> before it goes to the billing team.</p>
+</div>
+<div class="flex gap-md">
+<button class="px-lg py-2.5 border border-outline text-on-surface font-label-md rounded-lg hover:bg-surface-container-low transition-colors">Finish Later</button>
+<button class="px-xl py-2.5 bg-primary text-on-primary font-label-md rounded-lg hover:opacity-90 transition-all shadow-md flex items-center gap-xs">
+<span class="material-symbols-outlined text-[20px]">send</span>
+                    Submit for Billing
+                </button>
+</div>
+</div>
+<!-- Summary Statistics -->
+<div class="grid grid-cols-12 gap-lg mb-xl">
+<div class="col-span-12 md:col-span-6 bento-card p-xl rounded-xl border-l-8 border-l-primary">
+<p class="text-label-md text-outline uppercase tracking-wider mb-xs">Total Billing Amount</p>
+<div class="flex items-baseline gap-sm">
+<span class="font-display-lg text-display-lg text-primary">$14,850.00</span>
+<span class="text-body-md text-secondary font-bold flex items-center">
+<span class="material-symbols-outlined text-[18px]">trending_up</span> 12% higher
+                    </span>
+</div>
+<p class="text-body-sm text-on-surface-variant mt-base">Based on 28 entries across all matters.</p>
+</div>
+<div class="col-span-6 md:col-span-3 bento-card p-xl rounded-xl flex flex-col justify-center">
+<p class="text-label-md text-outline uppercase tracking-wider mb-xs">Your Hours</p>
+<h3 class="font-headline-md text-headline-md text-primary">42.5 hrs</h3>
+<p class="text-body-sm text-on-surface-variant mt-base">Recorded this week</p>
+</div>
+<div class="col-span-6 md:col-span-3 bento-card p-xl rounded-xl flex flex-col justify-center bg-secondary-container/20">
+<p class="text-label-md text-on-secondary-container uppercase tracking-wider mb-xs">Review Progress</p>
+<div class="flex items-center gap-sm mb-base">
+<h3 class="font-headline-md text-headline-md text-primary">66%</h3>
+<div class="flex-1 bg-surface-container-highest h-2.5 rounded-full overflow-hidden">
+<div class="bg-primary h-full" style="width: 66%;"></div>
+</div>
+</div>
+<p class="text-body-sm text-on-surface-variant">Step 2: Final Review</p>
+</div>
+</div>
+<!-- Work Details -->
+<div class="grid grid-cols-12 gap-lg items-start">
+<div class="col-span-12 lg:col-span-8 space-y-md">
+<div class="flex items-center justify-between mb-base">
+<h3 class="font-headline-sm text-headline-sm text-primary">Items to Include</h3>
+<div class="text-body-sm text-on-surface-variant">
+                        Select which work entries you want to send now.
+                    </div>
+</div>
+<!-- Matter Section: Anderson -->
+<div class="bento-card rounded-xl overflow-hidden">
+<div class="px-lg py-md bg-surface-container-low flex justify-between items-center border-b border-surface-container-high">
+<div class="flex items-center gap-md">
+<input checked="" class="rounded-lg text-primary focus:ring-primary border-outline-variant w-5 h-5 cursor-pointer" type="checkbox"/>
+<div>
+<h4 class="font-label-md text-body-md font-bold text-primary">Anderson vs. TechCorp</h4>
+<p class="text-body-sm text-on-surface-variant">Client: Michael Anderson</p>
+</div>
+</div>
+<div class="text-right">
+<p class="text-body-md font-bold text-primary">12.5 hrs</p>
+<p class="text-body-sm text-on-surface-variant">$4,375.00</p>
+</div>
+</div>
+<div class="divide-y divide-surface-container-high">
+<div class="px-lg py-lg flex items-start gap-lg hover:bg-surface-container-lowest transition-colors">
+<input checked="" class="mt-1 rounded-lg text-primary focus:ring-primary border-outline-variant w-5 h-5 cursor-pointer" type="checkbox"/>
+<div class="flex-1">
+<div class="flex justify-between items-start mb-1">
+<span class="text-body-sm font-bold text-primary">Oct 24, 2023</span>
+<span class="text-body-sm text-on-surface-variant">3.5 hrs</span>
+</div>
+<p class="text-body-md text-on-surface leading-relaxed">Legal research on state intellectual property statutes; draft summary memo for lead counsel.</p>
+<div class="mt-sm flex items-center gap-md">
+<button class="text-label-md text-primary hover:underline flex items-center gap-base">
+<span class="material-symbols-outlined text-[16px]">edit</span> Edit
+                                    </button>
+</div>
+</div>
+<div class="text-right min-w-[100px]">
+<span class="text-body-md font-bold text-on-surface">$1,225.00</span>
+</div>
+</div>
+<div class="px-lg py-lg flex items-start gap-lg hover:bg-surface-container-lowest transition-colors">
+<input checked="" class="mt-1 rounded-lg text-primary focus:ring-primary border-outline-variant w-5 h-5 cursor-pointer" type="checkbox"/>
+<div class="flex-1">
+<div class="flex justify-between items-start mb-1">
+<span class="text-body-sm font-bold text-primary">Oct 25, 2023</span>
+<span class="text-body-sm text-on-surface-variant">9.0 hrs</span>
+</div>
+<p class="text-body-md text-on-surface leading-relaxed">Deposition preparation; review of document production and witness statements.</p>
+<div class="mt-sm flex items-center gap-md">
+<button class="text-label-md text-primary hover:underline flex items-center gap-base">
+<span class="material-symbols-outlined text-[16px]">edit</span> Edit
+                                    </button>
+</div>
+</div>
+<div class="text-right min-w-[100px]">
+<span class="text-body-md font-bold text-on-surface">$3,150.00</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Matter Section: Global Logistics -->
+<div class="bento-card rounded-xl overflow-hidden">
+<div class="px-lg py-md bg-surface-container-low flex justify-between items-center border-b border-surface-container-high">
+<div class="flex items-center gap-md">
+<input checked="" class="rounded-lg text-primary focus:ring-primary border-outline-variant w-5 h-5 cursor-pointer" type="checkbox"/>
+<div>
+<h4 class="font-label-md text-body-md font-bold text-primary">Global Logistics Acquisition</h4>
+<p class="text-body-sm text-on-surface-variant">Client: Swift Capital Partners</p>
+</div>
+</div>
+<div class="text-right">
+<p class="text-body-md font-bold text-primary">30.0 hrs</p>
+<p class="text-body-sm text-on-surface-variant">$10,500.00</p>
+</div>
+</div>
+<div class="px-lg py-lg flex items-start gap-lg hover:bg-surface-container-lowest transition-colors">
+<input checked="" class="mt-1 rounded-lg text-primary focus:ring-primary border-outline-variant w-5 h-5 cursor-pointer" type="checkbox"/>
+<div class="flex-1">
+<div class="flex justify-between items-start mb-1">
+<span class="text-body-sm font-bold text-primary">Oct 26-28, 2023</span>
+<span class="text-body-sm text-on-surface-variant">30.0 hrs</span>
+</div>
+<p class="text-body-md text-on-surface leading-relaxed">Extensive due diligence review of operational contracts and environmental compliance records.</p>
+<div class="mt-sm flex items-center gap-md">
+<button class="text-label-md text-primary hover:underline flex items-center gap-base">
+<span class="material-symbols-outlined text-[16px]">edit</span> Edit
+                                </button>
+</div>
+</div>
+<div class="text-right min-w-[100px]">
+<span class="text-body-md font-bold text-on-surface">$10,500.00</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Review Sidebar -->
+<div class="col-span-12 lg:col-span-4 sticky top-24 space-y-lg">
+<div class="bento-card p-xl rounded-xl shadow-sm border-t-4 border-t-secondary-container">
+<div class="flex items-center gap-md mb-md">
+<span class="material-symbols-outlined text-primary text-[28px]">fact_check</span>
+<h4 class="font-headline-sm text-headline-sm text-primary">Send to Billing</h4>
+</div>
+<p class="text-body-md text-on-surface-variant mb-xl">Confirm who should review this work and add any helpful notes for the billing team.</p>
+<div class="space-y-lg">
+<div>
+<label class="block text-label-md text-on-surface-variant mb-xs uppercase font-bold tracking-tight">Reviewing Partner</label>
+<select class="w-full bg-surface-container-low border border-outline-variant rounded-lg px-md py-3 text-body-md focus:ring-2 focus:ring-primary appearance-none cursor-pointer">
+<option>Marcus Thorne (Lead Partner)</option>
+<option>Elena Vance (Associate Partner)</option>
+</select>
+</div>
+<div>
+<label class="block text-label-md text-on-surface-variant mb-xs uppercase font-bold tracking-tight">Notes for Billing (Optional)</label>
+<textarea class="w-full bg-surface-container-low border border-outline-variant rounded-lg px-md py-3 text-body-md focus:ring-2 focus:ring-primary" placeholder="e.g., Please apply a 10% discount for the research phase..." rows="4"></textarea>
+</div>
+<div class="p-md bg-secondary-container/30 border border-secondary-container rounded-lg flex gap-md">
+<span class="material-symbols-outlined text-primary mt-0.5">lock_clock</span>
+<p class="text-body-sm text-on-surface">Submitting will finalize these entries. You won't be able to edit them until the billing review is complete.</p>
+</div>
+<button class="w-full py-4 bg-primary text-on-primary font-headline-sm rounded-lg hover:opacity-95 transition-all shadow-lg flex justify-center items-center gap-md group" id="finalSubmit">
+                            Submit for Billing
+                            <span class="material-symbols-outlined transition-transform group-hover:translate-x-1">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Simple Audit Preview -->
+<div class="bento-card p-lg rounded-xl bg-surface-container-low border-dashed">
+<h5 class="text-label-md font-bold text-primary mb-md uppercase tracking-wider">What happens next?</h5>
+<ul class="space-y-md">
+<li class="flex gap-md">
+<div class="w-6 h-6 rounded-full bg-primary-container text-primary flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[14px]">done</span>
+</div>
+<p class="text-body-sm text-on-surface">Entries are locked for review</p>
+</li>
+<li class="flex gap-md opacity-50">
+<div class="w-6 h-6 rounded-full bg-surface-container-high text-outline flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[14px]">pending</span>
+</div>
+<p class="text-body-sm text-on-surface">Partner approves the billing batch</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer Area -->
+<footer class="ml-sidebar-width bg-white border-t border-surface-container-high py-lg px-margin-desktop flex flex-col md:flex-row justify-between items-center gap-md">
+<div class="flex items-center gap-xl">
+<span class="font-headline-sm text-primary">BillSync Legal</span>
+<div class="flex gap-lg">
+<a class="text-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Help Center</a>
+<a class="text-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Privacy</a>
+<a class="text-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Terms</a>
+</div>
+</div>
+<p class="text-body-sm text-on-surface-variant">© 2024 BillSync Legal. All rights reserved.</p>
+</footer>
+<!-- Mobile Navigation Shell -->
+<nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-surface-container-high px-md py-xs flex justify-around items-center z-50 shadow-2xl">
+<a class="flex flex-col items-center p-2 text-on-surface-variant" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="text-[10px] mt-1 font-medium">Home</span>
+</a>
+<a class="flex flex-col items-center p-2 text-primary" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">history_edu</span>
+<span class="text-[10px] mt-1 font-bold">Review</span>
+</a>
+<a class="flex flex-col items-center p-2 text-on-surface-variant" href="#">
+<span class="material-symbols-outlined">payments</span>
+<span class="text-[10px] mt-1 font-medium">Billing</span>
+</a>
+<a class="flex flex-col items-center p-2 text-on-surface-variant" href="#">
+<span class="material-symbols-outlined">account_circle</span>
+<span class="text-[10px] mt-1 font-medium">Profile</span>
+</a>
+</nav>
+<script>
+        // Checkbox interaction
+        document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const parentRow = this.closest('.flex');
+                if (parentRow) {
+                    if (this.checked) {
+                        parentRow.classList.remove('opacity-50');
+                    } else {
+                        parentRow.classList.add('opacity-50');
+                    }
+                }
+            });
+        });
+
+        // Submit Button Logic
+        const submitBtn = document.getElementById('finalSubmit');
+        submitBtn.addEventListener('click', () => {
+            submitBtn.innerHTML = '<span class="material-symbols-outlined animate-spin">sync</span> Submitting...';
+            submitBtn.classList.add('opacity-80', 'pointer-events-none');
+            setTimeout(() => {
+                alert('Success! Your work has been sent to the billing team for final review.');
+                window.location.reload();
+            }, 1000);
+        });
+    </script>
+</body></html>

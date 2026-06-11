@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>LegalFlow - AI Document Deep-Dive</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-variant": "#d9e3f1",
+                    "on-error": "#ffffff",
+                    "surface-container-highest": "#d9e3f1",
+                    "on-primary-fixed": "#001c37",
+                    "inverse-primary": "#a6c9f9",
+                    "tertiary": "#11243f",
+                    "outline": "#73777f",
+                    "on-tertiary-container": "#92a4c5",
+                    "on-primary": "#ffffff",
+                    "on-surface": "#121d26",
+                    "surface-container": "#e4effd",
+                    "on-secondary": "#ffffff",
+                    "surface-dim": "#d1dbe8",
+                    "primary-fixed": "#d2e4ff",
+                    "secondary-fixed-dim": "#ecc246",
+                    "secondary": "#755b00",
+                    "primary-container": "#123b63",
+                    "on-primary-container": "#83a6d4",
+                    "surface-bright": "#f7f9ff",
+                    "surface-container-low": "#edf4ff",
+                    "on-surface-variant": "#43474e",
+                    "error-container": "#ffdad6",
+                    "inverse-surface": "#27313c",
+                    "on-tertiary": "#ffffff",
+                    "surface-container-lowest": "#ffffff",
+                    "tertiary-fixed-dim": "#b5c7ea",
+                    "on-primary-fixed-variant": "#234871",
+                    "surface-container-high": "#dfe9f7",
+                    "on-error-container": "#93000a",
+                    "outline-variant": "#c3c6cf",
+                    "on-secondary-fixed": "#241a00",
+                    "tertiary-fixed": "#d6e3ff",
+                    "on-secondary-container": "#735a00",
+                    "surface": "#f7f9ff",
+                    "error": "#ba1a1a",
+                    "primary-fixed-dim": "#a6c9f9",
+                    "inverse-on-surface": "#e8f2ff",
+                    "on-background": "#121d26",
+                    "on-tertiary-fixed-variant": "#364764",
+                    "tertiary-container": "#283a56",
+                    "secondary-container": "#fed255",
+                    "primary": "#002546",
+                    "on-tertiary-fixed": "#071c36",
+                    "on-secondary-fixed-variant": "#584400",
+                    "background": "#f7f9ff",
+                    "secondary-fixed": "#ffe08e",
+                    "surface-tint": "#3d608a"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "xs": "4px",
+                    "base": "8px",
+                    "xxl": "48px",
+                    "xl": "32px",
+                    "md": "16px",
+                    "margin-desktop": "40px",
+                    "gutter-desktop": "24px",
+                    "lg": "24px",
+                    "sm": "12px",
+                    "sidebar-width": "260px"
+            },
+            "fontFamily": {
+                    "headline-sm": ["Inter"],
+                    "label-sm": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "label-md": ["Inter"],
+                    "headline-lg-mobile": ["Inter"],
+                    "display-lg": ["Inter"],
+                    "body-md": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "body-sm": ["Inter"],
+                    "headline-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "600"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                    "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; background-color: #F8F5EF; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .glass-panel { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(8px); border: 1px solid rgba(229, 231, 235, 0.5); }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface-container-lowest text-on-surface antialiased min-h-screen pb-32">
+<!-- TopAppBar -->
+<header class="bg-surface border-b border-outline-variant flex justify-between items-center px-md h-16 w-full fixed top-0 z-50">
+<div class="flex items-center gap-base">
+<span class="material-symbols-outlined text-primary" data-icon="arrow_back">arrow_back</span>
+<div class="flex flex-col">
+<h1 class="font-headline-sm text-headline-sm text-primary font-bold">AI Document Deep-Dive</h1>
+<span class="font-label-sm text-label-sm text-on-surface-variant">AI Assistant</span>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="share">share</span>
+<div class="w-8 h-8 rounded-full bg-primary-container flex items-center justify-center text-on-primary-container">
+<span class="font-label-sm">JD</span>
+</div>
+</div>
+</header>
+<main class="pt-20 px-md max-w-lg mx-auto space-y-lg">
+<!-- Document Header Card -->
+<section class="bg-white rounded-xl p-lg border border-outline-variant shadow-sm relative overflow-hidden">
+<div class="absolute top-0 right-0 p-md">
+<span class="bg-secondary-container text-on-secondary-container px-base py-xs rounded-full font-label-sm uppercase tracking-wider">High Complexity</span>
+</div>
+<div class="space-y-sm">
+<div class="flex items-center gap-xs text-primary">
+<span class="material-symbols-outlined" data-icon="gavel" style="font-variation-settings: 'FILL' 1;">gavel</span>
+<span class="font-label-md">Matter: Thompson v. GlobalCorp</span>
+</div>
+<h2 class="font-headline-md text-headline-md text-on-surface">Deposition of Sarah Jenkins, CFO</h2>
+<div class="flex items-center gap-md text-on-surface-variant">
+<div class="flex items-center gap-xs">
+<span class="material-symbols-outlined text-sm" data-icon="description">description</span>
+<span class="font-body-sm">52 Pages</span>
+</div>
+<div class="flex items-center gap-xs">
+<span class="material-symbols-outlined text-sm" data-icon="schedule">schedule</span>
+<span class="font-body-sm">Analyzed 2m ago</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Key Takeaways (Bento-ish Grid) -->
+<section class="space-y-md">
+<div class="flex items-center justify-between">
+<h3 class="font-headline-sm text-headline-sm flex items-center gap-base">
+<span class="material-symbols-outlined text-primary" data-icon="lightbulb">lightbulb</span>
+                    Key Takeaways
+                </h3>
+</div>
+<div class="grid grid-cols-1 gap-md">
+<div class="bg-primary-container/5 rounded-xl p-md border-l-4 border-primary space-y-sm">
+<p class="font-body-md text-on-surface"><strong class="font-semibold text-primary">Revenue Recognition:</strong> Jenkins admitted to quarterly adjustments that deviated from internal compliance standards between 2021 and 2022.</p>
+</div>
+<div class="bg-primary-container/5 rounded-xl p-md border-l-4 border-primary space-y-sm">
+<p class="font-body-md text-on-surface"><strong class="font-semibold text-primary">Email Trail:</strong> Mentions a "Shadow Ledger" used by the executive team, confirming the existence of the 'Project Alpha' folder.</p>
+</div>
+<div class="bg-primary-container/5 rounded-xl p-md border-l-4 border-primary space-y-sm">
+<p class="font-body-md text-on-surface"><strong class="font-semibold text-primary">Liability:</strong> Acknowledged awareness of the equipment defect 6 months prior to the recall, contradicting the CEO's testimony.</p>
+</div>
+</div>
+</section>
+<!-- Contradictions Section -->
+<section class="bg-white rounded-xl border border-outline-variant overflow-hidden shadow-sm">
+<div class="bg-error-container/20 px-lg py-md border-b border-outline-variant flex items-center justify-between">
+<h3 class="font-headline-sm text-headline-sm text-on-error-container flex items-center gap-base">
+<span class="material-symbols-outlined text-error" data-icon="warning" style="font-variation-settings: 'FILL' 1;">warning</span>
+                    Contradictions Detected
+                </h3>
+<span class="bg-error text-on-error rounded-full px-base py-xs font-label-sm">2 Issues</span>
+</div>
+<div class="divide-y divide-outline-variant">
+<div class="p-lg space-y-md">
+<div class="flex items-start gap-md">
+<div class="shrink-0 w-8 h-8 rounded-full bg-error-container flex items-center justify-center">
+<span class="material-symbols-outlined text-error text-sm" data-icon="history">history</span>
+</div>
+<div class="space-y-xs">
+<span class="font-label-sm text-on-surface-variant uppercase">Conflict with CEO Testimony</span>
+<p class="font-body-md">Jenkins claims the CEO approved the Ledger on <span class="bg-error-container text-on-error-container px-1 rounded">June 14th</span>, while CEO Miller testified he was out of the country on that date.</p>
+</div>
+</div>
+</div>
+<div class="p-lg space-y-md">
+<div class="flex items-start gap-md">
+<div class="shrink-0 w-8 h-8 rounded-full bg-error-container flex items-center justify-center">
+<span class="material-symbols-outlined text-error text-sm" data-icon="mail">mail</span>
+</div>
+<div class="space-y-xs">
+<span class="font-label-sm text-on-surface-variant uppercase">Conflict with Exhibit 14-B</span>
+<p class="font-body-md">Oral testimony suggests no written record of the Alpha project, but internal emails dated Oct '21 show <span class="underline decoration-error/50 underline-offset-4">weekly progress reports</span>.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Sentiment Analysis -->
+<section class="space-y-md">
+<h3 class="font-headline-sm text-headline-sm flex items-center gap-base">
+<span class="material-symbols-outlined text-primary" data-icon="psychology">psychology</span>
+                Sentiment Analysis
+            </h3>
+<div class="bg-white rounded-xl p-lg border border-outline-variant shadow-sm flex items-center gap-xl">
+<div class="relative w-24 h-24 shrink-0">
+<svg class="w-24 h-24 transform -rotate-90" viewbox="0 0 36 36">
+<path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#e5e7eb" stroke-width="3"></path>
+<path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#755b00" stroke-dasharray="72, 100" stroke-width="3"></path>
+</svg>
+<div class="absolute inset-0 flex flex-col items-center justify-center">
+<span class="font-headline-sm text-secondary">72%</span>
+<span class="text-[10px] uppercase font-bold text-on-surface-variant">Defensive</span>
+</div>
+</div>
+<div class="space-y-xs">
+<p class="font-body-md text-on-surface">The witness exhibited significant verbal cues of <span class="text-secondary font-semibold">evasiveness</span> when discussing financial oversight.</p>
+<div class="flex gap-xs flex-wrap">
+<span class="px-base py-xs bg-surface-variant rounded-lg text-on-surface-variant font-label-sm italic">Hesitant (Page 14)</span>
+<span class="px-base py-xs bg-surface-variant rounded-lg text-on-surface-variant font-label-sm italic">Aggressive (Page 42)</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Suggested Questions -->
+<section class="space-y-md">
+<h3 class="font-headline-sm text-headline-sm flex items-center gap-base">
+<span class="material-symbols-outlined text-primary" data-icon="quiz">quiz</span>
+                Suggested Questions
+            </h3>
+<div class="space-y-sm">
+<div class="bg-white rounded-xl border border-outline-variant shadow-sm p-lg group hover:border-primary transition-colors">
+<div class="flex items-start gap-md">
+<span class="font-display-lg text-primary/10 text-3xl leading-none">01</span>
+<div class="space-y-xs">
+<p class="font-body-md text-on-surface font-medium leading-tight">"Ms. Jenkins, if the CEO was unaware of the Shadow Ledger, why did he copy you on the June 12th memorandum regarding Ledger auditing?"</p>
+<div class="flex items-center gap-xs">
+<span class="font-label-sm text-on-surface-variant italic">Source: Exhibit 9-C &amp; Page 14</span>
+</div>
+</div>
+</div>
+</div>
+<div class="bg-white rounded-xl border border-outline-variant shadow-sm p-lg group hover:border-primary transition-colors">
+<div class="flex items-start gap-md">
+<span class="font-display-lg text-primary/10 text-3xl leading-none">02</span>
+<div class="space-y-xs">
+<p class="font-body-md text-on-surface font-medium leading-tight">"You testified that 'Project Alpha' was defunct. Can you explain the $1.2M entry under that code in the December payroll report?"</p>
+<div class="flex items-center gap-xs">
+<span class="font-label-sm text-on-surface-variant italic">Source: Page 38 Testimony</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- AI Assistant Action Footer (Not the Nav Bar) -->
+<div class="pt-base">
+<button class="w-full bg-primary text-on-primary font-label-md py-md rounded-xl flex items-center justify-center gap-base shadow-lg hover:bg-primary-container transition-colors active:scale-[0.98]">
+<span class="material-symbols-outlined" data-icon="auto_awesome" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+                Ask AI a specific question about this doc
+            </button>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 w-full z-50 flex justify-around items-center px-base py-sm bg-surface shadow-[0_-2px_10px_rgba(0,0,0,0.05)] rounded-t-xl">
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-label-sm text-label-sm">Dashboard</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="receipt_long">receipt_long</span>
+<span class="font-label-sm text-label-sm">Captured</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="folder_open">folder_open</span>
+<span class="font-label-sm text-label-sm">Matters</span>
+</a>
+<a class="flex flex-col items-center justify-center text-primary dark:text-secondary-fixed bg-secondary-container/30 rounded-full px-4 py-1" href="#">
+<span class="material-symbols-outlined" data-icon="smart_toy" style="font-variation-settings: 'FILL' 1;">smart_toy</span>
+<span class="font-label-sm text-label-sm">AI Assistant</span>
+</a>
+</nav>
+<!-- Floating Atmosphere Elements -->
+<div class="fixed inset-0 pointer-events-none -z-10 opacity-40 overflow-hidden">
+<div class="absolute -top-24 -left-24 w-64 h-64 bg-primary/5 rounded-full blur-3xl"></div>
+<div class="absolute top-1/2 -right-32 w-80 h-80 bg-secondary/5 rounded-full blur-3xl"></div>
+</div>
+<script>
+        // Micro-interaction for list item highlights
+        document.querySelectorAll('.group').forEach(el => {
+            el.addEventListener('click', () => {
+                el.classList.add('scale-[0.99]');
+                setTimeout(() => el.classList.remove('scale-[0.99]'), 150);
+            });
+        });
+    </script>
+</body></html>

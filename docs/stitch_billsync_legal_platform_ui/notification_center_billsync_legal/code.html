@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Notification Center | BillSync Legal</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-error-container": "#93000a",
+                    "on-secondary-fixed-variant": "#584400",
+                    "primary": "#002546",
+                    "on-background": "#121d26",
+                    "inverse-on-surface": "#e8f2ff",
+                    "primary-container": "#123b63",
+                    "secondary-fixed-dim": "#ecc246",
+                    "on-tertiary": "#ffffff",
+                    "error": "#ba1a1a",
+                    "surface-dim": "#d1dbe8",
+                    "surface-container-high": "#dfe9f7",
+                    "on-tertiary-fixed-variant": "#364764",
+                    "on-secondary-container": "#735a00",
+                    "on-surface": "#121d26",
+                    "surface-bright": "#f7f9ff",
+                    "primary-fixed-dim": "#a6c9f9",
+                    "on-primary": "#ffffff",
+                    "tertiary-fixed": "#d6e3ff",
+                    "primary-fixed": "#d2e4ff",
+                    "on-surface-variant": "#43474e",
+                    "on-secondary": "#ffffff",
+                    "tertiary-container": "#283a56",
+                    "surface-container": "#e4effd",
+                    "tertiary": "#11243f",
+                    "on-primary-container": "#83a6d4",
+                    "inverse-primary": "#a6c9f9",
+                    "secondary-container": "#fed255",
+                    "inverse-surface": "#27313c",
+                    "background": "#f7f9ff",
+                    "on-secondary-fixed": "#241a00",
+                    "secondary": "#755b00",
+                    "on-error": "#ffffff",
+                    "outline": "#73777f",
+                    "on-tertiary-fixed": "#071c36",
+                    "surface-tint": "#3d608a",
+                    "outline-variant": "#c3c6cf",
+                    "surface": "#f7f9ff",
+                    "on-primary-fixed-variant": "#234871",
+                    "tertiary-fixed-dim": "#b5c7ea",
+                    "surface-variant": "#d9e3f1",
+                    "surface-container-lowest": "#ffffff",
+                    "secondary-fixed": "#ffe08e",
+                    "surface-container-highest": "#d9e3f1",
+                    "on-primary-fixed": "#001c37",
+                    "surface-container-low": "#edf4ff",
+                    "on-tertiary-container": "#92a4c5",
+                    "error-container": "#ffdad6"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "sm": "12px",
+                    "margin-desktop": "40px",
+                    "gutter-desktop": "24px",
+                    "sidebar-width": "260px",
+                    "xl": "32px",
+                    "md": "16px",
+                    "lg": "24px",
+                    "base": "8px",
+                    "xxl": "48px",
+                    "xs": "4px"
+            },
+            "fontFamily": {
+                    "label-sm": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "headline-lg-mobile": ["Inter"],
+                    "display-lg": ["Inter"],
+                    "body-sm": ["Inter"],
+                    "label-md": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "body-md": ["Inter"],
+                    "headline-sm": ["Inter"]
+            },
+            "fontSize": {
+                    "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "600"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #F8F5EF; /* Level 0 Background per Style Guidance */
+            font-family: 'Inter', sans-serif;
+        }
+        .notification-pane {
+            box-shadow: 0 4px 15px rgba(31, 41, 51, 0.06); /* Soft Ambient Shadow per Style Guidance */
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+<!-- Top Navigation Shell -->
+<header class="bg-surface dark:bg-inverse-surface border-b border-outline-variant dark:border-outline docked full-width top-0 z-50">
+<div class="flex justify-between items-center w-full px-margin-desktop max-w-[1440px] mx-auto h-20">
+<div class="font-headline-md text-headline-md font-bold text-primary dark:text-inverse-primary">
+                Lexington &amp; Associates
+            </div>
+<nav class="hidden md:flex gap-lg items-center">
+<a class="font-body-md text-body-md text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-inverse-primary transition-colors duration-200 ease-in-out" href="#">Overview</a>
+<a class="font-body-md text-body-md text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-inverse-primary transition-colors duration-200 ease-in-out" href="#">Matters</a>
+<a class="font-body-md text-body-md text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-inverse-primary transition-colors duration-200 ease-in-out" href="#">Invoices</a>
+<a class="font-body-md text-body-md text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-inverse-primary transition-colors duration-200 ease-in-out" href="#">Payments</a>
+</nav>
+<div class="flex items-center gap-md">
+<button class="relative p-2 rounded-full hover:bg-surface-container transition-colors" id="notif-trigger">
+<span class="material-symbols-outlined text-primary">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-secondary rounded-full border-2 border-surface"></span>
+</button>
+<span class="material-symbols-outlined text-primary">account_circle</span>
+</div>
+</div>
+</header>
+<main class="max-w-[1440px] mx-auto px-margin-desktop py-xxl flex gap-gutter-desktop">
+<!-- Dashboard Canvas (Background content to give context) -->
+<div class="flex-grow space-y-lg">
+<h1 class="font-display-lg text-display-lg text-primary">Client Dashboard</h1>
+<!-- Bento Grid Layout for Dashboard Content -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-lg">
+<!-- Large Feature Card -->
+<div class="md:col-span-8 bg-surface-container-lowest border border-outline-variant rounded-xl p-lg notification-pane">
+<div class="flex justify-between items-center mb-lg">
+<h2 class="font-headline-sm text-headline-sm text-primary">Active Matters</h2>
+<span class="font-label-md text-label-md text-secondary cursor-pointer hover:underline">View All</span>
+</div>
+<div class="h-64 rounded bg-surface-container flex items-center justify-center overflow-hidden relative">
+
+<div class="relative z-10 text-center p-md">
+<span class="material-symbols-outlined text-primary text-4xl mb-sm">folder_open</span>
+<p class="font-body-md text-body-md text-on-surface-variant">Ongoing legal procedures and documentation tracking.</p>
+</div>
+</div>
+</div>
+<!-- Small Stat Card 1 -->
+<div class="md:col-span-4 bg-surface-container-lowest border border-outline-variant rounded-xl p-lg notification-pane">
+<h3 class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-sm">Outstanding Balance</h3>
+<p class="font-headline-lg text-headline-lg text-primary">$12,450.00</p>
+<div class="mt-lg pt-lg border-t border-outline-variant">
+<button class="w-full bg-primary text-on-primary py-sm rounded-lg font-label-md text-label-md hover:bg-primary-container transition-colors">Make Payment</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Notification Sidebar (The Centerpiece) -->
+<aside class="w-sidebar-width shrink-0 flex flex-col bg-surface-container-lowest border border-outline-variant rounded-xl notification-pane overflow-hidden h-fit sticky top-[104px]" id="notification-sidebar">
+<div class="p-md border-b border-outline-variant flex justify-between items-center bg-surface-bright">
+<h2 class="font-label-md text-label-md font-bold text-primary">Notifications</h2>
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[18px]">done_all</span>
+</button>
+</div>
+<div class="divide-y divide-outline-variant">
+<!-- Priority Notification (Actionable) -->
+<div class="p-md hover:bg-surface-container-low transition-colors group">
+<div class="flex gap-sm">
+<div class="relative flex-shrink-0 pt-1">
+<div class="w-2.5 h-2.5 bg-secondary rounded-full" title="New"></div>
+</div>
+<div class="flex-grow">
+<p class="font-label-md text-label-md text-primary font-bold leading-tight">October 2024 Performance Review Ready</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Review the latest metrics for TechGlobal Acquisition.</p>
+<div class="mt-md">
+<button class="bg-primary text-on-primary px-lg py-xs rounded font-label-sm text-label-sm hover:bg-primary-container transition-all">Review Now</button>
+</div>
+<span class="block mt-sm font-label-sm text-[10px] text-outline uppercase font-semibold">2 hours ago</span>
+</div>
+</div>
+</div>
+<!-- Standard Notification (Invoice) -->
+<div class="p-md hover:bg-surface-container-low transition-colors">
+<div class="flex gap-sm">
+<div class="relative flex-shrink-0 pt-1">
+<div class="w-2.5 h-2.5 bg-secondary rounded-full" title="New"></div>
+</div>
+<div class="flex-grow">
+<p class="font-label-md text-label-md text-primary font-semibold leading-tight">New Invoice #INV-2024-089</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">A new billing statement has been generated for your review.</p>
+<span class="block mt-sm font-label-sm text-[10px] text-outline uppercase font-semibold">Yesterday</span>
+</div>
+</div>
+</div>
+<!-- Standard Notification (Matter Update) -->
+<div class="p-md hover:bg-surface-container-low transition-colors">
+<div class="flex gap-sm">
+<div class="flex-shrink-0 pt-1">
+<div class="w-2.5 h-2.5 border border-outline rounded-full"></div>
+</div>
+<div class="flex-grow">
+<p class="font-label-md text-label-md text-primary font-semibold leading-tight">Matter Update: TechGlobal Acquisition</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">New documents uploaded to the primary case folder.</p>
+<span class="block mt-sm font-label-sm text-[10px] text-outline uppercase font-semibold">3 days ago</span>
+</div>
+</div>
+</div>
+<!-- Old Notification -->
+<div class="p-md opacity-70 hover:opacity-100 hover:bg-surface-container-low transition-all">
+<div class="flex gap-sm">
+<div class="flex-shrink-0 pt-1">
+<div class="w-2.5 h-2.5 border border-outline rounded-full"></div>
+</div>
+<div class="flex-grow">
+<p class="font-label-md text-label-md text-primary font-semibold leading-tight">Monthly Subscription Renewed</p>
+<span class="block mt-xs font-label-sm text-[10px] text-outline uppercase font-semibold">1 week ago</span>
+</div>
+</div>
+</div>
+</div>
+<div class="p-md bg-surface-container-low border-t border-outline-variant">
+<a class="font-label-sm text-label-sm text-secondary text-center block hover:underline" href="#">See all activity</a>
+</div>
+</aside>
+</main>
+<!-- Footer Shell -->
+<footer class="bg-surface-container-low dark:bg-surface-container-highest w-full py-xl px-margin-desktop flex flex-col md:flex-row justify-between items-center gap-md">
+<div class="flex flex-col gap-xs">
+<div class="font-label-md text-label-md font-semibold text-on-surface dark:text-inverse-on-surface">Lexington &amp; Associates</div>
+<div class="font-label-sm text-label-sm text-on-surface-variant dark:text-surface-variant">© 2024 Lexington &amp; Associates. All rights reserved.</div>
+</div>
+<div class="flex gap-lg">
+<a class="font-label-sm text-label-sm text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-inverse-primary underline transition-opacity duration-200" href="#">Support</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-inverse-primary underline transition-opacity duration-200" href="#">Privacy Policy</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-inverse-primary underline transition-opacity duration-200" href="#">Terms of Service</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-inverse-primary underline transition-opacity duration-200" href="#">Contact Us</a>
+</div>
+</footer>
+<script>
+        // Simple Micro-interaction for notification toggle
+        const trigger = document.getElementById('notif-trigger');
+        const sidebar = document.getElementById('notification-sidebar');
+        
+        trigger.addEventListener('click', () => {
+            sidebar.classList.toggle('ring-2');
+            sidebar.classList.toggle('ring-secondary');
+            
+            // Temporary pulse effect
+            sidebar.animate([
+                { transform: 'scale(1)' },
+                { transform: 'scale(1.02)' },
+                { transform: 'scale(1)' }
+            ], {
+                duration: 200,
+                easing: 'ease-in-out'
+            });
+        });
+
+        // Hover effect for cards
+        document.querySelectorAll('.notification-pane').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.transform = 'translateY(-2px)';
+                card.style.transition = 'transform 0.2s ease-out, box-shadow 0.2s ease-out';
+                card.style.boxShadow = '0 10px 25px rgba(31, 41, 51, 0.1)';
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'translateY(0)';
+                card.style.boxShadow = '0 4px 15px rgba(31, 41, 51, 0.06)';
+            });
+        });
+    </script>
+</body></html>

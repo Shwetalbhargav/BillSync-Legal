@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>BillSync Legal | Extension Troubleshooting</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(229, 231, 235, 0.5);
+        }
+        .diag-item:hover .diag-icon {
+            transform: scale(1.1);
+        }
+        @keyframes pulse-subtle {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        .animate-pulse-subtle {
+            animation: pulse-subtle 3s ease-in-out infinite;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-secondary-container": "#735a00",
+                      "surface-container-lowest": "#ffffff",
+                      "primary-fixed-dim": "#a6c9f9",
+                      "on-primary-fixed-variant": "#234871",
+                      "inverse-on-surface": "#e8f2ff",
+                      "on-primary-fixed": "#001c37",
+                      "tertiary-fixed": "#d6e3ff",
+                      "surface": "#f7f9ff",
+                      "secondary-fixed": "#ffe08e",
+                      "tertiary-container": "#283a56",
+                      "primary-container": "#123b63",
+                      "tertiary-fixed-dim": "#b5c7ea",
+                      "surface-dim": "#d1dbe8",
+                      "surface-container-low": "#edf4ff",
+                      "on-tertiary-fixed": "#071c36",
+                      "on-background": "#121d26",
+                      "on-error-container": "#93000a",
+                      "error": "#ba1a1a",
+                      "background": "#f7f9ff",
+                      "outline": "#73777f",
+                      "on-error": "#ffffff",
+                      "on-primary": "#ffffff",
+                      "surface-variant": "#d9e3f1",
+                      "on-tertiary-fixed-variant": "#364764",
+                      "surface-container-high": "#dfe9f7",
+                      "on-surface-variant": "#43474e",
+                      "on-surface": "#121d26",
+                      "on-primary-container": "#83a6d4",
+                      "primary-fixed": "#d2e4ff",
+                      "on-secondary": "#ffffff",
+                      "tertiary": "#11243f",
+                      "on-tertiary-container": "#92a4c5",
+                      "surface-bright": "#f7f9ff",
+                      "secondary-container": "#fed255",
+                      "error-container": "#ffdad6",
+                      "primary": "#002546",
+                      "inverse-surface": "#27313c",
+                      "surface-container-highest": "#d9e3f1",
+                      "secondary": "#755b00",
+                      "surface-container": "#e4effd",
+                      "on-secondary-fixed": "#241a00",
+                      "secondary-fixed-dim": "#ecc246",
+                      "outline-variant": "#c3c6cf",
+                      "on-tertiary": "#ffffff",
+                      "on-secondary-fixed-variant": "#584400",
+                      "inverse-primary": "#a6c9f9",
+                      "surface-tint": "#3d608a"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "base": "8px",
+                      "xl": "32px",
+                      "xs": "4px",
+                      "lg": "24px",
+                      "sm": "12px",
+                      "xxl": "48px",
+                      "gutter-desktop": "24px",
+                      "md": "16px",
+                      "margin-desktop": "40px",
+                      "sidebar-width": "260px"
+              },
+              "fontFamily": {
+                      "body-sm": ["Inter"],
+                      "label-md": ["Inter"],
+                      "headline-lg-mobile": ["Inter"],
+                      "headline-lg": ["Inter"],
+                      "headline-sm": ["Inter"],
+                      "display-lg": ["Inter"],
+                      "body-md": ["Inter"],
+                      "label-sm": ["Inter"],
+                      "body-lg": ["Inter"],
+                      "headline-md": ["Inter"]
+              },
+              "fontSize": {
+                      "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                      "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                      "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                      "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                      "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                      "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "600"}],
+                      "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                      "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}]
+              }
+            }
+          }
+        }
+    </script>
+</head>
+<body class="bg-background text-on-surface font-body-md overflow-x-hidden">
+<!-- Sidebar Navigation -->
+<aside class="fixed left-0 top-0 h-screen w-sidebar-width bg-primary dark:bg-primary border-r border-outline-variant/10 flex flex-col py-lg z-50">
+<div class="px-lg mb-xxl">
+<div class="flex items-center gap-sm">
+<div class="w-8 h-8 rounded bg-secondary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-on-secondary-container" style="font-variation-settings: 'FILL' 1;">account_balance</span>
+</div>
+<div>
+<h1 class="text-headline-sm font-headline-sm font-bold text-surface">LexisPremium</h1>
+<p class="text-[10px] text-surface-variant/70 tracking-widest uppercase">Elite Law Management</p>
+</div>
+</div>
+</div>
+<nav class="flex-1 px-sm space-y-1">
+<!-- Nav Item (Dashboard) -->
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-surface-variant hover:bg-primary-container/20 hover:text-surface transition-colors font-label-md" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span>Dashboard</span>
+</a>
+<!-- Nav Item (Settings - Active) -->
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-surface border-l-2 border-secondary-container bg-primary-container/30 font-label-md" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span>Settings</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-surface-variant hover:bg-primary-container/20 hover:text-surface transition-colors font-label-md" href="#">
+<span class="material-symbols-outlined">folder_open</span>
+<span>Matters</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-surface-variant hover:bg-primary-container/20 hover:text-surface transition-colors font-label-md" href="#">
+<span class="material-symbols-outlined">timer</span>
+<span>Time Tracking</span>
+</a>
+</nav>
+<div class="px-sm mt-auto space-y-1">
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-surface-variant hover:bg-primary-container/20 hover:text-surface transition-colors font-label-md" href="#">
+<span class="material-symbols-outlined">help_outline</span>
+<span>Help Center</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-surface-variant hover:bg-primary-container/20 hover:text-surface transition-colors font-label-md" href="#">
+<span class="material-symbols-outlined">logout</span>
+<span>Log Out</span>
+</a>
+</div>
+</aside>
+<!-- Top Navigation Bar -->
+<header class="fixed top-0 right-0 left-sidebar-width h-16 bg-surface border-b border-outline-variant shadow-sm flex justify-between items-center px-margin-desktop z-40">
+<div class="flex items-center gap-lg">
+<div class="relative">
+<span class="absolute inset-y-0 left-3 flex items-center text-on-surface-variant">
+<span class="material-symbols-outlined text-[20px]">search</span>
+</span>
+<input class="pl-10 pr-4 py-2 bg-surface-container-low border border-outline-variant rounded-full text-body-sm w-80 focus:ring-1 focus:ring-primary focus:border-primary outline-none transition-all" placeholder="Search matters, invoices..." type="text"/>
+</div>
+<nav class="hidden md:flex gap-md">
+<a class="text-on-surface-variant hover:text-primary transition-colors font-label-md" href="#">Quick Actions</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors font-label-md" href="#">Recent Matters</a>
+</nav>
+</div>
+<div class="flex items-center gap-md">
+<div class="flex items-center gap-sm mr-md">
+<button class="p-2 text-on-surface-variant hover:bg-surface-container rounded-full transition-colors relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-error rounded-full"></span>
+</button>
+<button class="p-2 text-on-surface-variant hover:bg-surface-container rounded-full transition-colors">
+<span class="material-symbols-outlined">history</span>
+</button>
+</div>
+<button class="bg-primary text-on-primary px-lg py-2 rounded-lg font-label-md hover:opacity-90 active:scale-95 transition-all">
+                Create Invoice
+            </button>
+<div class="w-10 h-10 rounded-full bg-surface-container-highest border border-outline-variant overflow-hidden ml-sm cursor-pointer">
+<img class="w-full h-full object-cover" data-alt="A professional headshot of a senior attorney with a confident expression, wearing a tailored navy suit and standing in a brightly lit, modern architectural office. The background shows soft out-of-focus legal bookshelves and large floor-to-ceiling windows with a city skyline view. The lighting is warm and natural, reinforcing a premium, high-end legal service aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCWLWFtayH2gmvN-Q5tAK2-ryFADoE1nEF_rm5e9fcgncY3Ikq6drw7l-T-xOa_YFvj7f8jXxEYLMKJYf1oTifJFpC9L22JbFQVN_w9kBkMxaeU5wGkvSVFvgzdAQKtZR2zHXAhZZXCZBFc1GcqmzGFQxdklg0sxiFiar-MTcYVZ_hRYz13S9lcZbwmUrOOLsq7bqzLdilHHo4nwgtWFdAZ8GxJAPDHeTAUysPqOtx4T59gk1ErBvQ6PJ9jjoQffrMn80LHo-qvgQik"/>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="ml-sidebar-width pt-xxl px-margin-desktop pb-xxl min-h-screen">
+<div class="max-w-[1200px] mx-auto mt-lg">
+<!-- Breadcrumbs -->
+<nav class="flex items-center gap-xs text-on-surface-variant font-label-sm mb-lg">
+<a class="hover:text-primary transition-colors" href="#">Settings</a>
+<span class="material-symbols-outlined text-[14px]">chevron_right</span>
+<span class="text-primary font-bold">Extension Troubleshooting</span>
+</nav>
+<!-- Header Section -->
+<div class="mb-xxl flex flex-col md:flex-row md:items-end justify-between gap-lg">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-primary mb-xs">Chrome Extension Troubleshooting</h2>
+<p class="text-body-lg text-on-surface-variant max-w-2xl">If BillSync isn't capturing your time or syncing matters correctly, use this diagnostic tool to identify and resolve common connection issues.</p>
+</div>
+<div class="flex gap-sm">
+<button class="flex items-center gap-sm px-lg py-3 border border-outline text-primary rounded-xl font-label-md hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined">help_outline</span>
+                        Help Center
+                    </button>
+<button class="flex items-center gap-sm px-lg py-3 bg-secondary-container text-on-secondary-container rounded-xl font-label-md hover:opacity-90 active:scale-95 transition-all shadow-sm" id="run-diagnostic">
+<span class="material-symbols-outlined">refresh</span>
+                        Refresh Status
+                    </button>
+</div>
+</div>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-lg">
+<!-- Diagnostic Checklist Card -->
+<div class="md:col-span-7 bg-surface-container-lowest rounded-xl border border-outline-variant p-lg shadow-sm">
+<div class="flex items-center justify-between mb-lg">
+<h3 class="font-headline-sm text-headline-sm flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary">analytics</span>
+                            Live System Diagnostics
+                        </h3>
+<span class="px-sm py-1 bg-secondary-container/20 text-on-secondary-container rounded-full text-label-sm animate-pulse-subtle">Scanning...</span>
+</div>
+<div class="space-y-sm">
+<!-- Diagnostic Item 1 -->
+<div class="diag-item flex items-center justify-between p-md border border-outline-variant/30 rounded-lg hover:border-primary-container/40 transition-all cursor-default">
+<div class="flex items-center gap-md">
+<div class="diag-icon w-10 h-10 rounded-full bg-success/10 flex items-center justify-center text-[#2e7d32] transition-transform">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<div>
+<p class="font-label-md text-primary">Extension Version</p>
+<p class="text-body-sm text-on-surface-variant">v2.4.1 (Latest)</p>
+</div>
+</div>
+<span class="text-label-sm font-bold text-[#2e7d32] uppercase">Optimal</span>
+</div>
+<!-- Diagnostic Item 2 -->
+<div class="diag-item flex items-center justify-between p-md border border-outline-variant/30 rounded-lg hover:border-primary-container/40 transition-all cursor-default">
+<div class="flex items-center gap-md">
+<div class="diag-icon w-10 h-10 rounded-full bg-error-container/40 flex items-center justify-center text-error transition-transform">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">warning</span>
+</div>
+<div>
+<p class="font-label-md text-primary">Site Permissions</p>
+<p class="text-body-sm text-on-surface-variant">Host permissions missing for lex.legal/*</p>
+</div>
+</div>
+<button class="text-label-sm font-bold text-secondary underline hover:text-on-secondary-container transition-colors uppercase">Fix Now</button>
+</div>
+<!-- Diagnostic Item 3 -->
+<div class="diag-item flex items-center justify-between p-md border border-outline-variant/30 rounded-lg hover:border-primary-container/40 transition-all cursor-default">
+<div class="flex items-center gap-md">
+<div class="diag-icon w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center text-on-surface-variant transition-transform">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">sync</span>
+</div>
+<div>
+<p class="font-label-md text-primary">Sync Engine</p>
+<p class="text-body-sm text-on-surface-variant">Attempting to establish secure handshake...</p>
+</div>
+</div>
+<div class="w-16 h-1.5 bg-surface-container rounded-full overflow-hidden">
+<div class="w-1/2 h-full bg-primary-container rounded-full animate-pulse"></div>
+</div>
+</div>
+<!-- Diagnostic Item 4 -->
+<div class="diag-item flex items-center justify-between p-md border border-outline-variant/30 rounded-lg hover:border-primary-container/40 transition-all cursor-default">
+<div class="flex items-center gap-md">
+<div class="diag-icon w-10 h-10 rounded-full bg-success/10 flex items-center justify-center text-[#2e7d32] transition-transform">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<div>
+<p class="font-label-md text-primary">API Connectivity</p>
+<p class="text-body-sm text-on-surface-variant">Authenticated via TLS 1.3</p>
+</div>
+</div>
+<span class="text-label-sm font-bold text-[#2e7d32] uppercase">Connected</span>
+</div>
+</div>
+</div>
+<!-- Recovery & Reset Action Card -->
+<div class="md:col-span-5 flex flex-col gap-lg">
+<!-- Reset Card -->
+<div class="bg-primary text-surface p-lg rounded-xl shadow-lg relative overflow-hidden group">
+<div class="absolute top-0 right-0 p-lg opacity-10 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-[120px]">restart_alt</span>
+</div>
+<div class="relative z-10">
+<h3 class="font-headline-sm text-headline-sm mb-sm">Reset Connection</h3>
+<p class="text-surface-variant/90 text-body-sm mb-lg">Clears the extension cache and re-authenticates your session. This solves 95% of 'sync failed' errors.</p>
+<button class="w-full py-3 bg-secondary-container text-on-secondary-container rounded-lg font-label-md hover:bg-secondary transition-all active:scale-95">
+                                Re-sync Extension Now
+                            </button>
+</div>
+</div>
+<!-- Visual Feedback / Illustration Area -->
+<div class="flex-1 min-h-[240px] rounded-xl border border-outline-variant relative overflow-hidden bg-surface-container-low group">
+<div class="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent"></div>
+<img class="absolute inset-0 w-full h-full object-cover mix-blend-overlay opacity-40 group-hover:scale-105 transition-transform duration-700" data-alt="A clean and artistic top-down view of a modern legal workspace featuring a high-end laptop with a glowing screen, a minimalist brass desk lamp, and neatly stacked legal documents. The color scheme is a sophisticated blend of deep navy, gold accents, and warm wood textures. The lighting is soft and focused, creating a sense of quiet productivity and reliable technology in a premium law office setting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBXobqIJUs9BoKXAwvCAVCmsY1arEdgVB27Aq8LcOkOcymPJwU5ImNIJjwZ_QI0eXxi__qoH79OujQj-nwF85GXhKdw9478_FeGwNXSATpm8qaSkXwDpt4H8WYLMuIDIcdY2uOKy8Gq6JSRzEbob0_tCqWYgb8-o8SQZ3kW2BYCR51wNavdaM-xc71Eew9sifucNkhENlFqR8hmwRaqbwf-ZNJ60wY7nQHApdGvRHqzoxDQ0ZVseBJ3348h1-1GwmKy4UR0PCgsH1AT"/>
+<div class="absolute inset-0 flex flex-col items-center justify-center text-center p-lg">
+<div class="w-16 h-16 bg-surface border border-outline-variant rounded-2xl flex items-center justify-center mb-md shadow-sm">
+<span class="material-symbols-outlined text-primary text-[32px]">support_agent</span>
+</div>
+<p class="font-headline-sm text-primary mb-xs">Stuck?</p>
+<p class="text-body-sm text-on-surface-variant px-md">Our legal tech specialists are available for 1-on-1 screenshare troubleshooting.</p>
+<a class="mt-md text-secondary font-label-md flex items-center gap-xs hover:gap-sm transition-all" href="#">
+                                Launch Live Support
+                                <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</a>
+</div>
+</div>
+</div>
+<!-- Guided Solutions / FAQ -->
+<div class="md:col-span-12 mt-lg">
+<h3 class="font-headline-sm text-headline-sm text-primary mb-lg">Common Resolutions</h3>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-lg">
+<div class="p-lg bg-surface border border-outline-variant rounded-xl hover:shadow-md transition-shadow">
+<div class="w-12 h-12 bg-surface-container rounded-lg flex items-center justify-center mb-md">
+<span class="material-symbols-outlined text-primary">key</span>
+</div>
+<h4 class="font-label-md text-primary mb-sm">Token Mismatch Error</h4>
+<p class="text-body-sm text-on-surface-variant mb-md">If you see an authentication error, please sign out of the main dashboard and log back in before refreshing the extension.</p>
+<a class="text-primary font-label-sm underline hover:text-secondary" href="#">View Step-by-Step Guide</a>
+</div>
+<div class="p-lg bg-surface border border-outline-variant rounded-xl hover:shadow-md transition-shadow">
+<div class="w-12 h-12 bg-surface-container rounded-lg flex items-center justify-center mb-md">
+<span class="material-symbols-outlined text-primary">block</span>
+</div>
+<h4 class="font-label-md text-primary mb-sm">Ad-Blocker Conflict</h4>
+<p class="text-body-sm text-on-surface-variant mb-md">Some aggressive privacy extensions might block BillSync background processes. Whitelist 'lex.legal' in your blocker settings.</p>
+<a class="text-primary font-label-sm underline hover:text-secondary" href="#">How to Whitelist</a>
+</div>
+<div class="p-lg bg-surface border border-outline-variant rounded-xl hover:shadow-md transition-shadow">
+<div class="w-12 h-12 bg-surface-container rounded-lg flex items-center justify-center mb-md">
+<span class="material-symbols-outlined text-primary">history_edu</span>
+</div>
+<h4 class="font-label-md text-primary mb-sm">Missing Matter List</h4>
+<p class="text-body-sm text-on-surface-variant mb-md">If your matters aren't appearing in the extension dropdown, ensure you have 'Extension Access' enabled in Matter Settings.</p>
+<a class="text-primary font-label-sm underline hover:text-secondary" href="#">Update Matter Permissions</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="ml-sidebar-width bg-surface-container-low border-t border-outline-variant p-lg flex flex-col md:flex-row justify-between items-center gap-md">
+<div class="flex items-center gap-md">
+<span class="text-label-sm font-bold text-primary">LexisPremium</span>
+<p class="text-body-sm text-on-surface-variant">© 2024 LexisPremium Legal Systems. All rights reserved.</p>
+</div>
+<div class="flex gap-lg">
+<a class="text-body-sm text-on-surface-variant hover:text-secondary transition-colors opacity-90 hover:opacity-100" href="#">Privacy Policy</a>
+<a class="text-body-sm text-on-surface-variant hover:text-secondary transition-colors opacity-90 hover:opacity-100" href="#">Terms of Service</a>
+<a class="text-body-sm text-on-surface-variant hover:text-secondary transition-colors opacity-90 hover:opacity-100" href="#">Security</a>
+<a class="text-body-sm text-on-surface-variant hover:text-secondary transition-colors opacity-90 hover:opacity-100" href="#">Compliance</a>
+</div>
+</footer>
+<script>
+        // Micro-interaction for the "Run Diagnostic" button
+        const diagBtn = document.getElementById('run-diagnostic');
+        if (diagBtn) {
+            diagBtn.addEventListener('click', () => {
+                diagBtn.innerHTML = '<span class="material-symbols-outlined animate-spin">autorenew</span> Running...';
+                diagBtn.classList.add('opacity-80');
+                
+                setTimeout(() => {
+                    diagBtn.innerHTML = '<span class="material-symbols-outlined">check</span> Completed';
+                    diagBtn.classList.remove('bg-secondary-container');
+                    diagBtn.classList.add('bg-green-600', 'text-white');
+                    
+                    setTimeout(() => {
+                        diagBtn.innerHTML = '<span class="material-symbols-outlined">refresh</span> Refresh Status';
+                        diagBtn.classList.remove('bg-green-600', 'text-white', 'opacity-80');
+                        diagBtn.classList.add('bg-secondary-container', 'text-on-secondary-container');
+                    }, 2000);
+                }, 1500);
+            });
+        }
+
+        // Soft interaction for diag items
+        document.querySelectorAll('.diag-item').forEach(item => {
+            item.addEventListener('mouseenter', () => {
+                item.style.backgroundColor = 'rgba(18, 59, 99, 0.03)';
+            });
+            item.addEventListener('mouseleave', () => {
+                item.style.backgroundColor = 'transparent';
+            });
+        });
+    </script>
+</body></html>

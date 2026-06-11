@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-fixed-dim": "#b5c7ea",
+                        "primary-fixed": "#d2e4ff",
+                        "on-tertiary": "#ffffff",
+                        "tertiary-container": "#283a56",
+                        "tertiary-fixed": "#d6e3ff",
+                        "on-secondary-fixed-variant": "#584400",
+                        "primary-container": "#123b63",
+                        "on-secondary": "#ffffff",
+                        "secondary-fixed-dim": "#ecc246",
+                        "on-tertiary-fixed-variant": "#364764",
+                        "surface-variant": "#d9e3f1",
+                        "on-primary-container": "#83a6d4",
+                        "surface-dim": "#d1dbe8",
+                        "surface": "#f7f9ff",
+                        "primary": "#002546",
+                        "primary-fixed-dim": "#a6c9f9",
+                        "on-error": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "on-surface-variant": "#43474e",
+                        "on-background": "#121d26",
+                        "on-secondary-fixed": "#241a00",
+                        "inverse-surface": "#27313c",
+                        "on-secondary-container": "#735a00",
+                        "inverse-on-surface": "#e8f2ff",
+                        "background": "#f7f9ff",
+                        "on-tertiary-container": "#92a4c5",
+                        "on-error-container": "#93000a",
+                        "secondary": "#755b00",
+                        "error": "#ba1a1a",
+                        "on-tertiary-fixed": "#071c36",
+                        "surface-container-high": "#dfe9f7",
+                        "on-primary-fixed-variant": "#234871",
+                        "surface-tint": "#3d608a",
+                        "surface-container-highest": "#d9e3f1",
+                        "secondary-container": "#fed255",
+                        "tertiary": "#11243f",
+                        "on-primary-fixed": "#001c37",
+                        "inverse-primary": "#a6c9f9",
+                        "outline": "#73777f",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container-low": "#edf4ff",
+                        "on-surface": "#121d26",
+                        "surface-container": "#e4effd",
+                        "secondary-fixed": "#ffe08e",
+                        "outline-variant": "#c3c6cf",
+                        "on-primary": "#ffffff",
+                        "surface-bright": "#f7f9ff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "margin-desktop": "40px",
+                        "xs": "4px",
+                        "gutter-desktop": "24px",
+                        "base": "8px",
+                        "xl": "32px",
+                        "lg": "24px",
+                        "sm": "12px",
+                        "xxl": "48px",
+                        "sidebar-width": "260px",
+                        "md": "16px"
+                    },
+                    "fontFamily": {
+                        "headline-sm": ["Inter"],
+                        "label-md": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "body-md": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "body-lg": ["Inter"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body {
+            background-color: #F8F5EF;
+            font-family: 'Inter', sans-serif;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .custom-shadow {
+            box-shadow: 0 4px 15px rgba(31, 41, 51, 0.06);
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(8px);
+            border: 1px solid #E5E7EB;
+        }
+        .sidebar-active-border {
+            border-left: 2px solid #ffe08e;
+        }
+        /* Custom scrollbar for clean UI */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #d9e3f1;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="text-on-surface">
+<!-- Sidebar Navigation -->
+<aside class="fixed h-full w-sidebar-width left-0 top-0 bg-primary dark:bg-primary flex flex-col h-full py-xl z-50">
+<div class="px-lg mb-xxl">
+<h1 class="font-headline-sm text-headline-sm font-bold text-on-primary">LexPremium</h1>
+<p class="font-label-sm text-label-sm text-on-primary-container opacity-80">Legal Management</p>
+</div>
+<nav class="flex-grow">
+<ul class="space-y-base">
+<li>
+<a class="flex items-center gap-md text-on-tertiary-container px-lg py-sm hover:bg-tertiary-container hover:text-on-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-md text-on-tertiary-container px-lg py-sm hover:bg-tertiary-container hover:text-on-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="pending_actions">pending_actions</span>
+<span class="font-label-md text-label-md">Captured Work</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-md text-on-tertiary-container px-lg py-sm hover:bg-tertiary-container hover:text-on-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="receipt_long">receipt_long</span>
+<span class="font-label-md text-label-md">Invoice Builder</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-md text-on-tertiary-container px-lg py-sm hover:bg-tertiary-container hover:text-on-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span class="font-label-md text-label-md">Clients</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-md text-on-tertiary-container px-lg py-sm hover:bg-tertiary-container hover:text-on-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="description">description</span>
+<span class="font-label-md text-label-md">Documents</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-md border-l-2 border-secondary-fixed bg-tertiary-container text-on-primary px-lg py-sm transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="school">school</span>
+<span class="font-label-md text-label-md">Settings</span>
+</a>
+</li>
+</ul>
+</nav>
+<div class="mt-auto px-lg">
+<button class="w-full py-sm bg-secondary-container text-on-secondary-container font-label-md text-label-md rounded-lg flex items-center justify-center gap-sm hover:brightness-110 transition-all">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+                New Entry
+            </button>
+</div>
+</aside>
+<!-- Top Navigation Bar -->
+<header class="fixed top-0 right-0 h-16 ml-sidebar-width px-margin-desktop w-[calc(100%-theme(spacing.sidebar-width))] bg-surface border-b border-outline-variant flex justify-between items-center z-40">
+<div class="flex items-center gap-xl">
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant" data-icon="search">search</span>
+<input class="bg-surface-container-low border-none rounded-full pl-10 pr-lg py-xs font-body-sm text-body-sm w-64 focus:ring-1 focus:ring-primary" placeholder="Search resources..." type="text"/>
+</div>
+<nav class="flex gap-lg">
+<a class="text-on-surface-variant font-label-sm text-label-sm hover:text-primary transition-colors" href="#">Recent</a>
+<a class="text-on-surface-variant font-label-sm text-label-sm hover:text-primary transition-colors" href="#">Favorites</a>
+</nav>
+</div>
+<div class="flex items-center gap-md">
+<button class="p-base text-on-surface-variant hover:bg-surface-container-high rounded-full transition-colors">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="p-base text-on-surface-variant hover:bg-surface-container-high rounded-full transition-colors">
+<span class="material-symbols-outlined" data-icon="help_outline">help_outline</span>
+</button>
+<div class="h-8 w-8 rounded-full overflow-hidden border border-outline-variant">
+<img alt="User Profile" data-alt="A professional headshot of a lawyer in a sharp navy suit, looking confident and approachable against a blurred high-end law office background. The lighting is soft and professional, echoing the premium and trust-focused aesthetic of the LexPremium brand." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCCAdvIj_UJ-z6ezA05RUxj6IM5IGuItuQaaqo1FP8OqKK0LddTu_xkXbAxexLvNnHdrNF3hk8A92mYOAsdbzHxu8iTNmCXDFRvm8w82CN4lqsW86EzqVrM42OwSwwLiqEvQMhwaDVxs9eG_xDNu4hJuFCcFqPNhLWddI80FyxqJtcedQwoKkquitEmtxOrBpbTzX0RYrUc75r3sKeFfhevh0PCGEETgwNlWwVBxIe95gDDsup19LpuKQ2Fs60kJdd4gd_QlvIMZ4g2"/>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="ml-sidebar-width pt-xxl pb-xxl px-margin-desktop min-h-screen">
+<!-- Hero Section -->
+<section class="mt-lg mb-xxl flex flex-col md:flex-row justify-between items-end gap-xl">
+<div class="max-w-2xl">
+<h2 class="font-headline-lg text-headline-lg text-primary mb-sm">Mastering BillSync</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant mb-lg">Welcome to your training hub. These short, guided sessions are designed to help you integrate LexPremium into your daily workflow within minutes.</p>
+<div class="flex flex-wrap gap-md">
+<button class="px-lg py-sm bg-primary text-on-primary rounded-lg font-label-md text-label-md flex items-center gap-base hover:brightness-125 transition-all">
+<span class="material-symbols-outlined" data-icon="video_call">video_call</span>
+                        Schedule a Live Demo
+                    </button>
+<button class="px-lg py-sm border border-outline text-primary rounded-lg font-label-md text-label-md flex items-center gap-base hover:bg-surface-container-low transition-all">
+<span class="material-symbols-outlined" data-icon="support_agent">support_agent</span>
+                        Contact Support
+                    </button>
+</div>
+</div>
+<div class="bg-surface-container border border-outline-variant rounded-xl p-lg flex flex-col gap-sm w-full md:w-64 custom-shadow">
+<div class="flex justify-between items-center">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Overall Progress</span>
+<span class="font-label-md text-label-md text-primary">65%</span>
+</div>
+<div class="h-2 w-full bg-surface-variant rounded-full overflow-hidden">
+<div class="h-full bg-secondary-container" style="width: 65%;"></div>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">4 of 6 tutorials completed</p>
+</div>
+</section>
+<!-- Bento Grid for Training Categories -->
+<div class="grid grid-cols-12 gap-gutter-desktop">
+<!-- Featured: AI Summaries -->
+<div class="col-span-12 lg:col-span-8 group cursor-pointer">
+<div class="relative h-96 rounded-xl overflow-hidden glass-card border-none custom-shadow transition-transform duration-300 group-hover:-translate-y-1">
+<img alt="AI Legal Summaries" class="absolute inset-0 w-full h-full object-cover opacity-90 transition-transform duration-700 group-hover:scale-105" data-alt="A clean and modern digital workspace displaying a futuristic software interface with glowing data points and organized legal document summaries. The color palette is composed of soft blues, whites, and deep navy tones, creating a calm and professional atmosphere. The lighting is bright and airy, reflecting a high-end corporate minimalist design." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA7EnUG8-68iGkIYWA1gXLI8tM_BYEokj7C_TD8yM3OOIaXzDavudPjJ18ORAZ_spg4bpF2Vu6sEEdcaFLHRFBOPiDT4x3X8EUW5bCsd4CDnb8XtDQoh875_27RhCE0chjwOxC2_qWA0jg00P2cmlEnpYFVzbzclqX85KnD6cj_GeX7lo3VyuI5vL-Fh3NA1_lDEpik1QksDKwtbhXO8nuQ_xKLalfjM-c2bXlXJOfq-Ozp7ToWxpBSWCJlluZYqH3VtShUhlq1TXUh"/>
+<div class="absolute inset-0 bg-gradient-to-t from-primary/90 via-primary/20 to-transparent flex flex-col justify-end p-xl">
+<div class="flex items-center gap-sm mb-base">
+<span class="bg-secondary-container text-on-secondary-container px-sm py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">New</span>
+<span class="text-on-primary/80 font-label-sm text-label-sm flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]" data-icon="timer">timer</span> 8 mins
+                            </span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-primary mb-base">Using AI Matter Summaries</h3>
+<p class="font-body-md text-body-md text-on-primary/70 max-w-lg mb-lg">Learn how our proprietary AI analyzes hundreds of pages of filings to generate concise, billable summaries for your clients instantly.</p>
+<div class="flex items-center gap-md">
+<button class="bg-surface-container-lowest text-primary p-sm rounded-full flex items-center justify-center transition-transform hover:scale-110">
+<span class="material-symbols-outlined" data-icon="play_arrow" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+</button>
+<div class="h-1 bg-on-primary/20 flex-grow rounded-full overflow-hidden">
+<div class="h-full bg-secondary-container w-[20%]"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Resource: Billing Basics -->
+<div class="col-span-12 md:col-span-6 lg:col-span-4 group">
+<div class="h-96 bg-white rounded-xl border border-outline-variant flex flex-col overflow-hidden custom-shadow transition-all duration-300 group-hover:border-secondary-fixed">
+<div class="h-48 overflow-hidden relative">
+<img alt="Billing Workflow" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="A macro photograph of a professional desk featuring high-end fountain pens, clean legal stationery, and a sleek tablet showing a billing graph. The aesthetic is extremely orderly, quiet, and sophisticated, with a warm beige and deep navy color scheme that evokes a sense of confidence and traditional legal excellence in a modern setting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDrLxJv5sOjt2al0XoAEr2hicafceMUYwynHRyYZK0SIqquzlZvVmlNSC9-MBMnCjFupzEvZZ0MWuIMyGICZCTjOvCClKXYLwK1RGI3UaD_F8mI2pxnBUIMwSwxmjmaG-fr0treZBM1cNROI4DwAhw2tBllNe2GYiV6uhKztcwwJT_9vooyuGTa7HWC3RGE4Zm5OUP-HspBMP6FJS87MzukB4C_zOvoD7-oLhRFKQpENNUZyp2LkIqMWJNaLPvGjhWH-FcCgDUwMXVa"/>
+<div class="absolute inset-0 bg-primary/20 group-hover:bg-transparent transition-colors"></div>
+<div class="absolute top-md right-md bg-white/90 backdrop-blur px-sm py-1 rounded-lg">
+<span class="material-symbols-outlined text-status-success text-green-600" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+</div>
+<div class="p-lg flex flex-col flex-grow">
+<h4 class="font-headline-sm text-headline-sm text-primary mb-xs">Capturing Your First 0.1</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-lg">A quick start guide to the core LexPremium billing engine and shortcut keys.</p>
+<div class="mt-auto flex items-center justify-between border-t border-outline-variant pt-md">
+<span class="font-label-sm text-label-sm text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]" data-icon="library_books">library_books</span> Reading: 5 min
+                            </span>
+<span class="text-secondary font-label-md text-label-md flex items-center gap-1 cursor-pointer hover:underline">
+                                Replay <span class="material-symbols-outlined text-[18px]" data-icon="chevron_right">chevron_right</span>
+</span>
+</div>
+</div>
+</div>
+</div>
+<!-- More Resources Grid -->
+<div class="col-span-12 grid grid-cols-1 md:grid-cols-3 gap-gutter-desktop mt-lg">
+<!-- Tutorial Item -->
+<div class="bg-white p-lg rounded-xl border border-outline-variant custom-shadow hover:border-secondary-fixed transition-colors cursor-pointer flex gap-lg">
+<div class="h-20 w-20 flex-shrink-0 bg-surface-container-high rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-3xl" data-icon="shield">shield</span>
+</div>
+<div>
+<h5 class="font-label-md text-label-md text-primary mb-xs">Secure Client Sharing</h5>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-base line-clamp-2">Best practices for using our encrypted document vaults with external counsel.</p>
+<div class="h-1 bg-surface-variant rounded-full overflow-hidden w-24">
+<div class="h-full bg-secondary-container w-full"></div>
+</div>
+</div>
+</div>
+<!-- Tutorial Item -->
+<div class="bg-white p-lg rounded-xl border border-outline-variant custom-shadow hover:border-secondary-fixed transition-colors cursor-pointer flex gap-lg">
+<div class="h-20 w-20 flex-shrink-0 bg-surface-container-high rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-3xl" data-icon="analytics">analytics</span>
+</div>
+<div>
+<h5 class="font-label-md text-label-md text-primary mb-xs">Dashboard Customization</h5>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-base line-clamp-2">Arranging your workspace for high-efficiency litigation tracking.</p>
+<div class="h-1 bg-surface-variant rounded-full overflow-hidden w-24">
+<div class="h-full bg-secondary-container w-[40%]"></div>
+</div>
+</div>
+</div>
+<!-- Tutorial Item -->
+<div class="bg-white p-lg rounded-xl border border-outline-variant custom-shadow hover:border-secondary-fixed transition-colors cursor-pointer flex gap-lg">
+<div class="h-20 w-20 flex-shrink-0 bg-surface-container-high rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-3xl" data-icon="settings_suggest">settings_suggest</span>
+</div>
+<div>
+<h5 class="font-label-md text-label-md text-primary mb-xs">Automation Triggers</h5>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-base line-clamp-2">Set up automatic time entry based on calendar invites and emails.</p>
+<div class="h-1 bg-surface-variant rounded-full overflow-hidden w-24">
+<div class="h-full bg-secondary-container w-0"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Help Section -->
+<section class="mt-xxl grid grid-cols-1 lg:grid-cols-2 gap-gutter-desktop">
+<div class="bg-primary p-xl rounded-xl text-on-primary flex flex-col md:flex-row gap-xl items-center">
+<div class="flex-grow">
+<h4 class="font-headline-sm text-headline-sm mb-base">Need a 1-on-1 walk-through?</h4>
+<p class="font-body-md text-body-md opacity-80 mb-lg">Our legal specialists can provide a tailored demo for your firm's specific practice area.</p>
+<button class="bg-secondary-container text-on-secondary-container px-lg py-sm rounded-lg font-label-md text-label-md hover:brightness-110 transition-all">
+                        Schedule Live Demo
+                    </button>
+</div>
+<div class="h-40 w-40 flex-shrink-0 rounded-full border-4 border-on-primary/20 overflow-hidden relative group">
+<img alt="Customer Success Specialist" class="w-full h-full object-cover transition-transform group-hover:scale-110" data-alt="A warm, smiling portrait of a professional customer success manager in a minimalist, well-lit studio. The composition is clean and focused, reflecting the human-centric and supportive nature of the LexPremium brand. The lighting is soft and flattering, creating a sense of approachability and expert guidance." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDRhtPSoKUEmSB_RupETo8KL5lpjtEtkgX2NGUxP9TNN0PupCFxFA65iNLXfk_sU1dPbfbdgifpKGVexoi9c-rIakdORhZxthU4GNLxxD6uHERvZkPmUUyU7xC9uSxFa0AwNgeiY_FifJH3QBB8hwkZyhRNUgDaldyFqN8mOWqxbziBDJoYdy5U5XBdi8a4ZDrNdNfhrfl29g5kJgazPgYrVfLh0SyM-6pT7XYY9MDdNzQNZ92tS3zvCl1Vt9oB-FdC3Aj-ThPDmZFH"/>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-xl rounded-xl border border-outline-variant custom-shadow">
+<div class="flex items-start justify-between mb-lg">
+<div>
+<h4 class="font-headline-sm text-headline-sm text-primary mb-xs">Contact Support</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant">We're available 24/7 for premium members.</p>
+</div>
+<span class="material-symbols-outlined text-secondary text-4xl" data-icon="forum">forum</span>
+</div>
+<div class="grid grid-cols-2 gap-md">
+<div class="p-md rounded-lg border border-outline-variant hover:border-primary transition-colors cursor-pointer group">
+<span class="material-symbols-outlined text-primary mb-xs" data-icon="mail">mail</span>
+<p class="font-label-md text-label-md text-primary">Email Support</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Response in 1 hour</p>
+</div>
+<div class="p-md rounded-lg border border-outline-variant hover:border-primary transition-colors cursor-pointer group">
+<span class="material-symbols-outlined text-primary mb-xs" data-icon="call">call</span>
+<p class="font-label-md text-label-md text-primary">Priority Line</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Instant connection</p>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Micro-interaction Script -->
+<script>
+        document.querySelectorAll('.group').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                // Potential for adding lightweight JS animations if needed
+            });
+        });
+
+        // Search bar interaction
+        const searchInput = document.querySelector('input[type="text"]');
+        searchInput.addEventListener('focus', () => {
+            searchInput.classList.add('ring-2', 'ring-secondary-fixed');
+        });
+        searchInput.addEventListener('blur', () => {
+            searchInput.classList.remove('ring-2', 'ring-secondary-fixed');
+        });
+    </script>
+</body></html>

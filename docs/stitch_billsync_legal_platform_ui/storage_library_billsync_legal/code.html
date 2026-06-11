@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Storage Library | LexisPremium</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .sidebar-active { border-l-2 border-secondary-container bg-primary-container/30 text-surface; }
+        .glass-card { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(10px); }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-secondary-container": "#735a00",
+                    "surface-container-lowest": "#ffffff",
+                    "primary-fixed-dim": "#a6c9f9",
+                    "on-primary-fixed-variant": "#234871",
+                    "inverse-on-surface": "#e8f2ff",
+                    "on-primary-fixed": "#001c37",
+                    "tertiary-fixed": "#d6e3ff",
+                    "surface": "#f7f9ff",
+                    "secondary-fixed": "#ffe08e",
+                    "tertiary-container": "#283a56",
+                    "primary-container": "#123b63",
+                    "tertiary-fixed-dim": "#b5c7ea",
+                    "surface-dim": "#d1dbe8",
+                    "surface-container-low": "#edf4ff",
+                    "on-tertiary-fixed": "#071c36",
+                    "on-background": "#121d26",
+                    "on-error-container": "#93000a",
+                    "error": "#ba1a1a",
+                    "background": "#f7f9ff",
+                    "outline": "#73777f",
+                    "on-error": "#ffffff",
+                    "on-primary": "#ffffff",
+                    "surface-variant": "#d9e3f1",
+                    "on-tertiary-fixed-variant": "#364764",
+                    "surface-container-high": "#dfe9f7",
+                    "on-surface-variant": "#43474e",
+                    "on-surface": "#121d26",
+                    "on-primary-container": "#83a6d4",
+                    "primary-fixed": "#d2e4ff",
+                    "on-secondary": "#ffffff",
+                    "tertiary": "#11243f",
+                    "on-tertiary-container": "#92a4c5",
+                    "surface-bright": "#f7f9ff",
+                    "secondary-container": "#fed255",
+                    "error-container": "#ffdad6",
+                    "primary": "#002546",
+                    "inverse-surface": "#27313c",
+                    "surface-container-highest": "#d9e3f1",
+                    "secondary": "#755b00",
+                    "surface-container": "#e4effd",
+                    "on-secondary-fixed": "#241a00",
+                    "secondary-fixed-dim": "#ecc246",
+                    "outline-variant": "#c3c6cf",
+                    "on-tertiary": "#ffffff",
+                    "on-secondary-fixed-variant": "#584400",
+                    "inverse-primary": "#a6c9f9",
+                    "surface-tint": "#3d608a"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "base": "8px",
+                    "xl": "32px",
+                    "xs": "4px",
+                    "lg": "24px",
+                    "sm": "12px",
+                    "xxl": "48px",
+                    "gutter-desktop": "24px",
+                    "md": "16px",
+                    "margin-desktop": "40px",
+                    "sidebar-width": "260px"
+            },
+            "fontFamily": {
+                    "body-sm": ["Inter"],
+                    "label-md": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "headline-sm": ["Inter"],
+                    "body-md": ["Inter"]
+            },
+            "fontSize": {
+                    "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+</head>
+<body class="bg-background text-on-surface font-body-md min-h-screen flex">
+<!-- SIDEBAR NAVIGATION -->
+<aside class="fixed left-0 top-0 h-screen w-sidebar-width bg-primary border-r border-outline-variant/10 flex flex-col py-lg z-50">
+<div class="px-lg mb-xl">
+<h1 class="text-headline-sm font-headline-sm font-bold text-surface">LexisPremium</h1>
+<p class="text-label-sm text-surface-variant/70 uppercase tracking-widest mt-xs">Elite Law Management</p>
+</div>
+<nav class="flex-1 overflow-y-auto no-scrollbar px-sm space-y-1">
+<a class="flex items-center gap-md px-md py-sm text-surface-variant hover:bg-primary-container/20 hover:text-surface transition-colors" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-body-md text-body-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm text-surface-variant hover:bg-primary-container/20 hover:text-surface transition-colors" href="#">
+<span class="material-symbols-outlined">folder_open</span>
+<span class="font-body-md text-body-md">Matters</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm text-surface border-l-2 border-secondary-container bg-primary-container/30" href="#">
+<span class="material-symbols-outlined">description</span>
+<span class="font-body-md text-body-md">Documents</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm text-surface-variant hover:bg-primary-container/20 hover:text-surface transition-colors" href="#">
+<span class="material-symbols-outlined">timer</span>
+<span class="font-body-md text-body-md">Time Tracking</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm text-surface-variant hover:bg-primary-container/20 hover:text-surface transition-colors" href="#">
+<span class="material-symbols-outlined">receipt_long</span>
+<span class="font-body-md text-body-md">Billing</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm text-surface-variant hover:bg-primary-container/20 hover:text-surface transition-colors" href="#">
+<span class="material-symbols-outlined">calendar_today</span>
+<span class="font-body-md text-body-md">Calendar</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm text-surface-variant hover:bg-primary-container/20 hover:text-surface transition-colors" href="#">
+<span class="material-symbols-outlined">groups</span>
+<span class="font-body-md text-body-md">Clients</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm text-surface-variant hover:bg-primary-container/20 hover:text-surface transition-colors" href="#">
+<span class="material-symbols-outlined">person_book</span>
+<span class="font-body-md text-body-md">Contacts</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm text-surface-variant hover:bg-primary-container/20 hover:text-surface transition-colors" href="#">
+<span class="material-symbols-outlined">assignment</span>
+<span class="font-body-md text-body-md">Tasks</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm text-surface-variant hover:bg-primary-container/20 hover:text-surface transition-colors" href="#">
+<span class="material-symbols-outlined">assessment</span>
+<span class="font-body-md text-body-md">Reporting</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm text-surface-variant hover:bg-primary-container/20 hover:text-surface transition-colors" href="#">
+<span class="material-symbols-outlined">account_tree</span>
+<span class="font-body-md text-body-md">Workflows</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm text-surface-variant hover:bg-primary-container/20 hover:text-surface transition-colors" href="#">
+<span class="material-symbols-outlined">lock</span>
+<span class="font-body-md text-body-md">Vault</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm text-surface-variant hover:bg-primary-container/20 hover:text-surface transition-colors" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-body-md text-body-md">Settings</span>
+</a>
+</nav>
+<div class="mt-auto px-sm pt-lg border-t border-outline-variant/10">
+<a class="flex items-center gap-md px-md py-sm text-surface-variant hover:text-surface" href="#">
+<span class="material-symbols-outlined">help_outline</span>
+<span class="font-body-md text-body-md">Help Center</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm text-surface-variant hover:text-surface" href="#">
+<span class="material-symbols-outlined">logout</span>
+<span class="font-body-md text-body-md">Log Out</span>
+</a>
+</div>
+</aside>
+<!-- MAIN CONTENT CANVAS -->
+<main class="ml-sidebar-width flex-1 flex flex-col min-h-screen">
+<!-- TOP NAV BAR -->
+<header class="h-16 flex justify-between items-center px-margin-desktop bg-surface border-b border-outline-variant shadow-sm sticky top-0 z-40">
+<div class="flex items-center gap-lg flex-1">
+<div class="relative w-full max-w-xl">
+<span class="material-symbols-outlined absolute left-md top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="w-full pl-xl pr-md py-sm bg-surface-container-low border-none rounded-lg focus:ring-1 focus:ring-primary text-body-md" placeholder="Global search files, matters, or tags..." type="text"/>
+</div>
+<div class="hidden md:flex gap-md">
+<a class="text-primary font-bold border-b-2 border-secondary-container pb-1 font-label-md" href="#">Storage Library</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors font-label-md" href="#">Recent Matters</a>
+</div>
+</div>
+<div class="flex items-center gap-lg">
+<button class="bg-primary text-on-primary px-lg py-sm rounded-lg font-label-md hover:bg-primary-container transition-colors">Create Invoice</button>
+<div class="flex items-center gap-md">
+<button class="p-xs text-on-surface-variant hover:text-primary transition-colors active:scale-95"><span class="material-symbols-outlined">notifications</span></button>
+<button class="p-xs text-on-surface-variant hover:text-primary transition-colors active:scale-95"><span class="material-symbols-outlined">history</span></button>
+<div class="h-8 w-8 rounded-full bg-secondary-container flex items-center justify-center overflow-hidden border border-outline-variant">
+<img alt="Attorney Profile" class="h-full w-full object-cover" data-alt="A professional headshot of a middle-aged male attorney with a kind but authoritative expression, wearing a tailored navy blue suit and crisp white shirt. The background is a soft-focus office setting with warm wood tones and a bookshelf, conveying a sense of established expertise and trustworthiness in a premium legal environment." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCNm0gOOrfcZP-9GgkH_c4J6Rgceu4FLytkHzk5cVKxiH5hMXvgKklD1i0-Kp8x1snYOgtoY3eK4xYRmsjO23JX5iiq4ecvBXL4ezvp9wH30h7H4-eE43XRqbx4UJe1WiKT1jgBRKgIMtnS6igvgEoVGCm0nY2DJW59XuOS1uQiS2AAkCF-utuUqsJFTiRBBbhyabVB_-aE807mL2iRCe5WDOiz0tZxywNLbG7HKpwrmJ2diM9-RYuBeqtRk_SkFUqNOoQigkH8laow"/>
+</div>
+</div>
+</div>
+</header>
+<!-- CONTENT AREA -->
+<div class="p-margin-desktop space-y-xxl">
+<!-- STORAGE HEADER & METRICS -->
+<section class="grid grid-cols-1 lg:grid-cols-12 gap-lg items-start">
+<div class="lg:col-span-7">
+<h2 class="font-headline-lg text-headline-lg text-primary mb-xs">Storage Library</h2>
+<p class="text-body-lg text-on-surface-variant max-w-2xl">Secure, firm-wide file management with enterprise-grade encryption and comprehensive audit trails.</p>
+</div>
+<div class="lg:col-span-5 bg-surface-container border border-outline-variant p-lg rounded-xl shadow-sm">
+<div class="flex justify-between items-end mb-sm">
+<div>
+<p class="text-label-sm text-on-surface-variant uppercase tracking-wider mb-xs">Storage Capacity</p>
+<p class="font-headline-sm text-headline-sm text-primary">1.2 TB <span class="text-body-md font-normal text-on-surface-variant">of 5 TB used</span></p>
+</div>
+<p class="text-body-sm font-bold text-secondary">24% Utilized</p>
+</div>
+<div class="w-full h-3 bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-secondary transition-all duration-1000 ease-out" style="width: 24%"></div>
+</div>
+<div class="mt-md flex justify-between">
+<a class="text-label-sm text-primary flex items-center gap-xs hover:underline" href="#"><span class="material-symbols-outlined text-[16px]">receipt_long</span> Upgrade Plan</a>
+<a class="text-label-sm text-on-surface-variant flex items-center gap-xs hover:underline" href="#"><span class="material-symbols-outlined text-[16px]">analytics</span> View Details</a>
+</div>
+</div>
+</section>
+<!-- BENTO GRID SECTION -->
+<section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-lg">
+<!-- RECENT UPLOADS CARD -->
+<div class="lg:col-span-3 bg-surface border border-outline-variant rounded-xl overflow-hidden shadow-sm">
+<div class="px-lg py-md border-b border-outline-variant flex justify-between items-center bg-surface-container-low">
+<h3 class="font-label-md text-label-md text-primary flex items-center gap-sm">
+<span class="material-symbols-outlined">schedule</span> Recent Activity
+                        </h3>
+<a class="text-label-sm text-primary hover:underline" href="#">View Audit Trail</a>
+</div>
+<div class="divide-y divide-outline-variant">
+<!-- File Entry -->
+<div class="px-lg py-md flex items-center justify-between hover:bg-surface-container transition-colors group">
+<div class="flex items-center gap-md">
+<div class="h-10 w-10 bg-primary-container/10 rounded flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">description</span>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-surface">Deposition_Transcript_V2.pdf</p>
+<p class="text-label-sm text-on-surface-variant">Matter: Smith v. Harrison | Uploaded by Sarah K. • 2m ago</p>
+</div>
+</div>
+<div class="flex items-center gap-lg">
+<span class="px-sm py-[2px] bg-surface-container-highest text-on-surface-variant text-[10px] font-bold rounded-full flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px]" data-weight="fill">verified_user</span> ENCRYPTED
+                                </span>
+<button class="opacity-0 group-hover:opacity-100 p-xs text-on-surface-variant hover:text-primary transition-all">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+</div>
+<!-- File Entry -->
+<div class="px-lg py-md flex items-center justify-between hover:bg-surface-container transition-colors group">
+<div class="flex items-center gap-md">
+<div class="h-10 w-10 bg-error-container/10 rounded flex items-center justify-center text-error">
+<span class="material-symbols-outlined">picture_as_pdf</span>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-surface">Closing_Statement_Final.pdf</p>
+<p class="text-label-sm text-on-surface-variant">Matter: Real Estate - 402 Oak | Uploaded by James L. • 45m ago</p>
+</div>
+</div>
+<div class="flex items-center gap-lg">
+<span class="px-sm py-[2px] bg-surface-container-highest text-on-surface-variant text-[10px] font-bold rounded-full flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px]" data-weight="fill">verified_user</span> ENCRYPTED
+                                </span>
+<button class="opacity-0 group-hover:opacity-100 p-xs text-on-surface-variant hover:text-primary transition-all">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+</div>
+<!-- File Entry -->
+<div class="px-lg py-md flex items-center justify-between hover:bg-surface-container transition-colors group">
+<div class="flex items-center gap-md">
+<div class="h-10 w-10 bg-secondary-container/20 rounded flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined">article</span>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-surface">Contract_Draft_ExhibitA.docx</p>
+<p class="text-label-sm text-on-surface-variant">Matter: Tech Solutions Merger | Uploaded by Emily R. • 2h ago</p>
+</div>
+</div>
+<div class="flex items-center gap-lg">
+<span class="px-sm py-[2px] bg-surface-container-highest text-on-surface-variant text-[10px] font-bold rounded-full flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px]" data-weight="fill">verified_user</span> ENCRYPTED
+                                </span>
+<button class="opacity-0 group-hover:opacity-100 p-xs text-on-surface-variant hover:text-primary transition-all">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- ACTION CARD -->
+<div class="bg-primary p-lg rounded-xl shadow-lg flex flex-col justify-between relative overflow-hidden">
+
+<div class="relative z-10">
+<span class="material-symbols-outlined text-secondary text-display-lg mb-md">cloud_upload</span>
+<h4 class="text-surface font-headline-sm text-headline-sm mb-xs">Fast Upload</h4>
+<p class="text-surface-variant text-body-sm mb-lg">Drag and drop files to instantly associate them with matters.</p>
+</div>
+<button class="relative z-10 w-full py-md bg-secondary text-on-secondary-fixed font-bold rounded-lg hover:scale-105 active:scale-95 transition-transform">
+                        Select Files
+                    </button>
+</div>
+</section>
+<!-- FILE EXPLORER SECTION -->
+<section class="bg-surface border border-outline-variant rounded-xl shadow-sm overflow-hidden min-h-[600px] flex">
+<!-- Directory Sidebar -->
+<aside class="w-64 border-r border-outline-variant bg-surface-container-lowest p-lg flex flex-col">
+<h5 class="text-label-sm text-on-surface-variant uppercase tracking-widest mb-lg">Firm Hierarchy</h5>
+<nav class="space-y-sm flex-1 overflow-y-auto no-scrollbar">
+<div class="group cursor-pointer">
+<div class="flex items-center gap-sm text-primary py-xs px-sm bg-surface-container rounded-lg">
+<span class="material-symbols-outlined text-sm">expand_more</span>
+<span class="material-symbols-outlined text-lg">folder_special</span>
+<span class="font-label-md">Active Matters</span>
+</div>
+<div class="ml-lg mt-sm space-y-sm">
+<div class="flex items-center gap-sm text-on-surface-variant hover:text-primary py-xs">
+<span class="material-symbols-outlined text-lg">folder</span>
+<span class="text-body-sm">Civil Litigation</span>
+</div>
+<div class="flex items-center gap-sm text-on-surface-variant hover:text-primary py-xs">
+<span class="material-symbols-outlined text-lg">folder</span>
+<span class="text-body-sm">Corporate Real Estate</span>
+</div>
+<div class="flex items-center gap-sm text-on-surface-variant hover:text-primary py-xs">
+<span class="material-symbols-outlined text-lg">folder</span>
+<span class="text-body-sm">Intellectual Property</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-sm text-on-surface-variant hover:text-primary py-xs px-sm transition-colors cursor-pointer">
+<span class="material-symbols-outlined text-sm">chevron_right</span>
+<span class="material-symbols-outlined text-lg">archive</span>
+<span class="font-label-md">Archived Cases</span>
+</div>
+<div class="flex items-center gap-sm text-on-surface-variant hover:text-primary py-xs px-sm transition-colors cursor-pointer">
+<span class="material-symbols-outlined text-sm">chevron_right</span>
+<span class="material-symbols-outlined text-lg">receipt</span>
+<span class="font-label-md">Billing Evidence</span>
+</div>
+<div class="flex items-center gap-sm text-on-surface-variant hover:text-primary py-xs px-sm transition-colors cursor-pointer">
+<span class="material-symbols-outlined text-sm">chevron_right</span>
+<span class="material-symbols-outlined text-lg">shield_person</span>
+<span class="font-label-md">HR &amp; Internal</span>
+</div>
+</nav>
+<div class="mt-auto pt-lg border-t border-outline-variant/30 text-center">
+<p class="text-[10px] text-on-surface-variant uppercase mb-sm">End-to-End Encryption Active</p>
+<span class="material-symbols-outlined text-secondary">encrypted</span>
+</div>
+</aside>
+<!-- File List Area -->
+<div class="flex-1 flex flex-col">
+<!-- Toolbar -->
+<div class="p-lg border-b border-outline-variant flex justify-between items-center bg-surface-container-low">
+<div class="flex items-center gap-md">
+<h6 class="font-headline-sm text-headline-sm text-primary">Active Matters</h6>
+<span class="text-on-surface-variant">/ Civil Litigation</span>
+</div>
+<div class="flex items-center gap-md">
+<button class="p-sm border border-outline-variant rounded-lg hover:bg-surface transition-colors flex items-center gap-xs text-label-sm">
+<span class="material-symbols-outlined text-lg">filter_list</span> Filter
+                            </button>
+<button class="p-sm border border-outline-variant rounded-lg hover:bg-surface transition-colors flex items-center gap-xs text-label-sm">
+<span class="material-symbols-outlined text-lg">sort</span> Sort
+                            </button>
+<button class="bg-primary text-on-primary px-lg py-sm rounded-lg flex items-center gap-xs text-label-sm hover:opacity-90 active:scale-95 transition-all">
+<span class="material-symbols-outlined text-lg">add</span> New Folder
+                            </button>
+</div>
+</div>
+<!-- Files Table -->
+<div class="flex-1 overflow-y-auto no-scrollbar">
+<table class="w-full text-left">
+<thead>
+<tr class="border-b border-outline-variant text-label-sm text-on-surface-variant">
+<th class="px-lg py-md font-semibold">Name</th>
+<th class="px-lg py-md font-semibold">Modified</th>
+<th class="px-lg py-md font-semibold">Size</th>
+<th class="px-lg py-md font-semibold">Security</th>
+<th class="px-lg py-md font-semibold text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant">
+<!-- Table Row -->
+<tr class="hover:bg-surface-container transition-colors group">
+<td class="px-lg py-md">
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-secondary">folder</span>
+<span class="font-body-md">Matter #2024-081: Harrison v. State</span>
+</div>
+</td>
+<td class="px-lg py-md text-body-sm text-on-surface-variant">Oct 12, 2024</td>
+<td class="px-lg py-md text-body-sm text-on-surface-variant">145 Items</td>
+<td class="px-lg py-md">
+<span class="text-[10px] font-bold text-on-tertiary-fixed-variant bg-tertiary-fixed px-xs py-0.5 rounded">FIRM ONLY</span>
+</td>
+<td class="px-lg py-md text-right">
+<button class="p-xs text-on-surface-variant hover:text-primary"><span class="material-symbols-outlined">share</span></button>
+<button class="p-xs text-on-surface-variant hover:text-primary"><span class="material-symbols-outlined">download</span></button>
+</td>
+</tr>
+<!-- Table Row -->
+<tr class="hover:bg-surface-container transition-colors group">
+<td class="px-lg py-md">
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-secondary">folder</span>
+<span class="font-body-md">Matter #2024-092: City of Seattle v. Thompson</span>
+</div>
+</td>
+<td class="px-lg py-md text-body-sm text-on-surface-variant">Oct 10, 2024</td>
+<td class="px-lg py-md text-body-sm text-on-surface-variant">82 Items</td>
+<td class="px-lg py-md">
+<span class="text-[10px] font-bold text-on-secondary-fixed-variant bg-secondary-fixed px-xs py-0.5 rounded">SHARED</span>
+</td>
+<td class="px-lg py-md text-right">
+<button class="p-xs text-on-surface-variant hover:text-primary"><span class="material-symbols-outlined">share</span></button>
+<button class="p-xs text-on-surface-variant hover:text-primary"><span class="material-symbols-outlined">download</span></button>
+</td>
+</tr>
+<!-- Table Row -->
+<tr class="hover:bg-surface-container transition-colors group">
+<td class="px-lg py-md">
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-error">picture_as_pdf</span>
+<span class="font-body-md">Court_Order_3024_A.pdf</span>
+</div>
+</td>
+<td class="px-lg py-md text-body-sm text-on-surface-variant">Oct 08, 2024</td>
+<td class="px-lg py-md text-body-sm text-on-surface-variant">2.4 MB</td>
+<td class="px-lg py-md">
+<span class="text-[10px] font-bold text-on-error-container bg-error-container px-xs py-0.5 rounded">RESTRICTED</span>
+</td>
+<td class="px-lg py-md text-right">
+<button class="p-xs text-on-surface-variant hover:text-primary"><span class="material-symbols-outlined">share</span></button>
+<button class="p-xs text-on-surface-variant hover:text-primary"><span class="material-symbols-outlined">download</span></button>
+</td>
+</tr>
+<!-- Table Row -->
+<tr class="hover:bg-surface-container transition-colors group">
+<td class="px-lg py-md">
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-primary">description</span>
+<span class="font-body-md">Client_Initial_Intake_Form.docx</span>
+</div>
+</td>
+<td class="px-lg py-md text-body-sm text-on-surface-variant">Oct 05, 2024</td>
+<td class="px-lg py-md text-body-sm text-on-surface-variant">420 KB</td>
+<td class="px-lg py-md">
+<span class="text-[10px] font-bold text-on-tertiary-fixed-variant bg-tertiary-fixed px-xs py-0.5 rounded">FIRM ONLY</span>
+</td>
+<td class="px-lg py-md text-right">
+<button class="p-xs text-on-surface-variant hover:text-primary"><span class="material-symbols-outlined">share</span></button>
+<button class="p-xs text-on-surface-variant hover:text-primary"><span class="material-symbols-outlined">download</span></button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+</div>
+<!-- FOOTER -->
+<footer class="mt-auto p-lg flex justify-between items-center bg-surface-container-low border-t border-outline-variant">
+<div class="flex items-center gap-lg">
+<span class="text-label-sm font-label-sm font-bold text-primary uppercase tracking-tighter">LexisPremium</span>
+<p class="text-body-sm text-on-surface-variant">© 2024 LexisPremium Legal Systems. All rights reserved.</p>
+</div>
+<nav class="flex gap-lg">
+<a class="text-body-sm text-on-surface-variant hover:text-secondary transition-colors opacity-90 hover:opacity-100" href="#">Privacy Policy</a>
+<a class="text-body-sm text-on-surface-variant hover:text-secondary transition-colors opacity-90 hover:opacity-100" href="#">Terms of Service</a>
+<a class="text-body-sm text-on-surface-variant hover:text-secondary transition-colors opacity-90 hover:opacity-100" href="#">Security</a>
+<a class="text-body-sm text-on-surface-variant hover:text-secondary transition-colors opacity-90 hover:opacity-100" href="#">Compliance</a>
+</nav>
+</footer>
+</main>
+<script>
+        // Micro-interactions and subtle effects
+        document.querySelectorAll('button').forEach(btn => {
+            btn.addEventListener('mousedown', () => {
+                btn.style.transform = 'scale(0.98)';
+            });
+            btn.addEventListener('mouseup', () => {
+                btn.style.transform = 'scale(1)';
+            });
+            btn.addEventListener('mouseleave', () => {
+                btn.style.transform = 'scale(1)';
+            });
+        });
+
+        // Folder toggle mock logic
+        const directoryItems = document.querySelectorAll('nav .group');
+        directoryItems.forEach(item => {
+            item.addEventListener('click', () => {
+                const subItems = item.querySelector('.ml-lg');
+                const icon = item.querySelector('.material-symbols-outlined:first-child');
+                if(subItems) {
+                    subItems.classList.toggle('hidden');
+                    icon.textContent = subItems.classList.contains('hidden') ? 'chevron_right' : 'expand_more';
+                }
+            });
+        });
+    </script>
+</body></html>

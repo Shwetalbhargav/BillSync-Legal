@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Reset Password | BillSync Legal</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+            text-transform: none;
+            letter-spacing: normal;
+            word-wrap: normal;
+            white-space: nowrap;
+            direction: ltr;
+        }
+        .strength-bar {
+            transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.4s ease;
+        }
+        body {
+            background-color: #f7f9ff;
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "primary": "#002546",
+                      "on-surface-variant": "#43474e",
+                      "secondary": "#755b00",
+                      "surface": "#f7f9ff",
+                      "on-primary": "#ffffff",
+                      "primary-fixed": "#d2e4ff",
+                      "on-primary-container": "#83a6d4",
+                      "on-secondary-fixed": "#241a00",
+                      "on-primary-fixed-variant": "#234871",
+                      "tertiary-fixed": "#d6e3ff",
+                      "secondary-fixed-dim": "#ecc246",
+                      "secondary-container": "#fed255",
+                      "surface-tint": "#3d608a",
+                      "background": "#f7f9ff",
+                      "tertiary-container": "#283a56",
+                      "on-tertiary-container": "#92a4c5",
+                      "on-error": "#ffffff",
+                      "error": "#ba1a1a",
+                      "surface-container-lowest": "#ffffff",
+                      "surface-bright": "#f7f9ff",
+                      "on-secondary": "#ffffff",
+                      "primary-fixed-dim": "#a6c9f9",
+                      "outline-variant": "#c3c6cf",
+                      "surface-dim": "#d1dbe8",
+                      "on-tertiary-fixed": "#071c36",
+                      "on-secondary-container": "#735a00",
+                      "on-primary-fixed": "#001c37",
+                      "secondary-fixed": "#ffe08e",
+                      "error-container": "#ffdad6",
+                      "inverse-primary": "#a6c9f9",
+                      "on-tertiary": "#ffffff",
+                      "on-error-container": "#93000a",
+                      "primary-container": "#123b63",
+                      "inverse-on-surface": "#e8f2ff",
+                      "surface-container-high": "#dfe9f7",
+                      "on-tertiary-fixed-variant": "#364764",
+                      "on-surface": "#121d26",
+                      "tertiary": "#11243f",
+                      "surface-container-low": "#edf4ff",
+                      "outline": "#73777f",
+                      "surface-container": "#e4effd",
+                      "on-secondary-fixed-variant": "#584400",
+                      "surface-variant": "#d9e3f1",
+                      "surface-container-highest": "#d9e3f1",
+                      "tertiary-fixed-dim": "#b5c7ea",
+                      "on-background": "#121d26",
+                      "inverse-surface": "#27313c"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "xs": "4px",
+                      "margin-desktop": "40px",
+                      "xxl": "48px",
+                      "lg": "24px",
+                      "base": "8px",
+                      "xl": "32px",
+                      "md": "16px",
+                      "sm": "12px",
+                      "sidebar-width": "260px",
+                      "gutter-desktop": "24px"
+              },
+              "fontFamily": {
+                      "label-sm": ["Inter"],
+                      "body-sm": ["Inter"],
+                      "headline-sm": ["Inter"],
+                      "headline-md": ["Inter"],
+                      "headline-lg": ["Inter"],
+                      "label-md": ["Inter"],
+                      "body-lg": ["Inter"],
+                      "body-md": ["Inter"],
+                      "display-lg": ["Inter"]
+              },
+              "fontSize": {
+                      "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "600"}],
+                      "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                      "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                      "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                      "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                      "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                      "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                      "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+              }
+            },
+          },
+        }
+    </script>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-center p-md overflow-hidden relative">
+<!-- Atmospheric Background Decoration -->
+<div class="absolute inset-0 pointer-events-none z-0">
+<div class="absolute top-[-10%] right-[-10%] w-[40%] h-[40%] bg-primary-fixed/30 blur-[120px] rounded-full"></div>
+<div class="absolute bottom-[-10%] left-[-10%] w-[40%] h-[40%] bg-secondary-fixed/20 blur-[120px] rounded-full"></div>
+</div>
+<!-- Main Content Canvas -->
+<main class="relative z-10 w-full max-w-[480px]">
+<!-- Header Branding (Suppressing Sidebar/TopNav per rules for Transactional pages) -->
+<div class="text-center mb-xl">
+<div class="inline-flex items-center justify-center mb-md">
+<div class="w-12 h-12 bg-primary rounded-xl flex items-center justify-center shadow-lg">
+<span class="material-symbols-outlined text-on-primary text-3xl" data-weight="fill">balance</span>
+</div>
+</div>
+<h1 class="font-headline-lg text-headline-lg text-primary mb-xs">BillSync Legal</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">Secure Credential Recovery</p>
+</div>
+<!-- Reset Card -->
+<section class="bg-surface-container-lowest border border-outline-variant p-xl shadow-sm rounded-xl">
+<!-- User Confirmation -->
+<div class="flex items-center gap-md p-md bg-surface-container rounded-lg mb-lg">
+<div class="w-10 h-10 bg-primary-container rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-on-primary-container text-xl">person</span>
+</div>
+<div>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Resetting password for</p>
+<p class="font-label-md text-label-md text-primary font-bold">j.anderson@lexingtonlaw.com</p>
+</div>
+</div>
+<form class="space-y-lg" id="reset-form">
+<!-- New Password Field -->
+<div class="space-y-xs">
+<label class="font-label-md text-label-md text-on-surface" for="new-password">New Password</label>
+<div class="relative group">
+<input class="w-full px-md py-sm bg-white border border-outline-variant rounded-lg focus:ring-2 focus:ring-primary/10 focus:border-primary outline-none transition-all pr-12 font-body-md text-body-md" id="new-password" placeholder="Enter secure password" type="password"/>
+<button class="absolute right-md top-1/2 -translate-y-1/2 text-outline hover:text-primary transition-colors toggle-password" type="button">
+<span class="material-symbols-outlined">visibility</span>
+</button>
+</div>
+<!-- Strength Indicator -->
+<div class="pt-xs">
+<div class="flex justify-between items-center mb-xs">
+<span class="font-label-sm text-label-sm text-outline" id="strength-label">Security: Weak</span>
+</div>
+<div class="h-1.5 w-full bg-surface-container rounded-full overflow-hidden">
+<div class="strength-bar h-full w-[20%] bg-error" id="strength-bar"></div>
+</div>
+</div>
+</div>
+<!-- Confirm Password Field -->
+<div class="space-y-xs">
+<label class="font-label-md text-label-md text-on-surface" for="confirm-password">Confirm New Password</label>
+<div class="relative group">
+<input class="w-full px-md py-sm bg-white border border-outline-variant rounded-lg focus:ring-2 focus:ring-primary/10 focus:border-primary outline-none transition-all pr-12 font-body-md text-body-md" id="confirm-password" placeholder="Repeat your password" type="password"/>
+<button class="absolute right-md top-1/2 -translate-y-1/2 text-outline hover:text-primary transition-colors toggle-password" type="button">
+<span class="material-symbols-outlined">visibility</span>
+</button>
+</div>
+<p class="hidden font-label-sm text-label-sm text-error flex items-center gap-1" id="match-error">
+<span class="material-symbols-outlined text-[14px]">error</span> Passwords do not match
+                    </p>
+</div>
+<!-- Security Checklist -->
+<div class="grid grid-cols-2 gap-sm p-sm bg-surface-variant/20 rounded-lg">
+<div class="flex items-center gap-2 text-on-surface-variant checklist-item" data-rule="length">
+<span class="material-symbols-outlined text-sm status-icon">circle</span>
+<span class="font-label-sm text-label-sm">8+ characters</span>
+</div>
+<div class="flex items-center gap-2 text-on-surface-variant checklist-item" data-rule="upper">
+<span class="material-symbols-outlined text-sm status-icon">circle</span>
+<span class="font-label-sm text-label-sm">Uppercase</span>
+</div>
+<div class="flex items-center gap-2 text-on-surface-variant checklist-item" data-rule="number">
+<span class="material-symbols-outlined text-sm status-icon">circle</span>
+<span class="font-label-sm text-label-sm">Includes number</span>
+</div>
+<div class="flex items-center gap-2 text-on-surface-variant checklist-item" data-rule="special">
+<span class="material-symbols-outlined text-sm status-icon">circle</span>
+<span class="font-label-sm text-label-sm">Special symbol</span>
+</div>
+</div>
+<!-- Submit Button -->
+<button class="w-full py-md bg-primary text-on-primary font-label-md text-label-md rounded-lg shadow-md hover:bg-primary-container transition-all active:scale-[0.98] flex items-center justify-center gap-2" id="submit-btn" type="submit">
+                    Update Secure Password
+                    <span class="material-symbols-outlined text-[18px]">verified_user</span>
+</button>
+</form>
+</section>
+<!-- Footer Links -->
+<div class="mt-lg text-center flex flex-col gap-sm">
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-primary transition-colors flex items-center justify-center gap-1" href="#">
+<span class="material-symbols-outlined text-[16px]">arrow_back</span>
+                Back to Sign In
+            </a>
+<p class="font-label-sm text-label-sm text-outline mt-md">
+                Secure encryption provided by BillSync Identity Services.<br/>
+                © 2024 BillSync Legal. All rights reserved.
+            </p>
+</div>
+</main>
+<!-- Success Modal (Hidden by default) -->
+<div class="fixed inset-0 bg-primary/40 backdrop-blur-sm z-50 flex items-center justify-center hidden opacity-0 transition-opacity duration-300" id="success-overlay">
+<div class="bg-surface-container-lowest p-xl rounded-xl shadow-2xl max-w-sm w-full text-center transform scale-95 transition-transform duration-300">
+<div class="w-16 h-16 bg-secondary-fixed-dim/20 text-secondary rounded-full flex items-center justify-center mx-auto mb-lg">
+<span class="material-symbols-outlined text-4xl">check_circle</span>
+</div>
+<h2 class="font-headline-md text-headline-md text-primary mb-sm">Password Updated</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mb-xl">Your credentials have been successfully reset. You can now securely sign in to your dashboard.</p>
+<button class="w-full py-md bg-primary text-on-primary font-label-md text-label-md rounded-lg hover:bg-primary-container transition-colors">
+                Proceed to Login
+            </button>
+</div>
+</div>
+<script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const newPwd = document.getElementById('new-password');
+            const confirmPwd = document.getElementById('confirm-password');
+            const strengthBar = document.getElementById('strength-bar');
+            const strengthLabel = document.getElementById('strength-label');
+            const matchError = document.getElementById('match-error');
+            const form = document.getElementById('reset-form');
+            const overlay = document.getElementById('success-overlay');
+
+            // Toggle Password Visibility
+            document.querySelectorAll('.toggle-password').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const input = btn.previousElementSibling;
+                    const icon = btn.querySelector('span');
+                    if (input.type === 'password') {
+                        input.type = 'text';
+                        icon.textContent = 'visibility_off';
+                    } else {
+                        input.type = 'password';
+                        icon.textContent = 'visibility';
+                    }
+                });
+            });
+
+            // Password Strength Logic
+            newPwd.addEventListener('input', () => {
+                const val = newPwd.value;
+                let strength = 0;
+                
+                const rules = {
+                    length: val.length >= 8,
+                    upper: /[A-Z]/.test(val),
+                    number: /[0-9]/.test(val),
+                    special: /[!@#$%^&*(),.?":{}|<>]/.test(val)
+                };
+
+                // Update UI checklist
+                Object.keys(rules).forEach(key => {
+                    const item = document.querySelector(`[data-rule="${key}"]`);
+                    const icon = item.querySelector('.status-icon');
+                    if (rules[key]) {
+                        item.classList.add('text-secondary-fixed-dim');
+                        item.classList.remove('text-on-surface-variant');
+                        icon.textContent = 'check_circle';
+                        strength += 25;
+                    } else {
+                        item.classList.remove('text-secondary-fixed-dim');
+                        item.classList.add('text-on-surface-variant');
+                        icon.textContent = 'circle';
+                    }
+                });
+
+                // Update Strength Bar
+                strengthBar.style.width = strength + '%';
+                if (strength <= 25) {
+                    strengthBar.className = 'strength-bar h-full bg-error';
+                    strengthLabel.textContent = 'Security: Weak';
+                } else if (strength <= 75) {
+                    strengthBar.className = 'strength-bar h-full bg-secondary-container';
+                    strengthLabel.textContent = 'Security: Moderate';
+                } else {
+                    strengthBar.className = 'strength-bar h-full bg-secondary-fixed-dim';
+                    strengthLabel.textContent = 'Security: Professional';
+                }
+            });
+
+            // Form Validation & Success Simulation
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                
+                if (newPwd.value !== confirmPwd.value) {
+                    matchError.classList.remove('hidden');
+                    confirmPwd.classList.add('border-error');
+                    return;
+                }
+
+                // Show Success Animation
+                overlay.classList.remove('hidden');
+                setTimeout(() => {
+                    overlay.classList.add('opacity-100');
+                    overlay.querySelector('div').classList.remove('scale-95');
+                    overlay.querySelector('div').classList.add('scale-100');
+                }, 10);
+            });
+
+            // Clear errors on input
+            confirmPwd.addEventListener('input', () => {
+                matchError.classList.add('hidden');
+                confirmPwd.classList.remove('border-error');
+            });
+        });
+    </script>
+</body></html>

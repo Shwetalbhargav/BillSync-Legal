@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>BillSync Legal | Extension Setup Walkthrough</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "on-secondary-container": "#735a00",
+            "surface-container-lowest": "#ffffff",
+            "primary-fixed-dim": "#a6c9f9",
+            "on-primary-fixed-variant": "#234871",
+            "inverse-on-surface": "#e8f2ff",
+            "on-primary-fixed": "#001c37",
+            "tertiary-fixed": "#d6e3ff",
+            "surface": "#f7f9ff",
+            "secondary-fixed": "#ffe08e",
+            "tertiary-container": "#283a56",
+            "primary-container": "#123b63",
+            "tertiary-fixed-dim": "#b5c7ea",
+            "surface-dim": "#d1dbe8",
+            "surface-container-low": "#edf4ff",
+            "on-tertiary-fixed": "#071c36",
+            "on-background": "#121d26",
+            "on-error-container": "#93000a",
+            "error": "#ba1a1a",
+            "background": "#F8F5EF",
+            "outline": "#73777f",
+            "on-error": "#ffffff",
+            "on-primary": "#ffffff",
+            "surface-variant": "#d9e3f1",
+            "on-tertiary-fixed-variant": "#364764",
+            "surface-container-high": "#dfe9f7",
+            "on-surface-variant": "#43474e",
+            "on-surface": "#121d26",
+            "on-primary-container": "#83a6d4",
+            "primary-fixed": "#d2e4ff",
+            "on-secondary": "#ffffff",
+            "tertiary": "#11243f",
+            "on-tertiary-container": "#92a4c5",
+            "surface-bright": "#f7f9ff",
+            "secondary-container": "#fed255",
+            "error-container": "#ffdad6",
+            "primary": "#0B1F3A",
+            "inverse-surface": "#27313c",
+            "surface-container-highest": "#d9e3f1",
+            "secondary": "#755b00",
+            "surface-container": "#e4effd",
+            "on-secondary-fixed": "#241a00",
+            "secondary-fixed-dim": "#ecc246",
+            "outline-variant": "#c3c6cf",
+            "on-tertiary": "#ffffff",
+            "on-secondary-fixed-variant": "#584400",
+            "inverse-primary": "#a6c9f9",
+            "surface-tint": "#3d608a"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          "spacing": {
+            "base": "8px",
+            "xl": "32px",
+            "xs": "4px",
+            "lg": "24px",
+            "sm": "12px",
+            "xxl": "48px",
+            "gutter-desktop": "24px",
+            "md": "16px",
+            "margin-desktop": "40px",
+            "sidebar-width": "260px"
+          },
+          "fontFamily": {
+            "body-sm": ["Inter"],
+            "label-md": ["Inter"],
+            "headline-lg-mobile": ["Inter"],
+            "headline-lg": ["Inter"],
+            "headline-sm": ["Inter"],
+            "display-lg": ["Inter"],
+            "body-md": ["Inter"],
+            "label-sm": ["Inter"],
+            "body-lg": ["Inter"],
+            "headline-md": ["Inter"]
+          },
+          "fontSize": {
+            "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+            "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500"}],
+            "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+            "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+            "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+            "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+            "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+            "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "600"}],
+            "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+            "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    body { font-family: 'Inter', sans-serif; background-color: #F8F5EF; }
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+    .glass-card {
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(11, 31, 58, 0.1);
+    }
+    .step-node {
+      position: relative;
+      z-index: 10;
+    }
+    .step-line {
+      position: absolute;
+      left: 20px;
+      top: 40px;
+      bottom: -20px;
+      width: 2px;
+      background: #0B1F3A;
+      opacity: 0.1;
+      z-index: 1;
+    }
+    .step-line:last-child {
+      display: none;
+    }
+  </style>
+</head>
+<body class="text-on-surface">
+<!-- Side Navigation -->
+<aside class="fixed left-0 top-0 h-screen w-[260px] bg-primary text-surface hidden md:flex flex-col py-lg border-r border-white/5 z-50">
+<div class="px-lg mb-xxl">
+<h1 class="font-headline-sm text-headline-sm font-bold text-surface">LexisPremium</h1>
+<p class="font-body-sm text-body-sm text-surface-variant opacity-70">Elite Law Management</p>
+</div>
+<nav class="flex-1 space-y-1">
+<div class="flex items-center px-lg py-sm text-surface-variant/50 cursor-not-allowed">
+<span class="material-symbols-outlined mr-md">dashboard</span>
+<span class="font-body-md text-body-md">Dashboard</span>
+</div>
+<div class="flex items-center px-lg py-sm text-surface-variant/50 cursor-not-allowed">
+<span class="material-symbols-outlined mr-md">folder_open</span>
+<span class="font-body-md text-body-md">Matters</span>
+</div>
+<div class="flex items-center px-lg py-sm text-surface-variant/50 cursor-not-allowed">
+<span class="material-symbols-outlined mr-md">timer</span>
+<span class="font-body-md text-body-md">Time Tracking</span>
+</div>
+<div class="flex items-center px-lg py-sm text-surface border-l-2 border-secondary-container bg-white/10 transition-all duration-200">
+<span class="material-symbols-outlined mr-md text-secondary-container">settings</span>
+<span class="font-body-md text-body-md font-medium">Extension Setup</span>
+</div>
+</nav>
+<div class="px-lg mt-auto space-y-4">
+<div class="flex items-center space-x-3 py-sm border-t border-white/10">
+<div class="w-8 h-8 rounded-full bg-surface-variant/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-surface-variant">person</span>
+</div>
+<div class="flex-1 overflow-hidden">
+<p class="font-label-sm text-label-sm text-surface truncate">Attorney Profile</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Canvas -->
+<main class="md:ml-[260px] min-h-screen relative">
+<!-- Header -->
+<header class="h-16 flex items-center justify-between px-margin-desktop bg-[#F8F5EF]/80 backdrop-blur-md sticky top-0 z-40 border-b border-primary/5">
+<div class="flex items-center space-x-4">
+<span class="material-symbols-outlined text-primary">lab_profile</span>
+<h2 class="font-headline-sm text-headline-sm text-primary font-bold">Beta Tester: Extension Walkthrough</h2>
+</div>
+<div class="flex items-center space-x-6">
+<div class="px-md py-1.5 bg-secondary-container/20 rounded-full flex items-center space-x-2 border border-secondary-container/30">
+<span class="w-2 h-2 rounded-full bg-secondary-container animate-pulse"></span>
+<span class="text-secondary font-label-md text-[13px]">In Progress</span>
+</div>
+<button class="bg-primary text-on-primary px-lg py-2 rounded-full font-label-md text-label-md hover:opacity-90 transition-all">
+          Get Help
+        </button>
+</div>
+</header>
+<!-- Content Area -->
+<section class="max-w-[1000px] mx-auto px-margin-desktop py-xxl">
+<!-- Welcome Hero Section -->
+<div class="mb-xxl max-w-2xl">
+<h3 class="font-display-lg text-display-lg text-primary leading-tight mb-md">Quick Guided Setup</h3>
+<p class="font-body-lg text-body-lg text-on-surface-variant">
+          Follow these 8 steps to enable BillSync for your browser. This one-time setup ensures your billable hours are captured with bank-grade precision.
+        </p>
+</div>
+<!-- 8-Step Walkthrough -->
+<div class="space-y-gutter-desktop relative">
+<!-- Step 1 -->
+<div class="flex space-x-md group relative">
+<div class="flex flex-col items-center flex-shrink-0 relative">
+<div class="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center font-bold text-lg shadow-md step-node">1</div>
+<div class="step-line"></div>
+</div>
+<div class="glass-card flex-1 p-lg rounded-xl flex items-center justify-between hover:border-primary/20 transition-all">
+<div class="space-y-1">
+<h4 class="font-headline-sm text-headline-sm text-primary">Download BillSync Chrome Extension</h4>
+<p class="font-body-md text-body-md text-on-surface-variant">Get the latest beta package specifically configured for your firm.</p>
+</div>
+<button class="px-lg py-sm bg-primary text-on-primary rounded-lg flex items-center space-x-2 hover:bg-primary/90 transition-all">
+<span class="material-symbols-outlined text-[20px]">download</span>
+<span class="font-label-md">Download .zip</span>
+</button>
+</div>
+</div>
+<!-- Step 2 -->
+<div class="flex space-x-md group relative">
+<div class="flex flex-col items-center flex-shrink-0 relative">
+<div class="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center font-bold text-lg shadow-md step-node">2</div>
+<div class="step-line"></div>
+</div>
+<div class="glass-card flex-1 p-lg rounded-xl flex items-center justify-between hover:border-primary/20 transition-all">
+<div class="space-y-1">
+<h4 class="font-headline-sm text-headline-sm text-primary">Open Chrome Extensions</h4>
+<p class="font-body-md text-body-md text-on-surface-variant">Type <code class="bg-primary/5 px-2 py-0.5 rounded text-primary">chrome://extensions</code> in your address bar or click the puzzle icon.</p>
+</div>
+<span class="material-symbols-outlined text-primary/30 text-3xl">open_in_new</span>
+</div>
+</div>
+<!-- Step 3 -->
+<div class="flex space-x-md group relative">
+<div class="flex flex-col items-center flex-shrink-0 relative">
+<div class="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center font-bold text-lg shadow-md step-node">3</div>
+<div class="step-line"></div>
+</div>
+<div class="glass-card flex-1 p-lg rounded-xl flex items-center justify-between hover:border-primary/20 transition-all">
+<div class="space-y-1">
+<h4 class="font-headline-sm text-headline-sm text-primary">Turn on Developer Mode</h4>
+<p class="font-body-md text-body-md text-on-surface-variant">Toggle the switch in the top right corner of the Extensions page to enable testing.</p>
+</div>
+<div class="w-12 h-6 bg-secondary-container rounded-full relative">
+<div class="absolute right-1 top-1 w-4 h-4 bg-white rounded-full shadow-sm"></div>
+</div>
+</div>
+</div>
+<!-- Step 4 -->
+<div class="flex space-x-md group relative">
+<div class="flex flex-col items-center flex-shrink-0 relative">
+<div class="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center font-bold text-lg shadow-md step-node">4</div>
+<div class="step-line"></div>
+</div>
+<div class="glass-card flex-1 p-lg rounded-xl flex items-center justify-between hover:border-primary/20 transition-all">
+<div class="space-y-1">
+<h4 class="font-headline-sm text-headline-sm text-primary">Click Load Unpacked</h4>
+<p class="font-body-md text-body-md text-on-surface-variant">This button appears in the top left once Developer Mode is active.</p>
+</div>
+<div class="border-2 border-dashed border-primary/20 px-4 py-2 rounded bg-primary/5 font-label-md text-primary">Load Unpacked</div>
+</div>
+</div>
+<!-- Step 5 -->
+<div class="flex space-x-md group relative">
+<div class="flex flex-col items-center flex-shrink-0 relative">
+<div class="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center font-bold text-lg shadow-md step-node">5</div>
+<div class="step-line"></div>
+</div>
+<div class="glass-card flex-1 p-lg rounded-xl flex items-center justify-between hover:border-primary/20 transition-all">
+<div class="space-y-1">
+<h4 class="font-headline-sm text-headline-sm text-primary">Select the BillSync Extension folder</h4>
+<p class="font-body-md text-body-md text-on-surface-variant">Locate the unzipped folder from Step 1 in your file browser and click "Select".</p>
+</div>
+<span class="material-symbols-outlined text-primary/30 text-3xl">folder_open</span>
+</div>
+</div>
+<!-- Step 6 -->
+<div class="flex space-x-md group relative">
+<div class="flex flex-col items-center flex-shrink-0 relative">
+<div class="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center font-bold text-lg shadow-md step-node">6</div>
+<div class="step-line"></div>
+</div>
+<div class="glass-card flex-1 p-lg rounded-xl flex items-center justify-between hover:border-primary/20 transition-all">
+<div class="space-y-1">
+<h4 class="font-headline-sm text-headline-sm text-primary">Click Connect to BillSync</h4>
+<p class="font-body-md text-body-md text-on-surface-variant">The extension popup will appear. Log in with your LexisPremium credentials.</p>
+</div>
+<button class="px-lg py-sm border-2 border-primary text-primary rounded-lg font-label-md hover:bg-primary/5 transition-all">
+              Launch Extension
+            </button>
+</div>
+</div>
+<!-- Step 7 -->
+<div class="flex space-x-md group relative">
+<div class="flex flex-col items-center flex-shrink-0 relative">
+<div class="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center font-bold text-lg shadow-md step-node">7</div>
+<div class="step-line"></div>
+</div>
+<div class="glass-card flex-1 p-lg rounded-xl flex items-center justify-between hover:border-primary/20 transition-all">
+<div class="space-y-1">
+<h4 class="font-headline-sm text-headline-sm text-primary">Send a test Gmail message or capture research</h4>
+<p class="font-body-md text-body-md text-on-surface-variant">Open Gmail or Westlaw to verify that BillSync detects your activity.</p>
+</div>
+<div class="flex space-x-2">
+<span class="material-symbols-outlined text-secondary">mail</span>
+<span class="material-symbols-outlined text-secondary">menu_book</span>
+</div>
+</div>
+</div>
+<!-- Step 8 -->
+<div class="flex space-x-md group relative">
+<div class="flex flex-col items-center flex-shrink-0 relative">
+<div class="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center font-bold text-lg shadow-md step-node">8</div>
+<div class="step-line"></div>
+</div>
+<div class="glass-card flex-1 p-lg rounded-xl flex items-center justify-between border-2 border-secondary-container bg-secondary-container/5">
+<div class="space-y-1">
+<h4 class="font-headline-sm text-headline-sm text-primary">Confirm status says 'Working'</h4>
+<p class="font-body-md text-body-md text-on-surface-variant">Check the extension icon in your toolbar. It should glow gold when active.</p>
+</div>
+<div class="flex items-center space-x-3 bg-white px-md py-2 rounded-lg shadow-sm border border-secondary-container/30">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="font-label-md text-primary uppercase tracking-wider">Working</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Confirmation CTA -->
+<div class="mt-xxl bg-primary p-xl rounded-xxl text-white flex flex-col md:flex-row items-center justify-between space-y-md md:space-y-0">
+<div class="space-y-1">
+<h4 class="font-headline-md text-headline-md">All Finished?</h4>
+<p class="text-white/70 font-body-md">Notify your administrator once you've completed the walkthrough.</p>
+</div>
+<button class="bg-secondary-container text-primary font-headline-sm px-xl py-md rounded-xl hover:opacity-90 transition-all shadow-lg">
+          Submit Test Results
+        </button>
+</div>
+</section>
+<!-- Footer -->
+<footer class="mt-xxl border-t border-primary/5 py-xl px-margin-desktop bg-surface-container-low/30">
+<div class="max-w-[1000px] mx-auto flex flex-col md:flex-row justify-between items-center space-y-md md:space-y-0">
+<div class="flex items-center space-x-2">
+<span class="font-label-sm text-label-sm font-bold text-primary">LexisPremium</span>
+<span class="text-on-surface-variant/20">|</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant">© 2024 LexisPremium Legal Systems. Restricted Beta Access.</p>
+</div>
+<nav class="flex space-x-lg">
+<a class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Beta Support</a>
+<a class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Security Docs</a>
+</nav>
+</div>
+</footer>
+</main>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const stepCards = document.querySelectorAll('.glass-card');
+      stepCards.forEach(card => {
+        card.addEventListener('mouseenter', () => {
+          card.classList.add('shadow-xl', '-translate-y-1');
+        });
+        card.addEventListener('mouseleave', () => {
+          card.classList.remove('shadow-xl', '-translate-y-1');
+        });
+      });
+    });
+  </script>
+</body></html>

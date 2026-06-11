@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>BillSync Legal | My Work Today</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-container": "#c8dbfe",
+                        "surface-container-high": "#dfe9f7",
+                        "inverse-on-surface": "#e8f2ff",
+                        "on-error-container": "#93000a",
+                        "secondary-fixed-dim": "#b5c7ea",
+                        "on-secondary": "#ffffff",
+                        "outline-variant": "#c3c6cf",
+                        "surface-tint": "#3d608a",
+                        "primary-fixed": "#d2e4ff",
+                        "outline": "#73777f",
+                        "on-surface": "#121d26",
+                        "on-tertiary-fixed-variant": "#584400",
+                        "on-secondary-container": "#4e607e",
+                        "surface-bright": "#f7f9ff",
+                        "primary-container": "#123b63",
+                        "error-container": "#ffdad6",
+                        "on-primary-container": "#83a6d4",
+                        "primary-fixed-dim": "#a6c9f9",
+                        "error": "#ba1a1a",
+                        "background": "#f7f9ff",
+                        "tertiary-fixed-dim": "#ecc246",
+                        "tertiary-fixed": "#ffe08e",
+                        "secondary-fixed": "#d6e3ff",
+                        "on-secondary-fixed": "#071c36",
+                        "on-primary": "#ffffff",
+                        "inverse-surface": "#27313c",
+                        "primary": "#002546",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary": "#ffffff",
+                        "on-tertiary-fixed": "#241a00",
+                        "surface-container-highest": "#d9e3f1",
+                        "surface-dim": "#d1dbe8",
+                        "surface-container-low": "#edf4ff",
+                        "inverse-primary": "#a6c9f9",
+                        "on-primary-fixed": "#001c37",
+                        "on-error": "#ffffff",
+                        "on-surface-variant": "#43474e",
+                        "tertiary": "#755b00",
+                        "on-primary-fixed-variant": "#234871",
+                        "tertiary-container": "#cea72c",
+                        "on-background": "#121d26",
+                        "on-tertiary-container": "#4f3d00",
+                        "surface-variant": "#d9e3f1",
+                        "secondary": "#4d5f7d",
+                        "surface-container": "#e4effd",
+                        "surface": "#f7f9ff",
+                        "on-secondary-fixed-variant": "#364764"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "xl": "48px",
+                        "margin-desktop": "40px",
+                        "xs": "8px",
+                        "gutter": "24px",
+                        "lg": "32px",
+                        "sm": "16px",
+                        "md": "24px",
+                        "margin-mobile": "16px",
+                        "base": "4px",
+                        "sidebar-width": "260px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Inter"],
+                        "label-md": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "headline-sm": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "600"}],
+                        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            background-color: #f7f9ff;
+        }
+        .progress-ring__circle {
+            transition: stroke-dashoffset 0.35s;
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+        }
+        .custom-shadow-soft {
+            box-shadow: 0 4px 15px -3px rgba(31, 41, 51, 0.06);
+        }
+    </style>
+</head>
+<body class="font-body-md text-on-surface">
+<!-- Fixed SideNav Shell -->
+<aside class="fixed left-0 top-0 h-full w-sidebar-width bg-primary flex flex-col py-lg z-50">
+<div class="px-lg mb-xl">
+<h1 class="font-headline-sm text-surface-container-lowest tracking-tight">BillSync Legal</h1>
+<p class="font-label-md text-primary-fixed-dim uppercase tracking-widest mt-xs">Law Firm Management</p>
+</div>
+<nav class="flex-1 overflow-y-auto space-y-1">
+<a class="flex items-center px-lg py-sm text-surface-container-lowest border-l-4 border-tertiary-fixed bg-white/10 font-bold transition-colors" href="#">
+<span class="material-symbols-outlined mr-md">dashboard</span>
+<span class="font-label-md">Dashboard</span>
+</a>
+<a class="flex items-center px-lg py-sm text-primary-fixed hover:text-surface-container-lowest transition-colors" href="#">
+<span class="material-symbols-outlined mr-md">group</span>
+<span class="font-label-md">Clients</span>
+</a>
+<a class="flex items-center px-lg py-sm text-primary-fixed hover:text-surface-container-lowest transition-colors" href="#">
+<span class="material-symbols-outlined mr-md">folder_open</span>
+<span class="font-label-md">Matters</span>
+</a>
+<a class="flex items-center px-lg py-sm text-primary-fixed hover:text-surface-container-lowest transition-colors" href="#">
+<span class="material-symbols-outlined mr-md">assignment</span>
+<span class="font-label-md">Tasks</span>
+</a>
+<a class="flex items-center px-lg py-sm text-primary-fixed hover:text-surface-container-lowest transition-colors" href="#">
+<span class="material-symbols-outlined mr-md">timer</span>
+<span class="font-label-md">Work Meter</span>
+</a>
+<a class="flex items-center px-lg py-sm text-primary-fixed hover:text-surface-container-lowest transition-colors" href="#">
+<span class="material-symbols-outlined mr-md">calendar_today</span>
+<span class="font-label-md">Calendar</span>
+</a>
+<a class="flex items-center px-lg py-sm text-primary-fixed hover:text-surface-container-lowest transition-colors" href="#">
+<span class="material-symbols-outlined mr-md">history_edu</span>
+<span class="font-label-md">Captured Work</span>
+</a>
+<a class="flex items-center px-lg py-sm text-primary-fixed hover:text-surface-container-lowest transition-colors" href="#">
+<span class="material-symbols-outlined mr-md">payments</span>
+<span class="font-label-md">Billing</span>
+</a>
+<div class="pt-lg pb-xs px-lg text-primary-fixed/40 font-label-md uppercase tracking-tighter">System</div>
+<a class="flex items-center px-lg py-sm text-primary-fixed hover:text-surface-container-lowest transition-colors" href="#">
+<span class="material-symbols-outlined mr-md">smart_toy</span>
+<span class="font-label-md">AI Assistant</span>
+</a>
+<a class="flex items-center px-lg py-sm text-primary-fixed hover:text-surface-container-lowest transition-colors" href="#">
+<span class="material-symbols-outlined mr-md">settings</span>
+<span class="font-label-md">Settings</span>
+</a>
+</nav>
+<div class="px-lg mt-auto pt-lg border-t border-white/10">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded-full bg-secondary-fixed flex items-center justify-center text-on-secondary-fixed font-bold">
+                    JD
+                </div>
+<div>
+<p class="font-label-md text-surface-container-lowest">John Doe</p>
+<p class="text-[10px] text-primary-fixed-dim uppercase">Senior Partner</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- TopNavBar Shell -->
+<header class="ml-sidebar-width h-16 px-margin-desktop bg-surface flex justify-between items-center fixed top-0 right-0 left-0 z-40 border-b border-surface-variant">
+<div class="flex items-center flex-1">
+<div class="relative w-full max-w-md">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">search</span>
+<input class="w-full bg-surface-container-low border-none rounded-full py-2 pl-10 pr-4 text-body-sm focus:ring-1 focus:ring-primary" placeholder="Search clients, matters, or documents..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-lg ml-xl">
+<button class="relative p-2 hover:bg-surface-container-low rounded-full transition-all">
+<span class="material-symbols-outlined text-on-surface-variant">notifications</span>
+<span class="absolute top-2.5 right-2.5 w-2 h-2 bg-error rounded-full"></span>
+</button>
+<button class="p-2 hover:bg-surface-container-low rounded-full transition-all">
+<span class="material-symbols-outlined text-on-surface-variant">timer</span>
+</button>
+<button class="p-2 hover:bg-surface-container-low rounded-full transition-all">
+<span class="material-symbols-outlined text-on-surface-variant">account_circle</span>
+</button>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="ml-sidebar-width pt-20 pb-xl px-margin-desktop min-h-screen">
+<!-- Header & Primary CTA -->
+<div class="flex justify-between items-end mb-lg">
+<div>
+<h2 class="font-headline-lg text-primary">My Work Today</h2>
+<p class="font-body-md text-on-surface-variant">Welcome back, John. Here is your focus for Tuesday, October 24.</p>
+</div>
+<div class="flex gap-md">
+<button class="bg-primary text-white px-lg py-md rounded font-label-md flex items-center gap-md hover:bg-primary-container hover:text-on-primary-container transition-all shadow-md active:scale-95">
+<span class="material-symbols-outlined text-[20px]">play_arrow</span>
+                    Start Work
+                </button>
+</div>
+</div>
+<!-- Dashboard Grid -->
+<div class="grid grid-cols-12 gap-lg">
+<!-- LEFT COLUMN: Summary & Timeline -->
+<div class="col-span-12 lg:col-span-8 space-y-lg">
+<!-- Billable Progress Card -->
+<div class="bg-white border border-surface-variant rounded-lg p-lg custom-shadow-soft flex items-center justify-between">
+<div class="flex gap-lg items-center">
+<div class="relative flex items-center justify-center">
+<svg class="w-24 h-24">
+<circle class="text-surface-container-highest stroke-current" cx="48" cy="48" fill="transparent" r="40" stroke-width="6"></circle>
+<circle class="text-secondary stroke-current progress-ring__circle" cx="48" cy="48" fill="transparent" r="40" stroke-dasharray="251.32" stroke-dashoffset="25.13" stroke-linecap="round" stroke-width="6"></circle>
+</svg>
+<div class="absolute flex flex-col items-center">
+<span class="font-headline-sm text-primary">7.2</span>
+<span class="text-[10px] text-outline font-bold">8.0 TARGET</span>
+</div>
+</div>
+<div>
+<h3 class="font-headline-sm text-primary mb-1">Billable Progress</h3>
+<p class="font-body-sm text-on-surface-variant mb-md">90% of your daily goal achieved. 48 minutes remaining.</p>
+<div class="flex gap-md">
+<span class="px-md py-1 bg-secondary/10 text-secondary font-label-md rounded-full">On Track</span>
+<span class="px-md py-1 bg-primary/5 text-primary font-label-md rounded-full">14 Entries</span>
+</div>
+</div>
+</div>
+<div class="hidden sm:block text-right">
+<p class="font-label-md text-outline uppercase">Projected Revenue</p>
+<p class="font-headline-md text-primary">$3,450.00</p>
+<button class="mt-md text-primary font-label-md flex items-center gap-1 hover:underline ml-auto">
+                            Submit for Billing <span class="material-symbols-outlined text-[18px]">send</span>
+</button>
+</div>
+</div>
+<!-- Timeline of Events -->
+<div class="bg-white border border-surface-variant rounded-lg p-lg custom-shadow-soft">
+<div class="flex justify-between items-center mb-xl">
+<h3 class="font-headline-sm text-primary">Focus Timeline</h3>
+<button class="text-primary font-label-md flex items-center gap-1 hover:underline">
+                            View Calendar <span class="material-symbols-outlined text-[18px]">chevron_right</span>
+</button>
+</div>
+<div class="space-y-0 relative">
+<!-- Connecting Line -->
+<div class="absolute left-6 top-2 bottom-2 w-[2px] bg-surface-container-highest"></div>
+<!-- Past Event -->
+<div class="flex gap-lg relative mb-8">
+<div class="w-12 flex flex-col items-center z-10">
+<div class="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center border-4 border-white">
+<span class="material-symbols-outlined text-[18px] text-outline">check</span>
+</div>
+</div>
+<div class="flex-1 pt-1 opacity-50">
+<div class="flex items-center justify-between mb-1">
+<span class="font-label-md text-outline">09:00 — 10:30 AM</span>
+<span class="text-[10px] font-bold text-outline uppercase bg-surface-container-low px-2 py-0.5 rounded">Completed</span>
+</div>
+<h4 class="font-headline-sm text-primary">Henderson Merger Strategy</h4>
+<p class="font-body-sm text-on-surface-variant">Client consultation for proposed Q4 acquisition.</p>
+</div>
+</div>
+<!-- Current Event -->
+<div class="flex gap-lg relative mb-8">
+<div class="w-12 flex flex-col items-center z-10">
+<div class="w-10 h-10 rounded-full bg-tertiary flex items-center justify-center border-4 border-white shadow-md">
+<span class="material-symbols-outlined text-[18px] text-white">gavel</span>
+</div>
+</div>
+<div class="flex-1 bg-surface-container-low p-lg rounded-lg border-l-4 border-tertiary">
+<div class="flex items-center justify-between mb-2">
+<span class="font-label-md text-tertiary font-bold">11:00 AM — 12:30 PM (Active)</span>
+<div class="flex gap-sm">
+<span class="flex items-center gap-1 text-[10px] font-bold text-tertiary uppercase bg-tertiary/10 px-2 py-0.5 rounded">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary animate-pulse"></span> Live Hearing
+                                        </span>
+</div>
+</div>
+<h4 class="font-headline-sm text-primary mb-2">Court Hearing: Case #229-B (Virtual)</h4>
+<p class="font-body-sm text-on-surface-variant mb-lg">Preliminary injunction hearing regarding the Smithson IP dispute.</p>
+<div class="flex gap-md">
+<button class="bg-primary text-white px-lg py-2 rounded font-label-md active:scale-95 shadow-sm">Join Video Call</button>
+<button class="border border-error text-error px-lg py-2 rounded font-label-md hover:bg-error/5 active:scale-95">Stop Work</button>
+</div>
+</div>
+</div>
+<!-- Future Event -->
+<div class="flex gap-lg relative">
+<div class="w-12 flex flex-col items-center z-10">
+<div class="w-10 h-10 rounded-full bg-white border-2 border-surface-container-highest flex items-center justify-center">
+<div class="w-2.5 h-2.5 rounded-full bg-surface-container-highest"></div>
+</div>
+</div>
+<div class="flex-1 pt-1">
+<div class="flex items-center justify-between mb-1">
+<span class="font-label-md text-on-surface-variant">02:00 — 03:30 PM</span>
+</div>
+<h4 class="font-headline-sm text-primary">Associate Draft Review</h4>
+<p class="font-body-sm text-on-surface-variant">Reviewing litigation filings for the Thompson group.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- RIGHT COLUMN: Captured Work & Assistant -->
+<div class="col-span-12 lg:col-span-4 space-y-lg">
+<!-- Recently Captured Section -->
+<div class="bg-white border border-surface-variant rounded-lg p-lg custom-shadow-soft">
+<div class="flex items-center justify-between mb-lg">
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-tertiary" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+<h3 class="font-headline-sm text-primary">Background Work</h3>
+</div>
+<span class="bg-error/10 text-error px-2 py-1 rounded-full text-[10px] font-bold">5 ACTION ITEMS</span>
+</div>
+<div class="space-y-sm">
+<!-- Gmail Indicator -->
+<div class="flex items-center justify-between p-md bg-surface-container-low rounded-lg border border-surface-variant/50">
+<div class="flex items-center gap-md">
+<div class="w-8 h-8 rounded-full bg-white flex items-center justify-center text-outline">
+<span class="material-symbols-outlined text-[18px]">mail</span>
+</div>
+<div>
+<p class="font-label-md text-primary">Gmail Capture Working</p>
+<p class="text-[10px] text-on-surface-variant uppercase font-bold">Active Monitoring</p>
+</div>
+</div>
+<div class="text-right">
+<p class="font-label-md text-primary font-bold">0.8h</p>
+<p class="text-[10px] text-outline uppercase">Unbilled</p>
+</div>
+</div>
+<!-- Research Indicator -->
+<div class="flex items-center justify-between p-md bg-surface-container-low rounded-lg border border-surface-variant/50">
+<div class="flex items-center gap-md">
+<div class="w-8 h-8 rounded-full bg-white flex items-center justify-center text-outline">
+<span class="material-symbols-outlined text-[18px]">menu_book</span>
+</div>
+<div>
+<p class="font-label-md text-primary">Research Capture Working</p>
+<p class="text-[10px] text-on-surface-variant uppercase font-bold">LexisNexis Sync</p>
+</div>
+</div>
+<div class="text-right">
+<p class="font-label-md text-primary font-bold">1.2h</p>
+<p class="text-[10px] text-outline uppercase">Unbilled</p>
+</div>
+</div>
+</div>
+<button class="w-full mt-lg bg-primary/5 text-primary py-sm rounded font-label-md hover:bg-primary/10 transition-colors">
+                        Review &amp; Submit for Billing
+                    </button>
+</div>
+<!-- AI Assistant -->
+<div class="bg-primary-container rounded-lg p-lg custom-shadow-soft relative overflow-hidden">
+<div class="absolute -right-8 -top-8 w-32 h-32 bg-secondary/20 rounded-full blur-3xl"></div>
+<div class="relative z-10">
+<div class="flex items-center gap-md mb-md">
+<span class="material-symbols-outlined text-primary-fixed">smart_toy</span>
+<h4 class="font-headline-sm text-surface-container-lowest">AI Assistant</h4>
+</div>
+<p class="font-body-sm text-primary-fixed mb-lg italic">"I've analyzed your upcoming hearing notes. Would you like a 1-page summary of the relevant IP precedents?"</p>
+<div class="space-y-sm">
+<button class="w-full text-left bg-white/10 hover:bg-white/20 border border-white/10 rounded p-md transition-all">
+<p class="font-label-md text-surface-container-lowest">Yes, generate summary</p>
+</button>
+<button class="w-full text-left bg-white/10 hover:bg-white/20 border border-white/10 rounded p-md transition-all">
+<p class="font-label-md text-surface-container-lowest">Check for conflicts</p>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer Shell -->
+<footer class="ml-sidebar-width bg-surface border-t border-surface-variant py-md px-margin-desktop flex justify-between items-center text-on-surface-variant">
+<div class="flex items-center gap-xl">
+<span class="font-label-md font-bold text-primary">BillSync Legal</span>
+<span class="text-[12px]">© 2024 BillSync Legal. All rights reserved.</span>
+</div>
+<div class="flex gap-xl text-[12px] font-medium">
+<a class="hover:text-primary transition-colors" href="#">Terms of Service</a>
+<a class="hover:text-primary transition-colors" href="#">Privacy Policy</a>
+<a class="hover:text-primary transition-colors" href="#">Support</a>
+</div>
+</footer>
+<script>
+        window.addEventListener('DOMContentLoaded', () => {
+            const circle = document.querySelector('.progress-ring__circle');
+            const radius = circle.r.baseVal.value;
+            const circumference = radius * 2 * Math.PI;
+
+            circle.style.strokeDasharray = `${circumference} ${circumference}`;
+            const offset = circumference - (0.90 * circumference);
+            circle.style.strokeDashoffset = offset;
+        });
+    </script>
+</body></html>

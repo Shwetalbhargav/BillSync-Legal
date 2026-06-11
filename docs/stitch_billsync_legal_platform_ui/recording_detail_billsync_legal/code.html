@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Recording Detail - BillSync Legal</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind Configuration -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-container": "#e4effd",
+                    "surface-container-lowest": "#ffffff",
+                    "secondary": "#755b00",
+                    "primary": "#002546",
+                    "inverse-surface": "#27313c",
+                    "tertiary-fixed-dim": "#b5c7ea",
+                    "on-background": "#121d26",
+                    "primary-container": "#123b63",
+                    "tertiary": "#11243f",
+                    "outline": "#73777f",
+                    "on-secondary-fixed": "#241a00",
+                    "on-primary-fixed": "#001c37",
+                    "surface-container-low": "#edf4ff",
+                    "surface": "#f7f9ff",
+                    "secondary-fixed-dim": "#ecc246",
+                    "primary-fixed": "#d2e4ff",
+                    "error": "#ba1a1a",
+                    "on-primary-fixed-variant": "#234871",
+                    "on-primary-container": "#83a6d4",
+                    "inverse-primary": "#a6c9f9",
+                    "on-secondary-container": "#735a00",
+                    "on-primary": "#ffffff",
+                    "tertiary-container": "#283a56",
+                    "primary-fixed-dim": "#a6c9f9",
+                    "surface-bright": "#f7f9ff",
+                    "on-secondary": "#ffffff",
+                    "surface-tint": "#3d608a",
+                    "on-tertiary-container": "#92a4c5",
+                    "tertiary-fixed": "#d6e3ff",
+                    "on-secondary-fixed-variant": "#584400",
+                    "on-surface": "#121d26",
+                    "on-tertiary-fixed-variant": "#364764",
+                    "secondary-fixed": "#ffe08e",
+                    "error-container": "#ffdad6",
+                    "on-tertiary-fixed": "#071c36",
+                    "surface-variant": "#d9e3f1",
+                    "on-error": "#ffffff",
+                    "surface-container-highest": "#d9e3f1",
+                    "outline-variant": "#c3c6cf",
+                    "surface-container-high": "#dfe9f7",
+                    "on-tertiary": "#ffffff",
+                    "on-error-container": "#93000a",
+                    "inverse-on-surface": "#e8f2ff",
+                    "on-surface-variant": "#43474e",
+                    "secondary-container": "#fed255",
+                    "surface-dim": "#d1dbe8",
+                    "background": "#f7f9ff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "sm": "12px",
+                    "xl": "32px",
+                    "base": "8px",
+                    "sidebar-width": "260px",
+                    "xs": "4px",
+                    "lg": "24px",
+                    "xxl": "48px",
+                    "md": "16px",
+                    "margin-desktop": "40px",
+                    "gutter-desktop": "24px"
+            },
+            "fontFamily": {
+                    "body-md": ["Inter"],
+                    "display-lg": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "headline-sm": ["Inter"],
+                    "label-md": ["Inter"],
+                    "headline-lg-mobile": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "body-sm": ["Inter"],
+                    "label-sm": ["Inter"],
+                    "headline-md": ["Inter"]
+            },
+            "fontSize": {
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                    "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "600"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .waveform-container {
+            display: flex;
+            align-items: flex-end;
+            gap: 2px;
+            height: 40px;
+        }
+        .waveform-bar {
+            background-color: #c3c6cf;
+            width: 3px;
+            border-radius: 1px;
+            transition: height 0.2s ease, background-color 0.2s ease;
+        }
+        .waveform-bar.active {
+            background-color: #002546;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #c3c6cf;
+            border-radius: 10px;
+        }
+        .tab-active {
+            border-bottom: 2px solid #755b00;
+            color: #002546;
+        }
+    </style>
+</head>
+<body class="bg-[#F8F5EF] font-body-md text-on-background min-h-screen">
+<!-- Side Navigation Shell -->
+<aside class="fixed h-full w-sidebar-width left-0 top-0 bg-primary dark:bg-primary-container flex flex-col overflow-y-auto py-lg z-50">
+<div class="px-md mb-xxl">
+<h1 class="font-headline-md text-headline-md font-bold text-on-primary">BillSync Legal</h1>
+<p class="font-label-md text-label-md text-on-primary/60">Premium Legal Management</p>
+</div>
+<nav class="flex-1 space-y-xs">
+<!-- Active state logic: Captured Work is the parent of Recording Detail -->
+<a class="flex items-center gap-md text-on-primary-container/80 px-md py-sm hover:bg-on-primary-fixed-variant/5 hover:text-on-primary transition-colors" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-md text-on-primary-container/80 px-md py-sm hover:bg-on-primary-fixed-variant/5 hover:text-on-primary transition-colors" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="font-label-md text-label-md">Clients</span>
+</a>
+<a class="flex items-center gap-md text-on-primary-container/80 px-md py-sm hover:bg-on-primary-fixed-variant/5 hover:text-on-primary transition-colors" href="#">
+<span class="material-symbols-outlined">folder_special</span>
+<span class="font-label-md text-label-md">Matters</span>
+</a>
+<a class="flex items-center gap-md text-on-primary border-l-2 border-secondary-fixed bg-on-primary-fixed-variant/10 px-md py-sm scale-[0.99] transition-transform duration-150" href="#">
+<span class="material-symbols-outlined">pending_actions</span>
+<span class="font-label-md text-label-md">Captured Work</span>
+</a>
+<a class="flex items-center gap-md text-on-primary-container/80 px-md py-sm hover:bg-on-primary-fixed-variant/5 hover:text-on-primary transition-colors" href="#">
+<span class="material-symbols-outlined">receipt_long</span>
+<span class="font-label-md text-label-md">Billing</span>
+</a>
+<a class="flex items-center gap-md text-on-primary-container/80 px-md py-sm hover:bg-on-primary-fixed-variant/5 hover:text-on-primary transition-colors" href="#">
+<span class="material-symbols-outlined">smart_toy</span>
+<span class="font-label-md text-label-md">AI Assistant</span>
+</a>
+<a class="flex items-center gap-md text-on-primary-container/80 px-md py-sm hover:bg-on-primary-fixed-variant/5 hover:text-on-primary transition-colors" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-md text-label-md">Settings</span>
+</a>
+</nav>
+</aside>
+<!-- Top Navigation Bar -->
+<header class="fixed top-0 left-[260px] right-0 h-16 bg-surface-container-lowest flex justify-between items-center px-margin-desktop border-b border-outline-variant/30 z-40">
+<div class="flex items-center gap-md">
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<div class="h-6 w-px bg-outline-variant/30"></div>
+<nav class="flex gap-lg">
+<span class="font-label-md text-label-md text-on-surface-variant">Captured Work</span>
+<span class="text-on-surface-variant/40">/</span>
+<span class="font-label-md text-label-md text-primary font-bold">Client Strategy Session</span>
+</nav>
+</div>
+<div class="flex items-center gap-lg">
+<div class="relative">
+<span class="material-symbols-outlined text-on-surface-variant">notifications</span>
+<span class="absolute top-0 right-0 w-2 h-2 bg-secondary rounded-full border border-surface-container-lowest"></span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant">help_outline</span>
+<div class="w-8 h-8 rounded-full overflow-hidden border border-outline-variant">
+<img alt="User Profile" data-alt="A professional headshot of a corporate lawyer in a sharp grey suit against a neutral, high-key studio background. The lighting is soft and even, highlighting a friendly yet authoritative expression. The image quality is crisp and high-definition, fitting a premium SaaS profile experience." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDsvA1kOhBe0iTdYjA3Em_5fvZUQYqmrvUSTfKmFCEFsrTJLckHzvzO7b-ZWY6VU6ugXsAf8eNB1eZu4pyZKnz0DvsR0kr67IyhZcbnJSKyDt2gu4Gc3KtDaILFonpUmQ4Q3oTA1MzBbvYuTLg6ecmxi68C5Ar4gsGNtFbVKt7CI6tAmvTUsLe3dTSpn1auk7dl2Hk5cNIR_AXbgyW67JxFES_ixMHU7FLIIsxmau7GlKNq2iit-N8kNHVZ3KWeoWEBPdQSasHXQNQf"/>
+</div>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="ml-[260px] pt-16 p-margin-desktop">
+<!-- Header Section -->
+<section class="mb-xl flex justify-between items-end">
+<div>
+<span class="bg-secondary-fixed text-on-secondary-fixed px-sm py-xs rounded-full font-label-sm text-label-sm uppercase tracking-wider mb-sm inline-block">Draft Transcript</span>
+<h2 class="font-headline-lg text-headline-lg text-primary mb-xs">Client Strategy Session: Anderson vs. Apex</h2>
+<div class="flex items-center gap-xl text-on-surface-variant">
+<div class="flex items-center gap-xs">
+<span class="material-symbols-outlined text-[18px]">calendar_today</span>
+<span class="font-body-sm text-body-sm">October 24, 2023 • 10:30 AM</span>
+</div>
+<div class="flex items-center gap-xs">
+<span class="material-symbols-outlined text-[18px]">folder_special</span>
+<span class="font-body-sm text-body-sm text-primary font-medium underline">Matter #2023-442 (Anderson Estate)</span>
+</div>
+<div class="flex items-center gap-xs">
+<span class="material-symbols-outlined text-[18px]">schedule</span>
+<span class="font-body-sm text-body-sm">42 minutes 15 seconds</span>
+</div>
+</div>
+</div>
+<div class="flex gap-md">
+<button class="px-lg py-sm border border-outline-variant text-primary font-label-md text-label-md hover:bg-surface-container transition-colors rounded-lg flex items-center gap-xs">
+<span class="material-symbols-outlined">share</span>
+                    Share
+                </button>
+<button class="px-lg py-sm bg-primary text-on-primary font-label-md text-label-md hover:opacity-90 transition-opacity rounded-lg flex items-center gap-xs shadow-sm">
+<span class="material-symbols-outlined">download</span>
+                    Export
+                </button>
+</div>
+</section>
+<!-- Player & AI Summary Grid -->
+<div class="grid grid-cols-12 gap-gutter-desktop mb-xxl">
+<!-- Left: Waveform & Player -->
+<div class="col-span-8 bg-surface-container-lowest border border-outline-variant/30 rounded-xl p-lg shadow-sm">
+<div class="flex items-center justify-between mb-lg">
+<div class="flex items-center gap-md">
+<button class="w-12 h-12 rounded-full bg-primary flex items-center justify-center text-on-primary hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-[32px]">play_arrow</span>
+</button>
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Current Time</span>
+<span class="font-headline-sm text-headline-sm text-primary tabular-nums">12:44 / 42:15</span>
+</div>
+</div>
+<div class="flex items-center gap-lg">
+<div class="flex items-center gap-xs">
+<span class="material-symbols-outlined text-on-surface-variant">speed</span>
+<select class="bg-transparent border-none text-on-surface-variant font-label-md text-label-md focus:ring-0 cursor-pointer">
+<option>1.0x</option>
+<option>1.25x</option>
+<option>1.5x</option>
+<option>2.0x</option>
+</select>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary">volume_up</span>
+</div>
+</div>
+<!-- Waveform Visualizer -->
+<div class="waveform-container mb-md">
+<!-- JS will populate bars or we provide mock ones -->
+<div class="waveform-bar active h-[12px]"></div><div class="waveform-bar active h-[20px]"></div><div class="waveform-bar active h-[28px]"></div><div class="waveform-bar active h-[34px]"></div><div class="waveform-bar active h-[30px]"></div><div class="waveform-bar active h-[18px]"></div><div class="waveform-bar active h-[14px]"></div><div class="waveform-bar active h-[22px]"></div><div class="waveform-bar active h-[36px]"></div><div class="waveform-bar active h-[40px]"></div><div class="waveform-bar active h-[32px]"></div><div class="waveform-bar active h-[26px]"></div><div class="waveform-bar active h-[12px]"></div><div class="waveform-bar active h-[20px]"></div><div class="waveform-bar active h-[28px]"></div><div class="waveform-bar active h-[34px]"></div><div class="waveform-bar active h-[30px]"></div><div class="waveform-bar active h-[18px]"></div><div class="waveform-bar active h-[14px]"></div><div class="waveform-bar active h-[22px]"></div><div class="waveform-bar active h-[36px]"></div><div class="waveform-bar active h-[40px]"></div><div class="waveform-bar active h-[32px]"></div><div class="waveform-bar active h-[26px]"></div><div class="waveform-bar h-[12px]"></div><div class="waveform-bar h-[20px]"></div><div class="waveform-bar h-[28px]"></div><div class="waveform-bar h-[34px]"></div><div class="waveform-bar h-[30px]"></div><div class="waveform-bar h-[18px]"></div><div class="waveform-bar h-[14px]"></div><div class="waveform-bar h-[22px]"></div><div class="waveform-bar h-[36px]"></div><div class="waveform-bar h-[40px]"></div><div class="waveform-bar h-[32px]"></div><div class="waveform-bar h-[26px]"></div><div class="waveform-bar h-[12px]"></div><div class="waveform-bar h-[20px]"></div><div class="waveform-bar h-[28px]"></div><div class="waveform-bar h-[34px]"></div><div class="waveform-bar h-[30px]"></div><div class="waveform-bar h-[18px]"></div><div class="waveform-bar h-[14px]"></div><div class="waveform-bar h-[22px]"></div><div class="waveform-bar h-[36px]"></div><div class="waveform-bar h-[40px]"></div><div class="waveform-bar h-[32px]"></div><div class="waveform-bar h-[26px]"></div><div class="waveform-bar h-[12px]"></div><div class="waveform-bar h-[20px]"></div><div class="waveform-bar h-[28px]"></div><div class="waveform-bar h-[34px]"></div><div class="waveform-bar h-[30px]"></div><div class="waveform-bar h-[18px]"></div><div class="waveform-bar h-[14px]"></div><div class="waveform-bar h-[22px]"></div><div class="waveform-bar h-[36px]"></div><div class="waveform-bar h-[40px]"></div><div class="waveform-bar h-[32px]"></div><div class="waveform-bar h-[26px]"></div>
+</div>
+</div>
+<!-- Right: Billing Confirmation -->
+<div class="col-span-4 bg-surface-container border border-outline-variant/30 rounded-xl p-lg flex flex-col">
+<div class="flex items-center gap-sm mb-md">
+<span class="material-symbols-outlined text-secondary">payments</span>
+<h3 class="font-headline-sm text-headline-sm text-primary">Billing Confirmation</h3>
+</div>
+<div class="flex-1 space-y-md">
+<div class="flex justify-between items-center bg-surface-container-lowest p-md rounded-lg">
+<span class="font-label-md text-label-md text-on-surface-variant">Detected Duration</span>
+<span class="font-body-md text-body-md font-bold text-primary">0.75 hrs</span>
+</div>
+<div class="flex justify-between items-center bg-surface-container-lowest p-md rounded-lg">
+<span class="font-label-md text-label-md text-on-surface-variant">Rate (Premium)</span>
+<span class="font-body-md text-body-md font-bold text-primary">$450.00 /hr</span>
+</div>
+<div class="flex justify-between items-center border-t border-outline-variant/30 pt-md">
+<span class="font-label-md text-label-md text-primary font-bold">Total Billable</span>
+<span class="font-headline-sm text-headline-sm text-secondary font-bold">$337.50</span>
+</div>
+</div>
+<button class="w-full mt-lg py-md bg-secondary text-on-secondary font-label-md text-label-md rounded-lg hover:opacity-90 transition-opacity shadow-sm uppercase tracking-wide">
+                    Post to Billing Queue
+                </button>
+</div>
+</div>
+<!-- Tabbed Section -->
+<div class="bg-surface-container-lowest border border-outline-variant/30 rounded-xl overflow-hidden shadow-sm">
+<div class="flex border-b border-outline-variant/30 bg-surface-container-low/50">
+<button class="px-xl py-md font-label-md text-label-md tab-active transition-colors">Transcript</button>
+<button class="px-xl py-md font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors">AI Insights</button>
+<button class="px-xl py-md font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors">Notes (12)</button>
+<button class="px-xl py-md font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors">Related Documents</button>
+</div>
+<div class="grid grid-cols-12">
+<!-- Main Content: Transcript -->
+<div class="col-span-8 p-xl border-r border-outline-variant/30 max-h-[800px] overflow-y-auto custom-scrollbar">
+<div class="space-y-xl">
+<!-- Transcript Row 1 -->
+<div class="flex gap-lg group">
+<button class="flex-shrink-0 text-secondary font-label-sm text-label-sm h-fit pt-xs hover:underline tabular-nums">00:00</button>
+<div class="flex-1">
+<span class="font-label-md text-label-md text-primary block mb-xs">Sarah Jenkins (Associate)</span>
+<p class="text-on-surface-variant leading-relaxed">Good morning everyone. Let's begin the strategy session for the Anderson Estate matter. We're here to review the latest discovery documents and finalize our deposition schedule for next week. Mr. Anderson, how are you feeling about the progress so far?</p>
+</div>
+</div>
+<!-- Transcript Row 2 -->
+<div class="flex gap-lg group bg-surface-container-low/30 -mx-xl px-xl py-md rounded-lg">
+<button class="flex-shrink-0 text-secondary font-label-sm text-label-sm h-fit pt-xs hover:underline tabular-nums">02:14</button>
+<div class="flex-1">
+<span class="font-label-md text-label-md text-primary block mb-xs">Marcus Anderson (Client)</span>
+<p class="text-on-surface-variant leading-relaxed">I'm a bit concerned about the timeline. Apex seems to be dragging their feet on the financial records. If we don't get those by Friday, will we be able to stay on schedule for the November hearing?</p>
+</div>
+</div>
+<!-- Transcript Row 3 -->
+<div class="flex gap-lg group">
+<button class="flex-shrink-0 text-secondary font-label-sm text-label-sm h-fit pt-xs hover:underline tabular-nums">03:45</button>
+<div class="flex-1">
+<span class="font-label-md text-label-md text-primary block mb-xs">Sarah Jenkins (Associate)</span>
+<p class="text-on-surface-variant leading-relaxed">That's a valid concern. We've already drafted a motion to compel if they don't produce the records by the end of business tomorrow. We're not going to let them stall our momentum. I've also briefed our forensic accountant, David, to be ready to review them the moment they arrive.</p>
+</div>
+</div>
+<!-- Transcript Row 4 -->
+<div class="flex gap-lg group">
+<button class="flex-shrink-0 text-secondary font-label-sm text-label-sm h-fit pt-xs hover:underline tabular-nums">12:44</button>
+<div class="flex-1">
+<span class="font-label-md text-label-md text-primary block mb-xs">Marcus Anderson (Client)</span>
+<p class="text-on-surface-variant leading-relaxed font-medium text-on-surface">Can we talk about the settlement offer? I saw the email you sent over yesterday. The numbers seem... conservative given the asset valuation we discussed earlier this year.</p>
+<div class="mt-md flex gap-sm">
+<span class="bg-surface-container text-primary px-sm py-xs rounded font-label-sm text-label-sm flex items-center gap-xs">
+<span class="material-symbols-outlined text-[14px]">sell</span>
+                                        Settlement Discussion
+                                    </span>
+<span class="bg-surface-container text-primary px-sm py-xs rounded font-label-sm text-label-sm flex items-center gap-xs">
+<span class="material-symbols-outlined text-[14px]">priority_high</span>
+                                        Action Item
+                                    </span>
+</div>
+</div>
+</div>
+<!-- Transcript Row 5 -->
+<div class="flex gap-lg group">
+<button class="flex-shrink-0 text-secondary font-label-sm text-label-sm h-fit pt-xs hover:underline tabular-nums">15:10</button>
+<div class="flex-1">
+<span class="font-label-md text-label-md text-primary block mb-xs">Sarah Jenkins (Associate)</span>
+<p class="text-on-surface-variant leading-relaxed">I agree it's on the lower end. They're testing our resolve. My recommendation is to counter at the 85% mark of the valuation and cite the recently discovered email from their CEO as leverage. That should bring them to the table more seriously.</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Sidebar Content: AI Insights -->
+<div class="col-span-4 p-xl bg-surface-container-low/20">
+<div class="mb-xxl">
+<div class="flex items-center gap-sm mb-lg">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+<h4 class="font-headline-sm text-headline-sm text-primary">BillSync AI Summary</h4>
+</div>
+<div class="space-y-lg">
+<div>
+<h5 class="font-label-md text-label-md text-primary uppercase tracking-wider mb-sm">Key Points</h5>
+<ul class="space-y-sm">
+<li class="flex gap-sm items-start">
+<span class="material-symbols-outlined text-secondary text-[20px] pt-1">check_circle</span>
+<p class="text-body-sm text-on-surface-variant">Client expressed concern regarding Apex's delay in providing financial records.</p>
+</li>
+<li class="flex gap-sm items-start">
+<span class="material-symbols-outlined text-secondary text-[20px] pt-1">check_circle</span>
+<p class="text-body-sm text-on-surface-variant">Motion to compel drafted and ready for filing by Friday if records are not produced.</p>
+</li>
+<li class="flex gap-sm items-start">
+<span class="material-symbols-outlined text-secondary text-[20px] pt-1">check_circle</span>
+<p class="text-body-sm text-on-surface-variant">Settlement strategy shifted to 85% valuation counter-offer using CEO email as leverage.</p>
+</li>
+</ul>
+</div>
+<div class="pt-lg border-t border-outline-variant/30">
+<h5 class="font-label-md text-label-md text-primary uppercase tracking-wider mb-sm">Next Steps</h5>
+<ul class="space-y-sm">
+<li class="bg-surface-container-lowest p-md rounded-lg border border-outline-variant/20 shadow-sm">
+<p class="font-label-md text-label-md text-primary mb-xs">Draft Counter-Offer</p>
+<p class="text-body-sm text-on-surface-variant">Finalize the settlement counter-offer including the CEO email evidence by Tuesday.</p>
+<div class="mt-sm flex justify-between items-center">
+<span class="text-label-sm font-label-sm text-secondary">Due: Oct 28</span>
+<button class="text-primary font-label-sm text-label-sm hover:underline">Add Task</button>
+</div>
+</li>
+<li class="bg-surface-container-lowest p-md rounded-lg border border-outline-variant/20 shadow-sm">
+<p class="font-label-md text-label-md text-primary mb-xs">Financial Audit Call</p>
+<p class="text-body-sm text-on-surface-variant">Sync with David (Accountant) once records are received.</p>
+<div class="mt-sm flex justify-between items-center">
+<span class="text-label-sm font-label-sm text-secondary">Pending Records</span>
+<button class="text-primary font-label-sm text-label-sm hover:underline">Add Task</button>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="p-lg bg-primary-container rounded-xl text-on-primary">
+<div class="flex items-center gap-md mb-md">
+<span class="material-symbols-outlined">lightbulb</span>
+<h4 class="font-label-md text-label-md font-bold">Billing Opportunity</h4>
+</div>
+<p class="font-body-sm text-body-sm text-on-primary-container mb-md">
+                            AI detected discussion of <span class="text-on-primary font-medium">Matter #2023-442</span>. 
+                            Associating this recording will automatically update the matter's activity log.
+                        </p>
+<button class="w-full py-sm bg-on-primary text-primary font-label-md text-label-md rounded-lg hover:bg-on-primary-fixed-variant transition-colors">
+                            Link to Matter
+                        </button>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Floating AI Prompt -->
+<div class="fixed bottom-xl right-xl">
+<button class="w-14 h-14 bg-primary text-on-primary rounded-full shadow-lg flex items-center justify-center hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-[28px]" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+</button>
+</div>
+<script>
+        // Simple micro-interaction for transcript jumping
+        document.querySelectorAll('button.text-secondary.tabular-nums').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const timestamp = this.innerText;
+                console.log(`Jumping audio player to ${timestamp}`);
+                
+                // Visual feedback
+                const allRows = document.querySelectorAll('.flex.gap-lg.group');
+                allRows.forEach(row => row.classList.remove('bg-surface-container-low/30', 'px-xl', '-mx-xl', 'py-md'));
+                
+                const parent = this.closest('.group');
+                parent.classList.add('bg-surface-container-low/30', 'px-xl', '-mx-xl', 'py-md', 'transition-all', 'duration-300');
+            });
+        });
+
+        // Tab switching logic (simple demo)
+        document.querySelectorAll('.flex.border-b button').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.flex.border-b button').forEach(t => t.classList.remove('tab-active', 'text-primary'));
+                document.querySelectorAll('.flex.border-b button').forEach(t => t.classList.add('text-on-surface-variant'));
+                
+                this.classList.add('tab-active', 'text-primary');
+                this.classList.remove('text-on-surface-variant');
+            });
+        });
+    </script>
+</body></html>

@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Security &amp; Access | BillSync Legal</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-surface": "#121d26",
+                      "surface-tint": "#3d608a",
+                      "primary-container": "#123b63",
+                      "inverse-surface": "#27313c",
+                      "on-tertiary-fixed": "#071c36",
+                      "tertiary-container": "#283a56",
+                      "on-secondary-fixed-variant": "#584400",
+                      "surface": "#f7f9ff",
+                      "secondary": "#755b00",
+                      "surface-dim": "#d1dbe8",
+                      "tertiary-fixed": "#d6e3ff",
+                      "inverse-primary": "#a6c9f9",
+                      "tertiary": "#11243f",
+                      "tertiary-fixed-dim": "#b5c7ea",
+                      "inverse-on-surface": "#e8f2ff",
+                      "on-secondary-container": "#735a00",
+                      "on-surface-variant": "#43474e",
+                      "on-error": "#ffffff",
+                      "on-error-container": "#93000a",
+                      "on-primary-fixed": "#001c37",
+                      "outline": "#73777f",
+                      "on-background": "#121d26",
+                      "secondary-container": "#fed255",
+                      "surface-bright": "#f7f9ff",
+                      "on-primary": "#ffffff",
+                      "on-tertiary": "#ffffff",
+                      "on-primary-container": "#83a6d4",
+                      "surface-container-highest": "#d9e3f1",
+                      "surface-container": "#e4effd",
+                      "on-secondary-fixed": "#241a00",
+                      "primary": "#002546",
+                      "background": "#f7f9ff",
+                      "surface-container-low": "#edf4ff",
+                      "primary-fixed-dim": "#a6c9f9",
+                      "on-tertiary-fixed-variant": "#364764",
+                      "error-container": "#ffdad6",
+                      "surface-container-lowest": "#ffffff",
+                      "outline-variant": "#c3c6cf",
+                      "error": "#ba1a1a",
+                      "on-secondary": "#ffffff",
+                      "secondary-fixed-dim": "#ecc246",
+                      "secondary-fixed": "#ffe08e",
+                      "on-primary-fixed-variant": "#234871",
+                      "primary-fixed": "#d2e4ff",
+                      "surface-variant": "#d9e3f1",
+                      "surface-container-high": "#dfe9f7",
+                      "on-tertiary-container": "#92a4c5"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "xl": "32px",
+                      "xs": "4px",
+                      "xxl": "48px",
+                      "sidebar-width": "260px",
+                      "lg": "24px",
+                      "base": "8px",
+                      "md": "16px",
+                      "gutter-desktop": "24px",
+                      "margin-desktop": "40px",
+                      "sm": "12px"
+              },
+              "fontFamily": {
+                      "headline-sm": ["Inter"],
+                      "label-sm": ["Inter"],
+                      "headline-lg": ["Inter"],
+                      "body-sm": ["Inter"],
+                      "body-md": ["Inter"],
+                      "headline-md": ["Inter"],
+                      "label-md": ["Inter"]
+              }
+            }
+          }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        body {
+            background-color: #F8F5EF;
+            color: #121d26;
+            font-family: 'Inter', sans-serif;
+        }
+        .sidebar-active {
+            border-left: 2px solid #755b00; /* gold accent */
+        }
+        .toggle-checkbox:checked + .toggle-label {
+            background-color: #002546;
+        }
+        .toggle-checkbox:checked + .toggle-label .toggle-dot {
+            transform: translateX(100%);
+        }
+        .bento-card {
+            background: #ffffff;
+            border: 1px solid #E5E7EB;
+            transition: box-shadow 0.3s ease;
+        }
+        .bento-card:hover {
+            box-shadow: 0 4px 15px rgba(31, 41, 51, 0.06);
+        }
+    </style>
+</head>
+<body class="flex min-h-screen">
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-0 h-full w-sidebar-width bg-primary flex flex-col py-lg px-md border-r border-outline-variant z-50">
+<div class="mb-xxl px-sm">
+<h1 class="font-headline-sm text-headline-sm font-bold text-surface-lowest leading-tight">BillSync Legal</h1>
+<p class="text-on-primary-container text-label-sm font-label-sm opacity-80">Premium Law Edition</p>
+</div>
+<nav class="flex-1 space-y-xs">
+<a class="flex items-center gap-md py-sm px-md text-on-primary-container hover:bg-primary-container hover:text-surface transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-md py-sm px-md text-on-primary-container hover:bg-primary-container hover:text-surface transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span class="font-label-md text-label-md">Clients</span>
+</a>
+<a class="flex items-center gap-md py-sm px-md text-on-primary-container hover:bg-primary-container hover:text-surface transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="folder_open">folder_open</span>
+<span class="font-label-md text-label-md">Matters</span>
+</a>
+<a class="flex items-center gap-md py-sm px-md text-on-primary-container hover:bg-primary-container hover:text-surface transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="receipt_long">receipt_long</span>
+<span class="font-label-md text-label-md">Billing</span>
+</a>
+<a class="flex items-center gap-md py-sm px-md text-on-primary-container hover:bg-primary-container hover:text-surface transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="description">description</span>
+<span class="font-label-md text-label-md">Documents</span>
+</a>
+<a class="flex items-center gap-md py-sm px-md text-on-primary-container hover:bg-primary-container hover:text-surface transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="smart_toy">smart_toy</span>
+<span class="font-label-md text-label-md">AI Assistant</span>
+</a>
+<a class="flex items-center gap-md py-sm px-md text-surface border-l-2 border-secondary bg-primary-container rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-label-md text-label-md">Settings</span>
+</a>
+</nav>
+<div class="mt-auto border-t border-primary-container pt-md space-y-xs">
+<a class="flex items-center gap-md py-sm px-md text-on-primary-container hover:bg-primary-container hover:text-surface transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="help_outline">help_outline</span>
+<span class="font-label-md text-label-md">Support</span>
+</a>
+<a class="flex items-center gap-md py-sm px-md text-on-primary-container hover:bg-primary-container hover:text-surface transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+<span class="font-label-md text-label-md">Sign Out</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 ml-[260px]">
+<!-- TopNavBar -->
+<header class="h-16 bg-surface-lowest sticky top-0 flex items-center justify-between px-gutter-desktop border-b border-outline-variant shadow-sm z-40">
+<div class="flex items-center flex-1">
+<div class="relative w-96">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline" data-icon="search">search</span>
+<input class="w-full bg-surface-container-low border-none rounded-xl py-2 pl-10 pr-4 focus:ring-1 focus:ring-primary text-body-sm font-body-sm" placeholder="Search security logs..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-lg">
+<button class="relative p-2 text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="absolute top-1.5 right-1.5 w-2 h-2 bg-error rounded-full"></span>
+</button>
+<div class="h-6 w-px bg-outline-variant"></div>
+<button class="bg-secondary text-on-secondary px-md py-1.5 rounded-full font-label-md text-label-md transition-transform active:scale-95">Upgrade</button>
+<div class="flex items-center gap-sm cursor-pointer group">
+<div class="w-8 h-8 rounded-full bg-primary-container flex items-center justify-center text-on-primary-container overflow-hidden">
+<img alt="User Profile Avatar" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCfhw0Om18vEl1MupCVRfvqvTT3DEj3f2TMjS0V5KCtLwQzvB0p0wrwUujjpPvJnQg-5ByQxvXBUlk8tIA8vucaqFQZattgOjUk_TzT_PPV6-lezw4l001B9fZ_-dSlEEkOEIu-xs2LrQCbllpZ9tg2N5S5LWKhtR2yXk7L6coV-HHJMueAkYVRueHGv0-QJJgwvxp6Aga_bcwIVx5jQD05o7RH0D1bAOd-CUykxsVIWg5Kjnx0aZ1Q08dd1QmwZsC0_dtXuuF2H6sM"/>
+</div>
+<span class="font-label-md text-label-md text-on-surface group-hover:text-primary transition-colors">Profile</span>
+</div>
+</div>
+</header>
+<!-- Page Content -->
+<div class="p-margin-desktop max-w-7xl mx-auto">
+<!-- Header Section -->
+<div class="mb-xl flex justify-between items-end">
+<div>
+<nav class="flex gap-2 text-label-sm font-label-sm text-outline mb-2">
+<span>Settings</span>
+<span>/</span>
+<span class="text-on-surface">Security &amp; Access</span>
+</nav>
+<h2 class="font-headline-lg text-headline-lg text-primary">Security &amp; Access</h2>
+<p class="text-on-surface-variant font-body-md text-body-md mt-1">Manage firm-wide authentication policies and session controls.</p>
+</div>
+<div class="flex gap-md">
+<button class="flex items-center gap-2 border border-outline px-lg py-2.5 rounded-xl text-primary font-label-md text-label-md hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined" data-icon="history">history</span>
+                        View Audit Logs
+                    </button>
+</div>
+</div>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-12 gap-lg">
+<!-- MFA Configuration -->
+<section class="col-span-12 md:col-span-7 bento-card rounded-xl p-lg flex flex-col">
+<div class="flex justify-between items-start mb-xl">
+<div>
+<h3 class="font-headline-sm text-headline-sm text-primary">Multi-Factor Authentication</h3>
+<p class="text-on-surface-variant font-body-sm text-body-sm">Require an extra layer of security for all firm members.</p>
+</div>
+<span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider">Active</span>
+</div>
+<div class="space-y-lg">
+<div class="flex items-center justify-between p-md border border-outline-variant rounded-xl bg-surface-container-lowest">
+<div class="flex gap-md">
+<div class="w-10 h-10 rounded-lg bg-surface-container-high flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" data-icon="smartphone">smartphone</span>
+</div>
+<div>
+<h4 class="font-label-md text-label-md text-primary">Authenticator App (Recommended)</h4>
+<p class="text-body-sm text-on-surface-variant">Use Google Authenticator or Microsoft Authenticator.</p>
+</div>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only toggle-checkbox" type="checkbox"/>
+<div class="w-11 h-6 bg-outline-variant rounded-full transition-colors toggle-label">
+<div class="absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-transform toggle-dot"></div>
+</div>
+</label>
+</div>
+<div class="flex items-center justify-between p-md border border-outline-variant rounded-xl">
+<div class="flex gap-md">
+<div class="w-10 h-10 rounded-lg bg-surface-container-high flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" data-icon="sms">sms</span>
+</div>
+<div>
+<h4 class="font-label-md text-label-md text-primary">SMS Verification</h4>
+<p class="text-body-sm text-on-surface-variant">Codes sent via text message to mobile devices.</p>
+</div>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input class="sr-only toggle-checkbox" type="checkbox"/>
+<div class="w-11 h-6 bg-outline-variant rounded-full transition-colors toggle-label">
+<div class="absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-transform toggle-dot"></div>
+</div>
+</label>
+</div>
+<div class="flex items-center justify-between p-md border border-outline-variant rounded-xl">
+<div class="flex gap-md">
+<div class="w-10 h-10 rounded-lg bg-surface-container-high flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" data-icon="key">key</span>
+</div>
+<div>
+<h4 class="font-label-md text-label-md text-primary">Hardware Security Key</h4>
+<p class="text-body-sm text-on-surface-variant">FIDO2 compliant keys like YubiKey or Titan.</p>
+</div>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input class="sr-only toggle-checkbox" type="checkbox"/>
+<div class="w-11 h-6 bg-outline-variant rounded-full transition-colors toggle-label">
+<div class="absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-transform toggle-dot"></div>
+</div>
+</label>
+</div>
+</div>
+</section>
+<!-- SSO Setup -->
+<section class="col-span-12 md:col-span-5 bento-card rounded-xl p-lg bg-primary overflow-hidden relative">
+<div class="absolute top-0 right-0 opacity-10">
+<span class="material-symbols-outlined text-[160px]" data-icon="lock_open">lock_open</span>
+</div>
+<div class="relative z-10">
+<h3 class="font-headline-sm text-headline-sm text-white mb-2">Enterprise SSO</h3>
+<p class="text-on-primary-container font-body-sm text-body-sm mb-xl">Connect your organization's identity provider.</p>
+<div class="space-y-md">
+<button class="w-full flex items-center justify-between bg-white/10 hover:bg-white/20 border border-white/20 p-md rounded-xl transition-all group">
+<div class="flex items-center gap-md">
+<img alt="Okta Logo" class="w-8 h-8 rounded bg-white p-1" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDkbmpkOXRsKE7Xo8pBYAQojOXc3iepTGAKsVKG22XfRmJRXtd3KtpAnmCo21KY4ZzF7J07IiBg__trZitfWqjL5Iq1EKh_E9mjYvM0vVLpnNa1s3T_s1dMmrxLXhw_i8uDMGXM4qmHmRdsiSNOyCtPywf16SN4CqynII_5MLTvCAi19vXk-ZxOkIXUqTrc3vVv1z2V_Cjpu5RvAqR6oFt_c9_szXFugXE1qFur-dlxVgrfNyIQ-w-6gBC8ZYhjJRqSqGwA-ohyfGDF"/>
+<span class="text-white font-label-md text-label-md">Configure Okta</span>
+</div>
+<span class="material-symbols-outlined text-white transition-transform group-hover:translate-x-1" data-icon="chevron_right">chevron_right</span>
+</button>
+<button class="w-full flex items-center justify-between bg-white/10 hover:bg-white/20 border border-white/20 p-md rounded-xl transition-all group">
+<div class="flex items-center gap-md">
+<img alt="Azure AD Logo" class="w-8 h-8 rounded bg-white p-1" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAeLAdG6IcpewZeKCu8QitYyxund4RAAZ98ZJ1BTknO78W-3D8h51zOA6nw2C0pQTFwUNyLV5FHjr1hyyxfeZIGniCmE3LWQNNa-ThV4F_rtxlTK8LuqizMTy-rJSHcQMdrMgEYuvdsjL81tow83DOJ6C6iprgqa8EKt1MS9_IjEx63OnlrMo3azK9tpqAsEQgQcCdFDGauSYRUaoUaTq6EraIowN_NyUtXk5u3jYDgxgm846bKxAZROt7WQW3EojPq0RI2V1LVnZqQ"/>
+<span class="text-white font-label-md text-label-md">Configure Azure AD</span>
+</div>
+<span class="material-symbols-outlined text-white transition-transform group-hover:translate-x-1" data-icon="chevron_right">chevron_right</span>
+</button>
+<div class="pt-xl">
+<div class="flex items-center gap-2 text-on-primary-container text-xs font-semibold mb-4">
+<div class="w-2 h-2 bg-secondary rounded-full"></div>
+                                    DOMAIN LOCK ENABLED
+                                </div>
+<p class="text-white/60 text-xs leading-relaxed">
+                                    Enforce SAML authentication for all users with @billsynclegal.com email addresses.
+                                </p>
+</div>
+</div>
+</div>
+</section>
+<!-- Session Management -->
+<section class="col-span-12 md:col-span-8 bento-card rounded-xl p-lg">
+<div class="flex justify-between items-center mb-xl">
+<div>
+<h3 class="font-headline-sm text-headline-sm text-primary">Session Management</h3>
+<p class="text-on-surface-variant font-body-sm text-body-sm">Control how long users stay logged in and view active access.</p>
+</div>
+<button class="text-error font-label-md text-label-md hover:underline">Log out all sessions</button>
+</div>
+<!-- Active Sessions Table -->
+<div class="overflow-x-auto">
+<table class="w-full border-collapse">
+<thead>
+<tr class="text-left border-b border-outline-variant">
+<th class="py-md font-label-sm text-label-sm text-outline">DEVICE / BROWSER</th>
+<th class="py-md font-label-sm text-label-sm text-outline">LOCATION</th>
+<th class="py-md font-label-sm text-label-sm text-outline">IP ADDRESS</th>
+<th class="py-md font-label-sm text-label-sm text-outline">STATUS</th>
+<th class="py-md font-label-sm text-label-sm text-outline text-right">ACTION</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant">
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="py-lg">
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-primary" data-icon="laptop_mac">laptop_mac</span>
+<div>
+<p class="font-label-md text-label-md text-primary">MacBook Pro 16"</p>
+<p class="text-xs text-on-surface-variant">Chrome • MacOS Sonoma</p>
+</div>
+</div>
+</td>
+<td class="py-lg text-body-sm text-on-surface-variant">New York, USA</td>
+<td class="py-lg font-mono text-xs text-on-surface-variant">192.168.1.1</td>
+<td class="py-lg">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-green-50 text-green-700 text-xs font-medium">
+                                            Current
+                                        </span>
+</td>
+<td class="py-lg text-right">
+<span class="text-outline text-xs italic">N/A</span>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="py-lg">
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="smartphone">smartphone</span>
+<div>
+<p class="font-label-md text-label-md text-primary">iPhone 15 Pro</p>
+<p class="text-xs text-on-surface-variant">iOS Safari • Mobile</p>
+</div>
+</div>
+</td>
+<td class="py-lg text-body-sm text-on-surface-variant">London, UK</td>
+<td class="py-lg font-mono text-xs text-on-surface-variant">82.34.122.90</td>
+<td class="py-lg">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-700 text-xs font-medium">
+                                            Idle
+                                        </span>
+</td>
+<td class="py-lg text-right">
+<button class="text-error hover:text-red-700 transition-colors">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<!-- Session Settings -->
+<section class="col-span-12 md:col-span-4 bento-card rounded-xl p-lg flex flex-col">
+<h3 class="font-headline-sm text-headline-sm text-primary mb-xl">Policy Controls</h3>
+<div class="space-y-xl">
+<div>
+<div class="flex justify-between items-center mb-2">
+<label class="font-label-md text-label-md text-primary">Session Timeout</label>
+<span class="text-xs font-bold text-secondary">30 MINUTES</span>
+</div>
+<input class="w-full h-1.5 bg-surface-container-high rounded-full appearance-none cursor-pointer accent-primary" max="480" min="15" step="15" type="range" value="30"/>
+<div class="flex justify-between mt-2 text-[10px] text-outline uppercase font-bold">
+<span>15m</span>
+<span>8h</span>
+</div>
+</div>
+<div class="pt-xl border-t border-outline-variant space-y-md">
+<div class="flex items-start gap-md">
+<div class="pt-1">
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only toggle-checkbox" type="checkbox"/>
+<div class="w-10 h-5 bg-outline-variant rounded-full transition-colors toggle-label">
+<div class="absolute left-0.5 top-0.5 bg-white w-4 h-4 rounded-full transition-transform toggle-dot"></div>
+</div>
+</label>
+</div>
+<div>
+<h4 class="font-label-md text-label-md text-primary">Concurrent Logins</h4>
+<p class="text-xs text-on-surface-variant">Prevent users from signing in from multiple devices simultaneously.</p>
+</div>
+</div>
+<div class="flex items-start gap-md">
+<div class="pt-1">
+<label class="relative inline-flex items-center cursor-pointer">
+<input class="sr-only toggle-checkbox" type="checkbox"/>
+<div class="w-10 h-5 bg-outline-variant rounded-full transition-colors toggle-label">
+<div class="absolute left-0.5 top-0.5 bg-white w-4 h-4 rounded-full transition-transform toggle-dot"></div>
+</div>
+</label>
+</div>
+<div>
+<h4 class="font-label-md text-label-md text-primary">Location Locking</h4>
+<p class="text-xs text-on-surface-variant">Restrict access to registered firm IP ranges and known geographic regions.</p>
+</div>
+</div>
+</div>
+<div class="mt-auto pt-lg">
+<div class="bg-surface-container-low p-md rounded-xl border border-primary/10">
+<div class="flex gap-2 text-primary mb-2">
+<span class="material-symbols-outlined text-sm" data-icon="info">info</span>
+<span class="text-[10px] font-bold uppercase">Security Advisor</span>
+</div>
+<p class="text-xs text-on-surface-variant leading-relaxed">
+                                    Firm-wide security is currently rated <span class="text-green-600 font-bold">EXCELLENT</span>. Consider enabling Location Locking for extra protection.
+                                </p>
+</div>
+</div>
+</div>
+</section>
+<!-- Data Privacy & Export (Visual Polish) -->
+<div class="col-span-12 grid grid-cols-1 md:grid-cols-3 gap-lg mt-md">
+<div class="bento-card rounded-xl p-md flex items-center gap-md">
+<div class="w-12 h-12 rounded-full bg-secondary-container/30 flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined" data-icon="shield_lock">shield_lock</span>
+</div>
+<div>
+<h4 class="font-label-md text-label-md text-primary">Data Encryption</h4>
+<p class="text-xs text-on-surface-variant">AES-256 at rest &amp; TLS 1.3 in transit</p>
+</div>
+</div>
+<div class="bento-card rounded-xl p-md flex items-center gap-md">
+<div class="w-12 h-12 rounded-full bg-surface-container-high flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" data-icon="account_balance">account_balance</span>
+</div>
+<div>
+<h4 class="font-label-md text-label-md text-primary">Compliance Status</h4>
+<p class="text-xs text-on-surface-variant">SOC2 Type II &amp; GDPR Compliant</p>
+</div>
+</div>
+<div class="bento-card rounded-xl p-md flex items-center gap-md">
+<div class="w-12 h-12 rounded-full bg-surface-container-high flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" data-icon="download">download</span>
+</div>
+<div>
+<h4 class="font-label-md text-label-md text-primary">Security Export</h4>
+<p class="text-xs text-on-surface-variant">Generate JSON report of security settings</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Micro-interactions Script -->
+<script>
+        // Subtle hover effects for cards
+        document.querySelectorAll('.bento-card').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.transform = 'translateY(-2px)';
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'translateY(0)';
+            });
+        });
+
+        // Range input dynamic update
+        const range = document.querySelector('input[type="range"]');
+        const rangeValue = range.parentElement.querySelector('span.text-secondary');
+        
+        range.addEventListener('input', (e) => {
+            const val = e.target.value;
+            if (val >= 60) {
+                const hours = Math.floor(val / 60);
+                const mins = val % 60;
+                rangeValue.textContent = `${hours} HOUR${hours > 1 ? 'S' : ''}${mins > 0 ? ' ' + mins + 'M' : ''}`;
+            } else {
+                rangeValue.textContent = `${val} MINUTES`;
+            }
+        });
+    </script>
+</body></html>

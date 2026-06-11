@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AI Assistant Chat - LegalFlow</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-variant": "#d9e3f1",
+                        "on-error": "#ffffff",
+                        "surface-container-highest": "#d9e3f1",
+                        "on-primary-fixed": "#001c37",
+                        "inverse-primary": "#a6c9f9",
+                        "tertiary": "#11243f",
+                        "outline": "#73777f",
+                        "on-tertiary-container": "#92a4c5",
+                        "on-primary": "#ffffff",
+                        "on-surface": "#121d26",
+                        "surface-container": "#e4effd",
+                        "on-secondary": "#ffffff",
+                        "surface-dim": "#d1dbe8",
+                        "primary-fixed": "#d2e4ff",
+                        "secondary-fixed-dim": "#ecc246",
+                        "secondary": "#755b00",
+                        "primary-container": "#123b63",
+                        "on-primary-container": "#83a6d4",
+                        "surface-bright": "#f7f9ff",
+                        "surface-container-low": "#edf4ff",
+                        "on-surface-variant": "#43474e",
+                        "error-container": "#ffdad6",
+                        "inverse-surface": "#27313c",
+                        "on-tertiary": "#ffffff",
+                        "surface-container-lowest": "#ffffff",
+                        "tertiary-fixed-dim": "#b5c7ea",
+                        "on-primary-fixed-variant": "#234871",
+                        "surface-container-high": "#dfe9f7",
+                        "on-error-container": "#93000a",
+                        "outline-variant": "#c3c6cf",
+                        "on-secondary-fixed": "#241a00",
+                        "tertiary-fixed": "#d6e3ff",
+                        "on-secondary-container": "#735a00",
+                        "surface": "#f7f9ff",
+                        "error": "#ba1a1a",
+                        "primary-fixed-dim": "#a6c9f9",
+                        "inverse-on-surface": "#e8f2ff",
+                        "on-background": "#121d26",
+                        "on-tertiary-fixed-variant": "#364764",
+                        "tertiary-container": "#283a56",
+                        "secondary-container": "#fed255",
+                        "primary": "#002546",
+                        "on-tertiary-fixed": "#071c36",
+                        "on-secondary-fixed-variant": "#584400",
+                        "background": "#f7f9ff",
+                        "secondary-fixed": "#ffe08e",
+                        "surface-tint": "#3d608a"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "xs": "4px",
+                        "base": "8px",
+                        "xxl": "48px",
+                        "xl": "32px",
+                        "md": "16px",
+                        "margin-desktop": "40px",
+                        "gutter-desktop": "24px",
+                        "lg": "24px",
+                        "sm": "12px",
+                        "sidebar-width": "260px"
+                    },
+                    "fontFamily": {
+                        "headline-sm": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "label-md": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "headline-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "600"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                        "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .chat-container { height: calc(100vh - 128px); }
+        .glass-blur { backdrop-filter: blur(8px); background-color: rgba(247, 249, 255, 0.8); }
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #d1dbe8; border-radius: 10px; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-background text-on-background overflow-hidden">
+<!-- Top AppBar (from Shared Components) -->
+<header class="bg-surface border-b border-outline-variant flex justify-between items-center px-md h-16 w-full fixed top-0 z-50">
+<div class="flex items-center gap-base">
+<div class="p-2 rounded-full hover:bg-surface-container-high transition-colors text-primary active:opacity-80">
+<span class="material-symbols-outlined">gavel</span>
+</div>
+<h1 class="font-headline-md text-headline-md-mobile font-bold text-primary">LegalFlow</h1>
+</div>
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center overflow-hidden border border-outline-variant">
+<img alt="User Profile" class="w-full h-full object-cover" data-alt="A professional headshot of a senior lawyer in a modern law office setting. The lighting is soft and natural, emphasizing a high-end corporate aesthetic. The lawyer has a calm and confident expression, dressed in a sharp navy suit. The background is a blurred office interior with warm wood accents and minimalist furniture, adhering to a premium SaaS product look." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB73l512_eoSXu_EyBHLnznrUrdZbESNV4Deu8ye_6LQT2zxsD_cryh9YWZ_ew5MWdbpCFdqIpYkz7wyBjbxofmBuGGPhfjSx1eQzhWSM8Xi4Gyp44PeG9lNJTfq1lUAHTDpfPtEccUvYkzDuLidBm0EjH4FOkRNzWJxG4EBeGmeYZTI6RZut7kLzDIYTQjGDRcq4HQ5-ZhEoTCg0d8znt3COCixZ0f7Q715zeQNfgjG7nOtmjP7OPXl9y43zDx3A4vSEKIMCElyK6r"/>
+</div>
+</div>
+</header>
+<!-- Main Chat Canvas -->
+<main class="chat-container pt-16 pb-24 overflow-y-auto px-md bg-surface-bright relative">
+<!-- Floating Ambient Background (Subtle) -->
+<div class="fixed inset-0 pointer-events-none z-0 opacity-20">
+
+</div>
+<div class="max-w-2xl mx-auto flex flex-col gap-lg py-md relative z-10">
+<!-- Welcome State -->
+<div class="text-center py-xl">
+<span class="material-symbols-outlined text-4xl text-primary mb-base" style="font-variation-settings: 'FILL' 1;">smart_toy</span>
+<h2 class="font-headline-sm text-headline-sm text-on-surface">How can I assist your practice today?</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant px-xl">I can help with status updates, filing summaries, or drafting documents for your matters.</p>
+</div>
+<!-- AI Bubble -->
+<div class="flex flex-col items-start gap-xs max-w-[85%]">
+<div class="flex items-center gap-xs mb-1">
+<span class="text-[10px] font-label-sm text-primary bg-primary-fixed px-2 py-0.5 rounded-full uppercase tracking-wider">Assistant</span>
+<span class="text-[10px] font-label-sm text-outline">10:24 AM</span>
+</div>
+<div class="bg-white border border-outline-variant p-md rounded-xl rounded-tl-none shadow-sm text-on-surface font-body-md text-body-md">
+                    Good morning, Counsel. I've analyzed your upcoming deadlines. You have a hearing for <strong>TechCorp v. Delta</strong> tomorrow at 9:00 AM. Would you like me to pull the latest summary of the opposition's filing?
+                </div>
+</div>
+<!-- User Bubble -->
+<div class="flex flex-col items-end gap-xs max-w-[85%] ml-auto">
+<div class="flex items-center gap-xs mb-1">
+<span class="text-[10px] font-label-sm text-outline">10:25 AM</span>
+<span class="text-[10px] font-label-sm text-on-secondary-container bg-secondary-container px-2 py-0.5 rounded-full uppercase tracking-wider">You</span>
+</div>
+<div class="bg-primary-container text-on-primary-container p-md rounded-xl rounded-tr-none shadow-sm font-body-md text-body-md">
+                    Yes, please. Also, show me the matter details for TechCorp.
+                </div>
+</div>
+<!-- Contextual Matter Card (AI Response) -->
+<div class="flex flex-col items-start gap-xs max-w-[90%]">
+<div class="flex items-center gap-xs mb-1">
+<span class="text-[10px] font-label-sm text-primary bg-primary-fixed px-2 py-0.5 rounded-full uppercase tracking-wider">Assistant</span>
+<span class="text-[10px] font-label-sm text-outline">10:25 AM</span>
+</div>
+<div class="bg-white border border-outline-variant p-0 rounded-xl rounded-tl-none shadow-md overflow-hidden w-full">
+<div class="bg-surface-container-low p-md border-b border-outline-variant flex justify-between items-center">
+<div class="flex items-center gap-sm">
+<div class="w-10 h-10 rounded-lg bg-primary flex items-center justify-center text-white">
+<span class="material-symbols-outlined">folder_open</span>
+</div>
+<div>
+<h4 class="font-label-md text-label-md text-on-surface">TechCorp v. Delta Solutions</h4>
+<p class="text-[12px] text-on-surface-variant">Matter ID: #TC-2024-082</p>
+</div>
+</div>
+<span class="bg-secondary-container/30 text-secondary font-label-sm text-[10px] px-2 py-1 rounded-full border border-secondary/20">Active Discovery</span>
+</div>
+<div class="p-md grid grid-cols-2 gap-md">
+<div class="flex flex-col">
+<span class="text-[10px] font-label-sm text-outline uppercase tracking-tight">Last Activity</span>
+<span class="font-body-sm text-body-sm text-on-surface">Oct 24, 2023</span>
+</div>
+<div class="flex flex-col">
+<span class="text-[10px] font-label-sm text-outline uppercase tracking-tight">Lead Partner</span>
+<span class="font-body-sm text-body-sm text-on-surface">Sarah Jenkins</span>
+</div>
+</div>
+<div class="bg-surface px-md py-sm border-t border-outline-variant flex justify-end">
+<button class="text-primary font-label-sm text-label-sm hover:underline flex items-center gap-1">
+                            View Full Matter <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Loading State Placeholder (Simulated) -->
+<div class="flex items-center gap-base opacity-0 transition-opacity duration-300" id="ai-typing">
+<div class="w-2 h-2 bg-primary rounded-full animate-bounce [animation-delay:-0.3s]"></div>
+<div class="w-2 h-2 bg-primary rounded-full animate-bounce [animation-delay:-0.15s]"></div>
+<div class="w-2 h-2 bg-primary rounded-full animate-bounce"></div>
+</div>
+</div>
+</main>
+<!-- Bottom Actions & Input Area -->
+<div class="fixed bottom-0 left-0 right-0 z-50 bg-white shadow-[0_-4px_20px_rgba(0,0,0,0.08)]">
+<!-- Suggested Chips -->
+<div class="flex gap-sm px-md py-sm overflow-x-auto whitespace-nowrap scrollbar-hide border-b border-outline-variant bg-surface-container-lowest">
+<button class="bg-surface-container-high hover:bg-primary-container hover:text-white transition-all text-on-surface-variant font-label-sm text-label-sm px-4 py-2 rounded-full border border-outline-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">schedule</span>
+                What's the status of TechCorp?
+            </button>
+<button class="bg-surface-container-high hover:bg-primary-container hover:text-white transition-all text-on-surface-variant font-label-sm text-label-sm px-4 py-2 rounded-full border border-outline-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">receipt_long</span>
+                Show recent filings
+            </button>
+<button class="bg-surface-container-high hover:bg-primary-container hover:text-white transition-all text-on-surface-variant font-label-sm text-label-sm px-4 py-2 rounded-full border border-outline-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">summarize</span>
+                Draft billable entries
+            </button>
+</div>
+<!-- Input Bar -->
+<div class="flex items-center gap-md px-md py-md bg-white">
+<button class="text-on-surface-variant hover:text-primary transition-colors flex items-center justify-center p-2 rounded-full hover:bg-surface-container-high">
+<span class="material-symbols-outlined">add_circle</span>
+</button>
+<div class="flex-1 bg-surface-container px-md py-2.5 rounded-full flex items-center gap-sm border border-transparent focus-within:border-primary-container focus-within:bg-white transition-all shadow-inner">
+<input class="bg-transparent border-none focus:ring-0 w-full text-on-surface font-body-md text-body-md placeholder:text-outline" placeholder="Type your legal query..." type="text"/>
+<button class="text-primary flex items-center justify-center p-1 rounded-full hover:bg-primary-fixed transition-colors">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">mic</span>
+</button>
+</div>
+<button class="bg-primary text-white w-10 h-10 rounded-full flex items-center justify-center shadow-lg active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-[20px]">send</span>
+</button>
+</div>
+<!-- Bottom NavBar (from Shared Components) -->
+<nav class="w-full z-50 flex justify-around items-center px-base py-sm bg-surface border-t border-outline-variant md:hidden">
+<div class="flex flex-col items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-label-sm text-label-sm">Dashboard</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined">receipt_long</span>
+<span class="font-label-sm text-label-sm">Captured</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined">folder_open</span>
+<span class="font-label-sm text-label-sm">Matters</span>
+</div>
+<div class="flex flex-col items-center justify-center text-primary bg-secondary-container/30 rounded-full px-4 py-1 scale-95">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">smart_toy</span>
+<span class="font-label-sm text-label-sm">AI Assistant</span>
+</div>
+</nav>
+</div>
+<script>
+        // Micro-interaction for the input bar focus effect
+        const inputField = document.querySelector('input');
+        const aiTypingIndicator = document.getElementById('ai-typing');
+
+        inputField.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && inputField.value.trim() !== '') {
+                // Mock sending
+                inputField.value = '';
+                // Show typing indicator
+                aiTypingIndicator.classList.remove('opacity-0');
+                setTimeout(() => {
+                    aiTypingIndicator.classList.add('opacity-0');
+                }, 2000);
+            }
+        });
+
+        // Horizontal scroll utility for chips
+        const scrollContainer = document.querySelector('.overflow-x-auto');
+        scrollContainer.addEventListener('wheel', (evt) => {
+            evt.preventDefault();
+            scrollContainer.scrollLeft += evt.deltaY;
+        });
+    </script>
+</body></html>
