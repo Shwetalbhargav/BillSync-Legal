@@ -177,13 +177,45 @@ export function normalizeRateCard(item = {}) {
 }
 
 export function normalizeInvoice(item = {}) {
+  const client = item.clientId || item.client || {};
+  const matter = item.caseId || item.case || {};
+  const createdBy = item.createdBy || {};
+  const lines = Array.isArray(item.lines) ? item.lines : Array.isArray(item.items) ? item.items : [];
   return {
     id: toId(item),
-    number: item.number || item.invoiceNumber || "",
-    client: item.clientName || item.client?.name || "",
-    status: item.status || "Draft",
+    number: item.number || item.invoiceNumber || `Invoice ${String(toId(item)).slice(-6)}`,
+    client: client.displayName || client.name || item.clientName || "",
+    clientId: toId(client) || item.clientId || "",
+    matter: matter.title || matter.name || item.caseName || "",
+    matterId: toId(matter) || item.caseId || "",
+    createdBy: createdBy.name || item.createdByName || "",
+    status: String(item.status || "draft").toLowerCase(),
+    subtotal: normalizeMoney(item.subtotal),
+    tax: normalizeMoney(item.tax || item.taxDetails?.taxAmount),
     total: normalizeMoney(item.total || item.amount),
-    issuedAt: item.issuedAt || item.createdAt || "",
+    currency: item.currency || "INR",
+    issuedAt: item.issueDate || item.issuedAt || item.createdAt || "",
+    dueAt: item.dueDate || "",
+    sentAt: item.sentAt || "",
+    sentTo: item.sentTo || "",
+    deliveryStatus: item.deliveryStatus || "not_sent",
+    deliveryError: item.deliveryError || "",
+    pdfUrl: item.pdfUrl || "",
+    lines: lines.map(normalizeInvoiceLine),
+    raw: item,
+  };
+}
+
+export function normalizeInvoiceLine(item = {}) {
+  return {
+    id: toId(item),
+    description: safeText(item.description, "Professional services"),
+    qtyHours: Number(item.qtyHours ?? Number(item.durationMinutes || 0) / 60),
+    rate: normalizeMoney(item.rate),
+    amount: normalizeMoney(item.amount),
+    taxCategory: item.taxCategory || "GST",
+    timeEntryId: item.timeEntryId?._id || item.timeEntryId || "",
+    billableId: item.billableId?._id || item.billableId || "",
     raw: item,
   };
 }

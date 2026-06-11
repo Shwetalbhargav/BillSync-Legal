@@ -218,3 +218,27 @@ The frontend renders the recorder workspace, microphone readiness states, and re
 
 The frontend connects list, detail, approval, and rate-card workflows to real resources. Reviewer-only actions show permission guidance unless the signed-in user can perform them.
 
+## Invoices API Branch Usage
+
+- `GET /api/invoices`
+- `GET /api/invoices/:id`
+- `POST /api/invoices/from-time`
+- `POST /api/invoices/from-billables`
+- `GET /api/invoices/__pipeline`
+- `GET /api/invoices/__analytics/pending-by-client`
+- `GET /api/invoices/:id/pdf`
+- `GET /api/invoices/:id/document`
+- `POST /api/invoices/:id/send`
+- `POST /api/invoices/:id/void`
+- `GET /api/invoices/:invoiceId/lines`
+- `POST /api/invoices/:invoiceId/lines`
+- `PUT /api/invoices/:invoiceId/lines/:lineId`
+- `DELETE /api/invoices/:invoiceId/lines/:lineId`
+- `GET /api/integration-logs/by-invoice/:invoiceId`
+- `GET /api/clients`
+- `GET /api/cases`
+- `GET /api/time-entries?status=approved`
+- `GET /api/billables?status=approved`
+
+The frontend connects invoice list, builder, detail, send, void, and line workflows to real resources. Template and secure sharing flows remain honest not-configured states.
+

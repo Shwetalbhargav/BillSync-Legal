@@ -130,6 +130,14 @@ These are not blockers for `feat/frontend-bootstrap`; they are tracked so featur
 - Current frontend approach: show approval and rate-card actions only for administrators, with calm permission guidance for other billing users.
 - Future work: allow partner reviewer authorization in the backend if partners should approve billables or manage rates.
 
+## Invoice Templates And Share Links
+
+- Desired frontend need: reusable invoice templates, firm branding, default terms, and secure client share links.
+- Current available backend routes: invoice generation, document preview, PDF download, send, void, and line editing.
+- Current frontend approach: show a visible template shell and share-link not-configured state while keeping send/PDF actions tied to available routes.
+- Future work: add `GET /api/invoice-templates` and `POST /api/invoices/:id/share-link`.
+- Frontend adapters: `backendGapAdapters.invoiceTemplates`, `backendGapAdapters.invoiceShareLink`.
+
 ## Extension Health And Test Event
 
 - Desired frontend need: one status response for installed extension version, last capture, browser permission state, and reconnect guidance.

@@ -17,6 +17,7 @@ export * from "./firms.js";
 export * from "./health.js";
 export * from "./integrations.js";
 export * from "./invoices.js";
+export * from "./invoiceWorkspace.js";
 export * from "./kpi.js";
 export * from "./matters.js";
 export * from "./normalizers.js";
