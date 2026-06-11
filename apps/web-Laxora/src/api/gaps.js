@@ -83,4 +83,9 @@ export const backendGapAdapters = {
     note: "Task detail can pass task and matter context to the work meter route, but a persisted task-linked work session contract is still needed.",
     load: unavailable("Task work meter handoff is not configured yet."),
   },
+  timeEntryBillableConversion: {
+    routeNeeded: "POST /api/billables/from-time-entry/:timeEntryId",
+    note: "Captured work can become a time entry and be submitted for approval; direct billable creation from approved time is still planned.",
+    load: unavailable("Billing conversion is not configured yet."),
+  },
 };

@@ -94,6 +94,7 @@ export const appRoutes = [
   { path: "/app/time-entry/new", title: "Manual Time Entry", module: "Time Capture", moduleKey: "work", roleGroup: "All legal roles", icon: Timer },
   { path: "/app/time-entries", title: "Time Entries", module: "Time Capture", moduleKey: "work", roleGroup: "All legal roles", icon: FileClock },
   { path: "/app/captured-work", title: "Captured Work Review", module: "Capture", moduleKey: "work", roleGroup: "All legal roles", icon: Inbox },
+  { path: "/app/submit-work", title: "Submit Work for Approval", module: "Capture", moduleKey: "work", roleGroup: "All legal roles", icon: CheckCircle2 },
   { path: "/app/gmail-review", title: "Gmail Capture Review", module: "Capture", moduleKey: "work", roleGroup: "All legal roles", icon: Mail },
   { path: "/app/research-review", title: "Research Capture Review", module: "Capture", moduleKey: "work", roleGroup: "All legal roles", icon: Search },
   { path: "/app/activities", title: "Activity Capture", module: "Capture", moduleKey: "work", roleGroup: "All legal roles", icon: Activity },
