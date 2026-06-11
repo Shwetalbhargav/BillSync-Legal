@@ -33,4 +33,19 @@ export const backendGapAdapters = {
     note: "Meeting recording and transcription resources are planned.",
     create: unavailable("Recording is not configured yet."),
   },
+  paymentRecovery: {
+    routeNeeded: "GET /api/payments/:paymentId/recovery-status",
+    note: "Payment retry screens need a safe status check before offering another attempt.",
+    load: unavailable("Payment recovery is not configured yet."),
+  },
+  uploadRecovery: {
+    routeNeeded: "GET /api/document-storage/uploads/:uploadId",
+    note: "Upload failure and progress states need a resumable upload status route.",
+    load: unavailable("Upload recovery is not configured yet."),
+  },
+  courtCalendarSync: {
+    routeNeeded: "GET /api/calendar/sync-status",
+    note: "Court sync states need provider status and last-sync details.",
+    load: unavailable("Court calendar sync is not configured yet."),
+  },
 };

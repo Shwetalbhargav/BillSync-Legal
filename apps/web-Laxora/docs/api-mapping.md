@@ -69,3 +69,8 @@ The interface says `Matters`. The service module uses `/api/cases` internally.
 - `POST /api/auth/logout`: header and profile sign-out.
 - `GET /api/users`: admin user management list.
 
+## Fallback State System Branch Usage
+
+- `GET /healthz`: verified deployed service availability.
+- Frontend-only fallback adapters document planned recovery status needs for payments, uploads, and court calendar sync.
+

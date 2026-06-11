@@ -6,6 +6,7 @@ import { StateCard } from "./components/common/StateCard";
 import { canAccess } from "./constants/permissions";
 import { allRoutes, appRoutes, fallbackRoutes } from "./routes/routeConfig";
 import { ComponentGalleryPage } from "./pages/ComponentGalleryPage";
+import { FallbackGalleryPage } from "./pages/FallbackGalleryPage";
 import { FallbackStatePage } from "./pages/FallbackStatePage";
 import { LoginPage } from "./pages/LoginPage";
 import { NotFoundPage } from "./pages/NotFoundPage";
@@ -57,6 +58,11 @@ function ProtectedPage({ route }) {
 function AppRoutes() {
   return (
     <Routes>
+      <Route path="/fallback-gallery" element={<FallbackGalleryPage />} />
+      {fallbackRoutes.map((route) => (
+        <Route key={route.path} path={route.path} element={<FallbackStatePage route={route} />} />
+      ))}
+
       <Route element={<AuthLayout />}>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterInvitePage />} />
@@ -69,9 +75,6 @@ function AppRoutes() {
         <Route path="/" element={<Navigate to="/app/dashboard" replace />} />
         {appRoutes.map((route) => (
           <Route key={route.path} path={route.path} element={<ProtectedPage route={route} />} />
-        ))}
-        {fallbackRoutes.map((route) => (
-          <Route key={route.path} path={route.path} element={<FallbackStatePage route={route} />} />
         ))}
         <Route path="*" element={<NotFoundPage />} />
       </Route>
