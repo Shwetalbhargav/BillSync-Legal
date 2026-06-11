@@ -73,3 +73,19 @@ These are not blockers for `feat/frontend-bootstrap`; they are tracked so featur
 - Current frontend approach: list, create, edit, detail, and team assignment screens use available resources.
 - Future work: add dedicated UI flows for closing, archiving, and deleting matters.
 
+## Matter History Feed
+
+- Desired frontend need: one chronological matter history feed spanning team changes, document changes, sync results, billing changes, and important work events.
+- Current available backend routes: activities by matter, documents by matter, case-assignment timeline by matter, and integration logs by billable or invoice.
+- Current frontend approach: compose the history tab from available matter activities, stored documents, and integration-log records while showing a calm partial-refresh warning when one source is unavailable.
+- Future work: add `GET /api/cases/:caseId/audit` with typed event categories and actor display fields.
+- Frontend adapter: `backendGapAdapters.matterAuditTrail`.
+
+## Matter Document Download
+
+- Desired frontend need: secure open/download actions for documents stored against a matter.
+- Current available backend routes: document metadata list, create, update, and status changes.
+- Current frontend approach: render document metadata and storage status without exposing an unavailable download action.
+- Future work: add `GET /api/document-storage/:documentId/download` or a signed-link field on document detail.
+- Frontend adapter: `backendGapAdapters.matterDocumentDownload`.
+

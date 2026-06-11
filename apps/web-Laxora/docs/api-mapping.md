@@ -112,3 +112,18 @@ The interface says `Matters`. The service module uses `/api/cases` internally.
 - `GET /api/users`
 - `GET /api/clients`
 
+## Matter Timeline Documents Billing Audit Branch Usage
+
+- `GET /api/cases/:caseId`
+- `GET /api/activities?caseId=:caseId`
+- `GET /api/cases/:caseId/time-entries`
+- `GET /api/case-assignments/timeline/:caseId`
+- `GET /api/document-storage?caseId=:caseId`
+- `GET /api/cases/:caseId/rollup`
+- `GET /api/billables?caseId=:caseId`
+- `GET /api/cases/:caseId/invoices`
+- `GET /api/cases/:caseId/payments`
+- `GET /api/integration-logs`
+
+The frontend service `src/api/matterTabs.js` composes these resources into UI-safe tab models for timeline, documents, billing, and history views.
+
