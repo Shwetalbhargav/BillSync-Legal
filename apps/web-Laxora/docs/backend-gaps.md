@@ -146,6 +146,14 @@ These are not blockers for `feat/frontend-bootstrap`; they are tracked so featur
 - Future work: add `POST /api/payments/gateway/session`, gateway status checks, and webhook handling for cleared or failed payments.
 - Frontend adapter: `backendGapAdapters.paymentGateway`.
 
+## Finance PDF Reports
+
+- Desired frontend need: generate a polished board-ready finance pack.
+- Current available backend routes: spreadsheet exports for time entries, invoices, tax summary, utilization, and a PDF route that returns a not-implemented response.
+- Current frontend approach: enable downloadable spreadsheet-style reports and show a calm not-ready message for the board pack.
+- Future work: wire a PDF generation service behind `GET /api/reports/pdf`.
+- Frontend adapter: `backendGapAdapters.financePdfReports`.
+
 ## Extension Health And Test Event
 
 - Desired frontend need: one status response for installed extension version, last capture, browser permission state, and reconnect guidance.
