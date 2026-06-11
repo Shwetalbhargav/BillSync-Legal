@@ -53,12 +53,19 @@ export function normalizeMatter(item = {}) {
 }
 
 export function normalizeClient(item = {}) {
+  const owner = item.ownerUserId || item.owner || {};
   return {
     id: toId(item),
-    name: safeText(item.name || item.clientName, "Unnamed client"),
+    name: safeText(item.displayName || item.name || item.clientName, "Unnamed client"),
     email: item.email || "",
     phone: item.phone || item.mobile || "",
     status: item.status || "Active",
+    paymentTerms: item.paymentTerms || "NET30",
+    firmId: item.firmId || "",
+    ownerName: owner.name || item.ownerName || "",
+    ownerEmail: owner.email || "",
+    contacts: Array.isArray(item.contacts) ? item.contacts : [],
+    createdAt: item.createdAt || "",
     raw: item,
   };
 }

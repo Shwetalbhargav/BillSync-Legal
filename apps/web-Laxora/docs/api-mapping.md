@@ -88,3 +88,14 @@ The interface says `Matters`. The service module uses `/api/cases` internally.
 - `GET /api/activities`
 - `GET /healthz`
 
+## Clients API Branch Usage
+
+- `GET /api/clients`
+- `POST /api/clients`
+- `GET /api/clients/:clientId`
+- `PUT /api/clients/:clientId`
+- `GET /api/clients/:clientId/cases`
+- `GET /api/clients/:clientId/invoices`
+- `GET /api/clients/:clientId/payments`
+- `GET /api/clients/:clientId/summary`
+

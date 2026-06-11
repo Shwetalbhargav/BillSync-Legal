@@ -69,6 +69,7 @@ export const appRoutes = [
   { path: "/app/clients", title: "Client List", module: "Clients", moduleKey: "clients", roleGroup: "Admin, Partner, Lawyer", icon: Users },
   { path: "/app/clients/new", title: "Create Client", module: "Clients", moduleKey: "clients", roleGroup: "Admin, Partner, Lawyer", icon: Users },
   { path: "/app/clients/:clientId", title: "Client Detail", module: "Clients", moduleKey: "clients", roleGroup: "Admin, Partner, Lawyer", icon: Users },
+  { path: "/app/clients/:clientId/edit", title: "Edit Client", module: "Clients", moduleKey: "clients", roleGroup: "Admin, Partner, Lawyer", icon: Users },
   { path: "/app/clients/:clientId/contacts", title: "Client Contacts", module: "Clients", moduleKey: "clients", roleGroup: "Admin, Partner, Lawyer", icon: Users },
   { path: "/app/clients/:clientId/billing", title: "Client Billing Summary", module: "Clients", moduleKey: "clients", roleGroup: "Admin, Partner, Lawyer", icon: CircleDollarSign },
   { path: "/app/matters", title: "Matter List", module: "Matters", moduleKey: "matters", roleGroup: "All legal roles", icon: BriefcaseBusiness },

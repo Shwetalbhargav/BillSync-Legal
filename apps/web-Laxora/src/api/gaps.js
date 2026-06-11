@@ -23,6 +23,11 @@ export const backendGapAdapters = {
     note: "Help and guide content is frontend-authored until a managed guide library is available.",
     load: unavailable("Guides are not configured yet."),
   },
+  clientContacts: {
+    routeNeeded: "PATCH /api/clients/:clientId/contacts",
+    note: "Client contacts are present on the model, but current client write validation does not accept contact updates.",
+    load: unavailable("Client contact editing is not configured yet."),
+  },
   globalAssistantChat: {
     routeNeeded: "POST /api/ai/chat",
     note: "Streaming RAG assistant is planned; current AI routes support email and billable drafting only.",
