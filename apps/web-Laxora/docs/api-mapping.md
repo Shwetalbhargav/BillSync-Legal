@@ -127,3 +127,16 @@ The interface says `Matters`. The service module uses `/api/cases` internally.
 
 The frontend service `src/api/matterTabs.js` composes these resources into UI-safe tab models for timeline, documents, billing, and history views.
 
+## Tasks Daily Work Branch Usage
+
+- `GET /api/tasks`
+- `POST /api/tasks`
+- `GET /api/tasks/:taskId`
+- `PATCH /api/tasks/:taskId`
+- `DELETE /api/tasks/:taskId`
+- `GET /api/cases`
+- `GET /api/clients`
+- `GET /api/users`
+
+The frontend uses `/api/tasks` filters for status, assignee, and due-date windows. Task detail links to the work meter with task and matter context in the route until a persisted task-linked work session contract is available.
+

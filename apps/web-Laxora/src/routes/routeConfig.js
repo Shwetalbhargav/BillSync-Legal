@@ -87,6 +87,7 @@ export const appRoutes = [
   { path: "/app/tasks/board", title: "Team Task Board", module: "Tasks", moduleKey: "tasks", roleGroup: "Admin, Partner, Lawyer", icon: ClipboardList },
   { path: "/app/tasks/new", title: "Create Task", module: "Tasks", moduleKey: "tasks", roleGroup: "Admin, Partner, Lawyer", icon: CheckSquare },
   { path: "/app/tasks/:taskId", title: "Task Detail", module: "Tasks", moduleKey: "tasks", roleGroup: "All roles", icon: CheckSquare },
+  { path: "/app/tasks/:taskId/edit", title: "Edit Task", module: "Tasks", moduleKey: "tasks", roleGroup: "Admin, Partner, Lawyer", icon: CheckSquare },
   { path: "/app/my-work-today", title: "My Work Today", module: "Tasks", moduleKey: "tasks", roleGroup: "All roles", icon: Clock3 },
   { path: "/app/work-meter", title: "Work Meter", module: "Time Capture", moduleKey: "work", roleGroup: "All legal roles", icon: Timer },
   { path: "/app/work-sessions", title: "Work Session History", module: "Time Capture", moduleKey: "work", roleGroup: "All legal roles", icon: FileClock },
