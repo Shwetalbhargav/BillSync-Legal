@@ -99,13 +99,27 @@ export function normalizeClient(item = {}) {
 }
 
 export function normalizeTask(item = {}) {
+  const matter = item.caseId || item.case || {};
+  const client = item.clientId || item.client || {};
+  const assigned = item.assignedTo || item.assignee || {};
+  const createdBy = item.createdBy || {};
   return {
     id: toId(item),
     title: safeText(item.title || item.description || item.name, "Untitled task"),
-    matter: item.caseName || item.matterName || item.case?.name || "",
+    description: item.description || "",
+    matter: matter.title || matter.name || item.caseName || item.matterName || "",
+    matterId: toId(matter) || item.caseId || "",
+    client: client.displayName || client.name || item.clientName || "",
+    clientId: toId(client) || item.clientId || "",
+    assignee: assigned.name || item.assigneeName || "Team member",
+    assigneeId: toId(assigned) || item.assignedTo || "",
+    createdBy: createdBy.name || "",
     status: item.status || "Open",
     dueDate: item.dueDate || item.deadline || "",
     priority: item.priority || "Normal",
+    checklist: Array.isArray(item.checklist) ? item.checklist : [],
+    completedAt: item.completedAt || "",
+    updatedAt: item.updatedAt || item.createdAt || "",
     raw: item,
   };
 }

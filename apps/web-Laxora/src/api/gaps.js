@@ -73,4 +73,9 @@ export const backendGapAdapters = {
     note: "Matter document lists can show stored metadata, but signed download links are not available yet.",
     load: unavailable("Document download is not configured yet."),
   },
+  taskWorkMeterContext: {
+    routeNeeded: "POST /api/work-sessions/from-task/:taskId",
+    note: "Task detail can pass task and matter context to the work meter route, but a persisted task-linked work session contract is still needed.",
+    load: unavailable("Task work meter handoff is not configured yet."),
+  },
 };

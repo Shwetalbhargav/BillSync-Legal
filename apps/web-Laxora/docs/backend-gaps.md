@@ -89,3 +89,11 @@ These are not blockers for `feat/frontend-bootstrap`; they are tracked so featur
 - Future work: add `GET /api/document-storage/:documentId/download` or a signed-link field on document detail.
 - Frontend adapter: `backendGapAdapters.matterDocumentDownload`.
 
+## Task Work Meter Handoff
+
+- Desired frontend need: start a work session directly from a task and keep the task link on the captured work record.
+- Current available backend routes: task CRUD and work-session resources exist separately.
+- Current frontend approach: task detail passes task and matter context to `/app/work-meter` through route context so the work-meter branch can pick it up.
+- Future work: add `POST /api/work-sessions/from-task/:taskId` or allow work-session create requests to store `taskId`.
+- Frontend adapter: `backendGapAdapters.taskWorkMeterContext`.
+

@@ -33,6 +33,11 @@ import { PlaceholderPage } from "./pages/PlaceholderPage";
 import { ProfilePage } from "./pages/ProfilePage";
 import { RegisterInvitePage } from "./pages/RegisterInvitePage";
 import { SetupStatusPage } from "./pages/SetupStatusPage";
+import { MyWorkTodayPage } from "./pages/tasks/MyWorkTodayPage";
+import { TaskBoardPage } from "./pages/tasks/TaskBoardPage";
+import { TaskDetailPage } from "./pages/tasks/TaskDetailPage";
+import { TaskFormPage } from "./pages/tasks/TaskFormPage";
+import { TaskListPage } from "./pages/tasks/TaskListPage";
 import { UserManagementPage } from "./pages/UserManagementPage";
 
 function ProtectedShell() {
@@ -89,6 +94,12 @@ function ProtectedPage({ route }) {
   if (route.path === "/app/matters/:matterId/billing") return <MatterBillingPage />;
   if (route.path === "/app/matters/:matterId/audit") return <MatterAuditPage />;
   if (route.path === "/app/case-assignments") return <MatterAssignmentsPage />;
+  if (route.path === "/app/tasks") return <TaskListPage />;
+  if (route.path === "/app/tasks/board") return <TaskBoardPage />;
+  if (route.path === "/app/tasks/new") return <TaskFormPage />;
+  if (route.path === "/app/tasks/:taskId/edit") return <TaskFormPage />;
+  if (route.path === "/app/tasks/:taskId") return <TaskDetailPage />;
+  if (route.path === "/app/my-work-today") return <MyWorkTodayPage />;
   if (route.path === "/app/profile") return <ProfilePage />;
   if (route.path === "/app/admin/users") return <UserManagementPage />;
   return <PlaceholderPage route={route} />;
