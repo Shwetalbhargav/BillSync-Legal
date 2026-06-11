@@ -43,6 +43,11 @@ export const backendGapAdapters = {
     note: "A browser-side handshake test is planned; current frontend checks workspace authorization and recent captured items.",
     load: unavailable("Extension test event is not configured yet."),
   },
+  capturedWorkBulkReview: {
+    routeNeeded: "POST /api/email-entries/bulk-review",
+    note: "Single-item mapping and conversion are available; batch review is a future efficiency helper.",
+    load: unavailable("Bulk captured work review is not configured yet."),
+  },
   calendarProvider: {
     routeNeeded: "GET /api/calendar/events",
     note: "Calendar provider sync is planned; manual time capture can use existing time-entry resources.",

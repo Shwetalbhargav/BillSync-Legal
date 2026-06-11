@@ -180,3 +180,16 @@ The frontend stop flow can save captured work as a draft time entry or submit it
 
 The frontend uses the available extension authorization action as a workspace connection check and uses recent email-entry captures as the current capture signal. Dedicated extension health and browser handshake routes are tracked as backend gaps.
 
+## Email Research Capture Branch Usage
+
+- `GET /api/email-entries?source=gmail`
+- `GET /api/email-entries?source=research`
+- `POST /api/email-entries/:id/map`
+- `POST /api/email-entries/:id/gpt-narrative`
+- `POST /api/email-entries/:id/activity`
+- `POST /api/email-entries/:id/time-entry`
+- `GET /api/clients`
+- `GET /api/cases`
+
+The frontend supports source-specific review queues, client/matter mapping, narrative drafting, activity creation, and conversion to time plus billable records where the backend allows it.
+

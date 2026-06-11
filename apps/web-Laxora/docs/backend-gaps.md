@@ -129,3 +129,11 @@ These are not blockers for `feat/frontend-bootstrap`; they are tracked so featur
 - Future work: add `GET /api/extension/health` and `POST /api/extension/test-event`.
 - Frontend adapters: `backendGapAdapters.extensionHealth`, `backendGapAdapters.extensionTestEvent`.
 
+## Captured Work Bulk Review
+
+- Desired frontend need: select several captured email or research items and map or convert them in one action.
+- Current available backend routes: single-item map, activity creation, time-entry creation, and conversion to billable records.
+- Current frontend approach: review and convert captured items one at a time using real routes.
+- Future work: add `POST /api/email-entries/bulk-review`.
+- Frontend adapter: `backendGapAdapters.capturedWorkBulkReview`.
+

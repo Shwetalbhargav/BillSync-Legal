@@ -6,6 +6,7 @@ import { StateCard } from "./components/common/StateCard";
 import { canAccess } from "./constants/permissions";
 import { allRoutes, appRoutes, fallbackRoutes } from "./routes/routeConfig";
 import { CalendarHearingsPage } from "./pages/calendar/CalendarHearingsPage";
+import { CaptureReviewPage } from "./pages/capture/CaptureReviewPage";
 import { ComponentGalleryPage } from "./pages/ComponentGalleryPage";
 import { ClientBillingPage } from "./pages/clients/ClientBillingPage";
 import { ClientContactsPage } from "./pages/clients/ClientContactsPage";
@@ -120,6 +121,8 @@ function ProtectedPage({ route }) {
   if (route.path === "/app/time-entry/new") return <ManualTimeEntryPage />;
   if (route.path === "/app/time-entries") return <WorkSessionHistoryPage />;
   if (route.path === "/app/captured-work" || route.path === "/app/activities") return <CapturedWorkReviewPage />;
+  if (route.path === "/app/gmail-review") return <CaptureReviewPage source="gmail" />;
+  if (route.path === "/app/research-review") return <CaptureReviewPage source="research" />;
   if (route.path === "/app/submit-work") return <SubmitWorkPage />;
   if (route.path === "/app/profile") return <ProfilePage />;
   if (route.path === "/app/admin/users") return <UserManagementPage />;

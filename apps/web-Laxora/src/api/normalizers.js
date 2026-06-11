@@ -186,6 +186,30 @@ export function normalizeActivity(item = {}) {
   };
 }
 
+export function normalizeEmailEntry(item = {}) {
+  const client = item.clientId || item.mappedClientId || item.client || {};
+  const matter = item.caseId || item.mappedCaseId || item.case || {};
+  return {
+    id: toId(item),
+    title: safeText(item.subject || item.billableSummary || item.selectedText, "Captured work"),
+    recipient: item.recipient || "",
+    body: item.body || item.selectedText || "",
+    summary: item.billableSummary || "",
+    source: item.source || "extension",
+    status: item.status || "captured",
+    minutes: Number(item.typingTimeMinutes ?? item.durationMinutes ?? item.minutes ?? 0),
+    client: client.displayName || client.name || item.clientName || "",
+    clientId: toId(client) || item.clientId || item.mappedClientId || "",
+    matter: matter.title || matter.name || item.caseName || item.matterName || "",
+    matterId: toId(matter) || item.caseId || item.mappedCaseId || "",
+    domain: item.domain || "",
+    url: item.url || "",
+    createdAt: item.createdAt || item.workDate || item.date || "",
+    convertedAt: item.convertedAt || "",
+    raw: item,
+  };
+}
+
 export function normalizeTimeEntry(item = {}) {
   const matter = item.caseId || item.case || {};
   const client = item.clientId || item.client || {};
