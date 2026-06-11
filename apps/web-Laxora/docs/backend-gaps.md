@@ -162,6 +162,14 @@ These are not blockers for `feat/frontend-bootstrap`; they are tracked so featur
 - Future work: add `GET /api/tax/tds-settings`, `PATCH /api/tax/tds-settings`, `GET /api/tax/tds-summary`, and certificate tracking routes.
 - Frontend adapter: `backendGapAdapters.tdsSettings`.
 
+## HR Attendance Overview
+
+- Desired frontend need: attendance days, leave status, absence reasons, late arrivals, and monthly attendance summaries.
+- Current available backend routes: users, role profiles, time entries, and work sessions.
+- Current frontend approach: derive workload from time entries and work sessions, while showing attendance as not turned on.
+- Future work: add `GET /api/hr/attendance`, `GET /api/hr/attendance/:userId`, and attendance/leave update routes.
+- Frontend adapter: `backendGapAdapters.attendanceOverview`.
+
 ## Extension Health And Test Event
 
 - Desired frontend need: one status response for installed extension version, last capture, browser permission state, and reconnect guidance.
