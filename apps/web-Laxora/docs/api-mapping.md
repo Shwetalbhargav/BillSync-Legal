@@ -1,53 +1,63 @@
 # BillSync Frontend API Mapping
 
-This branch adds the frontend service boundary and route placeholders. Feature branches will connect screens deeply to these resources.
+This branch adds explicit service contracts for the backend route surface in `apps/api-Lexora/docs/route-inventory.md`.
 
-## Connected In Bootstrap
+## Request Helper
 
-- `GET /healthz` via `src/api/health.js`
-- Auth service names:
-  - `POST /api/auth/login`
-  - `POST /api/auth/register`
-  - `GET /api/auth/me`
-  - `POST /api/auth/logout`
+Core helper: `src/api/client.js`
 
-## Resource Services Declared
+- `request(path, options)`
+- `makeResource(resourcePath)`
+- `makeCursorParams(params)`
+- `createUploadBody(files, fields)`
+- `BillSyncApiError`
 
-- Activities: `/api/activities`
-- Analytics: `/api/analytics`
-- Accounts receivable: `/api/ar`
-- Billables: `/api/billables`
-- Case assignments: `/api/case-assignments`
-- Matters: `/api/cases`
-- Clients: `/api/clients`
-- Document storage: `/api/document-storage`
-- Email entries: `/api/email-entries`
-- Firms: `/api/firms`
-- Integration logs: `/api/integration-logs`
-- Invoices: `/api/invoices`
-- Invoice lines: `/api/invoices/:invoiceId/lines`
-- KPI snapshots: `/api/kpi-snapshots`
-- KPI: `/api/kpi`
-- Payments: `/api/payments`
-- Rate cards: `/api/rate-cards`
-- Reports: `/api/reports`
-- Tasks: `/api/tasks`
-- Revenue: `/api/revenue`
-- Time entries: `/api/time-entries`
-- Work sessions: `/api/work-sessions`
-- Users: `/api/users`
-- Admin: `/api/admin`
-- AI: `/api/ai`
-- Profiles:
-  - `/api/partner-profiles`
-  - `/api/lawyer-profiles`
-  - `/api/associate-profiles`
-  - `/api/intern-profiles`
-- Zoho:
-  - `/api/integrations/zoho`
-  - `/api/integrations/zoho-sync`
+Errors are normalized into calm `userMessage` strings so UI screens do not show raw technical detail.
+
+## Service Modules
+
+| Area | Frontend module | Routes covered |
+| --- | --- | --- |
+| Health | `health.js` | `GET /healthz` |
+| Auth | `auth.js` | `/api/auth/login`, `/api/auth/register`, `/api/auth/me`, `/api/auth/logout`, `/api/auth/extension-token` |
+| Admin | `admin.js` | `/api/admin/*` |
+| Users | `users.js` | `/api/users/*` |
+| Profiles | `profiles.js` | partner, lawyer, associate, intern profile resources |
+| Firms | `firms.js` | `/api/firms/*` |
+| Clients | `clients.js` | `/api/clients/*` |
+| Matters | `matters.js` | `/api/cases/*` |
+| Case assignments | `caseAssignments.js` | `/api/case-assignments/*` |
+| Activities | `activities.js` | `/api/activities/*` |
+| Work sessions | `workSessions.js` | `/api/work-sessions/*` |
+| Time entries | `timeEntries.js` | `/api/time-entries/*` |
+| Email entries | `emailEntries.js` | `/api/email-entries/*` |
+| Billables | `billables.js` | `/api/billables/*` |
+| Rate cards | `rateCards.js` | `/api/rate-cards/*` |
+| Invoices | `invoices.js` | `/api/invoices/*`, invoice lines |
+| Payments | `payments.js` | `/api/payments/*` |
+| Accounts receivable | `ar.js` | `/api/ar/*` |
+| Reports | `reports.js` | `/api/reports/*` |
+| Analytics | `analytics.js` | `/api/analytics/*` |
+| KPI | `kpi.js` | `/api/kpi/*`, `/api/kpi-snapshots/*` |
+| Revenue | `revenue.js` | `/api/revenue/*` |
+| Document storage | `documentStorage.js` | `/api/document-storage/*` |
+| Integration logs | `integrations.js` | `/api/integration-logs/*` |
+| Zoho | `zoho.js` | `/api/integrations/zoho/*`, `/api/integrations/zoho-sync/*` |
+| AI | `ai.js` | `/api/ai/generate-email`, `/api/ai/email-to-billable` |
+
+## Normalizers
+
+`src/api/normalizers.js` includes list/page helpers and model normalizers for:
+
+- users
+- matters
+- clients
+- tasks
+- billables
+- invoices
+- payments
 
 ## User-Facing Wording
 
-The interface says `Matters`. The adapter may call the backend resource `cases` internally.
+The interface says `Matters`. The service module uses `/api/cases` internally.
 

@@ -1,4 +1,4 @@
-import { request } from "./client";
+import { request } from "./client.js";
 
 export function getHealth() {
   return request("/healthz");
