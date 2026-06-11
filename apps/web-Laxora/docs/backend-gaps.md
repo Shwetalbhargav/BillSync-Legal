@@ -17,19 +17,23 @@ These are not blockers for `feat/frontend-bootstrap`; they are tracked so featur
 - Desired frontend need: streamed global assistant with citations and product guidance.
 - Current available backend AI routes: email generation and email-to-billable.
 - Future work: add Gemini-backed assistant/RAG route and evidence logging.
+- Frontend adapter: `backendGapAdapters.globalAssistantChat`.
 
 ## Extension Health
 
 - Desired frontend need: connection status, latest captured item, test event result, and troubleshooting reason.
 - Current bootstrap approach: extension setup/status placeholders.
+- Frontend adapter: `backendGapAdapters.extensionHealth`.
 
 ## Calendar Provider
 
 - Desired frontend need: hearing calendar sync and not-connected state.
 - Current bootstrap approach: calendar placeholders and manual time entry route.
+- Frontend adapter: `backendGapAdapters.calendarProvider`.
 
 ## Recording And Transcription
 
 - Desired frontend need: meeting recorder, waveform, transcript, matter linking, and permission recovery.
 - Current bootstrap approach: recording placeholders and fallback state.
+- Frontend adapter: `backendGapAdapters.recorderTranscription`.
 
