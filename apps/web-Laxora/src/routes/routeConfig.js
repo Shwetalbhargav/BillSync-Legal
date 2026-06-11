@@ -137,6 +137,8 @@ export const appRoutes = [
   { path: "/app/recordings", title: "Recording Library", module: "Meetings", moduleKey: "work", roleGroup: "All legal roles", icon: FileText },
   { path: "/app/recordings/:recordingId", title: "Recording Detail", module: "Meetings", moduleKey: "work", roleGroup: "All legal roles", icon: FileText },
   { path: "/app/assistant", title: "AI Assistant", module: "Assistant", moduleKey: "assistant", roleGroup: "All roles", icon: Bot },
+  { path: "/app/assistant/email", title: "AI Email Writer", module: "Assistant", moduleKey: "assistant", roleGroup: "All roles", icon: Mail },
+  { path: "/app/assistant/research", title: "AI Research Assistant", module: "Assistant", moduleKey: "assistant", roleGroup: "All legal roles", icon: Search },
   { path: "/app/assistant/extension", title: "Extension Coach", module: "Assistant", moduleKey: "assistant", roleGroup: "All roles", icon: Sparkles },
   { path: "/app/assistant/work-meter", title: "Work Meter Coach", module: "Assistant", moduleKey: "assistant", roleGroup: "All roles", icon: Sparkles },
   { path: "/app/assistant/matter-summary", title: "Matter Summary", module: "Assistant", moduleKey: "assistant", roleGroup: "All legal roles", icon: Sparkles },

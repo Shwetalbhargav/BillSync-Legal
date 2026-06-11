@@ -15,9 +15,10 @@ These are not blockers for `feat/frontend-bootstrap`; they are tracked so featur
 ## Global RAG Assistant Chat
 
 - Desired frontend need: streamed global assistant with citations and product guidance.
-- Current available backend AI routes: email generation and email-to-billable.
-- Future work: add Gemini-backed assistant/RAG route and evidence logging.
-- Frontend adapter: `backendGapAdapters.globalAssistantChat`.
+- Current available backend AI routes: email generation, text assistance, billable narrative, matter documents, matter chat, and document generation.
+- Current frontend approach: connect assistant, email writer, and research-notes modes to available routes while keeping source-backed research guidance explicit.
+- Future work: add streaming chat, source-backed legal research citations, and evidence logging.
+- Frontend adapters: `backendGapAdapters.globalAssistantChat` and `backendGapAdapters.assistantResearchSources`.
 
 ## Extension Health
 
