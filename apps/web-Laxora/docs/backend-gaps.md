@@ -154,6 +154,14 @@ These are not blockers for `feat/frontend-bootstrap`; they are tracked so featur
 - Future work: wire a PDF generation service behind `GET /api/reports/pdf`.
 - Frontend adapter: `backendGapAdapters.financePdfReports`.
 
+## TDS Management
+
+- Desired frontend need: TDS setup, deduction rates, party categories, certificate tracking, deduction summaries, and payment matching.
+- Current available backend routes: firm GST-style tax settings and invoice tax fields.
+- Current frontend approach: show a TDS management area with an honest not-turned-on state and readiness cards.
+- Future work: add `GET /api/tax/tds-settings`, `PATCH /api/tax/tds-settings`, `GET /api/tax/tds-summary`, and certificate tracking routes.
+- Frontend adapter: `backendGapAdapters.tdsSettings`.
+
 ## Extension Health And Test Event
 
 - Desired frontend need: one status response for installed extension version, last capture, browser permission state, and reconnect guidance.

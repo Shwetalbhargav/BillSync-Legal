@@ -57,6 +57,8 @@ import { RecordingLibraryPage } from "./pages/recordings/RecordingLibraryPage";
 import { RegisterInvitePage } from "./pages/RegisterInvitePage";
 import { RateCardsPage } from "./pages/billing/RateCardsPage";
 import { SetupStatusPage } from "./pages/SetupStatusPage";
+import { GstDashboardPage } from "./pages/tax/GstDashboardPage";
+import { TdsDashboardPage } from "./pages/tax/TdsDashboardPage";
 import { MyWorkTodayPage } from "./pages/tasks/MyWorkTodayPage";
 import { TaskBoardPage } from "./pages/tasks/TaskBoardPage";
 import { TaskDetailPage } from "./pages/tasks/TaskDetailPage";
@@ -158,6 +160,8 @@ function ProtectedPage({ route }) {
   if (route.path === "/app/kpi-snapshots") return <KpiSnapshotsPage />;
   if (route.path === "/app/reports") return <ReportsPage />;
   if (route.path === "/app/integration-logs") return <AuditLogsPage />;
+  if (route.path === "/app/gst") return <GstDashboardPage />;
+  if (route.path === "/app/tds") return <TdsDashboardPage />;
   if (route.path === "/app/submit-work") return <SubmitWorkPage />;
   if (route.path === "/app/profile") return <ProfilePage />;
   if (route.path === "/app/admin/users") return <UserManagementPage />;
