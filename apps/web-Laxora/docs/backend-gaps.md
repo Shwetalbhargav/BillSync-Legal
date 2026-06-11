@@ -178,6 +178,14 @@ These are not blockers for `feat/frontend-bootstrap`; they are tracked so featur
 - Future work: add `GET /api/payroll/runs`, `POST /api/payroll/runs`, `GET /api/payroll/runs/:runId`, `GET /api/payroll/compensation`, `PATCH /api/payroll/compensation/:userId`, `POST /api/payroll/runs/:runId/approve`, and `POST /api/payroll/runs/:runId/payslips`.
 - Frontend adapter: `backendGapAdapters.payrollRuns`.
 
+## Document Binary Upload And Provider Setup
+
+- Desired frontend need: upload a file, track upload progress, preview or download a stored document, and configure Zoho WorkDrive, Google Drive, or firm storage providers.
+- Current available backend routes: document metadata records, document status updates, Zoho WorkDrive linking, and Zoho CRM attachment helpers.
+- Current frontend approach: save document metadata, link records to matters, show document viewer details, and clearly mark direct file transfer/provider setup as not connected.
+- Future work: add `POST /api/document-storage/uploads`, `GET /api/document-storage/uploads/:uploadId`, `GET /api/document-storage/:documentId/download`, `GET /api/integrations/google-drive/status`, and `GET /api/integrations/aws-storage/status`.
+- Frontend adapters: `backendGapAdapters.storageBinaryUpload`, `backendGapAdapters.uploadRecovery`, `backendGapAdapters.matterDocumentDownload`, `backendGapAdapters.googleStorageProvider`, and `backendGapAdapters.awsStorageProvider`.
+
 ## Extension Health And Test Event
 
 - Desired frontend need: one status response for installed extension version, last capture, browser permission state, and reconnect guidance.

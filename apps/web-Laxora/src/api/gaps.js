@@ -88,6 +88,21 @@ export const backendGapAdapters = {
     note: "Matter document lists can show stored metadata, but signed download links are not available yet.",
     load: unavailable("Document download is not configured yet."),
   },
+  storageBinaryUpload: {
+    routeNeeded: "POST /api/document-storage/uploads",
+    note: "Document metadata can be saved today; direct file transfer needs a storage upload route.",
+    create: unavailable("File transfer is not configured yet."),
+  },
+  googleStorageProvider: {
+    routeNeeded: "GET /api/integrations/google-drive/status",
+    note: "Google Drive provider setup is planned; current storage records support Google provider labels only.",
+    load: unavailable("Google Drive storage is not connected yet."),
+  },
+  awsStorageProvider: {
+    routeNeeded: "GET /api/integrations/aws-storage/status",
+    note: "AWS storage provider setup is planned; current storage records support firm storage labels only.",
+    load: unavailable("Firm storage is not connected yet."),
+  },
   taskWorkMeterContext: {
     routeNeeded: "POST /api/work-sessions/from-task/:taskId",
     note: "Task detail can pass task and matter context to the work meter route, but a persisted task-linked work session contract is still needed.",
