@@ -201,3 +201,20 @@ The frontend supports source-specific review queues, client/matter mapping, narr
 
 The frontend renders the recorder workspace, microphone readiness states, and related meeting/call work from existing resources. Saved recording persistence, transcript generation, and matter linking are represented by future-ready adapters until recording routes are available.
 
+## Billables Rates API Branch Usage
+
+- `GET /api/billables`
+- `GET /api/billables/:id`
+- `POST /api/billables/:id/approve`
+- `POST /api/billables/:id/reject`
+- `GET /api/rate-cards`
+- `POST /api/rate-cards`
+- `DELETE /api/rate-cards/:id`
+- `GET /api/rate-cards/resolve`
+- `GET /api/integration-logs/by-billable/:billableId`
+- `GET /api/clients`
+- `GET /api/cases`
+- `GET /api/users`
+
+The frontend connects list, detail, approval, and rate-card workflows to real resources. Reviewer-only actions show permission guidance unless the signed-in user can perform them.
+
