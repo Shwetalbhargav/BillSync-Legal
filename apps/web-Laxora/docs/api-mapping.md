@@ -356,3 +356,15 @@ The frontend connects the assistant, email writer, and research-notes modes to a
 
 The frontend connects document summary, document creation, and matter document Q&A to saved matter source notes. The Q&A screen requires source notes before answering and shows returned citations. Background indexing status remains a documented backend gap.
 
+## Communications WhatsApp SMS Branch Usage
+
+No WhatsApp or SMS backend routes are available in the current route inventory.
+
+Frontend adapters added:
+
+- `backendGapAdapters.whatsappProvider`
+- `backendGapAdapters.smsProvider`
+- `backendGapAdapters.communicationLogs`
+
+The frontend renders the communication center, WhatsApp inbox, SMS center, message templates, setup checklist, and communication logs as provider-not-connected planning screens. Sending is disabled and no fake delivery success is shown.
+
