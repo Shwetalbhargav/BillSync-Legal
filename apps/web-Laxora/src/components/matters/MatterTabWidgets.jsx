@@ -148,7 +148,7 @@ export function DocumentList({ documents }) {
       ]}
       rows={documents.map((doc) => ({
         id: doc.id,
-        title: <span className="font-semibold text-primary">{doc.title}</span>,
+        title: <Link className="font-semibold text-primary hover:underline" to={`/app/document-storage/${doc.id}`}>{doc.title}</Link>,
         type: doc.type,
         provider: providerLabel(doc.provider),
         status: <StatusBadge tone={doc.status === "stored" ? "success" : "neutral"}>{doc.status}</StatusBadge>,

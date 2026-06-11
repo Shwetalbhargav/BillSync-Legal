@@ -325,6 +325,9 @@ export function normalizeWorkSession(item = {}) {
 }
 
 export function normalizeStoredDocument(item = {}) {
+  const matter = item.caseId || item.case || {};
+  const client = item.clientId || item.client || {};
+  const uploadedBy = item.uploadedBy || {};
   return {
     id: toId(item),
     title: safeText(item.title || item.originalFileName, "Matter document"),
@@ -334,8 +337,17 @@ export function normalizeStoredDocument(item = {}) {
     fileName: item.originalFileName || "",
     sizeBytes: Number(item.sizeBytes || 0),
     description: item.description || "",
+    matter: matter.title || matter.name || item.matterName || "",
+    matterId: toId(matter) || item.caseId || "",
+    client: client.displayName || client.name || item.clientName || "",
+    clientId: toId(client) || item.clientId || "",
+    uploadedBy: uploadedBy.name || item.uploadedByName || "",
+    tags: Array.isArray(item.tags) ? item.tags : [],
     updatedAt: item.updatedAt || item.createdAt || "",
+    createdAt: item.createdAt || "",
+    lastAccessedAt: item.lastAccessedAt || "",
     url: item.externalUrl || "",
+    auditTrail: Array.isArray(item.auditTrail) ? item.auditTrail : [],
     raw: item,
   };
 }

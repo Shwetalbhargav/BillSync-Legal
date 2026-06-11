@@ -318,3 +318,19 @@ The frontend connects HR dashboard, team directory, employee profile, and worklo
 
 The frontend uses people and workload records to show payroll setup readiness. Payroll runs, compensation records, approvals, and payslip delivery use `backendGapAdapters.payrollRuns` until payroll resources are available.
 
+## Storage Documents Branch Usage
+
+- `GET /api/document-storage`
+- `POST /api/document-storage`
+- `GET /api/document-storage/:documentId`
+- `PATCH /api/document-storage/:documentId`
+- `POST /api/document-storage/:documentId/status`
+- `GET /api/cases`
+- `GET /api/clients`
+- `GET /api/integrations/zoho-sync/modules`
+- `POST /api/integrations/zoho-sync/workdrive/link`
+- `GET /api/integrations/zoho-sync/:moduleApiName/:recordId/attachments`
+- `POST /api/integrations/zoho-sync/:moduleApiName/:recordId/attachments`
+
+The frontend connects the storage library, document viewer, metadata save form, storage settings, and matter document links to existing document-storage records. Direct binary transfer, signed document download, Google Drive setup, and AWS-style storage setup are represented with explicit frontend adapters until those resources exist.
+
