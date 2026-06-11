@@ -124,4 +124,9 @@ export const backendGapAdapters = {
     load: unavailable("TDS setup is not configured yet."),
     update: unavailable("TDS setup is not configured yet."),
   },
+  attendanceOverview: {
+    routeNeeded: "GET /api/hr/attendance",
+    note: "Attendance summaries are planned; current HR screens derive workload from time entries and work sessions.",
+    load: unavailable("Attendance overview is not configured yet."),
+  },
 };

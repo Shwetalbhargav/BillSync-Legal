@@ -295,3 +295,18 @@ The frontend connects finance dashboard, report downloads, saved KPI snapshots, 
 
 The frontend connects GST settings, invoice tax review, and GST summaries to available firm, invoice, and report resources. TDS is represented as a not-turned-on state until deduction settings, certificates, and summary routes are available.
 
+## HR People Branch Usage
+
+- `GET /api/users`
+- `GET /api/users/:id`
+- `GET /api/users/:id/profile`
+- `GET /api/users/:id/default-rate`
+- `GET /api/time-entries`
+- `GET /api/work-sessions`
+- `GET /api/partner-profiles/dashboard`
+- `GET /api/lawyer-profiles/dashboard`
+- `GET /api/associate-profiles/dashboard`
+- `GET /api/intern-profiles/dashboard`
+
+The frontend connects HR dashboard, team directory, employee profile, and workload views to available users, role profiles, time entries, and work sessions. Attendance is represented as a not-turned-on state until a dedicated HR attendance resource exists.
+

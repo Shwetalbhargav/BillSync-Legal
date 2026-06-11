@@ -1,6 +1,6 @@
 export const permissions = {
   admin: ["all"],
-  partner: ["dashboard", "clients", "matters", "tasks", "work", "billing", "finance", "settings", "assistant", "extension"],
+  partner: ["dashboard", "clients", "matters", "tasks", "work", "billing", "finance", "people", "settings", "assistant", "extension"],
   lawyer: ["dashboard", "clients", "matters", "tasks", "work", "billing", "assistant", "extension", "support"],
   associate: ["dashboard", "matters", "tasks", "work", "billing", "assistant", "extension", "support"],
   intern: ["dashboard", "matters", "tasks", "work", "assistant", "support"],
