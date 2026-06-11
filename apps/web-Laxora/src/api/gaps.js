@@ -63,4 +63,14 @@ export const backendGapAdapters = {
     note: "Court sync states need provider status and last-sync details.",
     load: unavailable("Court calendar sync is not configured yet."),
   },
+  matterAuditTrail: {
+    routeNeeded: "GET /api/cases/:caseId/audit",
+    note: "Matter audit screens currently compose activity, document, and integration records; a single chronological audit feed is still needed.",
+    load: unavailable("Matter history is not configured yet."),
+  },
+  matterDocumentDownload: {
+    routeNeeded: "GET /api/document-storage/:documentId/download",
+    note: "Matter document lists can show stored metadata, but signed download links are not available yet.",
+    load: unavailable("Document download is not configured yet."),
+  },
 };

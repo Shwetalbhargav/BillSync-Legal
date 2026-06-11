@@ -150,3 +150,57 @@ export function normalizePayment(item = {}) {
     raw: item,
   };
 }
+
+export function normalizeActivity(item = {}) {
+  return {
+    id: toId(item),
+    title: safeText(item.narrative || item.activityCode || item.activityType, "Captured work"),
+    type: item.activityType || "work",
+    source: item.workTool || item.source || "BillSync",
+    status: item.status || "Captured",
+    minutes: Number(item.roundedDurationMinutes ?? item.durationMinutes ?? 0),
+    billable: Boolean(item.billable),
+    occurredAt: item.workDate || item.startedAt || item.createdAt || "",
+    raw: item,
+  };
+}
+
+export function normalizeTimeEntry(item = {}) {
+  return {
+    id: toId(item),
+    title: safeText(item.description || item.narrative || item.notes, "Time entry"),
+    status: item.status || "Draft",
+    minutes: Number(item.durationMinutes ?? item.minutes ?? 0),
+    amount: normalizeMoney(item.amount || item.total),
+    occurredAt: item.workDate || item.date || item.createdAt || "",
+    raw: item,
+  };
+}
+
+export function normalizeStoredDocument(item = {}) {
+  return {
+    id: toId(item),
+    title: safeText(item.title || item.originalFileName, "Matter document"),
+    type: item.documentType || "other",
+    provider: item.provider || "local",
+    status: item.status || "stored",
+    fileName: item.originalFileName || "",
+    sizeBytes: Number(item.sizeBytes || 0),
+    description: item.description || "",
+    updatedAt: item.updatedAt || item.createdAt || "",
+    url: item.externalUrl || "",
+    raw: item,
+  };
+}
+
+export function normalizeIntegrationLog(item = {}) {
+  return {
+    id: toId(item),
+    title: item.platform ? `${item.platform} activity` : "Workspace activity",
+    status: item.status || "pending",
+    platform: item.platform || "BillSync",
+    createdAt: item.createdAt || "",
+    detail: item.message || item.note || "",
+    raw: item,
+  };
+}
