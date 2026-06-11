@@ -34,8 +34,10 @@ These are not blockers for `feat/frontend-bootstrap`; they are tracked so featur
 ## Recording And Transcription
 
 - Desired frontend need: meeting recorder, waveform, transcript, matter linking, and permission recovery.
-- Current bootstrap approach: recording placeholders and fallback state.
-- Frontend adapter: `backendGapAdapters.recorderTranscription`.
+- Current frontend approach: recorder workspace checks microphone readiness locally, shows an empty saved-recordings library, and composes related meeting/call work from activities and work sessions.
+- Future work: add saved recording list/detail, upload or capture persistence, transcript generation, processing status, and matter linking routes.
+- Needed routes: `GET /api/recordings`, `POST /api/recordings`, `GET /api/recordings/:recordingId`, `POST /api/recordings/:recordingId/transcribe`, and `PATCH /api/recordings/:recordingId/matter`.
+- Frontend adapters: `backendGapAdapters.recorderTranscription`, `recordingsApi.loadWorkspace`, and `recordingsApi.getRecording`.
 
 ## Auth Recovery And Invites
 

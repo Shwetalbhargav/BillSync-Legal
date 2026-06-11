@@ -37,6 +37,8 @@ import { PasswordHelpPage } from "./pages/PasswordHelpPage";
 import { PermissionDeniedPage } from "./pages/PermissionDeniedPage";
 import { PlaceholderPage } from "./pages/PlaceholderPage";
 import { ProfilePage } from "./pages/ProfilePage";
+import { RecordingDetailPage } from "./pages/recordings/RecordingDetailPage";
+import { RecordingLibraryPage } from "./pages/recordings/RecordingLibraryPage";
 import { RegisterInvitePage } from "./pages/RegisterInvitePage";
 import { SetupStatusPage } from "./pages/SetupStatusPage";
 import { MyWorkTodayPage } from "./pages/tasks/MyWorkTodayPage";
@@ -123,6 +125,8 @@ function ProtectedPage({ route }) {
   if (route.path === "/app/captured-work" || route.path === "/app/activities") return <CapturedWorkReviewPage />;
   if (route.path === "/app/gmail-review") return <CaptureReviewPage source="gmail" />;
   if (route.path === "/app/research-review") return <CaptureReviewPage source="research" />;
+  if (route.path === "/app/recordings") return <RecordingLibraryPage />;
+  if (route.path === "/app/recordings/:recordingId") return <RecordingDetailPage />;
   if (route.path === "/app/submit-work") return <SubmitWorkPage />;
   if (route.path === "/app/profile") return <ProfilePage />;
   if (route.path === "/app/admin/users") return <UserManagementPage />;

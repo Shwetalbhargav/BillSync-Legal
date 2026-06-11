@@ -193,3 +193,11 @@ The frontend uses the available extension authorization action as a workspace co
 
 The frontend supports source-specific review queues, client/matter mapping, narrative drafting, activity creation, and conversion to time plus billable records where the backend allows it.
 
+## Call Meeting Recorder Branch Usage
+
+- `GET /api/activities?activityType=meeting`
+- `GET /api/activities?activityType=call`
+- `GET /api/work-sessions`
+
+The frontend renders the recorder workspace, microphone readiness states, and related meeting/call work from existing resources. Saved recording persistence, transcript generation, and matter linking are represented by future-ready adapters until recording routes are available.
+

@@ -22,6 +22,7 @@ export * from "./normalizers.js";
 export * from "./payments.js";
 export * from "./profiles.js";
 export * from "./rateCards.js";
+export * from "./recordings.js";
 export * from "./reports.js";
 export * from "./resources.js";
 export * from "./revenue.js";
