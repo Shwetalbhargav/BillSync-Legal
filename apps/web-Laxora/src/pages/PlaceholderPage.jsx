@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
-import { StateCard } from "../components/common/StateCard";
+import { FallbackStatePanel } from "../components/fallback/FallbackStatePanel";
+import { getFallbackState } from "../constants/fallbackStates";
 import { groupedRoutes } from "../routes/routeConfig";
 
 const friendlyMessages = {
@@ -43,9 +44,9 @@ export function PlaceholderPage({ route }) {
       </section>
 
       <div className="grid gap-4 lg:grid-cols-3">
-        <StateCard state="loading" title="Loading state" message="A calm progress state is reserved for this screen." />
-        <StateCard state="empty" title="Empty state" message="A helpful empty state will explain the next useful action." />
-        <StateCard state="error" title="Recovery state" message="If something fails, the screen will offer a clear retry path." />
+        <FallbackStatePanel actionMode="preview" state={getFallbackState("/states/loading-workspace")} />
+        <FallbackStatePanel actionMode="preview" state={getFallbackState("/states/empty-dashboard")} />
+        <FallbackStatePanel actionMode="preview" state={getFallbackState("/states/save-failed")} />
       </div>
 
       <section className="surface-card p-6">

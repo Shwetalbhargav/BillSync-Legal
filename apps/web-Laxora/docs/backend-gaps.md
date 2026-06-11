@@ -44,3 +44,10 @@ These are not blockers for `feat/frontend-bootstrap`; they are tracked so featur
 - Current frontend approach: registration-backed invite acceptance and calm password-help reserved states.
 - Future work: add invite-token validation, forgot-password request, and reset-password confirmation routes.
 
+## Fallback Recovery Status
+
+- Desired frontend need: safe retry details for payment failure, upload failure, and court calendar sync failure states.
+- Current frontend approach: reusable fallback states with honest retry/reconnect actions.
+- Future work: add payment recovery status, resumable upload status, and calendar sync status routes.
+- Frontend adapters: `backendGapAdapters.paymentRecovery`, `backendGapAdapters.uploadRecovery`, `backendGapAdapters.courtCalendarSync`.
+
