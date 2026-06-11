@@ -66,3 +66,10 @@ These are not blockers for `feat/frontend-bootstrap`; they are tracked so featur
 - Future work: add a client-contact route or extend client write validation to safely accept contact updates.
 - Frontend adapter: `clientsApi.contacts.update`.
 
+## Matter Lifecycle Helpers
+
+- Desired frontend need: guided matter close, archive, delete, and status transition flows with confirmation copy.
+- Current available backend matter routes: matter CRUD, status transition, rollup, related time entries, and team assignments.
+- Current frontend approach: list, create, edit, detail, and team assignment screens use available resources.
+- Future work: add dedicated UI flows for closing, archiving, and deleting matters.
+
