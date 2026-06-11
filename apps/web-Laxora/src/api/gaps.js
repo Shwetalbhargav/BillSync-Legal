@@ -13,6 +13,16 @@ export const backendGapAdapters = {
     note: "One readiness response for extension, email, research, calendar, billing, and storage is planned.",
     load: unavailable("Setup status is not configured yet."),
   },
+  notificationCenter: {
+    routeNeeded: "GET /api/notifications",
+    note: "Notification center is planned; current branch derives workspace guidance from setup and refresh states.",
+    load: unavailable("Notifications are not configured yet."),
+  },
+  guideCenter: {
+    routeNeeded: "GET /api/help/guides",
+    note: "Help and guide content is frontend-authored until a managed guide library is available.",
+    load: unavailable("Guides are not configured yet."),
+  },
   globalAssistantChat: {
     routeNeeded: "POST /api/ai/chat",
     note: "Streaming RAG assistant is planned; current AI routes support email and billable drafting only.",

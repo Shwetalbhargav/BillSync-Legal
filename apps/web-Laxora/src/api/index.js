@@ -8,6 +8,7 @@ export * from "./billables.js";
 export * from "./caseAssignments.js";
 export * from "./client.js";
 export * from "./clients.js";
+export * from "./dashboard.js";
 export * from "./documentStorage.js";
 export * from "./emailEntries.js";
 export * from "./gaps.js";

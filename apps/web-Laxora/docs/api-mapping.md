@@ -74,3 +74,17 @@ The interface says `Matters`. The service module uses `/api/cases` internally.
 - `GET /healthz`: verified deployed service availability.
 - Frontend-only fallback adapters document planned recovery status needs for payments, uploads, and court calendar sync.
 
+## Global Dashboard Common Branch Usage
+
+- `GET /api/admin/dashboard`
+- `GET /api/partner-profiles/dashboard`
+- `GET /api/lawyer-profiles/dashboard`
+- `GET /api/associate-profiles/dashboard`
+- `GET /api/intern-profiles/dashboard`
+- `GET /api/cases`
+- `GET /api/tasks`
+- `GET /api/clients`
+- `GET /api/billables`
+- `GET /api/activities`
+- `GET /healthz`
+
