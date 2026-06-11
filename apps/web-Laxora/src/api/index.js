@@ -11,6 +11,7 @@ export * from "./billing.js";
 export * from "./caseAssignments.js";
 export * from "./client.js";
 export * from "./clients.js";
+export * from "./communicationsWorkspace.js";
 export * from "./dashboard.js";
 export * from "./documentStorage.js";
 export * from "./emailEntries.js";

@@ -58,6 +58,23 @@ export const backendGapAdapters = {
     note: "Single-item mapping and conversion are available; batch review is a future efficiency helper.",
     load: unavailable("Bulk captured work review is not configured yet."),
   },
+  whatsappProvider: {
+    routeNeeded: "GET /api/communications/whatsapp/status and POST /api/communications/whatsapp/send",
+    note: "WhatsApp provider setup, templates, inbox, and sending are planned.",
+    load: unavailable("WhatsApp is not connected yet."),
+    send: unavailable("WhatsApp is not connected yet."),
+  },
+  smsProvider: {
+    routeNeeded: "GET /api/communications/sms/status and POST /api/communications/sms/send",
+    note: "SMS provider setup, templates, inbox, and sending are planned.",
+    load: unavailable("SMS is not connected yet."),
+    send: unavailable("SMS is not connected yet."),
+  },
+  communicationLogs: {
+    routeNeeded: "GET /api/communications/logs",
+    note: "Unified communication logs across WhatsApp, SMS, and future providers are planned.",
+    load: unavailable("Communication logs are not configured yet."),
+  },
   calendarProvider: {
     routeNeeded: "GET /api/calendar/events",
     note: "Calendar provider sync is planned; manual time capture can use existing time-entry resources.",

@@ -16,6 +16,7 @@ import { ClientContactsPage } from "./pages/clients/ClientContactsPage";
 import { ClientDetailPage } from "./pages/clients/ClientDetailPage";
 import { ClientFormPage } from "./pages/clients/ClientFormPage";
 import { ClientListPage } from "./pages/clients/ClientListPage";
+import { CommunicationCenterPage } from "./pages/communications/CommunicationCenterPage";
 import { DashboardPage } from "./pages/DashboardPage";
 import { ExtensionSetupPage } from "./pages/extension/ExtensionSetupPage";
 import { ExtensionStatusPage } from "./pages/extension/ExtensionStatusPage";
@@ -166,6 +167,10 @@ function ProtectedPage({ route }) {
   if (route.path === "/app/captured-work" || route.path === "/app/activities") return <CapturedWorkReviewPage />;
   if (route.path === "/app/gmail-review") return <CaptureReviewPage source="gmail" />;
   if (route.path === "/app/research-review") return <CaptureReviewPage source="research" />;
+  if (route.path === "/app/communications") return <CommunicationCenterPage />;
+  if (route.path === "/app/communications/whatsapp") return <CommunicationCenterPage view="whatsapp" />;
+  if (route.path === "/app/communications/sms") return <CommunicationCenterPage view="sms" />;
+  if (route.path === "/app/communications/logs") return <CommunicationCenterPage view="logs" />;
   if (route.path === "/app/recordings") return <RecordingLibraryPage />;
   if (route.path === "/app/recordings/:recordingId") return <RecordingDetailPage />;
   if (route.path === "/app/assistant") return <AssistantCorePage />;

@@ -211,3 +211,11 @@ These are not blockers for `feat/frontend-bootstrap`; they are tracked so featur
 - Future work: add `POST /api/email-entries/bulk-review`.
 - Frontend adapter: `backendGapAdapters.capturedWorkBulkReview`.
 
+## WhatsApp SMS Communications
+
+- Desired frontend need: provider status, WhatsApp inbox, SMS inbox, approved templates, send actions, replies, delivery history, and failure logs.
+- Current available backend routes: no WhatsApp, SMS, or unified communication-log resources were found.
+- Current frontend approach: render setup guidance, disabled compose previews, message template planning, and empty logs without claiming that messages were sent.
+- Future work: add `GET /api/communications/whatsapp/status`, `POST /api/communications/whatsapp/send`, `GET /api/communications/sms/status`, `POST /api/communications/sms/send`, and `GET /api/communications/logs`.
+- Frontend adapters: `backendGapAdapters.whatsappProvider`, `backendGapAdapters.smsProvider`, and `backendGapAdapters.communicationLogs`.
+
