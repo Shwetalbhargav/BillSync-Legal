@@ -98,4 +98,14 @@ export const backendGapAdapters = {
     note: "Captured work can become a time entry and be submitted for approval; direct billable creation from approved time is still planned.",
     load: unavailable("Billing conversion is not configured yet."),
   },
+  invoiceTemplates: {
+    routeNeeded: "GET /api/invoice-templates",
+    note: "Reusable invoice templates, branding, and default terms are planned.",
+    load: unavailable("Invoice templates are not configured yet."),
+  },
+  invoiceShareLink: {
+    routeNeeded: "POST /api/invoices/:id/share-link",
+    note: "Secure client share links are planned; current route supports send and document preview.",
+    create: unavailable("Invoice sharing is not configured yet."),
+  },
 };

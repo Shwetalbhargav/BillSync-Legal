@@ -1,10 +1,13 @@
-import { makeResource, request } from "./client.js";
+import { baseUrl, makeResource, request } from "./client.js";
 
 export const invoicesApi = {
   ...makeResource("/api/invoices"),
   fromTime: (body) => request("/api/invoices/from-time", { method: "POST", body }),
+  fromBillables: (body) => request("/api/invoices/from-billables", { method: "POST", body }),
   pendingByClient: (params) => request("/api/invoices/__analytics/pending-by-client", { params }),
   pipeline: (params) => request("/api/invoices/__pipeline", { params }),
+  document: (id) => request(`/api/invoices/${id}/document`),
+  pdfUrl: (id) => `${baseUrl}/api/invoices/${id}/pdf`,
   send: (id, body) => request(`/api/invoices/${id}/send`, { method: "POST", body }),
   void: (id, body) => request(`/api/invoices/${id}/void`, { method: "POST", body }),
   lines: (invoiceId, params) => request(`/api/invoices/${invoiceId}/lines`, { params }),
