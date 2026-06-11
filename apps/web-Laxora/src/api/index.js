@@ -5,6 +5,7 @@ export * from "./analytics.js";
 export * from "./ar.js";
 export * from "./auth.js";
 export * from "./billables.js";
+export * from "./billing.js";
 export * from "./caseAssignments.js";
 export * from "./client.js";
 export * from "./clients.js";

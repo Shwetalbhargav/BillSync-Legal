@@ -123,6 +123,13 @@ These are not blockers for `feat/frontend-bootstrap`; they are tracked so featur
 - Future work: add `POST /api/billables/from-time-entry/:timeEntryId`.
 - Frontend adapter: `backendGapAdapters.timeEntryBillableConversion`.
 
+## Billing Reviewer Authorization
+
+- Desired frontend need: Admin and Partner users can review the billable approval queue and manage rate cards according to the frontend route plan.
+- Current available backend routes: billable approve/reject and rate-card list/create/update/delete require `admin`.
+- Current frontend approach: show approval and rate-card actions only for administrators, with calm permission guidance for other billing users.
+- Future work: allow partner reviewer authorization in the backend if partners should approve billables or manage rates.
+
 ## Extension Health And Test Event
 
 - Desired frontend need: one status response for installed extension version, last capture, browser permission state, and reconnect guidance.

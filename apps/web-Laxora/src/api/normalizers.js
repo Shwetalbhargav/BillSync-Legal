@@ -130,14 +130,48 @@ export function normalizeMoney(value) {
 }
 
 export function normalizeBillable(item = {}) {
+  const matter = item.caseId || item.case || {};
+  const client = item.clientId || item.client || {};
+  const user = item.userId || item.user || {};
   return {
     id: toId(item),
-    description: safeText(item.description || item.narrative || item.title, "Billable work"),
-    client: item.clientName || item.client?.name || "",
-    matter: item.caseName || item.matterName || "",
-    hours: Number(item.hours || item.durationHours || item.quantity || 0),
+    subject: item.subject || "",
+    description: safeText(item.description || item.narrative || item.title || item.subject, "Billable work"),
+    client: client.displayName || client.name || item.clientName || "",
+    clientId: toId(client) || item.clientId || "",
+    matter: matter.title || matter.name || item.caseName || item.matterName || "",
+    matterId: toId(matter) || item.caseId || "",
+    user: user.name || item.userName || "",
+    userId: toId(user) || item.userId || "",
+    category: item.category || "",
+    activityCode: item.activityCode || "",
+    minutes: Number(item.durationMinutes ?? item.minutes ?? 0),
+    hours: Number(item.hours || item.durationHours || item.quantity || Number(item.durationMinutes || 0) / 60),
+    rate: normalizeMoney(item.rate),
     amount: normalizeMoney(item.amount || item.total),
-    status: item.status || "Draft",
+    status: String(item.status || "pending").toLowerCase(),
+    date: item.date || item.createdAt || "",
+    approvedAt: item.approvedAt || "",
+    rejectedAt: item.rejectedAt || "",
+    rejectionReason: item.rejectionReason || "",
+    invoiceId: item.invoiceId || "",
+    raw: item,
+  };
+}
+
+export function normalizeRateCard(item = {}) {
+  const matter = item.caseId || item.case || {};
+  const user = item.userId || item.user || {};
+  return {
+    id: toId(item),
+    user: user.name || item.userName || "Team member",
+    userId: toId(user) || item.userId || "",
+    matter: matter.title || matter.name || item.caseName || "",
+    matterId: toId(matter) || item.caseId || "",
+    activityCode: item.activityCode || "",
+    ratePerHour: normalizeMoney(item.ratePerHour),
+    effectiveFrom: item.effectiveFrom || "",
+    effectiveTo: item.effectiveTo || "",
     raw: item,
   };
 }
