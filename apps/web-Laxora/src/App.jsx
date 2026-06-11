@@ -6,15 +6,20 @@ import { StateCard } from "./components/common/StateCard";
 import { canAccess } from "./constants/permissions";
 import { allRoutes, appRoutes, fallbackRoutes } from "./routes/routeConfig";
 import { ComponentGalleryPage } from "./pages/ComponentGalleryPage";
+import { DashboardPage } from "./pages/DashboardPage";
 import { FallbackGalleryPage } from "./pages/FallbackGalleryPage";
 import { FallbackStatePage } from "./pages/FallbackStatePage";
+import { GlobalSearchPage } from "./pages/GlobalSearchPage";
+import { HelpCenterPage } from "./pages/HelpCenterPage";
 import { LoginPage } from "./pages/LoginPage";
 import { NotFoundPage } from "./pages/NotFoundPage";
+import { NotificationCenterPage } from "./pages/NotificationCenterPage";
 import { PasswordHelpPage } from "./pages/PasswordHelpPage";
 import { PermissionDeniedPage } from "./pages/PermissionDeniedPage";
 import { PlaceholderPage } from "./pages/PlaceholderPage";
 import { ProfilePage } from "./pages/ProfilePage";
 import { RegisterInvitePage } from "./pages/RegisterInvitePage";
+import { SetupStatusPage } from "./pages/SetupStatusPage";
 import { UserManagementPage } from "./pages/UserManagementPage";
 
 function ProtectedShell() {
@@ -50,6 +55,11 @@ function ProtectedPage({ route }) {
   }
 
   if (route.path === "/app/design-system") return <ComponentGalleryPage />;
+  if (route.path === "/app/dashboard") return <DashboardPage />;
+  if (route.path === "/app/setup-status") return <SetupStatusPage />;
+  if (route.path === "/app/notifications") return <NotificationCenterPage />;
+  if (route.path === "/app/search") return <GlobalSearchPage />;
+  if (route.path === "/app/help") return <HelpCenterPage />;
   if (route.path === "/app/profile") return <ProfilePage />;
   if (route.path === "/app/admin/users") return <UserManagementPage />;
   return <PlaceholderPage route={route} />;

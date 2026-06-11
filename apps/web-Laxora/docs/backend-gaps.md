@@ -51,3 +51,10 @@ These are not blockers for `feat/frontend-bootstrap`; they are tracked so featur
 - Future work: add payment recovery status, resumable upload status, and calendar sync status routes.
 - Frontend adapters: `backendGapAdapters.paymentRecovery`, `backendGapAdapters.uploadRecovery`, `backendGapAdapters.courtCalendarSync`.
 
+## Global Dashboard Common
+
+- Desired frontend need: one role-aware daily dashboard summary, managed notifications, managed guide content, and one setup readiness response.
+- Current frontend approach: compose role dashboards with existing matter, task, client, billable, and activity resources.
+- Future work: add `GET /api/dashboard/summary`, `GET /api/notifications`, and `GET /api/help/guides`.
+- Frontend adapters: `dashboardApi.loadDashboard`, `dashboardApi.globalSearch`, `dashboardApi.setupStatus`.
+
