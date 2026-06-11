@@ -99,3 +99,16 @@ The interface says `Matters`. The service module uses `/api/cases` internally.
 - `GET /api/clients/:clientId/payments`
 - `GET /api/clients/:clientId/summary`
 
+## Matters Core API Branch Usage
+
+- `GET /api/cases`
+- `POST /api/cases`
+- `GET /api/cases/:caseId`
+- `PUT /api/cases/:caseId`
+- `GET /api/cases/:caseId/time-entries`
+- `GET /api/cases/:caseId/rollup`
+- `GET /api/case-assignments`
+- `POST /api/case-assignments`
+- `GET /api/users`
+- `GET /api/clients`
+

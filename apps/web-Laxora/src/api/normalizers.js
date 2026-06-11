@@ -41,13 +41,41 @@ export function normalizeUser(user = {}) {
 }
 
 export function normalizeMatter(item = {}) {
+  const client = item.clientId || item.client || {};
+  const primary = item.primaryLawyerId || item.primaryLawyer || {};
   return {
     id: toId(item),
     title: safeText(item.title || item.name || item.caseName || item.matterName, "Untitled matter"),
-    client: safeText(item.clientName || item.client?.name || item.client, "Client not set"),
+    client: safeText(client.displayName || item.clientName || item.client?.name || item.client, "Client not set"),
+    clientId: toId(client) || item.clientId || "",
     status: safeText(item.status || item.stage, "Active"),
-    owner: item.ownerName || item.owner?.name || "",
+    owner: primary.name || item.ownerName || item.owner?.name || "",
+    billingType: item.billingType || "hourly",
+    matterType: item.case_type || "",
+    description: item.description || "",
+    openedAt: item.openedAt || "",
+    closedAt: item.closedAt || "",
+    assignedUsers: Array.isArray(item.assignedUsers) ? item.assignedUsers : [],
     updatedAt: item.updatedAt || item.lastActivityAt || item.createdAt || "",
+    raw: item,
+  };
+}
+
+export function normalizeAssignment(item = {}) {
+  const user = item.userId || item.user || {};
+  const matter = item.caseId || item.matter || {};
+  return {
+    id: toId(item),
+    matterId: toId(matter) || item.caseId || "",
+    matterTitle: matter.title || item.matterTitle || "Matter",
+    userId: toId(user) || item.userId || "",
+    userName: user.name || item.userName || "Team member",
+    userRole: user.role || "",
+    email: user.email || "",
+    role: item.role || "associate",
+    status: item.status || "active",
+    startAt: item.startAt || "",
+    endAt: item.endAt || "",
     raw: item,
   };
 }
