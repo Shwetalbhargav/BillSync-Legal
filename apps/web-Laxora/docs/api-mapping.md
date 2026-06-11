@@ -259,3 +259,28 @@ The frontend connects invoice list, builder, detail, send, void, and line workfl
 
 The frontend connects payment recording, reconciliation, receivables aging, and client payment-page submission to available resources. External payment collection is represented as a not-connected state until gateway-session and webhook routes exist.
 
+## Finance Reports Audit Branch Usage
+
+- `GET /api/kpi/summary`
+- `GET /api/kpi/trend`
+- `GET /api/kpi-snapshots`
+- `GET /api/revenue/breakdown`
+- `GET /api/revenue/monthly`
+- `GET /api/analytics/billables`
+- `GET /api/analytics/invoices`
+- `GET /api/analytics/unbilled-by-client`
+- `GET /api/payments/finance-summary`
+- `GET /api/payments`
+- `GET /api/invoices`
+- `GET /api/ar/aging`
+- `GET /api/reports/gst-summary`
+- `GET /api/reports/time-entries.csv`
+- `GET /api/reports/invoices.csv`
+- `GET /api/reports/gst.csv`
+- `GET /api/reports/utilization.csv`
+- `GET /api/reports/pdf`
+- `GET /api/integration-logs`
+- `GET /api/integration-logs/stats`
+
+The frontend connects finance dashboard, report downloads, saved KPI snapshots, and audit event review to available resources. PDF report generation remains a clearly documented backend gap because the route currently returns a not-implemented response.
+

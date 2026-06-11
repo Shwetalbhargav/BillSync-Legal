@@ -113,4 +113,9 @@ export const backendGapAdapters = {
     note: "External gateway collection is planned; current portal supports client payment submission for reconciliation.",
     create: unavailable("Online payment collection is not configured yet."),
   },
+  financePdfReports: {
+    routeNeeded: "GET /api/reports/pdf with generated PDF content",
+    note: "The report route exists but returns a not-implemented response until PDF generation is wired.",
+    load: unavailable("Board pack export is not configured yet."),
+  },
 };

@@ -12,6 +12,7 @@ export * from "./clients.js";
 export * from "./dashboard.js";
 export * from "./documentStorage.js";
 export * from "./emailEntries.js";
+export * from "./financeWorkspace.js";
 export * from "./gaps.js";
 export * from "./firms.js";
 export * from "./health.js";
