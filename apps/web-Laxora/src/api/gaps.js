@@ -38,6 +38,11 @@ export const backendGapAdapters = {
     note: "Extension health diagnostics are planned; current auth can issue extension tokens.",
     load: unavailable("Extension health is not configured yet."),
   },
+  extensionTestEvent: {
+    routeNeeded: "POST /api/extension/test-event",
+    note: "A browser-side handshake test is planned; current frontend checks workspace authorization and recent captured items.",
+    load: unavailable("Extension test event is not configured yet."),
+  },
   calendarProvider: {
     routeNeeded: "GET /api/calendar/events",
     note: "Calendar provider sync is planned; manual time capture can use existing time-entry resources.",

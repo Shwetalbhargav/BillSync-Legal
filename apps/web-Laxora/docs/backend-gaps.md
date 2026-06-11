@@ -121,3 +121,11 @@ These are not blockers for `feat/frontend-bootstrap`; they are tracked so featur
 - Future work: add `POST /api/billables/from-time-entry/:timeEntryId`.
 - Frontend adapter: `backendGapAdapters.timeEntryBillableConversion`.
 
+## Extension Health And Test Event
+
+- Desired frontend need: one status response for installed extension version, last capture, browser permission state, and reconnect guidance.
+- Current available backend routes: extension authorization through auth and email-entry capture records.
+- Current frontend approach: use the workspace authorization check and recent captured work as honest readiness signals.
+- Future work: add `GET /api/extension/health` and `POST /api/extension/test-event`.
+- Frontend adapters: `backendGapAdapters.extensionHealth`, `backendGapAdapters.extensionTestEvent`.
+
