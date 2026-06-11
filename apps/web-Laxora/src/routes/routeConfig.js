@@ -37,6 +37,7 @@ import {
   Timer,
   UploadCloud,
   UserCog,
+  UserRound,
   Users,
   WalletCards,
   WifiOff,
@@ -44,6 +45,7 @@ import {
 
 export const navigationItems = [
   { label: "Dashboard", path: "/app/dashboard", icon: LayoutDashboard, moduleKey: "dashboard" },
+  { label: "My Profile", path: "/app/profile", icon: UserRound, moduleKey: "dashboard" },
   { label: "Design System", path: "/app/design-system", icon: Palette, moduleKey: "dashboard" },
   { label: "Clients", path: "/app/clients", icon: Users, moduleKey: "clients" },
   { label: "Matters", path: "/app/matters", icon: BriefcaseBusiness, moduleKey: "matters" },
@@ -58,6 +60,7 @@ export const navigationItems = [
 
 export const appRoutes = [
   { path: "/app/dashboard", title: "Dashboard", module: "Daily Work", moduleKey: "dashboard", roleGroup: "All roles", icon: Gauge },
+  { path: "/app/profile", title: "My Profile", module: "Workspace", moduleKey: "dashboard", roleGroup: "All roles", icon: UserRound },
   { path: "/app/design-system", title: "Component Gallery", module: "Workspace", moduleKey: "dashboard", roleGroup: "All roles", icon: Palette },
   { path: "/app/setup-status", title: "My Setup Status", module: "Onboarding", moduleKey: "extension", roleGroup: "All roles", icon: Plug },
   { path: "/app/notifications", title: "Notifications", module: "Workspace", moduleKey: "dashboard", roleGroup: "All roles", icon: Bell },

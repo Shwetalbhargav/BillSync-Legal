@@ -5,12 +5,12 @@ import { Header } from "./Header";
 import { PageContainer } from "./PageContainer";
 import { Sidebar } from "./Sidebar";
 
-export function AppShell({ role, onRoleChange }) {
+export function AppShell({ role, user, onLogout }) {
   return (
     <div className="min-h-screen bg-app">
       <Sidebar role={role} />
       <div className="lg:pl-64">
-        <Header role={role} onRoleChange={onRoleChange} />
+        <Header role={role} user={user} onLogout={onLogout} />
         <PageContainer>
           <Outlet />
         </PageContainer>

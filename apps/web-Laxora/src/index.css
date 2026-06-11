@@ -44,7 +44,7 @@
 
 @media (max-width: 640px) {
   .surface-card {
-    width: calc(100vw - 32px);
+    width: 100%;
   }
 
   .surface-card p,

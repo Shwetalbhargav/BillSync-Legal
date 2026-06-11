@@ -37,3 +37,10 @@ These are not blockers for `feat/frontend-bootstrap`; they are tracked so featur
 - Current bootstrap approach: recording placeholders and fallback state.
 - Frontend adapter: `backendGapAdapters.recorderTranscription`.
 
+## Auth Recovery And Invites
+
+- Desired frontend need: self-service forgot-password, reset-password, and invite-token acceptance flows.
+- Current available backend auth routes: login, register, current user, logout, and extension token.
+- Current frontend approach: registration-backed invite acceptance and calm password-help reserved states.
+- Future work: add invite-token validation, forgot-password request, and reset-password confirmation routes.
+
