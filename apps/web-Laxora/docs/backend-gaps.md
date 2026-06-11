@@ -58,3 +58,11 @@ These are not blockers for `feat/frontend-bootstrap`; they are tracked so featur
 - Future work: add `GET /api/dashboard/summary`, `GET /api/notifications`, and `GET /api/help/guides`.
 - Frontend adapters: `dashboardApi.loadDashboard`, `dashboardApi.globalSearch`, `dashboardApi.setupStatus`.
 
+## Client Contacts
+
+- Desired frontend need: create, edit, and remove contacts from the client workspace.
+- Current available backend client routes: client CRUD, related matters, related invoices, related payments, and financial summary.
+- Current frontend approach: render existing contacts stored on the client model and show an honest not-ready editing state.
+- Future work: add a client-contact route or extend client write validation to safely accept contact updates.
+- Frontend adapter: `clientsApi.contacts.update`.
+
