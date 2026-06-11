@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>User Guide | BillSync Legal</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-container": "#c8dbfe",
+                        "surface-container-high": "#dfe9f7",
+                        "inverse-on-surface": "#e8f2ff",
+                        "on-error-container": "#93000a",
+                        "secondary-fixed-dim": "#b5c7ea",
+                        "on-secondary": "#ffffff",
+                        "outline-variant": "#c3c6cf",
+                        "surface-tint": "#3d608a",
+                        "primary-fixed": "#d2e4ff",
+                        "outline": "#73777f",
+                        "on-surface": "#121d26",
+                        "on-tertiary-fixed-variant": "#584400",
+                        "on-secondary-container": "#4e607e",
+                        "surface-bright": "#f7f9ff",
+                        "primary-container": "#123b63",
+                        "error-container": "#ffdad6",
+                        "on-primary-container": "#83a6d4",
+                        "primary-fixed-dim": "#a6c9f9",
+                        "error": "#ba1a1a",
+                        "background": "#f7f9ff",
+                        "tertiary-fixed-dim": "#ecc246",
+                        "tertiary-fixed": "#ffe08e",
+                        "secondary-fixed": "#d6e3ff",
+                        "on-secondary-fixed": "#071c36",
+                        "on-primary": "#ffffff",
+                        "inverse-surface": "#27313c",
+                        "primary": "#002546",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary": "#ffffff",
+                        "on-tertiary-fixed": "#241a00",
+                        "surface-container-highest": "#d9e3f1",
+                        "surface-dim": "#d1dbe8",
+                        "surface-container-low": "#edf4ff",
+                        "inverse-primary": "#a6c9f9",
+                        "on-primary-fixed": "#001c37",
+                        "on-error": "#ffffff",
+                        "on-surface-variant": "#43474e",
+                        "tertiary": "#755b00",
+                        "on-primary-fixed-variant": "#234871",
+                        "tertiary-container": "#cea72c",
+                        "on-background": "#121d26",
+                        "on-tertiary-container": "#4f3d00",
+                        "surface-variant": "#d9e3f1",
+                        "secondary": "#4d5f7d",
+                        "surface-container": "#e4effd",
+                        "surface": "#f7f9ff",
+                        "on-secondary-fixed-variant": "#364764"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "xl": "48px",
+                        "margin-desktop": "40px",
+                        "xs": "8px",
+                        "gutter": "24px",
+                        "lg": "32px",
+                        "sm": "16px",
+                        "md": "24px",
+                        "margin-mobile": "16px",
+                        "base": "4px",
+                        "xxl": "64px",
+                        "sidebar-width": "260px",
+                        "gutter-desktop": "40px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Inter"],
+                        "label-md": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "headline-sm": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "600"}],
+                        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body {
+            background-color: #f7f9ff;
+            font-family: 'Inter', sans-serif;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+        }
+        .glass-card {
+            background: #ffffff;
+            border: 1px solid #c3c6cf;
+            transition: all 0.2s ease-in-out;
+        }
+        .glass-card:hover {
+            border-color: #3d608a;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #d9e3f1;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="text-on-surface">
+<!-- Sidebar Navigation Shell -->
+<aside class="flex flex-col h-screen w-sidebar-width fixed left-0 top-0 overflow-y-auto bg-primary border-r border-outline-variant z-50">
+<div class="p-lg">
+<h1 class="font-headline-md text-headline-md font-bold text-surface-container-lowest">BillSync Legal</h1>
+<p class="font-label-md text-label-md text-primary-fixed opacity-70 uppercase tracking-widest mt-base">Firm Intelligence</p>
+</div>
+<nav class="flex-grow mt-md px-sm">
+<a class="flex items-center gap-md px-md py-sm rounded mb-xs transition-colors hover:bg-primary-container text-primary-fixed font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span>Dashboard</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded mb-xs transition-colors hover:bg-primary-container text-primary-fixed font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined" data-icon="folder_shared">folder_shared</span>
+<span>Matters</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded mb-xs transition-colors hover:bg-primary-container text-primary-fixed font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined" data-icon="payments">payments</span>
+<span>Billing</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded mb-xs transition-colors hover:bg-primary-container text-primary-fixed font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined" data-icon="description">description</span>
+<span>Documents</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded mb-xs transition-colors hover:bg-primary-container text-primary-fixed font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined" data-icon="insights">insights</span>
+<span>Intelligence</span>
+</a>
+<div class="my-lg border-t border-primary-fixed/10 mx-md"></div>
+<a class="flex items-center gap-md px-md py-sm rounded mb-xs transition-all text-surface-container-lowest font-bold bg-primary-container border-l-4 border-secondary-fixed" href="#">
+<span class="material-symbols-outlined" data-icon="menu_book">menu_book</span>
+<span>User Guide</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded mb-xs transition-colors hover:bg-primary-container text-primary-fixed font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span>Settings</span>
+</a>
+</nav>
+<div class="p-lg mt-auto">
+<button class="w-full bg-secondary-fixed text-on-secondary-fixed font-label-md text-label-md py-sm rounded font-bold hover:opacity-90 transition-opacity uppercase tracking-wider">
+                New Matter
+            </button>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="ml-sidebar-width min-h-screen relative">
+<!-- Top Navigation Shell -->
+<header class="flex justify-between items-center w-full h-16 px-gutter-desktop sticky top-0 z-40 bg-surface/80 backdrop-blur-md border-b border-outline-variant">
+<div class="flex items-center gap-xl w-1/2">
+<div class="relative w-full max-w-md group">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline" data-icon="search">search</span>
+<input class="w-full bg-surface-container-low border border-outline-variant rounded pl-11 pr-4 py-2 focus:ring-1 focus:ring-primary-container transition-all text-body-sm font-body-sm outline-none" placeholder="Search guides for 'how to...'" type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-lg">
+<button class="p-2 rounded hover:bg-surface-container-low transition-all text-primary">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<div class="h-8 w-8 rounded bg-primary-container flex items-center justify-center text-on-primary-container overflow-hidden">
+<img alt="User Profile" class="object-cover h-full w-full" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBDQ_uvD08VeQVM3gDgjE-w2sxZPS-viuyIRijiBQCWN-U_R-xqjfBTzZ5Vrt2DlXuPS1KjkesTbeyuX0W28bBILwgADMNAwodQcSPjeQ657SRTOAqTcFk40XdoGsiuse1-V4Tv-ozmDd6CQc-4D8bsNZo3ORI0itQJP7SWZLnxLeJBOs93UuRDSLNrsb0mkewqTEnPuYQHO-cMifHY2x8LZuOotNZYDr5nS3d2VHLxKPuaPtUx2slzSXAOOQOySII4GtIqBzi_URA1"/>
+</div>
+</div>
+</header>
+<!-- Hero Section -->
+<section class="px-margin-desktop py-xxl bg-surface-bright relative">
+<div class="max-w-screen-xl mx-auto">
+<span class="text-secondary font-label-md text-label-md uppercase tracking-widest mb-base block">User Guide &amp; Resources</span>
+<h2 class="font-display-lg text-display-lg text-primary mb-md">Master BillSync in minutes</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl">Learn how to use BillSync to manage your matters, capture every billable minute, and streamline your firm's operations with these simple, plain-language guides.</p>
+</div>
+</section>
+<!-- Essential Workflows -->
+<section class="px-margin-desktop py-xl">
+<div class="max-w-screen-xl mx-auto">
+<div class="flex items-end justify-between mb-lg">
+<h3 class="font-headline-md text-headline-md text-primary">Essential Workflows</h3>
+<a class="text-primary font-label-md text-label-md flex items-center gap-xs hover:underline" href="#">
+                        All Workflows <span class="material-symbols-outlined text-[18px]" data-icon="arrow_forward">arrow_forward</span>
+</a>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-lg">
+<!-- Getting Started -->
+<div class="glass-card p-lg rounded flex flex-col group cursor-pointer">
+<div class="h-10 w-10 bg-primary-container rounded flex items-center justify-center mb-md">
+<span class="material-symbols-outlined text-white" data-icon="auto_stories">auto_stories</span>
+</div>
+<h4 class="font-headline-sm text-headline-sm text-primary mb-sm">Getting Started</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-xl flex-grow">A simple walkthrough of the BillSync interface. Learn how to navigate your dashboard and find what you need quickly.</p>
+<div class="flex items-center justify-between text-secondary font-label-md text-label-md">
+<span>5-minute read</span>
+<span class="material-symbols-outlined text-primary" data-icon="play_circle">play_circle</span>
+</div>
+</div>
+<!-- How to Capture Time -->
+<div class="glass-card p-lg rounded flex flex-col group cursor-pointer border-l-4 border-l-tertiary-container">
+<div class="h-10 w-10 bg-tertiary-container rounded flex items-center justify-center mb-md">
+<span class="material-symbols-outlined text-on-tertiary-container" data-icon="timer">timer</span>
+</div>
+<h4 class="font-headline-sm text-headline-sm text-primary mb-sm">How to Capture Time</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-xl flex-grow">Never miss a billable moment. Learn how to use the active timer, log past entries, and use AI suggestions for your time sheets.</p>
+<div class="flex items-center justify-between text-secondary font-label-md text-label-md">
+<span>8-minute read</span>
+<span class="material-symbols-outlined text-primary" data-icon="play_circle">play_circle</span>
+</div>
+</div>
+<!-- Managing Matters -->
+<div class="glass-card p-lg rounded flex flex-col group cursor-pointer">
+<div class="h-10 w-10 bg-secondary-container rounded flex items-center justify-center mb-md">
+<span class="material-symbols-outlined text-on-secondary-container" data-icon="folder_open">folder_open</span>
+</div>
+<h4 class="font-headline-sm text-headline-sm text-primary mb-sm">Managing Matters</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-xl flex-grow">Learn how to create new client matters, organize documents, and invite team members to collaborate on files.</p>
+<div class="flex items-center justify-between text-secondary font-label-md text-label-md">
+<span>6-minute read</span>
+<span class="material-symbols-outlined text-primary" data-icon="play_circle">play_circle</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Guide Library -->
+<section class="px-margin-desktop py-xxl bg-surface-container-low">
+<div class="max-w-screen-xl mx-auto">
+<div class="grid grid-cols-1 lg:grid-cols-4 gap-xl">
+<!-- Categories -->
+<div class="lg:col-span-1">
+<h3 class="font-headline-sm text-headline-sm text-primary mb-lg">Topics</h3>
+<ul class="space-y-base">
+<li><a class="flex items-center gap-sm p-sm rounded bg-surface-container-high text-primary font-label-md text-label-md" href="#"><span class="material-symbols-outlined text-[20px]" data-icon="start">start</span> Basics &amp; Navigation</a></li>
+<li><a class="flex items-center gap-sm p-sm rounded hover:bg-surface-container-highest transition-colors text-on-surface-variant font-label-md text-label-md" href="#"><span class="material-symbols-outlined text-[20px]" data-icon="schedule">schedule</span> Timekeeping</a></li>
+<li><a class="flex items-center gap-sm p-sm rounded hover:bg-surface-container-highest transition-colors text-on-surface-variant font-label-md text-label-md" href="#"><span class="material-symbols-outlined text-[20px]" data-icon="description">description</span> Invoicing Clients</a></li>
+<li><a class="flex items-center gap-sm p-sm rounded hover:bg-surface-container-highest transition-colors text-on-surface-variant font-label-md text-label-md" href="#"><span class="material-symbols-outlined text-[20px]" data-icon="group">group</span> Firm Management</a></li>
+<li><a class="flex items-center gap-sm p-sm rounded hover:bg-surface-container-highest transition-colors text-on-surface-variant font-label-md text-label-md" href="#"><span class="material-symbols-outlined text-[20px]" data-icon="smartphone">smartphone</span> Mobile App Guide</a></li>
+</ul>
+</div>
+<!-- Detailed Guides -->
+<div class="lg:col-span-3">
+<div class="bg-surface-container-lowest rounded border border-outline-variant divide-y divide-outline-variant">
+<div class="p-lg flex justify-between items-center">
+<h4 class="font-headline-sm text-headline-sm text-primary">Popular How-To Guides</h4>
+<div class="flex items-center gap-sm">
+<button class="p-1 rounded bg-surface-container-high"><span class="material-symbols-outlined" data-icon="list">list</span></button>
+<button class="p-1 rounded text-outline hover:bg-surface-container-high"><span class="material-symbols-outlined" data-icon="grid_view">grid_view</span></button>
+</div>
+</div>
+<a class="p-lg flex items-start gap-lg hover:bg-surface-container-low transition-colors group" href="#">
+<span class="material-symbols-outlined text-outline group-hover:text-primary" data-icon="menu_book">menu_book</span>
+<div class="flex-grow">
+<h5 class="font-body-md font-semibold text-primary mb-xs">Logging Time While Traveling</h5>
+<p class="font-body-sm text-body-sm text-on-surface-variant">How to use the mobile app to record billable hours when you're away from your desk.</p>
+</div>
+<span class="material-symbols-outlined text-outline" data-icon="chevron_right">chevron_right</span>
+</a>
+<a class="p-lg flex items-start gap-lg hover:bg-surface-container-low transition-colors group" href="#">
+<span class="material-symbols-outlined text-outline group-hover:text-primary" data-icon="menu_book">menu_book</span>
+<div class="flex-grow">
+<h5 class="font-body-md font-semibold text-primary mb-xs">Setting Up Your Firm Profile</h5>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Step-by-step instructions for adding your firm's logo, address, and letterhead for professional invoices.</p>
+</div>
+<span class="material-symbols-outlined text-outline" data-icon="chevron_right">chevron_right</span>
+</a>
+<a class="p-lg flex items-start gap-lg hover:bg-surface-container-low transition-colors group" href="#">
+<span class="material-symbols-outlined text-outline group-hover:text-primary" data-icon="menu_book">menu_book</span>
+<div class="flex-grow">
+<h5 class="font-body-md font-semibold text-primary mb-xs">Reviewing and Sending Your First Invoice</h5>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Learn how to generate a draft invoice, review line items, and send it to your client via email.</p>
+</div>
+<span class="material-symbols-outlined text-outline" data-icon="chevron_right">chevron_right</span>
+</a>
+<div class="p-lg text-center">
+<button class="font-label-md text-label-md text-primary hover:underline uppercase tracking-wider">See all how-to guides</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- New Features -->
+<section class="px-margin-desktop py-xxl">
+<div class="max-w-screen-xl mx-auto">
+<div class="flex items-center gap-md mb-xl">
+<span class="material-symbols-outlined text-secondary" data-icon="new_releases">new_releases</span>
+<h3 class="font-headline-md text-headline-md text-primary">New for your Practice</h3>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-xl">
+<div class="flex gap-lg group cursor-pointer">
+<div class="w-32 h-32 rounded overflow-hidden flex-shrink-0 border border-outline-variant">
+<img alt="Dashboard update" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDNi7vXKBnJCtFJc5H6PaMTXY1I3lU7gDoZmgOrsL_p1eaSqcmiZHdAPMK6DDZ60x2UXSF_-sGsVlP27WGP2XTQ_rPJE-v19CMM2tiXWj-6K3G2lgYswWJWRpH8fiAmpH8eYeIfqDqNHqPbw46kqc8OTRLZit4SrS8jcYirKX9nlWmF9ktv5QWKgitMCXwBgu_euTCknQ_HSJ7Z1sbWO1BTbwviA3d_9Aej1AUoZ_8jMekm5BsdCQkfE9gJO5X8AebbLZS5RJPeYEYZ"/>
+</div>
+<div>
+<div class="flex items-center gap-base mb-xs">
+<span class="bg-secondary-container text-on-secondary-container px-2 py-0.5 rounded text-[10px] font-bold uppercase">New Tool</span>
+<span class="text-outline font-label-md text-label-md">Oct 24</span>
+</div>
+<h4 class="font-body-md font-semibold text-primary mb-xs group-hover:text-primary-container">Smart Revenue Forecast</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant">See expected collections for the month based on your current unbilled time and active matters.</p>
+</div>
+</div>
+<div class="flex gap-lg group cursor-pointer">
+<div class="w-32 h-32 rounded overflow-hidden flex-shrink-0 border border-outline-variant">
+<img alt="Mobile access" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBnr5FOl0640pC_yQ9a9bqcm-jGjiynAzvra6Gf8mT_hMr2PjMJG84Yhs3NslcpJW9Rn4XuEn_lEH8Yi9B4g0dBcGY_8EfVoKM2BV1yPh4V9DpJVKAU8hhYwEAWpuVC5Dr5GMwANJQYPCzDqB6oyUWKVfF-r5t1aThmGw6aDIoKPYA5tIt4l-u_vBdFxd7r9LNuts8_ZKx3_hY9u7hMtpiZDHoqSwnHRO4EFTs1EEzNOccf30-UGK_kvcA86TDS1nvHjjQwZ5q8-oCj"/>
+</div>
+<div>
+<div class="flex items-center gap-base mb-xs">
+<span class="bg-primary-container text-on-primary-container px-2 py-0.5 rounded text-[10px] font-bold uppercase">Update</span>
+<span class="text-outline font-label-md text-label-md">Oct 12</span>
+</div>
+<h4 class="font-body-md font-semibold text-primary mb-xs group-hover:text-primary-container">Work from Anywhere</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Review documents and log time entries on your tablet or phone, even when you aren't in the office.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Help CTA -->
+<section class="px-margin-desktop py-xxl bg-primary text-surface-container-lowest">
+<div class="max-w-screen-xl mx-auto text-center">
+<h3 class="font-headline-lg text-headline-lg mb-md">Can't find what you're looking for?</h3>
+<p class="font-body-lg text-body-lg opacity-80 mb-xl max-w-xl mx-auto">Our practice specialists are here to help you get the most out of BillSync.</p>
+<div class="flex flex-col sm:flex-row items-center justify-center gap-lg">
+<button class="flex items-center gap-md bg-secondary-fixed text-on-secondary-fixed px-xl py-md rounded font-bold hover:scale-[1.02] transition-all shadow-md uppercase tracking-wider">
+<span class="material-symbols-outlined" data-icon="chat_bubble">chat_bubble</span>
+<span>Ask a Question</span>
+</button>
+<button class="flex items-center gap-md border border-surface-container-lowest/30 px-xl py-md rounded font-bold hover:bg-surface-container-lowest/10 transition-all uppercase tracking-wider">
+<span class="material-symbols-outlined" data-icon="mail">mail</span>
+<span>Send an Email</span>
+</button>
+</div>
+</div>
+</section>
+<!-- Footer -->
+<footer class="px-margin-desktop py-lg border-t border-outline-variant bg-surface">
+<div class="max-w-screen-xl mx-auto flex flex-col md:flex-row justify-between items-center gap-lg">
+<div class="flex items-center gap-xl text-outline font-label-md text-label-md">
+<span>© 2024 BillSync Legal.</span>
+<a class="hover:text-primary" href="#">Privacy Guide</a>
+<a class="hover:text-primary" href="#">Service Status</a>
+</div>
+<div class="flex items-center gap-md">
+<a class="w-8 h-8 rounded bg-surface-container-high flex items-center justify-center hover:bg-primary-container hover:text-white transition-all" href="#">
+<span class="material-symbols-outlined text-[18px]" data-icon="public">public</span>
+</a>
+</div>
+</div>
+</footer>
+</main>
+<script>
+        // Search bar focus effect
+        const searchInput = document.querySelector('input[type="text"]');
+        searchInput.addEventListener('focus', () => {
+            searchInput.classList.add('border-primary');
+        });
+        searchInput.addEventListener('blur', () => {
+            searchInput.classList.remove('border-primary');
+        });
+
+        // Hover movement for workflow cards
+        const cards = document.querySelectorAll('.glass-card');
+        cards.forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.transform = 'translateY(-2px)';
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'translateY(0)';
+            });
+        });
+    </script>
+</body></html>

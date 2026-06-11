@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Notification Preferences - Lexington &amp; Associates</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F8F5EF; /* Level 0 Background per Style Guidance */
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .toggle-checkbox:checked {
+            right: 0;
+            border-color: #002546;
+        }
+        .toggle-checkbox:checked + .toggle-label {
+            background-color: #3d608a;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-error-container": "#93000a",
+                      "on-secondary-fixed-variant": "#584400",
+                      "primary": "#002546",
+                      "on-background": "#121d26",
+                      "inverse-on-surface": "#e8f2ff",
+                      "primary-container": "#123b63",
+                      "secondary-fixed-dim": "#ecc246",
+                      "on-tertiary": "#ffffff",
+                      "error": "#ba1a1a",
+                      "surface-dim": "#d1dbe8",
+                      "surface-container-high": "#dfe9f7",
+                      "on-tertiary-fixed-variant": "#364764",
+                      "on-secondary-container": "#735a00",
+                      "on-surface": "#121d26",
+                      "surface-bright": "#f7f9ff",
+                      "primary-fixed-dim": "#a6c9f9",
+                      "on-primary": "#ffffff",
+                      "tertiary-fixed": "#d6e3ff",
+                      "primary-fixed": "#d2e4ff",
+                      "on-surface-variant": "#43474e",
+                      "on-secondary": "#ffffff",
+                      "tertiary-container": "#283a56",
+                      "surface-container": "#e4effd",
+                      "tertiary": "#11243f",
+                      "on-primary-container": "#83a6d4",
+                      "inverse-primary": "#a6c9f9",
+                      "secondary-container": "#fed255",
+                      "inverse-surface": "#27313c",
+                      "background": "#f7f9ff",
+                      "on-secondary-fixed": "#241a00",
+                      "secondary": "#755b00",
+                      "on-error": "#ffffff",
+                      "outline": "#73777f",
+                      "on-tertiary-fixed": "#071c36",
+                      "surface-tint": "#3d608a",
+                      "outline-variant": "#c3c6cf",
+                      "surface": "#f7f9ff",
+                      "on-primary-fixed-variant": "#234871",
+                      "tertiary-fixed-dim": "#b5c7ea",
+                      "surface-variant": "#d9e3f1",
+                      "surface-container-lowest": "#ffffff",
+                      "secondary-fixed": "#ffe08e",
+                      "surface-container-highest": "#d9e3f1",
+                      "on-primary-fixed": "#001c37",
+                      "surface-container-low": "#edf4ff",
+                      "on-tertiary-container": "#92a4c5",
+                      "error-container": "#ffdad6"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "sm": "12px",
+                      "margin-desktop": "40px",
+                      "gutter-desktop": "24px",
+                      "sidebar-width": "260px",
+                      "xl": "32px",
+                      "md": "16px",
+                      "lg": "24px",
+                      "base": "8px",
+                      "xxl": "48px",
+                      "xs": "4px"
+              },
+              "fontFamily": {
+                      "label-sm": ["Inter"],
+                      "headline-md": ["Inter"],
+                      "headline-lg": ["Inter"],
+                      "headline-lg-mobile": ["Inter"],
+                      "display-lg": ["Inter"],
+                      "body-sm": ["Inter"],
+                      "label-md": ["Inter"],
+                      "body-lg": ["Inter"],
+                      "body-md": ["Inter"],
+                      "headline-sm": ["Inter"]
+              },
+              "fontSize": {
+                      "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "600"}],
+                      "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                      "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                      "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                      "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                      "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                      "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                      "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}]
+              }
+            },
+          },
+        }
+    </script>
+</head>
+<body class="min-h-screen text-on-surface">
+<!-- Top Navigation Bar (Shared Component) -->
+<header class="bg-surface border-b border-outline-variant fixed full-width top-0 z-50 h-20 flex justify-center items-center">
+<div class="flex justify-between items-center w-full px-margin-desktop max-w-[1440px] mx-auto h-20">
+<div class="font-headline-md text-headline-md font-bold text-primary">Lexington &amp; Associates</div>
+<nav class="hidden md:flex gap-lg items-center">
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors duration-200" href="#">Overview</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors duration-200" href="#">Matters</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors duration-200" href="#">Invoices</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors duration-200" href="#">Payments</a>
+</nav>
+<div class="flex items-center gap-md">
+<button class="text-on-surface-variant hover:text-primary transition-colors"><span class="material-symbols-outlined" data-icon="notifications">notifications</span></button>
+<button class="text-on-surface-variant hover:text-primary transition-colors"><span class="material-symbols-outlined" data-icon="account_circle">account_circle</span></button>
+</div>
+</div>
+</header>
+<main class="pt-[120px] pb-xxl px-margin-desktop max-w-[1440px] mx-auto min-h-[calc(100vh-100px)]">
+<!-- Breadcrumbs & Header -->
+<div class="mb-lg">
+<nav class="flex gap-xs items-center text-on-surface-variant mb-xs">
+<span class="font-label-sm text-label-sm">Settings</span>
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+<span class="font-label-sm text-label-sm text-primary">Notification Preferences</span>
+</nav>
+<h1 class="font-headline-lg text-headline-lg text-primary tracking-tight">Notification Preferences</h1>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-2xl mt-xs">
+                Configure how and when you receive updates regarding your matters, billing, and AI-driven performance insights.
+            </p>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-lg">
+<!-- Sidebar Navigation (Internal Settings Nav) -->
+<aside class="lg:col-span-3">
+<div class="bg-surface-container-low p-md rounded-xl border border-outline-variant sticky top-[100px]">
+<ul class="flex flex-col gap-xs">
+<li>
+<a class="flex items-center gap-md p-sm rounded-lg font-label-md text-label-md text-on-surface-variant hover:bg-surface-variant transition-all" href="#">
+<span class="material-symbols-outlined">person</span>
+                                Profile Information
+                            </a>
+</li>
+<li>
+<a class="flex items-center gap-md p-sm rounded-lg font-label-md text-label-md bg-primary-container text-on-primary-container font-bold border-l-2 border-secondary" href="#">
+<span class="material-symbols-outlined">notifications</span>
+                                Notifications
+                            </a>
+</li>
+<li>
+<a class="flex items-center gap-md p-sm rounded-lg font-label-md text-label-md text-on-surface-variant hover:bg-surface-variant transition-all" href="#">
+<span class="material-symbols-outlined">security</span>
+                                Security &amp; Privacy
+                            </a>
+</li>
+<li>
+<a class="flex items-center gap-md p-sm rounded-lg font-label-md text-label-md text-on-surface-variant hover:bg-surface-variant transition-all" href="#">
+<span class="material-symbols-outlined">credit_card</span>
+                                Billing Methods
+                            </a>
+</li>
+</ul>
+</div>
+</aside>
+<!-- Main Settings Content (Bento Style Grid) -->
+<section class="lg:col-span-9 flex flex-col gap-lg">
+<!-- Notification Toggle Card -->
+<div class="bg-surface-container-lowest p-xl rounded-xl border border-outline-variant shadow-sm">
+<div class="flex justify-between items-start mb-lg border-b border-outline-variant pb-md">
+<div>
+<h2 class="font-headline-sm text-headline-sm text-primary">Alert Channels</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Manage global delivery methods for all alert categories.</p>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-lg">
+<!-- Email Channel -->
+<div class="flex items-center justify-between p-lg border border-outline-variant rounded-lg bg-surface-bright">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 bg-primary-container rounded-full flex items-center justify-center text-on-primary-container">
+<span class="material-symbols-outlined">mail</span>
+</div>
+<div>
+<p class="font-label-md text-label-md text-primary">Email Notifications</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Daily digest and urgent alerts</p>
+</div>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-outline-variant peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+<!-- In-App Channel -->
+<div class="flex items-center justify-between p-lg border border-outline-variant rounded-lg bg-surface-bright">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 bg-secondary-container rounded-full flex items-center justify-center text-on-secondary-container">
+<span class="material-symbols-outlined">settings_suggest</span>
+</div>
+<div>
+<p class="font-label-md text-label-md text-primary">In-App Alerts</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Real-time portal updates</p>
+</div>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-outline-variant peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+</div>
+</div>
+<!-- Preference Categories Table -->
+<div class="bg-surface-container-lowest rounded-xl border border-outline-variant shadow-sm overflow-hidden">
+<div class="p-xl border-b border-outline-variant">
+<h2 class="font-headline-sm text-headline-sm text-primary">Notification Categories</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Select which types of activity you want to be notified about.</p>
+</div>
+<table class="w-full text-left border-collapse">
+<thead class="bg-surface-container-low border-b border-outline-variant">
+<tr>
+<th class="p-lg font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Category</th>
+<th class="p-lg font-label-sm text-label-sm text-on-surface-variant text-center uppercase tracking-wider">Email</th>
+<th class="p-lg font-label-sm text-label-sm text-on-surface-variant text-center uppercase tracking-wider">In-App</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant">
+<!-- Performance Reviews -->
+<tr class="hover:bg-surface-bright transition-colors duration-150">
+<td class="p-lg">
+<div class="flex items-start gap-md">
+<span class="material-symbols-outlined text-primary mt-1">trending_up</span>
+<div>
+<p class="font-label-md text-label-md text-primary">Performance Reviews</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Quarterly efficiency metrics and attorney output analysis.</p>
+</div>
+</div>
+</td>
+<td class="p-lg text-center">
+<input checked="" class="w-5 h-5 rounded border-outline text-primary focus:ring-primary-container" type="checkbox"/>
+</td>
+<td class="p-lg text-center">
+<input checked="" class="w-5 h-5 rounded border-outline text-primary focus:ring-primary-container" type="checkbox"/>
+</td>
+</tr>
+<!-- Billing & Invoices -->
+<tr class="hover:bg-surface-bright transition-colors duration-150">
+<td class="p-lg">
+<div class="flex items-start gap-md">
+<span class="material-symbols-outlined text-primary mt-1">receipt_long</span>
+<div>
+<p class="font-label-md text-label-md text-primary">Billing &amp; Invoices</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">New invoice generation, payment confirmations, and reminders.</p>
+</div>
+</div>
+</td>
+<td class="p-lg text-center">
+<input checked="" class="w-5 h-5 rounded border-outline text-primary focus:ring-primary-container" type="checkbox"/>
+</td>
+<td class="p-lg text-center">
+<input checked="" class="w-5 h-5 rounded border-outline text-primary focus:ring-primary-container" type="checkbox"/>
+</td>
+</tr>
+<!-- Matter Milestone Updates -->
+<tr class="hover:bg-surface-bright transition-colors duration-150">
+<td class="p-lg">
+<div class="flex items-start gap-md">
+<span class="material-symbols-outlined text-primary mt-1">assignment_turned_in</span>
+<div>
+<p class="font-label-md text-label-md text-primary">Matter Milestone Updates</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Alerts when key phases of your legal cases are reached.</p>
+</div>
+</div>
+</td>
+<td class="p-lg text-center">
+<input class="w-5 h-5 rounded border-outline text-primary focus:ring-primary-container" type="checkbox"/>
+</td>
+<td class="p-lg text-center">
+<input checked="" class="w-5 h-5 rounded border-outline text-primary focus:ring-primary-container" type="checkbox"/>
+</td>
+</tr>
+<!-- AI Intelligence Alerts -->
+<tr class="hover:bg-surface-bright transition-colors duration-150">
+<td class="p-lg">
+<div class="flex items-start gap-md">
+<span class="material-symbols-outlined text-secondary mt-1">auto_awesome</span>
+<div>
+<div class="flex items-center gap-base">
+<p class="font-label-md text-label-md text-primary">AI Intelligence Alerts</p>
+<span class="bg-secondary-container text-on-secondary-container font-label-sm text-[10px] px-base py-xs rounded-full uppercase">Premium</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Automated pattern detection and budget anomaly warnings.</p>
+</div>
+</div>
+</td>
+<td class="p-lg text-center">
+<input checked="" class="w-5 h-5 rounded border-outline text-primary focus:ring-primary-container" type="checkbox"/>
+</td>
+<td class="p-lg text-center">
+<input checked="" class="w-5 h-5 rounded border-outline text-primary focus:ring-primary-container" type="checkbox"/>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="p-xl bg-surface-container-low flex flex-col md:flex-row justify-between items-center gap-md">
+<div class="flex items-center gap-sm text-on-surface-variant">
+<span class="material-symbols-outlined text-[20px]">info</span>
+<p class="font-body-sm text-body-sm italic">Changes are saved automatically as you toggle preferences.</p>
+</div>
+<div class="flex gap-md">
+<button class="px-lg py-sm font-label-md text-label-md text-primary hover:bg-surface-variant rounded-lg transition-all">Cancel</button>
+<button class="px-xl py-sm font-label-md text-label-md bg-primary text-on-primary rounded-lg shadow-md hover:bg-primary-container transition-all">Apply Changes</button>
+</div>
+</div>
+</div>
+<!-- Footer Promo (Atmospheric Bento) -->
+<div class="relative bg-primary overflow-hidden rounded-xl p-xxl text-on-primary min-h-[200px] flex items-center">
+
+<div class="relative z-10 max-w-lg">
+<h3 class="font-headline-md text-headline-md mb-sm">Consolidate Your Intelligence</h3>
+<p class="font-body-md text-body-md opacity-90">Get a unified view of all critical notifications with our new Smart Dashboard. Experience the future of legal management.</p>
+<button class="mt-lg flex items-center gap-base font-label-md text-label-md text-secondary-fixed hover:underline">
+                            Explore Smart Dashboard
+                            <span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</div>
+<div class="hidden md:block absolute right-[-20px] bottom-[-20px] opacity-20">
+<span class="material-symbols-outlined text-[240px]" data-weight="fill">notifications_active</span>
+</div>
+</div>
+</section>
+</div>
+</main>
+<!-- Footer (Shared Component) -->
+<footer class="w-full py-xl px-margin-desktop bg-surface-container-low flex flex-col md:flex-row justify-between items-center gap-md">
+<div class="font-label-md text-label-md font-semibold text-on-surface">Lexington &amp; Associates</div>
+<div class="flex flex-wrap justify-center gap-lg">
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-primary underline transition-opacity duration-200" href="#">Support</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-primary underline transition-opacity duration-200" href="#">Privacy Policy</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-primary underline transition-opacity duration-200" href="#">Terms of Service</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-primary underline transition-opacity duration-200" href="#">Contact Us</a>
+</div>
+<div class="font-label-sm text-label-sm text-on-surface-variant">© 2024 Lexington &amp; Associates. All rights reserved.</div>
+</footer>
+<script>
+        // Micro-interaction for smooth feedback
+        document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const row = this.closest('tr');
+                if (row) {
+                    row.classList.add('bg-secondary-fixed/10');
+                    setTimeout(() => {
+                        row.classList.remove('bg-secondary-fixed/10');
+                    }, 400);
+                }
+            });
+        });
+    </script>
+</body></html>

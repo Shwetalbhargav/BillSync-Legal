@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>LexPremium | Pending Billables</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #d1dbe8; border-radius: 10px; }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-error-container": "#93000a",
+                        "surface-container": "#e4effd",
+                        "primary-container": "#123b63",
+                        "secondary-container": "#fed255",
+                        "surface": "#f7f9ff",
+                        "background": "#f7f9ff",
+                        "on-tertiary-fixed": "#071c36",
+                        "on-secondary-container": "#735a00",
+                        "on-secondary": "#ffffff",
+                        "on-background": "#121d26",
+                        "on-tertiary": "#ffffff",
+                        "inverse-primary": "#a6c9f9",
+                        "inverse-surface": "#27313c",
+                        "surface-dim": "#d1dbe8",
+                        "outline-variant": "#c3c6cf",
+                        "on-tertiary-fixed-variant": "#364764",
+                        "on-tertiary-container": "#92a4c5",
+                        "on-surface-variant": "#43474e",
+                        "secondary": "#755b00",
+                        "surface-container-high": "#dfe9f7",
+                        "inverse-on-surface": "#e8f2ff",
+                        "surface-variant": "#d9e3f1",
+                        "tertiary": "#11243f",
+                        "on-secondary-fixed": "#241a00",
+                        "surface-container-lowest": "#ffffff",
+                        "error": "#ba1a1a",
+                        "surface-container-highest": "#d9e3f1",
+                        "primary-fixed-dim": "#a6c9f9",
+                        "on-secondary-fixed-variant": "#584400",
+                        "secondary-fixed": "#ffe08e",
+                        "on-primary": "#ffffff",
+                        "on-primary-container": "#83a6d4",
+                        "error-container": "#ffdad6",
+                        "outline": "#73777f",
+                        "on-error": "#ffffff",
+                        "surface-bright": "#f7f9ff",
+                        "surface-container-low": "#edf4ff",
+                        "primary": "#002546",
+                        "tertiary-fixed": "#d6e3ff",
+                        "on-primary-fixed-variant": "#234871",
+                        "primary-fixed": "#d2e4ff",
+                        "on-primary-fixed": "#001c37",
+                        "tertiary-fixed-dim": "#b5c7ea",
+                        "tertiary-container": "#283a56",
+                        "surface-tint": "#3d608a",
+                        "secondary-fixed-dim": "#ecc246",
+                        "on-surface": "#121d26"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "xxl": "48px",
+                        "sm": "12px",
+                        "xl": "32px",
+                        "md": "16px",
+                        "gutter-desktop": "24px",
+                        "base": "8px",
+                        "sidebar-width": "260px",
+                        "lg": "24px",
+                        "xs": "4px",
+                        "margin-desktop": "40px"
+                    },
+                    "fontFamily": {
+                        "headline-sm": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "label-md": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "body-md": ["Inter"],
+                        "body-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "600"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background text-on-background min-h-screen">
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-0 h-full w-sidebar-width bg-primary dark:bg-on-tertiary-fixed border-r border-outline-variant dark:border-on-tertiary-fixed-variant shadow-sm flex flex-col py-lg z-50">
+<div class="px-gutter-desktop mb-xl">
+<h1 class="font-headline-sm text-headline-sm text-on-primary font-bold">LexPremium</h1>
+<p class="text-on-primary-container font-label-sm text-label-sm opacity-80">Elite Counsel Suite</p>
+</div>
+<nav class="flex-grow">
+<ul class="space-y-1">
+<li class="group px-base">
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-on-primary-container hover:text-on-primary hover:bg-primary-fixed-dim transition-colors duration-200 cursor-pointer active:opacity-80 font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span>Dashboard</span>
+</a>
+</li>
+<li class="group px-base">
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-on-primary-container hover:text-on-primary hover:bg-primary-fixed-dim transition-colors duration-200 cursor-pointer active:opacity-80 font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined">group</span>
+<span>Clients</span>
+</a>
+</li>
+<li class="group px-base">
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-on-primary-container hover:text-on-primary hover:bg-primary-fixed-dim transition-colors duration-200 cursor-pointer active:opacity-80 font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined">folder_open</span>
+<span>Matters</span>
+</a>
+</li>
+<li class="group px-base">
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-on-primary-container hover:text-on-primary hover:bg-primary-fixed-dim transition-colors duration-200 cursor-pointer active:opacity-80 font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined">assignment</span>
+<span>Tasks</span>
+</a>
+</li>
+<!-- Active Item: Billing -->
+<li class="group px-base">
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-on-primary-fixed border-l-2 border-secondary-fixed bg-primary-container font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined">receipt_long</span>
+<span>Billing</span>
+</a>
+</li>
+<li class="group px-base">
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-on-primary-container hover:text-on-primary hover:bg-primary-fixed-dim transition-colors duration-200 cursor-pointer active:opacity-80 font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span>Settings</span>
+</a>
+</li>
+</ul>
+</nav>
+<div class="px-gutter-desktop mt-auto pt-lg">
+<button class="w-full bg-secondary-container text-on-secondary-container font-label-md text-label-md py-sm px-md rounded-xl hover:bg-secondary-fixed-dim transition-all shadow-md flex items-center justify-center gap-xs">
+<span class="material-symbols-outlined text-[18px]">add</span>
+                New Matter
+            </button>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="ml-sidebar-width min-h-screen relative pb-20">
+<!-- TopNavBar -->
+<header class="fixed top-0 right-0 w-[calc(100%-260px)] h-16 bg-surface dark:bg-inverse-surface border-b border-outline-variant flex items-center justify-between px-gutter-desktop z-40">
+<div class="flex items-center flex-1 max-w-xl">
+<div class="relative w-full focus-within:ring-1 focus-within:ring-primary rounded-lg transition-all">
+<span class="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-outline">search</span>
+<input class="w-full pl-xl pr-md py-xs bg-surface-container-low border-none rounded-lg focus:ring-0 text-body-md font-body-md placeholder:text-outline" placeholder="Search billables, matters, or clients..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-lg">
+<button class="text-on-surface-variant hover:text-primary transition-all relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-0 right-0 w-2 h-2 bg-error rounded-full border-2 border-surface"></span>
+</button>
+<button class="text-on-surface-variant hover:text-primary transition-all">
+<span class="material-symbols-outlined">help_outline</span>
+</button>
+<div class="h-8 w-[1px] bg-outline-variant mx-sm"></div>
+<div class="flex items-center gap-sm">
+<div class="text-right">
+<p class="font-label-sm text-label-sm text-on-surface font-bold">Jonathan Sterling</p>
+<p class="text-[10px] text-on-surface-variant uppercase tracking-wider">Senior Partner</p>
+</div>
+<img alt="Attorney Profile" class="w-8 h-8 rounded-full bg-surface-container-highest" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDtHFzTLkbWpho6xy2-8nKS_VZvHrqfliUNfZx3r9w7_6ODWMcuFfBiE48QB-czGSyH59M036jXs5GairMI8McZLzBh8qctBKmBGNKnb1EBP0DVdxBlvlO7I-Tz5s_4zRsGr1Kw7_0e39bnE4_55XFURYjxKu6dDnYG5rjHsOJrEeKN-KuV3NSlUDunvIEEEztSXfDSIOvV_l7JhNYNpl7x9oX44zuYOUKC3WGEN-HbxCymDStRTa6t4Oz5LgeMwnzDKm9E1ktCL8v_"/>
+</div>
+</div>
+</header>
+<!-- Content Canvas -->
+<div class="mt-16 p-gutter-desktop">
+<!-- Page Header & Stats -->
+<div class="flex flex-col gap-lg mb-xxl">
+<div class="flex justify-between items-end">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-primary">Pending Billables</h2>
+<p class="text-on-surface-variant font-body-md text-body-md">Review and approve unbilled time and expense entries for invoicing.</p>
+</div>
+<div class="flex gap-md">
+<button class="bg-surface-container-lowest border border-outline-variant text-primary font-label-md text-label-md px-md py-sm rounded-xl hover:bg-surface-container-high transition-all flex items-center gap-xs">
+<span class="material-symbols-outlined text-[18px]">download</span>
+                            Export Report
+                        </button>
+<button class="bg-primary text-on-primary font-label-md text-label-md px-lg py-sm rounded-xl hover:opacity-90 transition-all flex items-center gap-xs">
+<span class="material-symbols-outlined text-[18px]">check_circle</span>
+                            Bulk Approve
+                        </button>
+</div>
+</div>
+<!-- KPI Bento Cards -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-md">
+<div class="bg-surface-container-lowest p-md rounded-xl border border-outline-variant shadow-sm">
+<p class="text-label-sm font-label-sm text-outline uppercase tracking-widest mb-xs">Unbilled Total</p>
+<p class="text-headline-md font-headline-md text-primary">$142,580.00</p>
+<div class="flex items-center gap-xs mt-xs text-secondary">
+<span class="material-symbols-outlined text-[14px]">trending_up</span>
+<span class="text-[12px] font-medium">+12% from last month</span>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-md rounded-xl border border-outline-variant shadow-sm">
+<p class="text-label-sm font-label-sm text-outline uppercase tracking-widest mb-xs">Billable Hours</p>
+<p class="text-headline-md font-headline-md text-primary">482.5</p>
+<p class="text-[12px] text-on-surface-variant mt-xs">Avg. 6.8 hrs / professional</p>
+</div>
+<div class="bg-surface-container-lowest p-md rounded-xl border border-outline-variant shadow-sm">
+<p class="text-label-sm font-label-sm text-outline uppercase tracking-widest mb-xs">Expenses Pending</p>
+<p class="text-headline-md font-headline-md text-primary">$4,215.45</p>
+<p class="text-[12px] text-on-surface-variant mt-xs">24 items requiring receipt check</p>
+</div>
+<div class="bg-surface-container-lowest p-md rounded-xl border border-outline-variant shadow-sm">
+<p class="text-label-sm font-label-sm text-outline uppercase tracking-widest mb-xs">Write-off Rate</p>
+<p class="text-headline-md font-headline-md text-error">2.4%</p>
+<p class="text-[12px] text-on-surface-variant mt-xs">Target: &lt; 3.0%</p>
+</div>
+</div>
+</div>
+<!-- Filters & Table Section -->
+<div class="bg-white rounded-xl border border-outline-variant shadow-sm overflow-hidden flex flex-col">
+<!-- Filter Bar -->
+<div class="p-md bg-surface-container-low border-b border-outline-variant flex flex-wrap items-center justify-between gap-md">
+<div class="flex items-center gap-md">
+<div class="flex items-center bg-surface-container-lowest px-sm py-xs rounded-lg border border-outline-variant">
+<span class="text-label-sm font-label-sm text-on-surface-variant mr-sm">Matter:</span>
+<select class="bg-transparent border-none text-label-md font-label-md focus:ring-0 p-0 text-primary">
+<option>All Matters</option>
+<option>Tesla v. SEC (2024-001)</option>
+<option>Global Acquisition LP</option>
+<option>Estate of M. Thompson</option>
+</select>
+</div>
+<div class="flex items-center bg-surface-container-lowest px-sm py-xs rounded-lg border border-outline-variant">
+<span class="text-label-sm font-label-sm text-on-surface-variant mr-sm">Professional:</span>
+<select class="bg-transparent border-none text-label-md font-label-md focus:ring-0 p-0 text-primary">
+<option>All Staff</option>
+<option>Jonathan Sterling</option>
+<option>Sarah Vance</option>
+<option>Michael Ross</option>
+</select>
+</div>
+<div class="flex items-center bg-surface-container-lowest px-sm py-xs rounded-lg border border-outline-variant">
+<span class="text-label-sm font-label-sm text-on-surface-variant mr-sm">Date Range:</span>
+<span class="text-label-md font-label-md text-primary cursor-pointer flex items-center gap-xs">
+                                Last 30 Days
+                                <span class="material-symbols-outlined text-[16px]">calendar_today</span>
+</span>
+</div>
+</div>
+<div class="flex items-center gap-sm">
+<span class="text-label-sm font-label-sm text-outline">Selected (2)</span>
+<div class="flex items-center bg-primary-container text-on-primary-container px-md py-xs rounded-lg text-label-sm font-label-sm cursor-pointer hover:bg-primary transition-all">
+                            Approve Selected
+                        </div>
+</div>
+</div>
+<!-- Table Content -->
+<div class="overflow-x-auto custom-scrollbar">
+<table class="w-full text-left border-collapse min-w-[1000px]">
+<thead>
+<tr class="bg-surface border-b border-outline-variant">
+<th class="py-md px-lg w-10">
+<input class="rounded-sm border-outline text-primary focus:ring-primary h-4 w-4" type="checkbox"/>
+</th>
+<th class="py-md px-md font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Date</th>
+<th class="py-md px-md font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Professional</th>
+<th class="py-md px-md font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Matter / Description</th>
+<th class="py-md px-md font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider text-right">Qty/Duration</th>
+<th class="py-md px-md font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider text-right">Rate</th>
+<th class="py-md px-md font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider text-right">Amount</th>
+<th class="py-md px-lg text-right"></th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant">
+<!-- Row 1 -->
+<tr class="hover:bg-surface-container-lowest transition-colors group">
+<td class="py-md px-lg"><input checked="" class="rounded-sm border-outline text-primary focus:ring-primary h-4 w-4" type="checkbox"/></td>
+<td class="py-md px-md font-body-sm text-body-sm text-on-surface">Oct 24, 2024</td>
+<td class="py-md px-md">
+<div class="flex items-center gap-sm">
+<div class="w-6 h-6 rounded-full bg-primary-fixed-dim text-[10px] flex items-center justify-center font-bold text-on-primary-fixed">JS</div>
+<span class="font-label-md text-label-md text-primary">Jonathan Sterling</span>
+</div>
+</td>
+<td class="py-md px-md">
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface">Tesla v. SEC (2024-001)</span>
+<span class="text-body-sm text-on-surface-variant truncate max-w-md">Preparation for deposition of board members; reviewed internal comms from Q3 regarding risk disclosures.</span>
+</div>
+</td>
+<td class="py-md px-md font-body-sm text-body-sm text-on-surface text-right font-medium">4.50 hrs</td>
+<td class="py-md px-md font-body-sm text-body-sm text-on-surface-variant text-right">$850.00</td>
+<td class="py-md px-md font-label-md text-label-md text-primary text-right font-bold">$3,825.00</td>
+<td class="py-md px-lg text-right">
+<div class="flex items-center justify-end gap-sm opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-xs hover:bg-surface-container rounded transition-colors text-outline hover:text-primary"><span class="material-symbols-outlined text-[18px]">edit</span></button>
+<button class="p-xs hover:bg-error-container rounded transition-colors text-outline hover:text-error"><span class="material-symbols-outlined text-[18px]">delete_sweep</span></button>
+</div>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-surface-container-lowest transition-colors group">
+<td class="py-md px-lg"><input class="rounded-sm border-outline text-primary focus:ring-primary h-4 w-4" type="checkbox"/></td>
+<td class="py-md px-md font-body-sm text-body-sm text-on-surface">Oct 24, 2024</td>
+<td class="py-md px-md">
+<div class="flex items-center gap-sm">
+<div class="w-6 h-6 rounded-full bg-secondary-fixed text-[10px] flex items-center justify-center font-bold text-on-secondary-fixed">SV</div>
+<span class="font-label-md text-label-md text-primary">Sarah Vance</span>
+</div>
+</td>
+<td class="py-md px-md">
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface">Global Acquisition LP</span>
+<span class="text-body-sm text-on-surface-variant truncate max-w-md">Filing fees for international jurisdiction registration; courier services for original documentation.</span>
+<span class="flex items-center gap-xs mt-xs text-[10px] text-secondary font-bold uppercase"><span class="material-symbols-outlined text-[12px]">receipt</span> Expense</span>
+</div>
+</td>
+<td class="py-md px-md font-body-sm text-body-sm text-on-surface text-right font-medium">1.00 qty</td>
+<td class="py-md px-md font-body-sm text-body-sm text-on-surface-variant text-right">$450.00</td>
+<td class="py-md px-md font-label-md text-label-md text-primary text-right font-bold">$450.00</td>
+<td class="py-md px-lg text-right">
+<div class="flex items-center justify-end gap-sm opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-xs hover:bg-surface-container rounded transition-colors text-outline hover:text-primary"><span class="material-symbols-outlined text-[18px]">edit</span></button>
+<button class="p-xs hover:bg-error-container rounded transition-colors text-outline hover:text-error"><span class="material-symbols-outlined text-[18px]">delete_sweep</span></button>
+</div>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-surface-container-lowest transition-colors group">
+<td class="py-md px-lg"><input checked="" class="rounded-sm border-outline text-primary focus:ring-primary h-4 w-4" type="checkbox"/></td>
+<td class="py-md px-md font-body-sm text-body-sm text-on-surface">Oct 23, 2024</td>
+<td class="py-md px-md">
+<div class="flex items-center gap-sm">
+<div class="w-6 h-6 rounded-full bg-tertiary-fixed text-[10px] flex items-center justify-center font-bold text-on-tertiary-fixed">MR</div>
+<span class="font-label-md text-label-md text-primary">Michael Ross</span>
+</div>
+</td>
+<td class="py-md px-md">
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface">Tesla v. SEC (2024-001)</span>
+<span class="text-body-sm text-on-surface-variant truncate max-w-md">Legal research on 10-K amendment precedents and subsequent SEC inquiry limitations.</span>
+</div>
+</td>
+<td class="py-md px-md font-body-sm text-body-sm text-on-surface text-right font-medium">12.20 hrs</td>
+<td class="py-md px-md font-body-sm text-body-sm text-on-surface-variant text-right">$425.00</td>
+<td class="py-md px-md font-label-md text-label-md text-primary text-right font-bold">$5,185.00</td>
+<td class="py-md px-lg text-right">
+<div class="flex items-center justify-end gap-sm opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-xs hover:bg-surface-container rounded transition-colors text-outline hover:text-primary"><span class="material-symbols-outlined text-[18px]">edit</span></button>
+<button class="p-xs hover:bg-error-container rounded transition-colors text-outline hover:text-error"><span class="material-symbols-outlined text-[18px]">delete_sweep</span></button>
+</div>
+</td>
+</tr>
+</tbody>
+<tfoot class="bg-surface-container-low border-t border-outline-variant">
+<tr>
+<td class="py-md px-lg text-right font-label-md text-label-md text-on-surface-variant uppercase tracking-widest" colspan="6">Selected Subtotal</td>
+<td class="py-md px-md text-right font-headline-sm text-headline-sm text-primary">$9,010.00</td>
+<td></td>
+</tr>
+</tfoot>
+</table>
+</div>
+<!-- Pagination -->
+<div class="px-lg py-md bg-surface flex items-center justify-between border-t border-outline-variant">
+<p class="text-label-sm font-label-sm text-on-surface-variant">Showing 1 to 25 of 142 entries</p>
+<div class="flex items-center gap-base">
+<button class="w-8 h-8 flex items-center justify-center rounded border border-outline-variant text-outline hover:bg-surface-container transition-all"><span class="material-symbols-outlined text-[18px]">chevron_left</span></button>
+<button class="w-8 h-8 flex items-center justify-center rounded border border-primary bg-primary text-on-primary font-label-sm text-label-sm">1</button>
+<button class="w-8 h-8 flex items-center justify-center rounded border border-outline-variant text-on-surface-variant font-label-sm text-label-sm hover:bg-surface-container transition-all">2</button>
+<button class="w-8 h-8 flex items-center justify-center rounded border border-outline-variant text-on-surface-variant font-label-sm text-label-sm hover:bg-surface-container transition-all">3</button>
+<button class="w-8 h-8 flex items-center justify-center rounded border border-outline-variant text-outline hover:bg-surface-container transition-all"><span class="material-symbols-outlined text-[18px]">chevron_right</span></button>
+</div>
+</div>
+</div>
+</div>
+<!-- Footer -->
+<footer class="absolute bottom-0 right-0 w-[calc(100%-260px)] flex justify-between items-center px-gutter-desktop py-md border-t border-outline-variant bg-surface-container-low dark:bg-surface-container-highest">
+<p class="text-on-surface-variant font-label-sm text-label-sm">© 2024 LexPremium Systems. All rights reserved.</p>
+<div class="flex gap-lg">
+<a class="text-outline font-label-sm text-label-sm hover:text-secondary transition-colors cursor-default" href="#">Support</a>
+<a class="text-outline font-label-sm text-label-sm hover:text-secondary transition-colors cursor-default" href="#">Privacy Policy</a>
+<a class="text-outline font-label-sm text-label-sm hover:text-secondary transition-colors cursor-default" href="#">Terms of Service</a>
+<a class="text-outline font-label-sm text-label-sm hover:text-secondary transition-colors cursor-default" href="#">Security</a>
+</div>
+</footer>
+</main>
+<!-- Contextual FAB - suppressed for details/table view as per rules, but included if needed for primary action -->
+<!-- Not rendered based on "Contextual FAB Suppression" rule for Detail/Transactional screens -->
+<script>
+        // Simple micro-interaction for row checkboxes
+        document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const row = this.closest('tr');
+                if (this.checked) {
+                    row.classList.add('bg-surface-container-low');
+                } else {
+                    row.classList.remove('bg-surface-container-low');
+                }
+            });
+        });
+
+        // Search bar focus effect
+        const searchInput = document.querySelector('input[type="text"]');
+        searchInput.addEventListener('focus', () => {
+            searchInput.parentElement.classList.add('ring-primary', 'shadow-sm');
+        });
+        searchInput.addEventListener('blur', () => {
+            searchInput.parentElement.classList.remove('ring-primary', 'shadow-sm');
+        });
+    </script>
+</body></html>

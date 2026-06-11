@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Forgot Password | BillSync Legal</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f7f9ff;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "primary": "#002546",
+                      "on-surface-variant": "#43474e",
+                      "secondary": "#755b00",
+                      "surface": "#f7f9ff",
+                      "on-primary": "#ffffff",
+                      "primary-fixed": "#d2e4ff",
+                      "on-primary-container": "#83a6d4",
+                      "on-secondary-fixed": "#241a00",
+                      "on-primary-fixed-variant": "#234871",
+                      "tertiary-fixed": "#d6e3ff",
+                      "secondary-fixed-dim": "#ecc246",
+                      "secondary-container": "#fed255",
+                      "surface-tint": "#3d608a",
+                      "background": "#f7f9ff",
+                      "tertiary-container": "#283a56",
+                      "on-tertiary-container": "#92a4c5",
+                      "on-error": "#ffffff",
+                      "error": "#ba1a1a",
+                      "surface-container-lowest": "#ffffff",
+                      "surface-bright": "#f7f9ff",
+                      "on-secondary": "#ffffff",
+                      "primary-fixed-dim": "#a6c9f9",
+                      "outline-variant": "#c3c6cf",
+                      "surface-dim": "#d1dbe8",
+                      "on-tertiary-fixed": "#071c36",
+                      "on-secondary-container": "#735a00",
+                      "on-primary-fixed": "#001c37",
+                      "secondary-fixed": "#ffe08e",
+                      "error-container": "#ffdad6",
+                      "inverse-primary": "#a6c9f9",
+                      "on-tertiary": "#ffffff",
+                      "on-error-container": "#93000a",
+                      "primary-container": "#123b63",
+                      "inverse-on-surface": "#e8f2ff",
+                      "surface-container-high": "#dfe9f7",
+                      "on-tertiary-fixed-variant": "#364764",
+                      "on-surface": "#121d26",
+                      "tertiary": "#11243f",
+                      "surface-container-low": "#edf4ff",
+                      "outline": "#73777f",
+                      "surface-container": "#e4effd",
+                      "on-secondary-fixed-variant": "#584400",
+                      "surface-container-highest": "#d9e3f1",
+                      "tertiary-fixed-dim": "#b5c7ea",
+                      "on-background": "#121d26",
+                      "inverse-surface": "#27313c"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "xs": "4px",
+                      "margin-desktop": "40px",
+                      "xxl": "48px",
+                      "lg": "24px",
+                      "base": "8px",
+                      "xl": "32px",
+                      "md": "16px",
+                      "sm": "12px",
+                      "sidebar-width": "260px",
+                      "gutter-desktop": "24px"
+              }
+            },
+          },
+        }
+    </script>
+</head>
+<body class="min-h-screen flex items-center justify-center p-md overflow-hidden relative">
+<!-- Ambient Animated Background Layer -->
+<div class="absolute inset-0 z-0 opacity-40">
+
+</div>
+<!-- Background Decorative Element -->
+<div class="absolute top-0 right-0 w-1/3 h-1/3 bg-primary/5 blur-[120px] rounded-full -translate-y-1/2 translate-x-1/2"></div>
+<div class="absolute bottom-0 left-0 w-1/3 h-1/3 bg-secondary/5 blur-[120px] rounded-full translate-y-1/2 -translate-x-1/2"></div>
+<main class="relative z-10 w-full max-w-[440px]">
+<!-- Brand Identity -->
+<div class="flex flex-col items-center mb-xl">
+<div class="w-16 h-16 bg-primary rounded-xl flex items-center justify-center mb-md shadow-lg">
+<span class="material-symbols-outlined text-on-primary text-[32px]">balance</span>
+</div>
+<h1 class="font-headline-md text-headline-md text-primary tracking-tight">BillSync Legal</h1>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-xs">Professional Compliance Suite</p>
+</div>
+<!-- Forgot Password Card -->
+<div class="glass-card bg-surface-container-lowest p-xl rounded-xl shadow-xl transition-all duration-300">
+<div class="mb-lg">
+<h2 class="font-headline-sm text-headline-sm text-on-surface mb-xs">Forgot password?</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">
+                    No worries, we'll send you reset instructions. Please enter the professional email associated with your legal account.
+                </p>
+</div>
+<form class="space-y-lg" id="reset-form">
+<div class="space-y-xs">
+<label class="font-label-md text-label-md text-on-surface flex items-center gap-xs" for="email">
+<span class="material-symbols-outlined text-body-sm">mail</span>
+                        Professional Email Address
+                    </label>
+<input class="w-full px-md py-sm rounded-lg border border-outline-variant bg-surface-bright focus:ring-2 focus:ring-primary/10 focus:border-primary outline-none transition-all font-body-md text-body-md" id="email" name="email" placeholder="e.g. counsel@firm.com" required="" type="email"/>
+</div>
+<button class="w-full bg-primary hover:bg-primary-container text-on-primary font-label-md text-label-md py-sm px-md rounded-lg shadow-sm active:scale-[0.98] transition-all flex items-center justify-center gap-sm group" type="submit">
+<span>Send Reset Link</span>
+<span class="material-symbols-outlined text-body-md group-hover:translate-x-1 transition-transform">send</span>
+</button>
+</form>
+<div class="mt-xl pt-lg border-t border-outline-variant flex justify-center">
+<a class="flex items-center gap-xs font-label-md text-label-md text-primary hover:text-primary-container transition-colors group" href="#">
+<span class="material-symbols-outlined text-body-md group-hover:-translate-x-1 transition-transform">arrow_back</span>
+                    Return to Login
+                </a>
+</div>
+</div>
+<!-- Decorative Image Contextual Hint (Subtle) -->
+<div class="mt-xl flex items-center justify-center gap-md opacity-60">
+<div class="w-12 h-12 rounded-full overflow-hidden grayscale border border-outline-variant">
+<img class="w-full h-full object-cover" data-alt="A focused close-up of a bronze lady justice statue, representing the core values of integrity and legal excellence. The lighting is soft and professional, emphasizing the metallic textures and the weight of the scales. The background is a blurred, high-end law office with mahogany bookshelves, reinforcing the corporate and secure atmosphere of the legal suite." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDhZ-hHr3YI2GPDkckWiT6O8PO6Alvyd-20kWHhz1PZ-HylqUhv1eB2F5FEAhnclqkSxxdD-lsdowyFBKqDGqmwtivVMfA0yNUAWWHiApgqStKVL1yxANuq0MrcxA0frKj-_VrQ6Rh2MD9MxDmrM9VNcdgzN_TPFbTLyFQl-A1ZhUlozEGzTf4k9MQiWDUBPH6H-LGMXFu-N0fLfHChXgUoGuvLhswoF_-S11GtD-z_1c4O2NOyhp6FzF9N15Qt7BYqfS9X3fDmHywF"/>
+</div>
+<p class="font-label-sm text-label-sm text-on-surface-variant max-w-[200px]">
+                Trusted by 500+ law firms for secure document billing and compliance.
+            </p>
+</div>
+</main>
+<!-- Footer Disclaimer -->
+<footer class="fixed bottom-lg w-full text-center">
+<p class="font-label-sm text-label-sm text-on-surface-variant/60">
+            © 2024 BillSync Legal. All rights reserved. Secure RSA Encryption Active.
+        </p>
+</footer>
+<script>
+        // Micro-interaction for form submission
+        document.getElementById('reset-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const btn = this.querySelector('button');
+            const originalContent = btn.innerHTML;
+            
+            btn.disabled = true;
+            btn.innerHTML = `
+                <span class="material-symbols-outlined animate-spin">progress_activity</span>
+                <span>Processing...</span>
+            `;
+
+            // Simulate API call
+            setTimeout(() => {
+                const card = document.querySelector('.glass-card');
+                card.innerHTML = `
+                    <div class="text-center py-lg animate-in fade-in slide-in-from-bottom-4 duration-500">
+                        <div class="w-16 h-16 bg-secondary-container rounded-full flex items-center justify-center mx-auto mb-lg">
+                            <span class="material-symbols-outlined text-on-secondary-container text-[32px]">check_circle</span>
+                        </div>
+                        <h2 class="font-headline-sm text-headline-sm text-on-surface mb-sm">Link Sent!</h2>
+                        <p class="font-body-md text-body-md text-on-surface-variant mb-xl">
+                            If an account exists for <span class="font-bold text-on-surface">${document.getElementById('email').value}</span>, you will receive reset instructions shortly.
+                        </p>
+                        <button onclick="location.reload()" class="w-full bg-primary text-on-primary font-label-md text-label-md py-sm px-md rounded-lg">
+                            Return to Login
+                        </button>
+                    </div>
+                `;
+            }, 1500);
+        });
+
+        // Hover lift effect for card
+        const card = document.querySelector('.glass-card');
+        document.addEventListener('mousemove', (e) => {
+            if (window.innerWidth < 768) return;
+            const xAxis = (window.innerWidth / 2 - e.pageX) / 50;
+            const yAxis = (window.innerHeight / 2 - e.pageY) / 50;
+            card.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
+        });
+
+        document.addEventListener('mouseleave', () => {
+            card.style.transform = `rotateY(0deg) rotateX(0deg)`;
+        });
+    </script>
+</body></html>

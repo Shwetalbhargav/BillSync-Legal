@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Matter Performance Report | Lexington &amp; Associates</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary-fixed-variant": "#584400",
+                        "secondary-fixed": "#ffe08e",
+                        "tertiary": "#11243f",
+                        "on-primary-container": "#83a6d4",
+                        "primary": "#002546",
+                        "background": "#f7f9ff",
+                        "surface-dim": "#d1dbe8",
+                        "surface-container-high": "#dfe9f7",
+                        "primary-fixed": "#d2e4ff",
+                        "on-tertiary-fixed": "#071c36",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary-container": "#92a4c5",
+                        "inverse-primary": "#a6c9f9",
+                        "on-background": "#121d26",
+                        "on-secondary-fixed": "#241a00",
+                        "tertiary-fixed-dim": "#b5c7ea",
+                        "tertiary-fixed": "#d6e3ff",
+                        "surface": "#f7f9ff",
+                        "surface-tint": "#3d608a",
+                        "surface-bright": "#f7f9ff",
+                        "inverse-on-surface": "#e8f2ff",
+                        "error-container": "#ffdad6",
+                        "secondary-container": "#fed255",
+                        "primary-container": "#123b63",
+                        "inverse-surface": "#27313c",
+                        "on-error": "#ffffff",
+                        "on-surface-variant": "#43474e",
+                        "on-error-container": "#93000a",
+                        "primary-fixed-dim": "#a6c9f9",
+                        "on-tertiary-fixed-variant": "#364764",
+                        "tertiary-container": "#283a56",
+                        "on-primary": "#ffffff",
+                        "on-secondary": "#ffffff",
+                        "surface-container-low": "#edf4ff",
+                        "secondary-fixed-dim": "#ecc246",
+                        "surface-container-highest": "#d9e3f1",
+                        "on-primary-fixed-variant": "#234871",
+                        "error": "#ba1a1a",
+                        "outline": "#73777f",
+                        "secondary": "#755b00",
+                        "surface-container": "#e4effd",
+                        "on-surface": "#121d26",
+                        "on-secondary-container": "#735a00",
+                        "on-tertiary": "#ffffff",
+                        "outline-variant": "#c3c6cf",
+                        "surface-variant": "#d9e3f1",
+                        "on-primary-fixed": "#001c37"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "md": "16px",
+                        "xxl": "48px",
+                        "sidebar-width": "260px",
+                        "gutter-desktop": "24px",
+                        "xs": "4px",
+                        "sm": "12px",
+                        "margin-desktop": "40px",
+                        "xl": "32px",
+                        "lg": "24px",
+                        "base": "8px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "headline-sm": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "label-md": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "body-md": ["Inter"],
+                        "label-sm": ["Inter"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body {
+            background-color: #f7f9ff;
+            color: #121d26;
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .chart-donut {
+            background: conic-gradient(#002546 0% 65%, #ecc246 65% 85%, #83a6d4 85% 100%);
+            border-radius: 50%;
+        }
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 24px;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(8px);
+            border: 1px solid #e5e7eb;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+<!-- Top Navigation Bar -->
+<header class="bg-surface sticky top-0 z-50 border-b border-outline-variant">
+<div class="flex justify-between items-center w-full px-margin-desktop max-w-[1440px] mx-auto h-20">
+<div class="font-headline-md text-headline-md font-bold text-primary">Lexington &amp; Associates</div>
+<nav class="hidden md:flex gap-lg items-center h-full">
+<a class="text-on-surface-variant hover:text-primary transition-colors font-body-md text-body-md h-full flex items-center px-2" href="#">Overview</a>
+<a class="text-primary font-bold border-b-2 border-secondary-fixed font-body-md text-body-md h-full flex items-center px-2" href="#">Matters</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors font-body-md text-body-md h-full flex items-center px-2" href="#">Invoices</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors font-body-md text-body-md h-full flex items-center px-2" href="#">Payments</a>
+</nav>
+<div class="flex items-center gap-md">
+<button class="p-xs text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-xs text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">account_circle</span>
+</button>
+</div>
+</div>
+</header>
+<main class="flex-grow w-full max-w-[1440px] mx-auto px-margin-desktop py-xl">
+<!-- Report Header Section -->
+<section class="mb-xxl flex flex-col md:flex-row justify-between items-end gap-lg">
+<div>
+<nav class="flex items-center gap-xs text-label-sm font-label-sm text-outline mb-base">
+<span>Matters</span>
+<span class="material-symbols-outlined text-[14px]">chevron_right</span>
+<span class="text-on-surface-variant">Matter #2024-8842: Stellar Tech Acquisition</span>
+</nav>
+<h1 class="font-headline-lg text-headline-lg text-primary">Matter Performance Report</h1>
+<p class="font-body-md text-body-md text-on-surface-variant mt-xs">Reporting Period: Jan 1, 2024 – Oct 24, 2024</p>
+</div>
+<div class="flex gap-md">
+<button class="px-lg py-sm border border-outline rounded-lg font-label-md text-label-md flex items-center gap-xs hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-[18px]">download</span>
+                    Export PDF
+                </button>
+<button class="px-lg py-sm bg-primary text-on-primary rounded-lg font-label-md text-label-md flex items-center gap-xs hover:bg-primary-container transition-colors">
+<span class="material-symbols-outlined text-[18px]">share</span>
+                    Share Access
+                </button>
+</div>
+</section>
+<!-- Bento Layout Dashboard -->
+<div class="bento-grid">
+<!-- AI Case Health Summary -->
+<div class="col-span-12 lg:col-span-8 bg-surface-container-low rounded-xl p-xl border border-outline-variant relative overflow-hidden">
+<div class="absolute top-0 right-0 p-lg opacity-10">
+<span class="material-symbols-outlined text-[80px]">psychology</span>
+</div>
+<div class="flex items-center gap-sm mb-lg">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+<h2 class="font-headline-sm text-headline-sm text-primary">AI Case Health Summary</h2>
+</div>
+<div class="space-y-md relative z-10">
+<div class="flex gap-md items-start">
+<div class="w-1 h-24 bg-secondary rounded-full mt-2"></div>
+<div class="flex-1">
+<h3 class="font-label-md text-label-md text-secondary uppercase tracking-wider mb-xs">Current Strategy</h3>
+<p class="font-body-lg text-body-lg text-on-surface">We are currently in the final stages of the due diligence phase. Our strategy focuses on identifying potential IP liabilities before the primary closing date. Recent audits of Stellar Tech's cloud architecture have revealed minor compliance gaps which we are currently neutralizing through secondary indemnity clauses.</p>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-lg mt-lg">
+<div class="bg-white/50 p-md rounded-lg border border-outline-variant">
+<div class="flex items-center gap-xs text-status-success text-[#1b6d3a] mb-xs">
+<span class="material-symbols-outlined text-[18px]">check_circle</span>
+<span class="font-label-sm text-label-sm">RECENT WIN</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant italic">Successfully negotiated a 15% reduction in the earn-out contingency threshold, favoring your capital position.</p>
+</div>
+<div class="bg-white/50 p-md rounded-lg border border-outline-variant">
+<div class="flex items-center gap-xs text-primary mb-xs">
+<span class="material-symbols-outlined text-[18px]">trending_up</span>
+<span class="font-label-sm text-label-sm">PROJECTED MILESTONE</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant italic">Closing documents are expected to be finalized 4 days ahead of the original November 15th target.</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Budget vs Actual Tracking -->
+<div class="col-span-12 lg:col-span-4 glass-card rounded-xl p-xl flex flex-col justify-between">
+<div>
+<h2 class="font-headline-sm text-headline-sm text-primary mb-lg">Budget Status</h2>
+<div class="flex justify-between items-end mb-sm">
+<div>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Total Spent</p>
+<p class="font-headline-md text-headline-md text-primary">$184,200</p>
+</div>
+<div class="text-right">
+<p class="font-label-sm text-label-sm text-on-surface-variant">Allocated</p>
+<p class="font-body-md text-body-md text-on-surface font-semibold">$250,000</p>
+</div>
+</div>
+<div class="w-full bg-surface-container-highest h-3 rounded-full overflow-hidden mb-xs">
+<div class="bg-primary h-full w-[74%]" style="transition: width 1s ease-out;"></div>
+</div>
+<div class="flex justify-between text-label-sm font-label-sm">
+<span class="text-primary font-bold">74% of Budget</span>
+<span class="text-on-surface-variant">26% Remaining</span>
+</div>
+</div>
+<div class="mt-xl pt-xl border-t border-outline-variant">
+<p class="font-label-sm text-label-sm text-on-surface-variant mb-md">Budget Utilization Trend</p>
+<div class="flex items-end gap-[4px] h-24">
+<div class="flex-1 bg-surface-container-highest rounded-t-sm h-[30%]"></div>
+<div class="flex-1 bg-surface-container-highest rounded-t-sm h-[45%]"></div>
+<div class="flex-1 bg-surface-container-highest rounded-t-sm h-[40%]"></div>
+<div class="flex-1 bg-surface-container-highest rounded-t-sm h-[65%]"></div>
+<div class="flex-1 bg-primary rounded-t-sm h-[80%]"></div>
+<div class="flex-1 bg-primary rounded-t-sm h-[90%]"></div>
+<div class="flex-1 bg-primary rounded-t-sm h-[75%]"></div>
+</div>
+</div>
+</div>
+<!-- Attorney Involvement Donut -->
+<div class="col-span-12 md:col-span-6 lg:col-span-4 glass-card rounded-xl p-xl">
+<h2 class="font-headline-sm text-headline-sm text-primary mb-lg">Resource Allocation</h2>
+<div class="flex justify-center mb-xl">
+<div class="relative w-48 h-48">
+<div class="chart-donut w-full h-full"></div>
+<div class="absolute inset-4 bg-white rounded-full flex flex-col items-center justify-center shadow-inner">
+<p class="font-headline-sm text-headline-sm text-primary">820h</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Total Billable</p>
+</div>
+</div>
+</div>
+<div class="space-y-md">
+<div class="flex justify-between items-center">
+<div class="flex items-center gap-sm">
+<div class="w-3 h-3 rounded-full bg-primary"></div>
+<span class="font-body-md text-body-md text-on-surface">Partner (Senior)</span>
+</div>
+<span class="font-label-md text-label-md text-primary font-bold">65%</span>
+</div>
+<div class="flex justify-between items-center">
+<div class="flex items-center gap-sm">
+<div class="w-3 h-3 rounded-full bg-secondary-fixed-dim"></div>
+<span class="font-body-md text-body-md text-on-surface">Associate</span>
+</div>
+<span class="font-label-md text-label-md text-primary font-bold">20%</span>
+</div>
+<div class="flex justify-between items-center">
+<div class="flex items-center gap-sm">
+<div class="w-3 h-3 rounded-full bg-on-primary-container"></div>
+<span class="font-body-md text-body-md text-on-surface">Paralegal</span>
+</div>
+<span class="font-label-md text-label-md text-primary font-bold">15%</span>
+</div>
+</div>
+</div>
+<!-- Chronological Work Feed -->
+<div class="col-span-12 md:col-span-6 lg:col-span-8 glass-card rounded-xl overflow-hidden flex flex-col">
+<div class="px-xl py-lg border-b border-outline-variant flex justify-between items-center bg-white/50">
+<h2 class="font-headline-sm text-headline-sm text-primary">Recent Activity Feed</h2>
+<button class="text-primary font-label-md text-label-md hover:underline">View All Tasks</button>
+</div>
+<div class="flex-grow p-xl space-y-xl overflow-y-auto max-h-[500px]">
+<!-- Timeline Item 1 -->
+<div class="relative pl-lg">
+<div class="absolute left-0 top-0 bottom-[-32px] w-px bg-outline-variant"></div>
+<div class="absolute left-[-4px] top-1 w-2 h-2 rounded-full bg-primary border-4 border-white ring-1 ring-primary/20"></div>
+<div class="flex justify-between items-start mb-base">
+<div>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Oct 24, 2024 • 2:15 PM</p>
+<h4 class="font-body-md text-body-md text-on-surface font-semibold">Document Review: IP Portfolio Analysis</h4>
+</div>
+<span class="px-sm py-xs bg-surface-container text-primary text-label-sm font-label-sm rounded-full">8.5 Hours</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Completed comprehensive audit of Stellar Tech's domestic and international patents. Identified 3 high-value trademarks requiring renewal.</p>
+<div class="flex items-center gap-sm mt-md">
+<img alt="Attorney" class="w-8 h-8 rounded-full object-cover" data-alt="Professional studio portrait of a senior male attorney in a dark navy tailored suit and light blue tie. He has a confident and welcoming expression, set against a blurred corporate office background with warm amber lighting and high-end mahogany furniture." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDjgQR67DDnIx1TaBBOK85Rqt33yzzL-RGXUPUHXGJiwCDZ8_mUhW_7jQ3laVWpPfLs1Gp7sRo_q-_Ypk8p4OMNIbIaPC0j3YNrc1UaP9g8uGTaK-vcDM3srzcUXRsKq-vRPrE2ckW6ByVlkdLkDqofxZXnWzfaYPSY0tLBr63O2H-dEacfLJR0V7MZLWCiLjuPeV36t9dZovK5A-K5VNfrszBX9rzAsYLY7SAoi_LmjgdHtPiEvWFlIcPYYv40zuFrqPBPem7tOlS6"/>
+<span class="font-label-sm text-label-sm text-on-surface">Arthur Sterling, Senior Partner</span>
+</div>
+</div>
+<!-- Timeline Item 2 -->
+<div class="relative pl-lg">
+<div class="absolute left-0 top-0 bottom-[-32px] w-px bg-outline-variant"></div>
+<div class="absolute left-[-4px] top-1 w-2 h-2 rounded-full bg-primary border-4 border-white ring-1 ring-primary/20"></div>
+<div class="flex justify-between items-start mb-base">
+<div>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Oct 23, 2024 • 11:30 AM</p>
+<h4 class="font-body-md text-body-md text-on-surface font-semibold">Contract Redlining: Acquisition Agreement</h4>
+</div>
+<span class="px-sm py-xs bg-surface-container text-primary text-label-sm font-label-sm rounded-full">4.2 Hours</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Drafted revisions for Section 4.2 (Governance) to reflect updated board structure agreements reached during yesterday's stakeholder call.</p>
+<div class="flex items-center gap-sm mt-md">
+<img alt="Attorney" class="w-8 h-8 rounded-full object-cover" data-alt="A professional portrait of a female corporate attorney with a calm, intellectual demeanor. She is wearing a modern charcoal grey blazer over a cream blouse. The background is a minimalist, light-filled architectural space with clean lines and soft, natural daylighting, embodying a high-end legal office atmosphere." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCXATuYhFei08iVYfJu1Nm8pr-xIgviyewqu0cQ6BpkyB4a_3mlbONA3Pg_Y6vcP0-y_sqN9P63jRYEPK4Qe-kvLWdvZrQwrNrnCKrT8hPQWvUM45UNiso3CkgYJvlAZsaFYjgVCkdlbp25-qQBPlXaTjH82dn--XrC55xZtMhC71qY_ao0CO31CynTPx1hbBGiAT6sGKbA2PtAVceymp0zZJtDUCTyYhXyhKGwLDJ9B9x0QER4hrZA07ygoZIrPSWJEZ4kAmkgUjs5"/>
+<span class="font-label-sm text-label-sm text-on-surface">Elena Rodriguez, Associate</span>
+</div>
+</div>
+<!-- Timeline Item 3 -->
+<div class="relative pl-lg">
+<div class="absolute left-0 top-0 h-4 w-px bg-outline-variant"></div>
+<div class="absolute left-[-4px] top-1 w-2 h-2 rounded-full bg-primary border-4 border-white ring-1 ring-primary/20"></div>
+<div class="flex justify-between items-start mb-base">
+<div>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Oct 22, 2024 • 9:00 AM</p>
+<h4 class="font-body-md text-body-md text-on-surface font-semibold">Strategic Consultation</h4>
+</div>
+<span class="px-sm py-xs bg-surface-container text-primary text-label-sm font-label-sm rounded-full">2.0 Hours</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Video conference with client leadership to discuss regulatory hurdles in the European expansion phase of the acquisition.</p>
+<div class="flex items-center gap-sm mt-md">
+<img alt="Attorney" class="w-8 h-8 rounded-full object-cover" data-alt="Professional studio portrait of a senior male attorney in a dark navy tailored suit and light blue tie. He has a confident and welcoming expression, set against a blurred corporate office background with warm amber lighting and high-end mahogany furniture." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB3As1xhtVJtOLzH6txLpAJlFboQU7wth1KRgATid8UBrTLVMmczmeU37gnYe3se89oh8rvRDNpYJuZzsOqzIIU4e_Sg1cxys4qL968tqMQkUrt6S5qhm4oPxZ3fObLZxa7aTYvCili-9jf0w2Wb-V6sK_QoHq75vyb3wqTPLiz_v2lEWJ_ynjFDVVVinL-wnUblXU3DqbUXLKG_5O2ihsOopXs0MWQbvaOegRXxJ0v8KqPbeN8DUQRuOGNl837bZoCqSKTWKrh6B9o"/>
+<span class="font-label-sm text-label-sm text-on-surface">Arthur Sterling, Senior Partner</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Detailed Metrics Cards -->
+<div class="col-span-12 lg:col-span-12 grid grid-cols-1 md:grid-cols-3 gap-lg">
+<div class="bg-white p-lg border border-outline-variant rounded-xl flex items-center gap-lg">
+<div class="w-12 h-12 rounded-lg bg-surface-container-low flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[28px]">speed</span>
+</div>
+<div>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Efficiency Rating</p>
+<p class="font-headline-sm text-headline-sm text-primary">94.2%</p>
+</div>
+</div>
+<div class="bg-white p-lg border border-outline-variant rounded-xl flex items-center gap-lg">
+<div class="w-12 h-12 rounded-lg bg-surface-container-low flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[28px]">history_toggle_off</span>
+</div>
+<div>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Average Turnaround</p>
+<p class="font-headline-sm text-headline-sm text-primary">1.4 Days</p>
+</div>
+</div>
+<div class="bg-white p-lg border border-outline-variant rounded-xl flex items-center gap-lg">
+<div class="w-12 h-12 rounded-lg bg-surface-container-low flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[28px]">verified</span>
+</div>
+<div>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Milestones Cleared</p>
+<p class="font-headline-sm text-headline-sm text-primary">12 / 15</p>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-container-low border-t border-outline-variant mt-xxl">
+<div class="w-full py-xl px-margin-desktop flex flex-col md:flex-row justify-between items-center gap-md max-w-[1440px] mx-auto">
+<div class="flex items-center gap-xl">
+<div class="font-label-md text-label-md font-semibold text-on-surface">Lexington &amp; Associates</div>
+<div class="hidden md:flex gap-lg">
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-primary transition-colors underline" href="#">Support</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-primary transition-colors underline" href="#">Privacy Policy</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-primary transition-colors underline" href="#">Terms of Service</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-primary transition-colors underline" href="#">Contact Us</a>
+</div>
+</div>
+<p class="font-label-sm text-label-sm text-on-surface-variant">© 2024 Lexington &amp; Associates. All rights reserved.</p>
+</div>
+</footer>
+<script>
+        // Micro-interactions for hovering cards
+        document.querySelectorAll('.glass-card, .bg-surface-container-low').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.classList.add('shadow-lg');
+                card.style.transform = 'translateY(-2px)';
+                card.style.transition = 'all 0.3s ease';
+            });
+            card.addEventListener('mouseleave', () => {
+                card.classList.remove('shadow-lg');
+                card.style.transform = 'translateY(0px)';
+            });
+        });
+
+        // Simple animation trigger for progress bar on load
+        window.onload = () => {
+            const bar = document.querySelector('.bg-primary.h-full');
+            if(bar) {
+                bar.style.width = '0%';
+                setTimeout(() => {
+                    bar.style.width = '74%';
+                }, 300);
+            }
+        };
+    </script>
+</body></html>

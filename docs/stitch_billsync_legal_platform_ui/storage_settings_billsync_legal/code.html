@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Storage Settings | LexisPremium</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary-container": "#735a00",
+                        "surface-container-lowest": "#ffffff",
+                        "primary-fixed-dim": "#a6c9f9",
+                        "on-primary-fixed-variant": "#234871",
+                        "inverse-on-surface": "#e8f2ff",
+                        "on-primary-fixed": "#001c37",
+                        "tertiary-fixed": "#d6e3ff",
+                        "surface": "#f7f9ff",
+                        "secondary-fixed": "#ffe08e",
+                        "tertiary-container": "#283a56",
+                        "primary-container": "#123b63",
+                        "tertiary-fixed-dim": "#b5c7ea",
+                        "surface-dim": "#d1dbe8",
+                        "surface-container-low": "#edf4ff",
+                        "on-tertiary-fixed": "#071c36",
+                        "on-background": "#121d26",
+                        "on-error-container": "#93000a",
+                        "error": "#ba1a1a",
+                        "background": "#f7f9ff",
+                        "outline": "#73777f",
+                        "on-error": "#ffffff",
+                        "on-primary": "#ffffff",
+                        "surface-variant": "#d9e3f1",
+                        "on-tertiary-fixed-variant": "#364764",
+                        "surface-container-high": "#dfe9f7",
+                        "on-surface-variant": "#43474e",
+                        "on-surface": "#121d26",
+                        "on-primary-container": "#83a6d4",
+                        "primary-fixed": "#d2e4ff",
+                        "on-secondary": "#ffffff",
+                        "tertiary": "#11243f",
+                        "on-tertiary-container": "#92a4c5",
+                        "surface-bright": "#f7f9ff",
+                        "secondary-container": "#fed255",
+                        "error-container": "#ffdad6",
+                        "primary": "#002546",
+                        "inverse-surface": "#27313c",
+                        "surface-container-highest": "#d9e3f1",
+                        "secondary": "#755b00",
+                        "surface-container": "#e4effd",
+                        "on-secondary-fixed": "#241a00",
+                        "secondary-fixed-dim": "#ecc246",
+                        "outline-variant": "#c3c6cf",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary-fixed-variant": "#584400",
+                        "inverse-primary": "#a6c9f9",
+                        "surface-tint": "#3d608a"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "base": "8px",
+                        "xl": "32px",
+                        "xs": "4px",
+                        "lg": "24px",
+                        "sm": "12px",
+                        "xxl": "48px",
+                        "gutter-desktop": "24px",
+                        "md": "16px",
+                        "margin-desktop": "40px",
+                        "sidebar-width": "260px"
+                    },
+                    "fontFamily": {
+                        "body-sm": ["Inter"],
+                        "label-md": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "headline-sm": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-md": ["Inter"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { background-color: #f7f9ff; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+            text-transform: none;
+            letter-spacing: normal;
+            word-wrap: normal;
+            white-space: nowrap;
+            direction: ltr;
+        }
+        .sidebar-active {
+            border-left: 2px solid #fed255;
+            background-color: rgba(18, 59, 99, 0.3);
+            color: #f7f9ff;
+        }
+        .custom-toggle:checked + .toggle-dot {
+            transform: translateX(100%);
+            background-color: #ffffff;
+        }
+        .custom-toggle:checked {
+            background-color: #755b00;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(229, 231, 235, 0.5);
+        }
+    </style>
+</head>
+<body class="font-body-md text-on-surface">
+<!-- Side Navigation Shell -->
+<aside class="fixed left-0 top-0 h-screen w-sidebar-width bg-primary border-r border-outline-variant/10 flex flex-col py-lg z-50">
+<div class="px-lg mb-xxl">
+<h1 class="text-headline-sm font-headline-sm font-bold text-surface">LexisPremium</h1>
+<p class="text-label-sm font-label-sm text-surface-variant/70">Elite Law Management</p>
+</div>
+<nav class="flex-1 px-sm space-y-1">
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-surface-variant hover:bg-primary-container/20 hover:text-surface transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-body-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-surface-variant hover:bg-primary-container/20 hover:text-surface transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="folder_open">folder_open</span>
+<span class="font-body-md">Matters</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-surface-variant hover:bg-primary-container/20 hover:text-surface transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="timer">timer</span>
+<span class="font-body-md">Time Tracking</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-surface-variant hover:bg-primary-container/20 hover:text-surface transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="receipt_long">receipt_long</span>
+<span class="font-body-md">Billing</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded-lg sidebar-active" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-body-md">Settings</span>
+</a>
+</nav>
+<div class="px-sm pt-lg mt-auto border-t border-outline-variant/10">
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-surface-variant hover:bg-primary-container/20 hover:text-surface transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="help_outline">help_outline</span>
+<span class="font-body-md">Help Center</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-surface-variant hover:bg-primary-container/20 hover:text-surface transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+<span class="font-body-md">Log Out</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Shell -->
+<main class="ml-sidebar-width min-h-screen flex flex-col">
+<!-- Top Navigation Bar -->
+<header class="flex justify-between items-center h-16 bg-surface border-b border-outline-variant px-margin-desktop sticky top-0 z-40 shadow-sm">
+<div class="flex items-center gap-xl">
+<div class="relative">
+<span class="absolute inset-y-0 left-0 pl-3 flex items-center text-outline">
+<span class="material-symbols-outlined" data-icon="search">search</span>
+</span>
+<input class="pl-10 pr-4 py-1.5 bg-surface-container-low border-none rounded-full text-label-md w-64 focus:ring-2 focus:ring-secondary" placeholder="Search settings..." type="text"/>
+</div>
+<div class="flex gap-lg">
+<a class="text-on-surface-variant hover:text-primary transition-colors font-label-md" href="#">Quick Actions</a>
+<a class="text-primary font-bold border-b-2 border-secondary-container pb-1 font-label-md" href="#">Storage Config</a>
+</div>
+</div>
+<div class="flex items-center gap-lg">
+<div class="flex gap-md">
+<button class="p-2 text-on-surface-variant hover:text-primary transition-transform active:opacity-80 scale-98">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:text-primary transition-transform active:opacity-80 scale-98">
+<span class="material-symbols-outlined" data-icon="history">history</span>
+</button>
+</div>
+<button class="bg-primary text-on-primary px-lg py-sm rounded-lg font-label-md transition-transform active:opacity-80 scale-98">
+                    Save Changes
+                </button>
+<div class="w-8 h-8 rounded-full bg-secondary-container overflow-hidden">
+<img alt="Attorney Profile" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBbmbtFojqzNEjJ4nM2ulzHWVzPo16b9cK8DTOilKqEpQmYmSkpDA-u6fokgk1dQJH4o02UOxHojHbtSEs_AcWsdLyWvBXp6IaFj5EEDqycD7UQtNpNTTkyLhUqFRT4MLR2KeA22RtODnsGJCukGkm4wsGFJXs1vX2YbHRI8ZGMG-56Bhptq_Zqkd5X8T7qv5_boqEEu0bygDgNTtVl9dksRjeQ3cLiUEV7MbGSbSpC3ibQjbxmIgai5WAOxn2gcWs-P6DvC8xU_YWN"/>
+</div>
+</div>
+</header>
+<!-- Canvas Area -->
+<div class="p-margin-desktop space-y-xl max-w-[1200px]">
+<!-- Page Header -->
+<div class="flex flex-col gap-xs mb-lg">
+<h2 class="text-headline-lg font-headline-lg text-primary">Storage &amp; Documents</h2>
+<p class="text-body-lg text-on-surface-variant">Configure enterprise-grade storage integrations and legal compliance policies.</p>
+</div>
+<!-- Bento Grid Content -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-lg">
+<!-- Cloud Integrations (6 cols) -->
+<section class="md:col-span-8 glass-card rounded-xl p-lg space-y-lg shadow-sm">
+<div class="flex justify-between items-center">
+<h3 class="text-headline-sm font-headline-sm text-primary">Cloud Integrations</h3>
+<span class="text-label-sm font-label-sm px-sm py-xs bg-secondary-container/20 text-secondary rounded-full">3 Connected</span>
+</div>
+<div class="space-y-md">
+<!-- NetDocuments -->
+<div class="flex items-center justify-between p-md border border-outline-variant rounded-lg hover:border-secondary transition-colors cursor-pointer group">
+<div class="flex items-center gap-md">
+<div class="w-12 h-12 rounded bg-primary-container flex items-center justify-center text-on-primary-container">
+<span class="material-symbols-outlined text-3xl" data-icon="description">description</span>
+</div>
+<div>
+<p class="font-headline-sm text-body-md text-primary">NetDocuments</p>
+<p class="text-body-sm text-on-surface-variant">Enterprise legal content management</p>
+</div>
+</div>
+<div class="flex items-center gap-lg">
+<span class="text-label-sm text-secondary font-bold">ACTIVE</span>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer custom-toggle" type="checkbox"/>
+<div class="w-11 h-6 bg-surface-variant rounded-full peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-secondary"></div>
+</label>
+</div>
+</div>
+<!-- Google Drive -->
+<div class="flex items-center justify-between p-md border border-outline-variant rounded-lg hover:border-secondary transition-colors cursor-pointer">
+<div class="flex items-center gap-md">
+<div class="w-12 h-12 rounded bg-surface-container-high flex items-center justify-center">
+<span class="material-symbols-outlined text-3xl text-primary" data-icon="add_to_drive">add_to_drive</span>
+</div>
+<div>
+<p class="font-headline-sm text-body-md text-primary">Google Drive for Workspace</p>
+<p class="text-body-sm text-on-surface-variant">Sync firm files to shared drives</p>
+</div>
+</div>
+<div class="flex items-center gap-lg">
+<span class="text-label-sm text-on-surface-variant">CONNECTED</span>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer custom-toggle" type="checkbox"/>
+<div class="w-11 h-6 bg-surface-variant rounded-full peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-secondary"></div>
+</label>
+</div>
+</div>
+<!-- OneDrive -->
+<div class="flex items-center justify-between p-md border border-outline-variant rounded-lg hover:border-secondary transition-colors cursor-pointer">
+<div class="flex items-center gap-md">
+<div class="w-12 h-12 rounded bg-surface-container-high flex items-center justify-center">
+<span class="material-symbols-outlined text-3xl text-primary" data-icon="cloud_done">cloud_done</span>
+</div>
+<div>
+<p class="font-headline-sm text-body-md text-primary">Microsoft OneDrive</p>
+<p class="text-body-sm text-on-surface-variant">Real-time collaboration via Office 365</p>
+</div>
+</div>
+<div class="flex items-center gap-lg">
+<button class="text-label-md text-secondary hover:underline">Configure</button>
+<label class="relative inline-flex items-center cursor-pointer">
+<input class="sr-only peer custom-toggle" type="checkbox"/>
+<div class="w-11 h-6 bg-surface-variant rounded-full peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-secondary"></div>
+</label>
+</div>
+</div>
+</div>
+</section>
+<!-- Storage Usage (4 cols) -->
+<section class="md:col-span-4 bg-primary text-surface rounded-xl p-lg flex flex-col justify-between shadow-sm relative overflow-hidden">
+
+<div class="relative z-10">
+<h3 class="text-headline-sm font-headline-sm mb-lg">Firm Capacity</h3>
+<div class="space-y-xl">
+<div>
+<div class="flex justify-between text-label-sm mb-xs">
+<span>Used Storage</span>
+<span>820 GB / 1 TB</span>
+</div>
+<div class="w-full bg-surface-container-lowest/20 h-2 rounded-full overflow-hidden">
+<div class="bg-secondary h-full" style="width: 82%"></div>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-md">
+<div class="p-md bg-white/10 rounded-lg">
+<p class="text-label-sm opacity-70">Files</p>
+<p class="text-headline-md">142k</p>
+</div>
+<div class="p-md bg-white/10 rounded-lg">
+<p class="text-label-sm opacity-70">Active Users</p>
+<p class="text-headline-md">24</p>
+</div>
+</div>
+</div>
+</div>
+<button class="relative z-10 mt-xl w-full border border-secondary text-secondary py-sm rounded-lg font-label-md hover:bg-secondary hover:text-primary transition-colors">
+                        Upgrade Capacity
+                    </button>
+</section>
+<!-- Retention Policy (7 cols) -->
+<section class="md:col-span-7 glass-card rounded-xl p-lg space-y-lg shadow-sm">
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-secondary" data-icon="verified_user">verified_user</span>
+<h3 class="text-headline-sm font-headline-sm text-primary">Data Retention Policies</h3>
+</div>
+<div class="space-y-md">
+<div class="flex flex-col gap-sm">
+<div class="flex items-center justify-between">
+<label class="text-label-md font-bold text-primary">Automatic Matter Archiving</label>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer custom-toggle" type="checkbox"/>
+<div class="w-11 h-6 bg-surface-variant rounded-full peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-secondary"></div>
+</label>
+</div>
+<p class="text-body-sm text-on-surface-variant">Automatically move matter documents to cold storage after inactivity.</p>
+<div class="flex items-center gap-md">
+<select class="bg-surface-container-low border-outline-variant rounded-lg text-body-sm focus:ring-secondary py-xs px-md">
+<option>After 12 months</option>
+<option>After 2 years</option>
+<option selected="">After 5 years</option>
+</select>
+<span class="text-body-sm text-on-surface-variant">of last activity.</span>
+</div>
+</div>
+<hr class="border-outline-variant/30"/>
+<div class="flex flex-col gap-sm">
+<div class="flex items-center justify-between">
+<label class="text-label-md font-bold text-primary">Compliance Deletion (Sunset Clause)</label>
+<label class="relative inline-flex items-center cursor-pointer">
+<input class="sr-only peer custom-toggle" type="checkbox"/>
+<div class="w-11 h-6 bg-surface-variant rounded-full peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-secondary"></div>
+</label>
+</div>
+<p class="text-body-sm text-on-surface-variant">Permanently delete records to comply with regional data privacy laws.</p>
+<div class="p-md bg-error-container/20 border border-error/20 rounded-lg flex gap-md">
+<span class="material-symbols-outlined text-error" data-icon="warning">warning</span>
+<p class="text-body-sm text-on-error-container">Warning: This action is irreversible. Documents will be purged from all connected cloud providers.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- User Quotas (5 cols) -->
+<section class="md:col-span-5 glass-card rounded-xl p-lg shadow-sm">
+<h3 class="text-headline-sm font-headline-sm text-primary mb-lg">User Storage Quotas</h3>
+<div class="space-y-md">
+<div class="flex items-center justify-between p-sm hover:bg-surface-container-low rounded-lg transition-colors">
+<div class="flex items-center gap-sm">
+<img alt="User Avatar" class="w-8 h-8 rounded-full" src="https://lh3.googleusercontent.com/aida-public/AB6AXuACaYg8S8puSnDfFnPSqRegmx86aotKx-Ilma3bNWobhGNE6XHrQdakV3P_pVxNhzWcQy6uxLTBL2yxqrciHjQZ04n6bTjJIgQXumvOK7UjgnP5qJA5QiBIjni1aNERGxcmziLPQvhB7mU5E-TkS9_og8N0_cnR-g_7Yz0a_-yTwrabh7Wj3-Fm-hBQMlO2WlvWBHCRYgWnPy5lIeNnnG7W_DGZkP0bqR8Q6oukUr6nAixpU3z-plu0XBvWLxmBEIF0CZc3nRxhHyQ5"/>
+<div>
+<p class="text-label-md font-bold">Sarah Jenkins</p>
+<p class="text-label-sm text-on-surface-variant">Partner</p>
+</div>
+</div>
+<div class="text-right">
+<p class="text-label-md">Unlimited</p>
+<p class="text-label-sm text-secondary">Default</p>
+</div>
+</div>
+<div class="flex items-center justify-between p-sm hover:bg-surface-container-low rounded-lg transition-colors">
+<div class="flex items-center gap-sm">
+<img alt="User Avatar" class="w-8 h-8 rounded-full" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAIQpgd2c3c_M9mKEOShG8EIXZfGSEdxzXbl-hDQr0WQJTJ9YpT1zEy_2zA5YKIu51rKB4pKbcAAPecIZZcg70Au1y0PnS3WDM-Bj9qPzUZOqye8Bkhv_TrmSCm2g3_64Vo8rHMQCNRk3mkwchJ_QJ_TivsPby6Qf1L1NhaB9-HqUiRPbeo8gN5hZtZfIhKCvXyiQJTAdlBJow8o-43Y6ErOwSC_RcTW6qF9McnxJGayzCC9uEkKD8QZlsC0cpyysxM1Q0xg45GcPBl"/>
+<div>
+<p class="text-label-md font-bold">Michael Chen</p>
+<p class="text-label-sm text-on-surface-variant">Associate</p>
+</div>
+</div>
+<div class="text-right">
+<div class="flex items-center gap-xs">
+<input class="w-12 text-center bg-surface-container border-none rounded py-0 text-label-md" type="text" value="50"/>
+<span class="text-label-sm">GB</span>
+</div>
+</div>
+</div>
+<div class="flex items-center justify-between p-sm hover:bg-surface-container-low rounded-lg transition-colors">
+<div class="flex items-center gap-sm">
+<img alt="User Avatar" class="w-8 h-8 rounded-full" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBk5fV6mOWX6AJx9v9rIcXdblpeakAhNqgSsDuquHcezIYfWzqB0505dOxIdnIVXigG05PRI6MSMoqHzViMzhbznOzmalMpx9aGdtr_lyB2DyNOnad2Doa4psjHs93Rywgh17zcs-eiOeeD09Lm6fVoB0O9aHhAmXXbt6KpCnXF0A7yiQtb6fNkAyiAIRyi1hQh7P5zf9G_s36ojat5NJXVcLX_-FiPpjs_6gdHa3VxFXRygh3yRQAo_lIDKdWISZKkMqAC0xVo-ual"/>
+<div>
+<p class="text-label-md font-bold">Emily Watson</p>
+<p class="text-label-sm text-on-surface-variant">Paralegal</p>
+</div>
+</div>
+<div class="text-right">
+<div class="flex items-center gap-xs">
+<input class="w-12 text-center bg-surface-container border-none rounded py-0 text-label-md" type="text" value="20"/>
+<span class="text-label-sm">GB</span>
+</div>
+</div>
+</div>
+<button class="w-full mt-md py-sm border-2 border-dashed border-outline-variant rounded-lg text-label-md text-on-surface-variant hover:border-secondary hover:text-secondary transition-all">
+                            Add Custom Override
+                        </button>
+</div>
+</section>
+<!-- Advanced Sync Logic (Full width) -->
+<section class="md:col-span-12 glass-card rounded-xl overflow-hidden shadow-sm">
+<div class="p-lg bg-surface-container-low border-b border-outline-variant flex justify-between items-center">
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-primary" data-icon="sync_alt">sync_alt</span>
+<h3 class="text-headline-sm font-headline-sm text-primary">Real-time Synchronization Logic</h3>
+</div>
+<div class="flex gap-sm">
+<button class="px-md py-1.5 bg-surface rounded-md border border-outline-variant text-label-sm">Run Manual Sync</button>
+<button class="px-md py-1.5 bg-secondary text-primary font-bold rounded-md text-label-sm">View Sync Logs</button>
+</div>
+</div>
+<div class="p-lg grid grid-cols-1 md:grid-cols-3 gap-xl">
+<div class="space-y-sm">
+<p class="text-label-md font-bold text-primary">Conflict Resolution</p>
+<div class="flex flex-col gap-xs">
+<label class="flex items-center gap-md cursor-pointer">
+<input checked="" class="text-secondary focus:ring-secondary" name="conflict" type="radio"/>
+<span class="text-body-sm">Last modified wins (Recommended)</span>
+</label>
+<label class="flex items-center gap-md cursor-pointer">
+<input class="text-secondary focus:ring-secondary" name="conflict" type="radio"/>
+<span class="text-body-sm">Always create duplicate versions</span>
+</label>
+<label class="flex items-center gap-md cursor-pointer">
+<input class="text-secondary focus:ring-secondary" name="conflict" type="radio"/>
+<span class="text-body-sm">Manual approval required</span>
+</label>
+</div>
+</div>
+<div class="space-y-sm">
+<p class="text-label-md font-bold text-primary">Excluded File Types</p>
+<div class="flex flex-wrap gap-xs">
+<span class="px-sm py-1 bg-surface-container-high rounded-full text-label-sm flex items-center gap-xs">
+                                    .exe <span class="material-symbols-outlined text-xs" data-icon="close">close</span>
+</span>
+<span class="px-sm py-1 bg-surface-container-high rounded-full text-label-sm flex items-center gap-xs">
+                                    .mp4 <span class="material-symbols-outlined text-xs" data-icon="close">close</span>
+</span>
+<span class="px-sm py-1 bg-surface-container-high rounded-full text-label-sm flex items-center gap-xs">
+                                    .tmp <span class="material-symbols-outlined text-xs" data-icon="close">close</span>
+</span>
+<button class="px-sm py-1 border border-dashed border-outline-variant rounded-full text-label-sm text-secondary">+ Add</button>
+</div>
+</div>
+<div class="space-y-sm">
+<p class="text-label-md font-bold text-primary">Network Bandwidth</p>
+<input class="w-full h-2 bg-surface-container rounded-lg appearance-none cursor-pointer accent-secondary" type="range"/>
+<div class="flex justify-between text-label-sm text-on-surface-variant">
+<span>Throttle (1MB/s)</span>
+<span>Unrestricted</span>
+</div>
+</div>
+</div>
+</section>
+</div>
+</div>
+<!-- Footer Shell -->
+<footer class="mt-auto bg-surface-container-low border-t border-outline-variant ml-sidebar-width p-lg flex justify-between items-center">
+<div class="flex flex-col gap-xs">
+<span class="text-label-sm font-label-sm font-bold text-primary">LexisPremium Legal Systems</span>
+<p class="text-body-sm text-on-surface-variant opacity-90">© 2024 LexisPremium Legal Systems. All rights reserved.</p>
+</div>
+<div class="flex gap-xl">
+<a class="text-on-surface-variant hover:text-secondary transition-colors text-body-sm" href="#">Privacy Policy</a>
+<a class="text-on-surface-variant hover:text-secondary transition-colors text-body-sm" href="#">Terms of Service</a>
+<a class="text-on-surface-variant hover:text-secondary transition-colors text-body-sm" href="#">Security</a>
+<a class="text-on-surface-variant hover:text-secondary transition-colors text-body-sm" href="#">Compliance</a>
+</div>
+</footer>
+</main>
+<script>
+        // Micro-interactions for hover states
+        document.querySelectorAll('.glass-card').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.transform = 'translateY(-2px)';
+                card.style.transition = 'transform 0.3s ease, box-shadow 0.3s ease';
+                card.classList.add('shadow-md');
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'translateY(0)';
+                card.classList.remove('shadow-md');
+            });
+        });
+
+        // Toggle state persistence simulation
+        document.querySelectorAll('.custom-toggle').forEach(toggle => {
+            toggle.addEventListener('change', function() {
+                const parent = this.closest('.flex');
+                if (this.checked) {
+                    parent.classList.add('border-secondary');
+                } else {
+                    parent.classList.remove('border-secondary');
+                }
+            });
+        });
+    </script>
+</body></html>

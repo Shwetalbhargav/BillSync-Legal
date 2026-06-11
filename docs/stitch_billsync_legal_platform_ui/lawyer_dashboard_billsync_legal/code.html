@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>BillSync Legal | Lawyer Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .active-gold-glow {
+            box-shadow: 0 0 15px -3px rgba(254, 210, 85, 0.4);
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #d9e3f1;
+            border-radius: 10px;
+        }
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 24px;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "background": "#f7f9ff",
+                      "surface-variant": "#d9e3f1",
+                      "tertiary": "#11243f",
+                      "tertiary-fixed-dim": "#b5c7ea",
+                      "inverse-primary": "#a6c9f9",
+                      "on-error": "#ffffff",
+                      "surface": "#f7f9ff",
+                      "on-secondary": "#ffffff",
+                      "error": "#ba1a1a",
+                      "on-primary": "#ffffff",
+                      "tertiary-container": "#283a56",
+                      "on-tertiary-fixed": "#071c36",
+                      "tertiary-fixed": "#d6e3ff",
+                      "secondary-fixed": "#ffe08e",
+                      "on-tertiary-fixed-variant": "#364764",
+                      "on-error-container": "#93000a",
+                      "surface-tint": "#3d608a",
+                      "primary": "#002546",
+                      "on-secondary-container": "#735a00",
+                      "on-secondary-fixed": "#241a00",
+                      "outline-variant": "#c3c6cf",
+                      "inverse-surface": "#27313c",
+                      "surface-container-highest": "#d9e3f1",
+                      "surface-dim": "#d1dbe8",
+                      "inverse-on-surface": "#e8f2ff",
+                      "primary-container": "#123b63",
+                      "on-surface-variant": "#43474e",
+                      "surface-container": "#e4effd",
+                      "secondary": "#755b00",
+                      "surface-bright": "#f7f9ff",
+                      "surface-container-lowest": "#ffffff",
+                      "on-primary-fixed-variant": "#234871",
+                      "on-surface": "#121d26",
+                      "error-container": "#ffdad6",
+                      "on-tertiary-container": "#92a4c5",
+                      "outline": "#73777f",
+                      "on-primary-fixed": "#001c37",
+                      "primary-fixed-dim": "#a6c9f9",
+                      "surface-container-low": "#edf4ff",
+                      "on-tertiary": "#ffffff",
+                      "on-secondary-fixed-variant": "#584400",
+                      "on-primary-container": "#83a6d4",
+                      "primary-fixed": "#d2e4ff",
+                      "secondary-fixed-dim": "#ecc246",
+                      "surface-container-high": "#dfe9f7",
+                      "secondary-container": "#fed255",
+                      "on-background": "#121d26"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "sidebar-width": "260px",
+                      "xxl": "48px",
+                      "md": "16px",
+                      "base": "8px",
+                      "xl": "32px",
+                      "margin-desktop": "40px",
+                      "xs": "4px",
+                      "lg": "24px",
+                      "gutter-desktop": "24px",
+                      "sm": "12px"
+              },
+              "fontFamily": {
+                      "body-md": ["Inter"],
+                      "label-sm": ["Inter"],
+                      "headline-md": ["Inter"],
+                      "headline-lg": ["Inter"],
+                      "body-lg": ["Inter"],
+                      "body-sm": ["Inter"],
+                      "display-lg": ["Inter"],
+                      "label-md": ["Inter"],
+                      "headline-sm": ["Inter"]
+              },
+              "fontSize": {
+                      "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "600"}],
+                      "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                      "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                      "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                      "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                      "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                      "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}]
+              }
+            },
+          },
+        }
+    </script>
+</head>
+<body class="bg-background font-body-md text-on-surface antialiased">
+<!-- Fixed Side Navigation -->
+<aside class="fixed left-0 top-0 h-full w-sidebar-width bg-tertiary flex flex-col py-lg z-50">
+<div class="px-lg mb-xl">
+<h1 class="font-headline-sm text-headline-sm text-surface-container-lowest">BillSync Legal</h1>
+<p class="font-label-sm text-label-sm text-tertiary-fixed-dim opacity-70">Law Firm Management</p>
+</div>
+<nav class="flex-1 overflow-y-auto">
+<ul class="space-y-xs">
+<!-- Dashboard Active -->
+<li>
+<a class="flex items-center px-lg py-sm text-surface-container-lowest border-l-2 border-secondary font-bold transition-colors" href="#">
+<span class="material-symbols-outlined mr-md">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</a>
+</li>
+<li>
+<a class="flex items-center px-lg py-sm text-tertiary-fixed-dim hover:text-surface-container-lowest transition-colors" href="#">
+<span class="material-symbols-outlined mr-md">group</span>
+<span class="font-label-md text-label-md">Clients</span>
+</a>
+</li>
+<li>
+<a class="flex items-center px-lg py-sm text-tertiary-fixed-dim hover:text-surface-container-lowest transition-colors" href="#">
+<span class="material-symbols-outlined mr-md">folder_open</span>
+<span class="font-label-md text-label-md">Matters</span>
+</a>
+</li>
+<li>
+<a class="flex items-center px-lg py-sm text-tertiary-fixed-dim hover:text-surface-container-lowest transition-colors" href="#">
+<span class="material-symbols-outlined mr-md">assignment</span>
+<span class="font-label-md text-label-md">Tasks</span>
+</a>
+</li>
+<li>
+<a class="flex items-center px-lg py-sm text-tertiary-fixed-dim hover:text-surface-container-lowest transition-colors" href="#">
+<span class="material-symbols-outlined mr-md">timer</span>
+<span class="font-label-md text-label-md">Work Meter</span>
+</a>
+</li>
+<li>
+<a class="flex items-center px-lg py-sm text-tertiary-fixed-dim hover:text-surface-container-lowest transition-colors" href="#">
+<span class="material-symbols-outlined mr-md">calendar_today</span>
+<span class="font-label-md text-label-md">Calendar</span>
+</a>
+</li>
+<li>
+<a class="flex items-center px-lg py-sm text-tertiary-fixed-dim hover:text-surface-container-lowest transition-colors" href="#">
+<span class="material-symbols-outlined mr-md">payments</span>
+<span class="font-label-md text-label-md">Billing</span>
+</a>
+</li>
+<li>
+<a class="flex items-center px-lg py-sm text-tertiary-fixed-dim hover:text-surface-container-lowest transition-colors" href="#">
+<span class="material-symbols-outlined mr-md">description</span>
+<span class="font-label-md text-label-md">Documents</span>
+</a>
+</li>
+<li>
+<a class="flex items-center px-lg py-sm text-tertiary-fixed-dim hover:text-surface-container-lowest transition-colors" href="#">
+<span class="material-symbols-outlined mr-md">smart_toy</span>
+<span class="font-label-md text-label-md">AI Assistant</span>
+</a>
+</li>
+</ul>
+</nav>
+<div class="px-lg pt-lg mt-auto border-t border-white/10">
+<a class="flex items-center text-tertiary-fixed-dim hover:text-surface-container-lowest transition-colors mb-md" href="#">
+<span class="material-symbols-outlined mr-md">settings</span>
+<span class="font-label-md text-label-md">Settings</span>
+</a>
+<div class="flex items-center space-x-md">
+<img alt="User Profile" class="w-8 h-8 rounded-full border border-secondary" data-alt="A professional headshot of a lawyer in a dark blue suit, looking confident and approachable against a blurred high-end office background. The lighting is soft and corporate, matching the premium and trusted aesthetic of a modern law firm application." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB-LQ-2NGEwSNtjUYq7UoB5aiEqYKyg1ddBkQlHALnjklgem_plmEsoPAfqc415bls80ZQDnXOr-B3zW95tjSjpO8HICrjDmvug2FFAm58zp34hifHKq7_Oxo9LBs2Nux2JB7DRIgTt3aYUB6yxoBT1hVBpTViGGD9cCdvZxZkT1WjJs7AorGc7f-AoWnK9xbuMTFZDHID9YMHeoIX6_ymA-o8YOxqQ3CPa_teVOFEOwZ5OtdjX6tywJm_Hqtym_vs400yZdGDwnXMB"/>
+<div class="overflow-hidden">
+<p class="text-surface-container-lowest font-label-md truncate">A. Sterling, Esq.</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="ml-sidebar-width min-h-screen flex flex-col">
+<!-- Top Navigation Bar -->
+<header class="h-16 flex justify-between items-center px-margin-desktop bg-surface border-b border-surface-variant sticky top-0 z-40">
+<div class="flex items-center bg-surface-container-low rounded-lg px-md py-xs border border-outline-variant w-96">
+<span class="material-symbols-outlined text-outline mr-sm">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-body-sm w-full placeholder:text-outline" placeholder="Search matters, clients, or tasks..." type="text"/>
+</div>
+<div class="flex items-center space-x-lg">
+<button class="relative p-xs hover:bg-surface-container-low rounded-full transition-all active:scale-95 duration-150">
+<span class="material-symbols-outlined text-on-surface-variant">notifications</span>
+<span class="absolute top-0 right-0 w-2 h-2 bg-error rounded-full border-2 border-surface"></span>
+</button>
+<button class="flex items-center space-x-sm px-md py-sm bg-primary text-on-primary rounded-lg font-label-md transition-all hover:opacity-90 active:scale-95">
+<span class="material-symbols-outlined">add</span>
+<span>New Matter</span>
+</button>
+</div>
+</header>
+<!-- Content Canvas -->
+<div class="p-margin-desktop space-y-xxl">
+<!-- Page Header -->
+<div class="flex flex-col md:flex-row md:items-end justify-between">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-primary">Good morning, Arthur.</h2>
+<p class="text-on-surface-variant mt-xs">Here is what is on your desk for today, Monday Oct 24.</p>
+</div>
+<div class="flex items-center space-x-md mt-md md:mt-0">
+<div class="bg-surface-container-highest px-md py-sm rounded-lg flex items-center space-x-sm">
+<span class="material-symbols-outlined text-primary">timer</span>
+<span class="font-label-md text-primary">Billable Today: <span class="font-bold">6.2 hrs</span></span>
+</div>
+</div>
+</div>
+<!-- Bento Grid Layout -->
+<div class="bento-grid">
+<!-- WORK METER CARD - Primary Focus -->
+<div class="col-span-12 lg:col-span-8 bg-surface-container-lowest rounded-xl border border-surface-variant p-lg shadow-sm active-gold-glow relative overflow-hidden">
+<div class="absolute top-0 right-0 p-lg">
+<span class="bg-secondary-container text-on-secondary-container px-sm py-xs rounded-full font-label-sm flex items-center space-x-xs">
+<span class="w-2 h-2 bg-secondary rounded-full animate-pulse"></span>
+<span>ACTIVE TIMER</span>
+</span>
+</div>
+<div class="flex flex-col h-full">
+<div class="mb-lg">
+<h3 class="font-headline-sm text-headline-sm text-primary mb-base">Work Meter</h3>
+<p class="text-body-sm text-on-surface-variant">Capture every billable minute with ease.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-lg mb-lg">
+<div class="space-y-sm">
+<label class="font-label-sm text-label-sm text-outline block">Client</label>
+<select class="w-full rounded-lg border-surface-variant focus:border-primary focus:ring-primary-container bg-surface-container-low text-body-sm px-md py-sm">
+<option>Global Logistics Corp</option>
+<option>Standard Chartered Inc.</option>
+<option>Private Client: J. Doe</option>
+</select>
+</div>
+<div class="space-y-sm">
+<label class="font-label-sm text-label-sm text-outline block">Matter</label>
+<select class="w-full rounded-lg border-surface-variant focus:border-primary focus:ring-primary-container bg-surface-container-low text-body-sm px-md py-sm">
+<option>GL-2024-Q4 Merger Compliance</option>
+<option>Intellectual Property Audit</option>
+</select>
+</div>
+<div class="space-y-sm">
+<label class="font-label-sm text-label-sm text-outline block">Task Category</label>
+<div class="flex space-x-sm">
+<button class="flex-1 px-md py-sm bg-surface-container text-primary font-label-md rounded-lg border border-primary/10">Legal Research</button>
+<button class="flex-1 px-md py-sm bg-surface-container-low text-on-surface-variant font-label-md rounded-lg border border-surface-variant">Drafting</button>
+<button class="flex-1 px-md py-sm bg-surface-container-low text-on-surface-variant font-label-md rounded-lg border border-surface-variant">Review</button>
+</div>
+</div>
+<div class="space-y-sm">
+<label class="font-label-sm text-label-sm text-outline block">Activity Notes</label>
+<textarea class="w-full rounded-lg border-surface-variant focus:border-primary focus:ring-primary-container bg-surface-container-low text-body-sm px-md py-sm resize-none" placeholder="Add optional details..." rows="1"></textarea>
+</div>
+</div>
+<div class="mt-auto flex flex-col md:flex-row items-center justify-between border-t border-surface-variant pt-lg">
+<div class="flex items-baseline space-x-md mb-md md:mb-0">
+<span class="text-display-lg font-display-lg text-primary tracking-tighter" id="timer-display">00:12:45</span>
+<span class="text-on-surface-variant font-label-md">Current Session</span>
+</div>
+<div class="flex space-x-md">
+<button class="px-xl py-md bg-error text-on-error rounded-full font-label-md flex items-center space-x-sm shadow-sm transition-all hover:brightness-95 active:scale-95" id="stop-btn">
+<span class="material-symbols-outlined">stop</span>
+<span>STOP &amp; SAVE</span>
+</button>
+<button class="p-md bg-surface-container-highest text-primary rounded-full transition-all hover:bg-surface-container-high" id="pause-btn">
+<span class="material-symbols-outlined">pause</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- MY TASKS TODAY -->
+<div class="col-span-12 lg:col-span-4 bg-surface-container-lowest rounded-xl border border-surface-variant p-lg shadow-sm flex flex-col">
+<div class="flex justify-between items-center mb-lg">
+<h3 class="font-headline-sm text-headline-sm text-primary">My Tasks Today</h3>
+<span class="bg-surface-container text-primary font-label-sm px-sm py-xs rounded-lg">4 Tasks</span>
+</div>
+<div class="flex-1 space-y-md">
+<!-- Task Item -->
+<div class="p-md bg-surface-container-low rounded-lg border border-transparent hover:border-secondary transition-all cursor-pointer group">
+<div class="flex items-start">
+<button class="mt-1 w-5 h-5 rounded-sm border-2 border-outline-variant flex items-center justify-center hover:border-secondary transition-colors">
+<span class="material-symbols-outlined text-[14px] text-white opacity-0 group-hover:opacity-10 transition-opacity">check</span>
+</button>
+<div class="ml-md">
+<p class="font-label-md text-label-md text-primary">Review NDA for Global Logistics</p>
+<p class="text-label-sm text-on-surface-variant mt-xs">Due by 2:00 PM</p>
+</div>
+</div>
+</div>
+<div class="p-md bg-surface-container-low rounded-lg border border-transparent hover:border-secondary transition-all cursor-pointer group">
+<div class="flex items-start">
+<button class="mt-1 w-5 h-5 rounded-sm border-2 border-outline-variant flex items-center justify-center"></button>
+<div class="ml-md">
+<p class="font-label-md text-label-md text-primary">Call with Witness J. Miller</p>
+<p class="text-label-sm text-on-surface-variant mt-xs">Schedule: 4:30 PM</p>
+</div>
+</div>
+</div>
+<div class="p-md bg-surface-container-low rounded-lg border-l-4 border-secondary/40 shadow-sm transition-all cursor-pointer group">
+<div class="flex items-start">
+<button class="mt-1 w-5 h-5 rounded-sm border-2 border-secondary bg-secondary/10 flex items-center justify-center"></button>
+<div class="ml-md">
+<p class="font-label-md text-label-md text-primary">Finalize Merger Filing</p>
+<p class="text-label-sm text-secondary font-bold mt-xs">URGENT - HIGH PRIORITY</p>
+</div>
+</div>
+</div>
+</div>
+<button class="mt-xl text-primary font-label-md hover:underline flex items-center">
+                        View Task Board <span class="material-symbols-outlined ml-xs text-[18px]">chevron_right</span>
+</button>
+</div>
+<!-- RECENT MATTERS -->
+<div class="col-span-12 bg-surface-container-lowest rounded-xl border border-surface-variant p-lg shadow-sm">
+<div class="flex justify-between items-center mb-xl">
+<h3 class="font-headline-sm text-headline-sm text-primary">Recent Matters</h3>
+<a class="text-on-surface-variant font-label-md hover:text-primary transition-colors" href="#">See all matters</a>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead>
+<tr class="border-b border-surface-variant">
+<th class="py-md font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Matter Name</th>
+<th class="py-md font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Client</th>
+<th class="py-md font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Total Time</th>
+<th class="py-md font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Status</th>
+<th class="py-md font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider text-right">Action</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-surface-variant/50">
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="py-lg">
+<div class="flex items-center space-x-md">
+<div class="w-10 h-10 bg-primary/5 rounded-lg flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">gavel</span>
+</div>
+<div>
+<p class="font-label-md text-label-md text-primary">Merger Acquisition 2024</p>
+<p class="text-label-sm text-on-surface-variant">ID: #GL-8921</p>
+</div>
+</div>
+</td>
+<td class="py-lg">
+<p class="font-label-md text-on-surface">Global Logistics Corp</p>
+</td>
+<td class="py-lg">
+<p class="font-label-md text-on-surface">142.5 hrs</p>
+</td>
+<td class="py-lg">
+<span class="px-sm py-xs bg-surface-container-highest text-primary rounded-full font-label-sm">Active</span>
+</td>
+<td class="py-lg text-right">
+<button class="p-xs text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="py-lg">
+<div class="flex items-center space-x-md">
+<div class="w-10 h-10 bg-primary/5 rounded-lg flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">business_center</span>
+</div>
+<div>
+<p class="font-label-md text-label-md text-primary">Commercial Lease Agreement</p>
+<p class="text-label-sm text-on-surface-variant">ID: #RE-4421</p>
+</div>
+</div>
+</td>
+<td class="py-lg">
+<p class="font-label-md text-on-surface">Real Estate Partners Ltd.</p>
+</td>
+<td class="py-lg">
+<p class="font-label-md text-on-surface">12.0 hrs</p>
+</td>
+<td class="py-lg">
+<span class="px-sm py-xs bg-secondary-container/30 text-on-secondary-container rounded-full font-label-sm">Review</span>
+</td>
+<td class="py-lg text-right">
+<button class="p-xs text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+<!-- Footer -->
+<footer class="mt-auto h-16 flex justify-between items-center px-margin-desktop border-t border-surface-variant bg-surface text-on-surface-variant">
+<p class="font-label-sm text-label-sm">© 2024 BillSync Legal. All rights reserved.</p>
+<div class="flex space-x-lg">
+<a class="font-label-sm text-label-sm hover:text-primary transition-colors" href="#">Terms of Service</a>
+<a class="font-label-sm text-label-sm hover:text-primary transition-colors" href="#">Privacy Policy</a>
+<a class="font-label-sm text-label-sm hover:text-primary transition-colors" href="#">Contact Support</a>
+</div>
+</footer>
+</main>
+<script>
+        // Simple timer logic simulation
+        let seconds = 765; // Starting at 00:12:45
+        const timerDisplay = document.getElementById('timer-display');
+        
+        function formatTime(s) {
+            const hrs = Math.floor(s / 3600);
+            const mins = Math.floor((s % 3600) / 60);
+            const secs = s % 60;
+            return `${hrs.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        setInterval(() => {
+            seconds++;
+            timerDisplay.textContent = formatTime(seconds);
+        }, 1000);
+
+        // Interaction simulation
+        const stopBtn = document.getElementById('stop-btn');
+        stopBtn.addEventListener('click', () => {
+            alert('Time entry saved to GL-2024-Q4 Merger Compliance matter.');
+            seconds = 0;
+            timerDisplay.textContent = formatTime(seconds);
+        });
+    </script>
+</body></html>

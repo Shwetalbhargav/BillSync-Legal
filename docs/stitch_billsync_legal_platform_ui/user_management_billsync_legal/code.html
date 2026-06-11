@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>User Management | BillSync Legal</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-surface": "#121d26",
+                        "surface-tint": "#3d608a",
+                        "primary-container": "#123b63",
+                        "inverse-surface": "#27313c",
+                        "on-tertiary-fixed": "#071c36",
+                        "tertiary-container": "#283a56",
+                        "on-secondary-fixed-variant": "#584400",
+                        "surface": "#f7f9ff",
+                        "secondary": "#755b00",
+                        "surface-dim": "#d1dbe8",
+                        "tertiary-fixed": "#d6e3ff",
+                        "inverse-primary": "#a6c9f9",
+                        "tertiary": "#11243f",
+                        "tertiary-fixed-dim": "#b5c7ea",
+                        "inverse-on-surface": "#e8f2ff",
+                        "on-secondary-container": "#735a00",
+                        "on-surface-variant": "#43474e",
+                        "on-error": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "on-primary-fixed": "#001c37",
+                        "outline": "#73777f",
+                        "on-background": "#121d26",
+                        "secondary-container": "#fed255",
+                        "surface-bright": "#f7f9ff",
+                        "on-primary": "#ffffff",
+                        "on-tertiary": "#ffffff",
+                        "on-primary-container": "#83a6d4",
+                        "surface-container-highest": "#d9e3f1",
+                        "surface-container": "#e4effd",
+                        "on-secondary-fixed": "#241a00",
+                        "primary": "#002546",
+                        "background": "#f7f9ff",
+                        "surface-container-low": "#edf4ff",
+                        "primary-fixed-dim": "#a6c9f9",
+                        "on-tertiary-fixed-variant": "#364764",
+                        "error-container": "#ffdad6",
+                        "surface-container-lowest": "#ffffff",
+                        "outline-variant": "#c3c6cf",
+                        "error": "#ba1a1a",
+                        "on-secondary": "#ffffff",
+                        "secondary-fixed-dim": "#ecc246",
+                        "secondary-fixed": "#ffe08e",
+                        "on-primary-fixed-variant": "#234871",
+                        "primary-fixed": "#d2e4ff",
+                        "surface-variant": "#d9e3f1",
+                        "surface-container-high": "#dfe9f7",
+                        "on-tertiary-container": "#92a4c5"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "xl": "32px",
+                        "xs": "4px",
+                        "xxl": "48px",
+                        "sidebar-width": "260px",
+                        "lg": "24px",
+                        "base": "8px",
+                        "md": "16px",
+                        "gutter-desktop": "24px",
+                        "margin-desktop": "40px",
+                        "sm": "12px"
+                    },
+                    "fontFamily": {
+                        "headline-sm": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "label-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "600"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            background-color: #F8F5EF; /* The soft beige mentioned in design system background */
+            font-family: 'Inter', sans-serif;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #d1dbe8;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="flex min-h-screen">
+<!-- SideNavBar Anchor -->
+<aside class="fixed left-0 top-0 h-full w-sidebar-width bg-primary border-r border-outline-variant flex flex-col h-full py-lg px-md z-50">
+<div class="mb-xxl px-sm">
+<h1 class="font-headline-sm text-headline-sm font-bold text-surface-lowest">BillSync Legal</h1>
+<p class="font-label-md text-label-md text-on-primary-container opacity-70">Premium Law Edition</p>
+</div>
+<nav class="flex-1 space-y-xs overflow-y-auto custom-scrollbar">
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-on-primary-container hover:bg-primary-container hover:text-surface transition-colors font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+                Dashboard
+            </a>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-on-primary-container hover:bg-primary-container hover:text-surface transition-colors font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined">group</span>
+                Clients
+            </a>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-on-primary-container hover:bg-primary-container hover:text-surface transition-colors font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined">folder_open</span>
+                Matters
+            </a>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-on-primary-container hover:bg-primary-container hover:text-surface transition-colors font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined">receipt_long</span>
+                Billing
+            </a>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-on-primary-container hover:bg-primary-container hover:text-surface transition-colors font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined">description</span>
+                Documents
+            </a>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-on-primary-container hover:bg-primary-container hover:text-surface transition-colors font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined">smart_toy</span>
+                AI Assistant
+            </a>
+<!-- Active Navigation Mapping: User Management maps to Settings -->
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-surface border-l-2 border-secondary bg-primary-container font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined">settings</span>
+                Settings
+            </a>
+</nav>
+<div class="mt-auto pt-lg border-t border-on-primary-container/10 space-y-xs">
+<button class="w-full bg-secondary-container text-on-secondary-fixed py-sm rounded-xl font-label-md text-label-md font-bold mb-md hover:brightness-110 transition-all">
+                New Matter
+            </button>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-on-primary-container hover:bg-primary-container hover:text-surface transition-colors font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined">help_outline</span>
+                Support
+            </a>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-on-primary-container hover:bg-primary-container hover:text-surface transition-colors font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined">logout</span>
+                Sign Out
+            </a>
+</div>
+</aside>
+<!-- Main Content Shell -->
+<main class="ml-[260px] flex-1 min-h-screen flex flex-col">
+<!-- TopNavBar Anchor -->
+<header class="fixed top-0 right-0 w-[calc(100%-260px)] h-16 bg-surface-lowest border-b border-outline-variant shadow-sm z-40 flex items-center justify-between px-gutter-desktop">
+<div class="flex items-center gap-xl flex-1">
+<div class="relative w-full max-w-md">
+<span class="material-symbols-outlined absolute left-md top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="w-full pl-xl pr-md py-xs bg-surface-container-low border-none rounded-full font-body-sm text-body-sm focus:ring-1 focus:ring-primary" placeholder="Search members, roles, or logs..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-lg">
+<button class="p-xs text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-xs text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">help</span>
+</button>
+<div class="h-8 w-px bg-outline-variant mx-xs"></div>
+<button class="font-label-md text-label-md text-primary font-bold hover:underline">Upgrade</button>
+<div class="flex items-center gap-sm cursor-pointer group">
+<div class="w-8 h-8 rounded-full overflow-hidden border border-outline-variant">
+<img class="w-full h-full object-cover" data-alt="A professional headshot of a mature law firm partner in a charcoal grey suit. He is smiling warmly against a blurred office background with warm wooden accents and soft, natural lighting. The style is professional, high-end, and clean, matching a premium legal SaaS aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAgMFwT_qAGshJljJdDoboMW-B2CSBNNhTd8jjiRQKcoHPRmlWqiwHBV1-7wFNzOobnuybjwzDCq6AKWPnPzhOV8QZzdncFcuN5T8JZHYoEfumR-krG3BgdRUP9nSQu1X8y1w3vf0peU1IpHQAtuwtB2ai0wn5ZPNpVt5RBBbz2iX3fMXwGwyJ_XIgc0oYHAWEXgXgQuKJfJ9XSFmsOcwJy_S5df7IIZaGlJUIfSzMl3_6J2ZB6Q2WZeK6OW-TtGB-dwPWHZpAW7pOu"/>
+</div>
+<span class="font-label-md text-label-md text-on-surface font-bold group-hover:text-primary">Profile</span>
+</div>
+</div>
+</header>
+<!-- Canvas -->
+<div class="pt-xxl px-margin-desktop pb-xxl mt-16">
+<!-- Header Section -->
+<div class="flex justify-between items-end mb-xl">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-primary">User Management</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mt-xs">Manage your firm's team members, access levels, and security settings.</p>
+</div>
+<button class="bg-primary text-on-primary px-lg py-sm rounded-xl font-label-md text-label-md flex items-center gap-sm hover:bg-primary-container transition-all shadow-sm">
+<span class="material-symbols-outlined text-[20px]">person_add</span>
+                    Invite New User
+                </button>
+</div>
+<!-- Dashboard Stats / Filters Bento Grid Row -->
+<div class="grid grid-cols-12 gap-lg mb-xl">
+<div class="col-span-12 lg:col-span-8 bg-surface-container-lowest border border-outline-variant rounded-xl p-lg flex items-center justify-between">
+<div class="flex gap-xl">
+<div class="space-y-xs">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Total Members</span>
+<div class="font-headline-md text-headline-md text-primary">48</div>
+</div>
+<div class="w-px h-10 bg-outline-variant self-center"></div>
+<div class="space-y-xs">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Active Now</span>
+<div class="font-headline-md text-headline-md text-secondary">12</div>
+</div>
+<div class="w-px h-10 bg-outline-variant self-center"></div>
+<div class="space-y-xs">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Pending</span>
+<div class="font-headline-md text-headline-md text-on-surface-variant">3</div>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<div class="flex flex-col gap-xs">
+<label class="font-label-sm text-label-sm text-on-surface-variant">Filter by Role</label>
+<select class="bg-surface border border-outline-variant rounded-lg font-body-sm text-body-sm px-md py-xs focus:ring-secondary">
+<option>All Roles</option>
+<option>Partner</option>
+<option>Associate</option>
+<option>Paralegal</option>
+<option>Admin</option>
+</select>
+</div>
+<div class="flex flex-col gap-xs">
+<label class="font-label-sm text-label-sm text-on-surface-variant">Status</label>
+<select class="bg-surface border border-outline-variant rounded-lg font-body-sm text-body-sm px-md py-xs focus:ring-secondary">
+<option>All Status</option>
+<option>Active</option>
+<option>Pending</option>
+<option>Inactive</option>
+</select>
+</div>
+</div>
+</div>
+<div class="col-span-12 lg:col-span-4 bg-primary-container rounded-xl p-lg relative overflow-hidden group">
+<!-- Subtle background decoration -->
+<div class="absolute -right-4 -bottom-4 opacity-10 group-hover:scale-110 transition-transform duration-500">
+<span class="material-symbols-outlined text-[120px] text-surface">verified_user</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-surface mb-xs">Security Audit</h3>
+<p class="font-body-sm text-body-sm text-on-primary-container mb-md">All 48 members have Two-Factor Authentication enabled. Last audit 2 days ago.</p>
+<button class="font-label-md text-label-md text-secondary-container flex items-center gap-xs hover:underline">
+                        Review logs <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Main Table Container -->
+<div class="bg-white border border-outline-variant rounded-xl shadow-sm overflow-hidden">
+<div class="px-lg py-md border-b border-outline-variant bg-surface-container-low flex items-center justify-between">
+<div class="flex items-center gap-md">
+<input class="rounded text-primary focus:ring-primary w-4 h-4 cursor-pointer" type="checkbox"/>
+<span class="font-label-md text-label-md text-on-surface-variant">Select All Members</span>
+</div>
+<div class="flex items-center gap-sm">
+<button class="px-md py-xs border border-outline text-on-surface-variant rounded-lg font-label-md text-label-md hover:bg-surface transition-colors flex items-center gap-xs">
+<span class="material-symbols-outlined text-[18px]">file_download</span>
+                            Export
+                        </button>
+<button class="px-md py-xs border border-error text-error rounded-lg font-label-md text-label-md hover:bg-error-container transition-colors opacity-50 cursor-not-allowed">
+                            Bulk Delete
+                        </button>
+</div>
+</div>
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-lowest">
+<th class="pl-lg py-md w-12"></th>
+<th class="py-md font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Member Name</th>
+<th class="py-md font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Role</th>
+<th class="py-md font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Status</th>
+<th class="py-md font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Last Login</th>
+<th class="py-md pr-lg font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant">
+<!-- User Row 1 -->
+<tr class="hover:bg-surface-container transition-colors group">
+<td class="pl-lg py-md">
+<input class="rounded text-primary focus:ring-primary w-4 h-4 cursor-pointer" type="checkbox"/>
+</td>
+<td class="py-md">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded-full bg-primary-fixed-dim flex items-center justify-center font-bold text-primary">
+                                        JD
+                                    </div>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface font-bold">Jonathan Doe</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">j.doe@billsynclegal.com</span>
+</div>
+</div>
+</td>
+<td class="py-md">
+<span class="font-body-md text-body-md text-on-surface">Partner</span>
+</td>
+<td class="py-md">
+<span class="px-sm py-xs rounded-full bg-green-100 text-green-800 font-label-sm text-label-sm flex items-center w-fit gap-xs">
+<span class="w-1.5 h-1.5 rounded-full bg-green-600"></span>
+                                    Active
+                                </span>
+</td>
+<td class="py-md">
+<span class="font-body-sm text-body-sm text-on-surface-variant">2 mins ago</span>
+</td>
+<td class="py-md pr-lg text-right">
+<button class="p-xs text-on-surface-variant hover:text-primary rounded-full hover:bg-surface-container-high transition-all">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- User Row 2 -->
+<tr class="hover:bg-surface-container transition-colors group">
+<td class="pl-lg py-md">
+<input class="rounded text-primary focus:ring-primary w-4 h-4 cursor-pointer" type="checkbox"/>
+</td>
+<td class="py-md">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded-full overflow-hidden border border-outline-variant">
+<img class="w-full h-full object-cover" data-alt="A focused portrait of a young female legal associate in a navy blazer, working at her desk with multiple monitors in the background. The lighting is crisp and modern, with a soft cool-blue color palette. The image conveys high intelligence, professional dedication, and a modern corporate legal environment." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBjGL7477NGJiFoOWmBQAwrnSH5p2xBkL40tmYtye8-r0XnSdn3qjWaTamz8-IlVLKE1xM33SgyKG_qvmInqoq634fEvlwKxVzD3HzD9NBqD_PT99otJ4Ydtx8sGo5Mmw6NoPmnr_avOMAuH8wd0tIfJ-CcsWU0n8q8D0xXglOIANzAgvQbJ4daAIVGl482pZWikdJFM1NHDBTubKeZWTICyGli_0hVfrP02WRMOZIqujQyUy6RZC_QPrTj2o6CLunKY-LUsE6ASg_5"/>
+</div>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface font-bold">Sarah Jenkins</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">s.jenkins@billsynclegal.com</span>
+</div>
+</div>
+</td>
+<td class="py-md">
+<span class="font-body-md text-body-md text-on-surface">Associate</span>
+</td>
+<td class="py-md">
+<span class="px-sm py-xs rounded-full bg-green-100 text-green-800 font-label-sm text-label-sm flex items-center w-fit gap-xs">
+<span class="w-1.5 h-1.5 rounded-full bg-green-600"></span>
+                                    Active
+                                </span>
+</td>
+<td class="py-md">
+<span class="font-body-sm text-body-sm text-on-surface-variant">Today, 09:12 AM</span>
+</td>
+<td class="py-md pr-lg text-right">
+<button class="p-xs text-on-surface-variant hover:text-primary rounded-full hover:bg-surface-container-high transition-all">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- User Row 3 -->
+<tr class="hover:bg-surface-container transition-colors group">
+<td class="pl-lg py-md">
+<input class="rounded text-primary focus:ring-primary w-4 h-4 cursor-pointer" type="checkbox"/>
+</td>
+<td class="py-md">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded-full bg-secondary-fixed flex items-center justify-center font-bold text-on-secondary-fixed">
+                                        MR
+                                    </div>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface font-bold">Michael Rodriguez</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">m.rodriguez@billsynclegal.com</span>
+</div>
+</div>
+</td>
+<td class="py-md">
+<span class="font-body-md text-body-md text-on-surface">Admin</span>
+</td>
+<td class="py-md">
+<span class="px-sm py-xs rounded-full bg-yellow-100 text-yellow-800 font-label-sm text-label-sm flex items-center w-fit gap-xs">
+<span class="w-1.5 h-1.5 rounded-full bg-yellow-600"></span>
+                                    Pending
+                                </span>
+</td>
+<td class="py-md">
+<span class="font-body-sm text-body-sm text-on-surface-variant italic">Never logged in</span>
+</td>
+<td class="py-md pr-lg text-right">
+<button class="p-xs text-on-surface-variant hover:text-primary rounded-full hover:bg-surface-container-high transition-all">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- User Row 4 -->
+<tr class="hover:bg-surface-container transition-colors group">
+<td class="pl-lg py-md">
+<input class="rounded text-primary focus:ring-primary w-4 h-4 cursor-pointer" type="checkbox"/>
+</td>
+<td class="py-md">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded-full overflow-hidden border border-outline-variant">
+<img class="w-full h-full object-cover" data-alt="A portrait of a senior female paralegal with a kind but serious expression. She is in a minimalist library environment with out-of-focus bookshelves in the background. The lighting is warm and natural. The image style is sophisticated, empathetic, and organized, maintaining a premium legal brand persona." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCHzVMjYtb_hWqNC1KvXmS0z-KDAl0FHWM40fFhDekU5gEoPBZd-BSL5WUoDLA1mP5Tn7ZtFTj2h-cltcDvrWZ3nv-LncxRg4rHLwMJYvu2bynP2zreuicfaHccL7zQUSodfOIu1hhlt3267ptXV6kIAR2oCNcp-pUkZ0FTD5FbgKJOQwsDVDk0tgQdmDEtKVSRrio8Gx6N4npYlg_yoSJ0QHJDRutsR_urHwL4VNqNI7ct3vyjdy8c6AMgpB3tjjvMktwWR06QJJ7l"/>
+</div>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface font-bold">Elena Vance</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">e.vance@billsynclegal.com</span>
+</div>
+</div>
+</td>
+<td class="py-md">
+<span class="font-body-md text-body-md text-on-surface">Paralegal</span>
+</td>
+<td class="py-md">
+<span class="px-sm py-xs rounded-full bg-green-100 text-green-800 font-label-sm text-label-sm flex items-center w-fit gap-xs">
+<span class="w-1.5 h-1.5 rounded-full bg-green-600"></span>
+                                    Active
+                                </span>
+</td>
+<td class="py-md">
+<span class="font-body-sm text-body-sm text-on-surface-variant">Yesterday, 4:45 PM</span>
+</td>
+<td class="py-md pr-lg text-right">
+<button class="p-xs text-on-surface-variant hover:text-primary rounded-full hover:bg-surface-container-high transition-all">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+<!-- Pagination Footer -->
+<div class="px-lg py-md border-t border-outline-variant flex items-center justify-between bg-surface-container-lowest">
+<span class="font-body-sm text-body-sm text-on-surface-variant">Showing <span class="font-bold text-on-surface">4</span> of <span class="font-bold text-on-surface">48</span> members</span>
+<div class="flex gap-xs">
+<button class="px-md py-xs border border-outline-variant rounded-lg font-label-md text-label-md hover:bg-surface transition-colors">Previous</button>
+<button class="px-md py-xs bg-primary text-on-primary rounded-lg font-label-md text-label-md shadow-sm">1</button>
+<button class="px-md py-xs border border-outline-variant rounded-lg font-label-md text-label-md hover:bg-surface transition-colors">2</button>
+<button class="px-md py-xs border border-outline-variant rounded-lg font-label-md text-label-md hover:bg-surface transition-colors">3</button>
+<span class="px-md py-xs font-label-md text-label-md">...</span>
+<button class="px-md py-xs border border-outline-variant rounded-lg font-label-md text-label-md hover:bg-surface transition-colors">Next</button>
+</div>
+</div>
+</div>
+<!-- Additional Contextual Cards -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-lg mt-xl">
+<div class="bg-white p-lg border border-outline-variant rounded-xl flex items-start gap-lg shadow-sm">
+<div class="p-md bg-secondary-container/20 rounded-xl text-secondary">
+<span class="material-symbols-outlined text-[32px]">shield_person</span>
+</div>
+<div>
+<h4 class="font-headline-sm text-headline-sm text-primary">Firm Permissions</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-xs mb-md">Define what each role can see and do across the entire firm platform.</p>
+<button class="font-label-md text-label-md text-primary font-bold hover:underline">Manage Global Permissions</button>
+</div>
+</div>
+<div class="bg-white p-lg border border-outline-variant rounded-xl flex items-start gap-lg shadow-sm">
+<div class="p-md bg-primary-container/10 rounded-xl text-primary">
+<span class="material-symbols-outlined text-[32px]">history</span>
+</div>
+<div>
+<h4 class="font-headline-sm text-headline-sm text-primary">Access History</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-xs mb-md">View a detailed log of all member logins and security-related actions.</p>
+<button class="font-label-md text-label-md text-primary font-bold hover:underline">View Security Logs</button>
+</div>
+</div>
+</div>
+</div>
+</main>
+<script>
+        // Simple Micro-interactions
+        document.querySelectorAll('tr').forEach(row => {
+            row.addEventListener('mouseenter', () => {
+                row.style.transform = 'translateY(-1px)';
+                row.style.boxShadow = '0 4px 6px -1px rgb(0 0 0 / 0.05)';
+            });
+            row.addEventListener('mouseleave', () => {
+                row.style.transform = 'translateY(0)';
+                row.style.boxShadow = 'none';
+            });
+        });
+
+        // Search Bar Focus Effect
+        const searchInput = document.querySelector('input[type="text"]');
+        searchInput.addEventListener('focus', () => {
+            searchInput.parentElement.classList.add('ring-2', 'ring-primary-container', 'scale-[1.01]');
+        });
+        searchInput.addEventListener('blur', () => {
+            searchInput.parentElement.classList.remove('ring-2', 'ring-primary-container', 'scale-[1.01]');
+        });
+    </script>
+</body></html>

@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Invoice Detail | LexPremium</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f7f9ff;
+        }
+        .sidebar-transition {
+            transition: all 0.2s ease-in-out;
+        }
+        /* Custom scrollbar for clean UI */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #d9e3f1;
+            border-radius: 10px;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-container": "#283a56",
+                        "outline-variant": "#c3c6cf",
+                        "surface-container-low": "#edf4ff",
+                        "on-primary": "#ffffff",
+                        "surface-container": "#e4effd",
+                        "error": "#ba1a1a",
+                        "on-secondary-fixed-variant": "#584400",
+                        "secondary-fixed": "#ffe08e",
+                        "surface-container-high": "#dfe9f7",
+                        "on-tertiary-fixed-variant": "#364764",
+                        "on-primary-fixed-variant": "#234871",
+                        "secondary-fixed-dim": "#ecc246",
+                        "on-primary-fixed": "#001c37",
+                        "inverse-on-surface": "#e8f2ff",
+                        "on-tertiary-container": "#92a4c5",
+                        "surface": "#f7f9ff",
+                        "on-secondary-fixed": "#241a00",
+                        "tertiary": "#11243f",
+                        "tertiary-fixed-dim": "#b5c7ea",
+                        "on-tertiary-fixed": "#071c36",
+                        "on-background": "#121d26",
+                        "on-error-container": "#93000a",
+                        "inverse-surface": "#27313c",
+                        "surface-container-lowest": "#ffffff",
+                        "on-surface": "#121d26",
+                        "surface-tint": "#3d608a",
+                        "tertiary-fixed": "#d6e3ff",
+                        "secondary-container": "#fed255",
+                        "on-error": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "outline": "#73777f",
+                        "on-secondary-container": "#735a00",
+                        "primary-fixed-dim": "#a6c9f9",
+                        "surface-container-highest": "#d9e3f1",
+                        "primary-fixed": "#d2e4ff",
+                        "on-primary-container": "#83a6d4",
+                        "surface-variant": "#d9e3f1",
+                        "primary": "#002546",
+                        "surface-dim": "#d1dbe8",
+                        "surface-bright": "#f7f9ff",
+                        "secondary": "#755b00",
+                        "on-surface-variant": "#43474e",
+                        "primary-container": "#123b63",
+                        "on-tertiary": "#ffffff",
+                        "inverse-primary": "#a6c9f9",
+                        "background": "#f7f9ff",
+                        "on-secondary": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "xs": "4px",
+                        "lg": "24px",
+                        "xxl": "48px",
+                        "margin-desktop": "40px",
+                        "sidebar-width": "260px",
+                        "base": "8px",
+                        "xl": "32px",
+                        "md": "16px",
+                        "sm": "12px",
+                        "gutter-desktop": "24px"
+                    },
+                    "fontFamily": {
+                        "headline-lg-mobile": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "label-md": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "body-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "headline-sm": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "600"}],
+                        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}]
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background text-on-surface">
+<!-- Side Navigation Shell -->
+<aside class="fixed h-full w-sidebar-width left-0 top-0 bg-primary dark:bg-primary flex flex-col py-xl z-50">
+<div class="px-lg mb-xl">
+<h1 class="font-headline-sm text-headline-sm font-bold text-on-primary">LexPremium</h1>
+<p class="font-label-sm text-label-sm text-on-primary-container opacity-80">Legal Management</p>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-md text-on-tertiary-container px-lg py-sm hover:bg-tertiary-container hover:text-on-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-md text-on-tertiary-container px-lg py-sm hover:bg-tertiary-container hover:text-on-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="pending_actions">pending_actions</span>
+<span class="font-label-md text-label-md">Captured Work</span>
+</a>
+<!-- Active State for Invoices/Billing -->
+<a class="flex items-center gap-md border-l-2 border-secondary-fixed bg-tertiary-container text-on-primary px-lg py-sm" href="#">
+<span class="material-symbols-outlined" data-icon="receipt_long">receipt_long</span>
+<span class="font-label-md text-label-md">Invoice Builder</span>
+</a>
+<a class="flex items-center gap-md text-on-tertiary-container px-lg py-sm hover:bg-tertiary-container hover:text-on-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span class="font-label-md text-label-md">Clients</span>
+</a>
+<a class="flex items-center gap-md text-on-tertiary-container px-lg py-sm hover:bg-tertiary-container hover:text-on-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="description">description</span>
+<span class="font-label-md text-label-md">Documents</span>
+</a>
+<a class="flex items-center gap-md text-on-tertiary-container px-lg py-sm hover:bg-tertiary-container hover:text-on-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-label-md text-label-md">Settings</span>
+</a>
+</nav>
+<div class="px-lg mt-auto">
+<button class="w-full bg-secondary-container text-on-secondary-container py-md px-lg rounded-xl font-label-md text-label-md font-bold hover:brightness-110 transition-all flex items-center justify-center gap-xs">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+                New Entry
+            </button>
+</div>
+</aside>
+<!-- Top App Bar -->
+<header class="flex justify-between items-center h-16 ml-sidebar-width px-margin-desktop w-[calc(100%-theme(spacing.sidebar-width))] bg-surface border-b border-outline-variant fixed top-0 z-40">
+<div class="flex items-center gap-lg">
+<div class="relative w-64 group">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline" data-icon="search">search</span>
+<input class="w-full pl-10 pr-4 py-2 bg-surface-container rounded-full border-none focus:ring-2 focus:ring-primary text-body-sm transition-all" placeholder="Search firm records..." type="text"/>
+</div>
+<nav class="flex gap-md">
+<a class="text-on-surface-variant font-label-sm text-label-sm hover:text-primary transition-colors" href="#">Recent</a>
+<a class="text-on-surface-variant font-label-sm text-label-sm hover:text-primary transition-colors" href="#">Favorites</a>
+</nav>
+</div>
+<div class="flex items-center gap-md">
+<button class="p-2 text-on-surface-variant hover:bg-surface-container rounded-full transition-colors relative">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="absolute top-1.5 right-1.5 w-2 h-2 bg-error rounded-full"></span>
+</button>
+<button class="p-2 text-on-surface-variant hover:bg-surface-container rounded-full transition-colors">
+<span class="material-symbols-outlined" data-icon="help_outline">help_outline</span>
+</button>
+<div class="flex items-center gap-sm ml-md pl-md border-l border-outline-variant">
+<div class="text-right">
+<p class="font-label-sm text-label-sm text-on-surface">Elena Vance</p>
+<p class="text-[10px] text-on-surface-variant uppercase tracking-wider">Senior Partner</p>
+</div>
+<img alt="Elena Vance Profile" class="w-10 h-10 rounded-full border border-outline-variant object-cover" data-alt="A professional headshot of a female lawyer in her late 40s with a confident and kind expression. She has short dark hair and is wearing a crisp navy blazer. The lighting is soft and studio-quality against a clean, neutral background, reflecting a sophisticated corporate and trustworthy law firm aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDHS6xWm9jj56K0cB7RQlcIwPe5j-VtBKNTWbWfbOwbw-QrYv-rWTW3z_MeKrOplFEJzJoGnYQkfbCG7DY_F4zib_ZyRS4t8vSOBaolMHzxXJYQR4zkNxc78mhcopzVJrgSkQxe1J7MLLpBgXzL3bQ3EuVZqbHenSUqPoAN7IiWvJz-yN0hHu0dqdeUBDgTMS4Fm18guhewTpTw3K7OL6qfiJMqkjK8-44WlzIVYZPP5tL_JOEYSdRDzJMXYP6YdUo7FfZ84oh8N-34"/>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="ml-sidebar-width pt-16 min-h-screen px-margin-desktop pb-xxl">
+<!-- Page Header & Action Bar -->
+<section class="mt-xl flex flex-col md:flex-row md:items-end justify-between gap-lg mb-xl">
+<div>
+<nav class="flex items-center gap-xs text-on-surface-variant font-label-sm text-label-sm mb-xs">
+<a class="hover:text-primary transition-colors" href="#">Invoices</a>
+<span class="material-symbols-outlined text-[14px]" data-icon="chevron_right">chevron_right</span>
+<span class="text-primary">INV-2024-8842</span>
+</nav>
+<h2 class="font-headline-lg text-headline-lg text-primary mb-xs">Invoice Detail</h2>
+<div class="flex items-center gap-md">
+<span class="px-md py-1 bg-green-100 text-green-800 rounded-full text-[12px] font-bold uppercase tracking-tight flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+                        Viewed
+                    </span>
+<span class="text-on-surface-variant font-body-sm text-body-sm">Last updated 2 hours ago by System</span>
+</div>
+</div>
+<div class="flex flex-wrap gap-sm">
+<button class="flex items-center gap-xs px-lg py-md border border-outline text-on-surface font-label-md text-label-md rounded-lg hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-[20px]" data-icon="send">send</span>
+                    Resend
+                </button>
+<button class="flex items-center gap-xs px-lg py-md border border-outline text-on-surface font-label-md text-label-md rounded-lg hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-[20px]" data-icon="account_balance_wallet">account_balance_wallet</span>
+                    Apply Credit
+                </button>
+<button class="flex items-center gap-xs px-xl py-md bg-primary text-on-primary font-label-md text-label-md rounded-lg hover:brightness-125 transition-all shadow-sm">
+<span class="material-symbols-outlined text-[20px]" data-icon="payments">payments</span>
+                    Record Payment
+                </button>
+</div>
+</section>
+<!-- Bento Layout Grid -->
+<div class="grid grid-cols-12 gap-gutter-desktop">
+<!-- Left Column: Invoice Details & Communication -->
+<div class="col-span-12 lg:col-span-8 space-y-gutter-desktop">
+<!-- Main Invoice Paper -->
+<article class="bg-surface-container-lowest rounded-xl border border-outline-variant shadow-sm overflow-hidden">
+<div class="p-xl border-b border-outline-variant bg-surface-bright flex justify-between items-start">
+<div class="space-y-sm">
+<h3 class="font-headline-sm text-headline-sm text-primary">LexPremium Partners</h3>
+<p class="text-on-surface-variant text-body-sm max-w-[240px]">
+                                1200 Avenue of the Americas<br/>
+                                New York, NY 10036<br/>
+                                USA
+                            </p>
+</div>
+<div class="text-right">
+<p class="font-headline-sm text-headline-sm text-primary">INVOICE</p>
+<p class="text-on-surface-variant font-label-md text-label-md">#INV-2024-8842</p>
+</div>
+</div>
+<div class="p-xl grid grid-cols-2 gap-xl border-b border-outline-variant">
+<div>
+<p class="text-on-surface-variant font-label-sm text-label-sm uppercase tracking-wider mb-sm">Bill To</p>
+<h4 class="font-headline-sm text-headline-sm text-on-surface mb-xs">Harrison &amp; Finch LLC</h4>
+<p class="text-on-surface-variant text-body-sm">
+                                Attn: Sarah Finch<br/>
+                                45 Market St, Suite 210<br/>
+                                San Francisco, CA 94105
+                            </p>
+</div>
+<div class="grid grid-cols-2 gap-md text-right md:text-left md:justify-items-end">
+<div class="space-y-xs">
+<p class="text-on-surface-variant font-label-sm text-label-sm">Issue Date</p>
+<p class="font-label-md text-label-md">Oct 24, 2023</p>
+</div>
+<div class="space-y-xs">
+<p class="text-on-surface-variant font-label-sm text-label-sm">Due Date</p>
+<p class="font-label-md text-label-md">Nov 23, 2023</p>
+</div>
+<div class="space-y-xs">
+<p class="text-on-surface-variant font-label-sm text-label-sm">Matter</p>
+<p class="font-label-md text-label-md">HF-2023-Lit-04</p>
+</div>
+<div class="space-y-xs">
+<p class="text-on-surface-variant font-label-sm text-label-sm">Currency</p>
+<p class="font-label-md text-label-md">USD</p>
+</div>
+</div>
+</div>
+<!-- Itemized Breakdown -->
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead class="bg-surface-container border-b border-outline-variant">
+<tr>
+<th class="px-xl py-md font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Activity</th>
+<th class="px-xl py-md font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider text-right">Qty/Hrs</th>
+<th class="px-xl py-md font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider text-right">Rate</th>
+<th class="px-xl py-md font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider text-right">Amount</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant">
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="px-xl py-lg">
+<p class="font-label-md text-label-md text-on-surface">Legal Consultation - Patent Strategy</p>
+<p class="text-body-sm text-on-surface-variant mt-xs">Analysis of competing portfolios and freedom to operate opinion.</p>
+</td>
+<td class="px-xl py-lg font-label-md text-label-md text-right">4.5</td>
+<td class="px-xl py-lg font-label-md text-label-md text-right">$450.00</td>
+<td class="px-xl py-lg font-label-md text-label-md text-right">$2,025.00</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="px-xl py-lg">
+<p class="font-label-md text-label-md text-on-surface">USPTO Filing Fees</p>
+<p class="text-body-sm text-on-surface-variant mt-xs">Disbursement for utility patent application submission.</p>
+</td>
+<td class="px-xl py-lg font-label-md text-label-md text-right">1</td>
+<td class="px-xl py-lg font-label-md text-label-md text-right">$1,200.00</td>
+<td class="px-xl py-lg font-label-md text-label-md text-right">$1,200.00</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="px-xl py-lg">
+<p class="font-label-md text-label-md text-on-surface">Document Processing</p>
+<p class="text-body-sm text-on-surface-variant mt-xs">Preparation and formatting of technical specifications.</p>
+</td>
+<td class="px-xl py-lg font-label-md text-label-md text-right">2.0</td>
+<td class="px-xl py-lg font-label-md text-label-md text-right">$150.00</td>
+<td class="px-xl py-lg font-label-md text-label-md text-right">$300.00</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Footer / Totals -->
+<div class="p-xl bg-surface-bright flex flex-col items-end border-t border-outline-variant">
+<div class="w-full md:w-64 space-y-sm">
+<div class="flex justify-between text-body-sm text-on-surface-variant">
+<span>Subtotal</span>
+<span>$3,525.00</span>
+</div>
+<div class="flex justify-between text-body-sm text-on-surface-variant">
+<span>Tax (0.0%)</span>
+<span>$0.00</span>
+</div>
+<div class="flex justify-between items-center pt-sm border-t border-outline-variant">
+<span class="font-headline-sm text-headline-sm text-primary">Total</span>
+<span class="font-headline-sm text-headline-sm text-primary">$3,525.00</span>
+</div>
+<div class="pt-sm">
+<div class="flex justify-between text-label-md text-label-md font-bold text-green-700 bg-green-50 p-sm rounded">
+<span>Balance Due</span>
+<span>$3,525.00</span>
+</div>
+</div>
+</div>
+</div>
+</article>
+<!-- Communication History Section -->
+<section>
+<div class="flex items-center justify-between mb-md">
+<h3 class="font-headline-sm text-headline-sm text-primary">Communication History</h3>
+<button class="text-primary font-label-sm text-label-sm flex items-center gap-xs hover:underline">
+<span class="material-symbols-outlined text-[18px]" data-icon="mail">mail</span>
+                            Send Message
+                        </button>
+</div>
+<div class="space-y-md">
+<!-- Message 1 -->
+<div class="bg-surface-container-lowest p-lg rounded-xl border border-outline-variant flex gap-md">
+<div class="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-on-primary-container" data-icon="outgoing_mail">outgoing_mail</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-center mb-xs">
+<p class="font-label-md text-label-md text-on-surface">Invoice Sent</p>
+<time class="text-on-surface-variant text-[12px]">Oct 24, 09:12 AM</time>
+</div>
+<p class="text-body-sm text-on-surface-variant">Automated system email sent to finch.s@harrisonfinch.com. Subject: Invoice INV-2024-8842 from LexPremium Partners.</p>
+</div>
+</div>
+<!-- Message 2 -->
+<div class="bg-surface-container-lowest p-lg rounded-xl border border-outline-variant flex gap-md">
+<div class="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-primary" data-icon="visibility">visibility</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-center mb-xs">
+<p class="font-label-md text-label-md text-on-surface">Client Viewed</p>
+<time class="text-on-surface-variant text-[12px]">Oct 24, 11:45 AM</time>
+</div>
+<p class="text-body-sm text-on-surface-variant">The invoice was opened via the unique link provided in the email. IP Address: 192.168.1.1 (San Francisco, CA).</p>
+</div>
+</div>
+<!-- Message 3 -->
+<div class="bg-surface-container-lowest p-lg rounded-xl border border-outline-variant flex gap-md border-l-4 border-l-secondary-container">
+<img alt="Arthur Morgan" class="w-10 h-10 rounded-full object-cover flex-shrink-0" data-alt="A portrait of a male administrative assistant in a clean office setting. He is wearing a professional light blue shirt and has a helpful, focused expression. The background is slightly blurred showing modern office decor with warm lighting and high-quality textures, following a minimalist corporate style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBY1jmFEnrigtyOg8cXW0C7fxbMdgaVtaHy19NyLpvh6H5HgiHoclZ6ImuRZHydO3s8RKHOJrzsBoLoRGp99nWa4h5rF3AbX9KlFrm6lcNcAapG0mIdQLxBajf60xqHgB6AvrKsxCtnNDVnJobjZiCFR-9Afue3S6pf1v4yCer2MxBBaiVHB418PD0lszxP1_BBAyZ7OdBQVq78fX5navnHRPpvPJISgKhwTTZ2-UqN6XpWgcNdDO0VzOyNjB1GfxSknEQ6O6Ko8zPi"/>
+<div class="flex-1">
+<div class="flex justify-between items-center mb-xs">
+<p class="font-label-md text-label-md text-on-surface">Arthur Morgan <span class="text-on-surface-variant font-normal">(Internal Note)</span></p>
+<time class="text-on-surface-variant text-[12px]">Oct 25, 02:20 PM</time>
+</div>
+<p class="text-body-sm text-on-surface-variant italic">"Called Sarah's office. They confirmed receipt and mentioned payment will be processed in the next Friday check run."</p>
+</div>
+</div>
+</div>
+</section>
+</div>
+<!-- Right Column: Sidebar Stats & Activities -->
+<div class="col-span-12 lg:col-span-4 space-y-gutter-desktop">
+<!-- Status Snapshot -->
+<div class="bg-surface-container-lowest p-xl rounded-xl border border-outline-variant shadow-sm">
+<h3 class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-lg">Payment Snapshot</h3>
+<div class="space-y-xl">
+<div class="flex items-center justify-between">
+<div>
+<p class="text-on-surface-variant text-body-sm">Status</p>
+<p class="font-headline-sm text-headline-sm text-primary">Unpaid</p>
+</div>
+<div class="w-12 h-12 rounded-full bg-secondary-fixed flex items-center justify-center">
+<span class="material-symbols-outlined text-on-secondary-fixed" data-icon="pending">pending</span>
+</div>
+</div>
+<div class="space-y-md">
+<div class="h-2 w-full bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-primary" style="width: 0%"></div>
+</div>
+<p class="text-body-sm text-on-surface-variant">0% of $3,525.00 collected</p>
+</div>
+<div class="pt-xl border-t border-outline-variant space-y-md">
+<div class="flex justify-between items-center">
+<span class="text-body-sm text-on-surface-variant">Payment Method</span>
+<span class="font-label-md text-label-md">Bank Transfer / Card</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-body-sm text-on-surface-variant">Auto-Reminders</span>
+<span class="flex items-center gap-xs text-green-600 font-label-md text-label-md">
+<span class="material-symbols-outlined text-[16px]" data-icon="toggle_on">toggle_on</span>
+                                    Enabled
+                                </span>
+</div>
+</div>
+</div>
+</div>
+<!-- Client Card -->
+<div class="bg-surface-container-lowest p-xl rounded-xl border border-outline-variant shadow-sm">
+<h3 class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-lg">Client Reference</h3>
+<div class="flex items-center gap-md mb-lg">
+<img alt="Harrison &amp; Finch Logo" class="w-12 h-12 rounded-lg object-cover border border-outline-variant" data-alt="A minimalist and high-end logo for a corporate legal entity. The logo features abstract geometric shapes in deep navy and charcoal gray against a clean white background. The style is modern, professional, and communicates reliability and prestige through simple yet strong design elements." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDTqM29-2RgotOgBq7vuKiLYWHW0G4FT7_vHqgh4zWXLFQoFuu0lFFLJpgbkQGQhiwHtTpZ9xpFNV_35xAWMNPE9yf6bxJTExx8ye9I4mXiNVCmBXGLixe5wFJFtsMBnLoT0lG_zFgs5LQuZENC-ocqK0kbFnSYOzEmNd7uoAoMbt28FviALtjookDaVY6_a5RUphkN-RoqljKlIu48H1tMNtxbPZ7ieXVnnC2jRQrXRYGFFUcci_6l3yazK9A26ZYbqfXBbtndNWgI"/>
+<div>
+<h4 class="font-label-md text-label-md font-bold text-on-surface">Harrison &amp; Finch LLC</h4>
+<p class="text-[12px] text-on-surface-variant">Client since 2021</p>
+</div>
+</div>
+<div class="space-y-sm mb-lg">
+<div class="flex items-center gap-sm p-sm bg-surface rounded-lg">
+<span class="material-symbols-outlined text-on-surface-variant text-[20px]" data-icon="mail">mail</span>
+<span class="text-body-sm text-on-surface truncate">finch.s@harrisonfinch.com</span>
+</div>
+<div class="flex items-center gap-sm p-sm bg-surface rounded-lg">
+<span class="material-symbols-outlined text-on-surface-variant text-[20px]" data-icon="call">call</span>
+<span class="text-body-sm text-on-surface">+1 (415) 555-0198</span>
+</div>
+</div>
+<button class="w-full text-center py-sm border border-outline text-primary font-label-md text-label-md rounded-lg hover:bg-surface-container transition-colors">
+                        View Client Ledger
+                    </button>
+</div>
+<!-- Related Actions / Quick Links -->
+<div class="bg-surface-container-lowest p-xl rounded-xl border border-outline-variant shadow-sm">
+<h3 class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-lg">Internal Operations</h3>
+<ul class="space-y-xs">
+<li>
+<button class="w-full flex items-center justify-between p-md hover:bg-surface rounded-lg group transition-colors">
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors" data-icon="history">history</span>
+<span class="text-body-md text-on-surface">Full Audit Trail</span>
+</div>
+<span class="material-symbols-outlined text-outline-variant" data-icon="chevron_right">chevron_right</span>
+</button>
+</li>
+<li>
+<button class="w-full flex items-center justify-between p-md hover:bg-surface rounded-lg group transition-colors">
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors" data-icon="print">print</span>
+<span class="text-body-md text-on-surface">Print PDF</span>
+</div>
+<span class="material-symbols-outlined text-outline-variant" data-icon="chevron_right">chevron_right</span>
+</button>
+</li>
+<li>
+<button class="w-full flex items-center justify-between p-md hover:bg-surface rounded-lg group transition-colors">
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors" data-icon="archive">archive</span>
+<span class="text-body-md text-on-surface">Mark as Void</span>
+</div>
+<span class="material-symbols-outlined text-outline-variant" data-icon="chevron_right">chevron_right</span>
+</button>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</main>
+<!-- Micro-interaction Script -->
+<script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Simple hover effect for table rows
+            const rows = document.querySelectorAll('tbody tr');
+            rows.forEach(row => {
+                row.addEventListener('mouseenter', () => {
+                    row.style.boxShadow = 'inset 4px 0 0 0 #3d608a';
+                });
+                row.addEventListener('mouseleave', () => {
+                    row.style.boxShadow = 'none';
+                });
+            });
+
+            // Log interactions for demo purposes
+            const actionButtons = document.querySelectorAll('button');
+            actionButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const label = btn.innerText.trim();
+                    console.log(`Action Triggered: ${label}`);
+                });
+            });
+        });
+    </script>
+</body></html>

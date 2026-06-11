@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f7f9ff;
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(8px);
+        }
+        .payment-option-input:checked + label {
+            border-color: #755b00;
+            background-color: #fff9e6;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-container-low": "#edf4ff",
+                      "secondary-fixed": "#ffe08e",
+                      "error-container": "#ffdad6",
+                      "on-primary-container": "#83a6d4",
+                      "on-secondary-fixed": "#241a00",
+                      "on-background": "#121d26",
+                      "on-surface-variant": "#43474e",
+                      "surface-variant": "#d9e3f1",
+                      "primary-fixed-dim": "#a6c9f9",
+                      "on-tertiary-container": "#92a4c5",
+                      "on-primary-fixed-variant": "#234871",
+                      "surface-container-lowest": "#ffffff",
+                      "secondary-fixed-dim": "#ecc246",
+                      "tertiary-fixed-dim": "#b5c7ea",
+                      "surface-dim": "#d1dbe8",
+                      "on-secondary-container": "#735a00",
+                      "on-primary-fixed": "#001c37",
+                      "on-surface": "#121d26",
+                      "on-error-container": "#93000a",
+                      "on-secondary-fixed-variant": "#584400",
+                      "tertiary-container": "#283a56",
+                      "surface-tint": "#3d608a",
+                      "outline": "#73777f",
+                      "tertiary": "#11243f",
+                      "on-tertiary-fixed-variant": "#364764",
+                      "on-error": "#ffffff",
+                      "background": "#f7f9ff",
+                      "primary": "#002546",
+                      "surface-bright": "#f7f9ff",
+                      "outline-variant": "#c3c6cf",
+                      "on-tertiary-fixed": "#071c36",
+                      "on-secondary": "#ffffff",
+                      "inverse-primary": "#a6c9f9",
+                      "error": "#ba1a1a",
+                      "inverse-on-surface": "#e8f2ff",
+                      "surface-container-high": "#dfe9f7",
+                      "on-tertiary": "#ffffff",
+                      "surface-container": "#e4effd",
+                      "primary-fixed": "#d2e4ff",
+                      "tertiary-fixed": "#d6e3ff",
+                      "surface-container-highest": "#d9e3f1",
+                      "surface": "#f7f9ff",
+                      "on-primary": "#ffffff",
+                      "secondary": "#755b00",
+                      "secondary-container": "#fed225",
+                      "inverse-surface": "#27313c",
+                      "primary-container": "#123b63"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "margin-desktop": "40px",
+                      "sidebar-width": "260px",
+                      "gutter-desktop": "24px",
+                      "base": "8px",
+                      "xxl": "48px",
+                      "xs": "4px",
+                      "sm": "12px",
+                      "lg": "24px",
+                      "md": "16px",
+                      "xl": "32px"
+              },
+              "fontFamily": {
+                      "headline-lg-mobile": ["Inter"],
+                      "headline-sm": ["Inter"],
+                      "label-sm": ["Inter"],
+                      "label-md": ["Inter"],
+                      "headline-lg": ["Inter"],
+                      "body-md": ["Inter"],
+                      "body-lg": ["Inter"],
+                      "headline-md": ["Inter"],
+                      "display-lg": ["Inter"],
+                      "body-sm": ["Inter"]
+              },
+              "fontSize": {
+                      "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                      "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                      "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "600"}],
+                      "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                      "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                      "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                      "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                      "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}]
+              }
+            },
+          },
+        }
+    </script>
+</head>
+<body class="bg-surface text-on-surface">
+<!-- TopNavBar -->
+<header class="bg-surface dark:bg-inverse-surface border-b border-outline-variant dark:border-outline fixed top-0 w-full z-50">
+<div class="flex justify-between items-center w-full px-margin-desktop max-w-[1440px] mx-auto h-20">
+<div class="font-headline-md text-headline-md font-bold text-primary dark:text-inverse-primary">
+                Lexington &amp; Associates
+            </div>
+<nav class="hidden md:flex gap-xl">
+<a class="text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-inverse-primary transition-colors font-body-md text-body-md" href="#">Overview</a>
+<a class="text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-inverse-primary transition-colors font-body-md text-body-md" href="#">Matters</a>
+<a class="text-primary dark:text-inverse-primary font-bold border-b-2 border-secondary-fixed font-body-md text-body-md" href="#">Invoices</a>
+<a class="text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-inverse-primary transition-colors font-body-md text-body-md" href="#">Payments</a>
+</nav>
+<div class="flex items-center gap-md">
+<button class="material-symbols-outlined p-2 text-on-surface-variant">notifications</button>
+<button class="material-symbols-outlined p-2 text-on-surface-variant">account_circle</button>
+</div>
+</div>
+</header>
+<main class="pt-32 pb-xxl px-margin-desktop max-w-[1200px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-lg">
+<!-- Page Title -->
+<div class="col-span-12 mb-md">
+<div class="flex items-center gap-sm text-on-surface-variant mb-xs">
+<span class="material-symbols-outlined text-[18px]">arrow_back</span>
+<span class="font-label-md text-label-md">Back to Invoices</span>
+</div>
+<h1 class="font-headline-lg text-headline-lg">Complete Your Payment</h1>
+</div>
+<!-- Left Column: Payment Summary & Options -->
+<div class="lg:col-span-7 space-y-lg">
+<!-- Payment Methods -->
+<section class="bg-surface-container-lowest border border-outline-variant p-lg rounded-xl shadow-sm">
+<h2 class="font-headline-sm text-headline-sm mb-lg">Select Payment Method</h2>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-md">
+<div>
+<input checked="" class="hidden payment-option-input" id="cc" name="payment_method" type="radio"/>
+<label class="flex flex-col items-center justify-center p-lg border-2 border-outline-variant rounded-xl cursor-pointer hover:border-primary transition-all text-center" for="cc">
+<span class="material-symbols-outlined text-[32px] mb-xs text-primary">credit_card</span>
+<span class="font-label-md text-label-md">Credit Card</span>
+</label>
+</div>
+<div>
+<input class="hidden payment-option-input" id="ach" name="payment_method" type="radio"/>
+<label class="flex flex-col items-center justify-center p-lg border-2 border-outline-variant rounded-xl cursor-pointer hover:border-primary transition-all text-center" for="ach">
+<span class="material-symbols-outlined text-[32px] mb-xs text-primary">account_balance</span>
+<span class="font-label-md text-label-md">Bank Transfer</span>
+</label>
+</div>
+<div>
+<input class="hidden payment-option-input" id="wire" name="payment_method" type="radio"/>
+<label class="flex flex-col items-center justify-center p-lg border-2 border-outline-variant rounded-xl cursor-pointer hover:border-primary transition-all text-center" for="wire">
+<span class="material-symbols-outlined text-[32px] mb-xs text-primary">currency_exchange</span>
+<span class="font-label-md text-label-md">Wire Instructions</span>
+</label>
+</div>
+</div>
+<!-- Card Details Form -->
+<div class="mt-xl space-y-md" id="card-form">
+<div class="flex flex-col gap-xs">
+<label class="font-label-md text-label-md text-on-surface-variant">Cardholder Name</label>
+<input class="w-full p-md border border-outline-variant rounded-lg focus:ring-1 focus:ring-primary focus:border-primary outline-none transition-all" placeholder="John R. Sterling" type="text"/>
+</div>
+<div class="flex flex-col gap-xs">
+<label class="font-label-md text-label-md text-on-surface-variant">Card Number</label>
+<div class="relative">
+<input class="w-full p-md border border-outline-variant rounded-lg focus:ring-1 focus:ring-primary focus:border-primary outline-none transition-all pr-12" placeholder="**** **** **** 4421" type="text"/>
+<div class="absolute right-4 top-1/2 -translate-y-1/2 flex gap-xs opacity-60">
+<span class="material-symbols-outlined">credit_card</span>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-md">
+<div class="flex flex-col gap-xs">
+<label class="font-label-md text-label-md text-on-surface-variant">Expiry Date</label>
+<input class="w-full p-md border border-outline-variant rounded-lg focus:ring-1 focus:ring-primary focus:border-primary outline-none transition-all" placeholder="MM / YY" type="text"/>
+</div>
+<div class="flex flex-col gap-xs">
+<label class="font-label-md text-label-md text-on-surface-variant">CVC</label>
+<input class="w-full p-md border border-outline-variant rounded-lg focus:ring-1 focus:ring-primary focus:border-primary outline-none transition-all" placeholder="***" type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-sm pt-xs">
+<input class="rounded border-outline-variant text-primary focus:ring-primary" id="save_card" type="checkbox"/>
+<label class="font-body-sm text-body-sm text-on-surface-variant" for="save_card">Save card details for future transactions</label>
+</div>
+</div>
+</section>
+<!-- Secure Info -->
+<div class="flex items-center gap-md p-md bg-surface-container-low rounded-lg">
+<span class="material-symbols-outlined text-primary text-[32px]">verified_user</span>
+<div>
+<h4 class="font-label-md text-label-md font-bold">Secure Transaction</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Your payment is encrypted and handled via 256-bit SSL connection. We never store your full card details.</p>
+</div>
+</div>
+</div>
+<!-- Right Column: Summary Card -->
+<div class="lg:col-span-5">
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl shadow-md overflow-hidden sticky top-32">
+<div class="p-lg border-b border-outline-variant">
+<h3 class="font-headline-sm text-headline-sm mb-xs">Payment Summary</h3>
+<p class="text-on-surface-variant font-body-sm text-body-sm">Review the details of your selection.</p>
+</div>
+<div class="p-lg space-y-md">
+<div class="flex justify-between items-start">
+<div>
+<p class="font-label-md text-label-md font-bold text-primary">Invoice #INV-2024-0882</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Q4 Intellectual Property Filing</p>
+</div>
+<span class="font-label-md text-label-md">$12,450.00</span>
+</div>
+<div class="flex justify-between items-center text-on-surface-variant">
+<span class="font-body-sm text-body-sm">Standard Service Fee</span>
+<span class="font-body-sm text-body-sm">$15.00</span>
+</div>
+<div class="pt-md border-t border-outline-variant flex justify-between items-center">
+<span class="font-headline-sm text-headline-sm">Total Amount</span>
+<span class="font-headline-sm text-headline-sm text-primary">$12,465.00</span>
+</div>
+</div>
+<div class="p-lg bg-surface-container-low space-y-md">
+<button class="w-full bg-primary text-white font-label-md text-label-md py-md rounded-lg hover:bg-primary-container transition-all flex justify-center items-center gap-sm">
+<span>Pay $12,465.00 Securely</span>
+<span class="material-symbols-outlined">lock</span>
+</button>
+<div class="flex flex-col items-center gap-xs">
+<div class="flex items-center gap-sm opacity-60 grayscale">
+<span class="font-label-sm text-label-sm uppercase tracking-widest">Powered by</span>
+<div class="flex items-center font-bold text-primary">
+<span class="material-symbols-outlined mr-xs">sync_alt</span>
+                                BillSync
+                            </div>
+</div>
+</div>
+</div>
+<div class="p-md text-center">
+<img alt="Visa" class="h-6 inline-block mx-2 opacity-50" data-alt="A clean, minimalist representation of a major credit card logo on a light background, emphasizing security and global recognition. The visual style is professional, featuring corporate blues and crisp edges, perfectly integrated into a high-end legal payment portal." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBZtBfKhHw7bL3KyrdScnGM6gQR0XWx6ENVbt_Q3ttSuIFlbH31UlrEj8HC20IJ5AI_W_VdDRV9U43ZZa1AEXr2CxRmVKEGYW9Ned_j1bQTzC7QQYrpXa4dsHH_6t4kAylXM0WpFZiG1Y91Mkomd2LATGJNrlllm3KaDg_Yk2aW8Sgb0bnnJbGcmm4M2X_u0y8Xo4wYBvFxFwUCOiovlPq4yqmk_V7PRgzmo357ONViF16X5ri5T3QHRP1JJGPjll4UFcjWFuGZLwod"/>
+<img alt="Mastercard" class="h-6 inline-block mx-2 opacity-50" data-alt="A clean, minimalist representation of a major credit card logo on a light background, emphasizing security and global recognition. The visual style is professional, featuring corporate oranges and crisp edges, perfectly integrated into a high-end legal payment portal." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA9Xa0_uBnHSyVFHfIJKvv_vrYyHaSDlw1SYe8-HNiE3bBhfYK8kCU1Za1JsFSg8xexm1hhuJKlMkWFuRGDXYVHKVmW9ebDsr86F6eo0pa8AaEyd59bsG1hOg_qf947MRX_NzazLISBWMrPJGX21GAEPRFiFBDSToWxwJaNATTQY-WlUXsCTUavnfuiA8XxKDIyaGec4jAkRardOLpImFIm1fujgAR6YuxoVYstzRL1ILdjabHek_-IYHUEhnpfJ8y6fJishBRVkgdv"/>
+<img alt="Amex" class="h-6 inline-block mx-2 opacity-50" data-alt="A clean, minimalist representation of a major credit card logo on a light background, emphasizing security and global recognition. The visual style is professional, featuring corporate blues and crisp edges, perfectly integrated into a high-end legal payment portal." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCUSasfvykPIVKcDleBJcHTWkgeqDBJfDvyDJz4D78K6V0OEAdUZMmtvccVh-c1tTPxuKcHu_-tf2RHoE5rwWPmD5TwFGLqDyEK9wyitUBk3UMHmPDQoAEhCxEbxBkW3lq07Kfw8IJl1zD78QgcNuwtNAY0hDafv2UrAumLnBeUyv0kaDlv9IvCGthm1hA4fBHR5xF8nC5n7qKFBRSq0W2VOrfak_1sZhOLc6fHZPhXXeRpPM4zxT-jQn2C1qt2UBAE_sveWZTch269"/>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-container-low dark:bg-surface-container-highest w-full py-xl px-margin-desktop flex flex-col md:flex-row justify-between items-center gap-md">
+<div class="flex flex-col gap-xs">
+<div class="font-label-md text-label-md font-semibold text-on-surface dark:text-inverse-on-surface">Lexington &amp; Associates</div>
+<div class="font-label-sm text-label-sm text-on-surface-variant dark:text-surface-variant">© 2024 Lexington &amp; Associates. All rights reserved.</div>
+</div>
+<div class="flex gap-lg">
+<a class="text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-inverse-primary underline font-label-sm text-label-sm" href="#">Support</a>
+<a class="text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-inverse-primary underline font-label-sm text-label-sm" href="#">Privacy Policy</a>
+<a class="text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-inverse-primary underline font-label-sm text-label-sm" href="#">Terms of Service</a>
+<a class="text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-inverse-primary underline font-label-sm text-label-sm" href="#">Contact Us</a>
+</div>
+</footer>
+<script>
+        // Simple Interaction for payment method switching
+        const methodInputs = document.querySelectorAll('input[name="payment_method"]');
+        const cardForm = document.getElementById('card-form');
+
+        methodInputs.forEach(input => {
+            input.addEventListener('change', () => {
+                if (input.id === 'cc') {
+                    cardForm.style.opacity = '1';
+                    cardForm.style.pointerEvents = 'auto';
+                } else {
+                    cardForm.style.opacity = '0.4';
+                    cardForm.style.pointerEvents = 'none';
+                }
+            });
+        });
+
+        // Hover lift effect for cards
+        const glassPanels = document.querySelectorAll('.bg-surface-container-lowest');
+        glassPanels.forEach(panel => {
+            panel.addEventListener('mouseenter', () => {
+                panel.classList.remove('shadow-sm');
+                panel.classList.add('shadow-lg', '-translate-y-1', 'transition-all', 'duration-300');
+            });
+            panel.addEventListener('mouseleave', () => {
+                panel.classList.remove('shadow-lg', '-translate-y-1');
+                panel.classList.add('shadow-sm');
+            });
+        });
+    </script>
+</body></html>

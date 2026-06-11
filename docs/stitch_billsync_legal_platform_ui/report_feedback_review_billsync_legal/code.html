@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Review &amp; Feedback | Lexington &amp; Associates</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(229, 231, 235, 0.5);
+        }
+        .rating-star:hover, .rating-star.active {
+            color: #755b00; /* secondary */
+            font-variation-settings: 'FILL' 1;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-secondary-fixed-variant": "#584400",
+                      "secondary-fixed": "#ffe08e",
+                      "tertiary": "#11243f",
+                      "on-primary-container": "#83a6d4",
+                      "primary": "#002546",
+                      "background": "#f7f9ff",
+                      "surface-dim": "#d1dbe8",
+                      "surface-container-high": "#dfe9f7",
+                      "primary-fixed": "#d2e4ff",
+                      "on-tertiary-fixed": "#071c36",
+                      "surface-container-lowest": "#ffffff",
+                      "on-tertiary-container": "#92a4c5",
+                      "inverse-primary": "#a6c9f9",
+                      "on-background": "#121d26",
+                      "on-secondary-fixed": "#241a00",
+                      "tertiary-fixed-dim": "#b5c7ea",
+                      "tertiary-fixed": "#d6e3ff",
+                      "surface": "#f7f9ff",
+                      "surface-tint": "#3d608a",
+                      "surface-bright": "#f7f9ff",
+                      "inverse-on-surface": "#e8f2ff",
+                      "error-container": "#ffdad6",
+                      "secondary-container": "#fed255",
+                      "primary-container": "#123b63",
+                      "inverse-surface": "#27313c",
+                      "on-error": "#ffffff",
+                      "on-surface-variant": "#43474e",
+                      "on-error-container": "#93000a",
+                      "primary-fixed-dim": "#a6c9f9",
+                      "on-tertiary-fixed-variant": "#364764",
+                      "tertiary-container": "#283a56",
+                      "on-primary": "#ffffff",
+                      "on-secondary": "#ffffff",
+                      "surface-container-low": "#edf4ff",
+                      "secondary-fixed-dim": "#ecc246",
+                      "surface-container-highest": "#d9e3f1",
+                      "on-primary-fixed-variant": "#234871",
+                      "error": "#ba1a1a",
+                      "outline": "#73777f",
+                      "secondary": "#755b00",
+                      "surface-container": "#e4effd",
+                      "on-surface": "#121d26",
+                      "on-secondary-container": "#735a00",
+                      "on-tertiary": "#ffffff",
+                      "outline-variant": "#c3c6cf",
+                      "surface-variant": "#d9e3f1",
+                      "on-primary-fixed": "#001c37"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "md": "16px",
+                      "xxl": "48px",
+                      "sidebar-width": "260px",
+                      "gutter-desktop": "24px",
+                      "xs": "4px",
+                      "sm": "12px",
+                      "margin-desktop": "40px",
+                      "xl": "32px",
+                      "lg": "24px",
+                      "base": "8px"
+              },
+              "fontFamily": {
+                      "headline-md": ["Inter"],
+                      "display-lg": ["Inter"],
+                      "headline-sm": ["Inter"],
+                      "headline-lg": ["Inter"],
+                      "headline-lg-mobile": ["Inter"],
+                      "body-lg": ["Inter"],
+                      "label-md": ["Inter"],
+                      "body-sm": ["Inter"],
+                      "body-md": ["Inter"],
+                      "label-sm": ["Inter"]
+              },
+              "fontSize": {
+                      "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                      "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                      "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                      "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                      "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                      "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                      "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                      "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "600"}]
+              }
+            },
+          },
+        }
+      </script>
+</head>
+<body class="bg-surface text-on-surface font-body-md">
+<!-- TopNavBar -->
+<header class="bg-surface dark:bg-inverse-surface border-b border-outline-variant dark:border-outline fixed docked full-width top-0 z-50">
+<nav class="flex justify-between items-center w-full px-margin-desktop max-w-[1440px] mx-auto h-20">
+<div class="flex items-center gap-xl">
+<span class="font-headline-md text-headline-md font-bold text-primary dark:text-inverse-primary">Lexington &amp; Associates</span>
+<div class="hidden md:flex items-center gap-lg">
+<a class="text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-inverse-primary transition-colors font-body-md text-body-md" href="#">Overview</a>
+<a class="text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-inverse-primary transition-colors font-body-md text-body-md" href="#">Matters</a>
+<a class="text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-inverse-primary transition-colors font-body-md text-body-md" href="#">Invoices</a>
+<a class="text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-inverse-primary transition-colors font-body-md text-body-md" href="#">Payments</a>
+<a class="text-primary dark:text-inverse-primary font-bold border-b-2 border-secondary-fixed font-body-md text-body-md py-1" href="#">Performance Review</a>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<button class="p-2 text-on-surface-variant hover:bg-surface-container rounded-full transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:bg-surface-container rounded-full transition-colors">
+<span class="material-symbols-outlined">account_circle</span>
+</button>
+</div>
+</nav>
+</header>
+<main class="pt-xxl pb-xxl px-margin-desktop max-w-[1440px] mx-auto mt-20">
+<!-- Hero Section -->
+<div class="mb-xxl flex flex-col md:flex-row justify-between items-end gap-lg">
+<div class="max-w-2xl">
+<h1 class="font-headline-lg text-headline-lg text-primary mb-sm">October 2024 Performance Review</h1>
+<p class="text-body-lg text-on-surface-variant">Review your monthly metrics, provide feedback on our service areas, and align with your lead partner on strategic objectives.</p>
+</div>
+<div class="flex gap-md">
+<button class="px-lg py-sm bg-surface-container text-primary font-label-md rounded-xl hover:bg-surface-container-high transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined">download</span>
+                    Download PDF Report
+                </button>
+<button class="px-lg py-sm bg-primary text-white font-label-md rounded-xl hover:bg-primary-container transition-all flex items-center gap-2 shadow-md">
+<span class="material-symbols-outlined" data-weight="fill">check_circle</span>
+                    Approve Summary
+                </button>
+</div>
+</div>
+<div class="grid grid-cols-12 gap-lg">
+<!-- Bento Grid: Performance Metrics -->
+<div class="col-span-12 lg:col-span-8 grid grid-cols-1 md:grid-cols-2 gap-lg">
+<!-- Performance Card 1 -->
+<div class="p-lg bg-white border border-outline-variant rounded-xl shadow-sm hover:shadow-md transition-shadow">
+<div class="flex justify-between items-start mb-md">
+<div class="p-2 bg-primary-fixed text-on-primary-fixed rounded-lg">
+<span class="material-symbols-outlined">gavel</span>
+</div>
+<span class="text-label-sm text-secondary bg-secondary-fixed/30 px-sm py-1 rounded-full">+12% vs LY</span>
+</div>
+<h3 class="font-label-md text-on-surface-variant uppercase tracking-wider mb-xs">Matter Efficiency</h3>
+<p class="font-headline-md text-headline-md text-primary">94.2%</p>
+<p class="text-body-sm text-on-surface-variant mt-sm">Cycle time for corporate governance filings reduced by 4 days.</p>
+</div>
+<!-- Performance Card 2 -->
+<div class="p-lg bg-white border border-outline-variant rounded-xl shadow-sm hover:shadow-md transition-shadow">
+<div class="flex justify-between items-start mb-md">
+<div class="p-2 bg-tertiary-fixed text-on-tertiary-fixed rounded-lg">
+<span class="material-symbols-outlined">receipt_long</span>
+</div>
+<span class="text-label-sm text-on-surface-variant bg-surface-container px-sm py-1 rounded-full">On Budget</span>
+</div>
+<h3 class="font-label-md text-on-surface-variant uppercase tracking-wider mb-xs">Budget Variance</h3>
+<p class="font-headline-md text-headline-md text-primary">-2.5%</p>
+<p class="text-body-sm text-on-surface-variant mt-sm">Projected vs. actual spend for Q4 litigation prep.</p>
+</div>
+<!-- Feedback Section: Rating System -->
+<div class="md:col-span-2 p-xl bg-white border border-outline-variant rounded-xl">
+<h2 class="font-headline-sm text-headline-sm text-primary mb-lg">Service Area Feedback</h2>
+<div class="space-y-xl">
+<!-- Rating 1 -->
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-md">
+<div>
+<h4 class="font-label-md text-on-surface font-bold">Attorney Responsiveness</h4>
+<p class="text-body-sm text-on-surface-variant">Timeliness of replies and availability for urgent matters.</p>
+</div>
+<div class="flex items-center gap-1 text-outline-variant">
+<span class="material-symbols-outlined rating-star cursor-pointer text-3xl active" data-weight="fill">star</span>
+<span class="material-symbols-outlined rating-star cursor-pointer text-3xl active" data-weight="fill">star</span>
+<span class="material-symbols-outlined rating-star cursor-pointer text-3xl active" data-weight="fill">star</span>
+<span class="material-symbols-outlined rating-star cursor-pointer text-3xl active" data-weight="fill">star</span>
+<span class="material-symbols-outlined rating-star cursor-pointer text-3xl">star</span>
+</div>
+</div>
+<!-- Rating 2 -->
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-md border-t border-outline-variant pt-lg">
+<div>
+<h4 class="font-label-md text-on-surface font-bold">Quality of Work</h4>
+<p class="text-body-sm text-on-surface-variant">Accuracy, depth of analysis, and strategic value.</p>
+</div>
+<div class="flex items-center gap-1 text-outline-variant">
+<span class="material-symbols-outlined rating-star cursor-pointer text-3xl active" data-weight="fill">star</span>
+<span class="material-symbols-outlined rating-star cursor-pointer text-3xl active" data-weight="fill">star</span>
+<span class="material-symbols-outlined rating-star cursor-pointer text-3xl active" data-weight="fill">star</span>
+<span class="material-symbols-outlined rating-star cursor-pointer text-3xl active" data-weight="fill">star</span>
+<span class="material-symbols-outlined rating-star cursor-pointer text-3xl active" data-weight="fill">star</span>
+</div>
+</div>
+<!-- Rating 3 -->
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-md border-t border-outline-variant pt-lg">
+<div>
+<h4 class="font-label-md text-on-surface font-bold">Value for Money</h4>
+<p class="text-body-sm text-on-surface-variant">Alignment of outcomes with billed hours and fees.</p>
+</div>
+<div class="flex items-center gap-1 text-outline-variant">
+<span class="material-symbols-outlined rating-star cursor-pointer text-3xl active" data-weight="fill">star</span>
+<span class="material-symbols-outlined rating-star cursor-pointer text-3xl active" data-weight="fill">star</span>
+<span class="material-symbols-outlined rating-star cursor-pointer text-3xl active" data-weight="fill">star</span>
+<span class="material-symbols-outlined rating-star cursor-pointer text-3xl">star</span>
+<span class="material-symbols-outlined rating-star cursor-pointer text-3xl">star</span>
+</div>
+</div>
+</div>
+<div class="mt-xl">
+<label class="block font-label-md text-on-surface mb-xs">Additional Comments</label>
+<textarea class="w-full p-md border border-outline-variant rounded-lg focus:ring-1 focus:ring-primary focus:border-primary outline-none transition-all h-32" placeholder="Tell us how we can better support your business objectives..."></textarea>
+<div class="flex justify-end mt-md">
+<button class="px-xl py-sm bg-primary text-white font-label-md rounded-xl hover:bg-primary-container transition-all">Submit Feedback</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Sidebar: Schedule & Team -->
+<div class="col-span-12 lg:col-span-4 space-y-lg">
+<!-- Lead Partner Card -->
+<div class="p-lg bg-tertiary-container text-white rounded-xl relative overflow-hidden">
+<div class="relative z-10">
+<h3 class="font-headline-sm text-headline-sm mb-lg">Lead Partner</h3>
+<div class="flex items-center gap-md mb-xl">
+<img alt="Lead Partner Profile" class="w-16 h-16 rounded-full object-cover border-2 border-on-tertiary-container" data-alt="A professional headshot of a senior male attorney in a well-tailored dark navy suit, standing against a blurred background of a sophisticated corporate law office with floor-to-ceiling windows. The lighting is warm and authoritative, reflecting a senior partner's experience and trustworthiness. The style is crisp, high-resolution corporate photography." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBJ75a0lXqIPPmdmlL5ZicvKCPWH84l987--xqi2RBdP7_pyJ7boQ6x_3i_woL1JRkmo6n3GxwVfrRbOhrJd7TKrAm9LjfpuSZYmp3jWvmrFMzk3C6hvsyfQvlzEhJZxpqYAvJor1RZ8RNBnxbZrVLHYEO6lbOR70HcCRn80PPiujjTLlOlluGZBrJN0-_8ab9dgJGo1jEprhF_PCUbzjv7Q1_f7Xtm9xQN0YLS9F85UdAMdFlboWS0l9m6xkx_3gR1PX5NodPHofwe"/>
+<div>
+<p class="font-label-md font-bold">Jonathan Lexing</p>
+<p class="text-label-sm text-tertiary-fixed">Senior Managing Partner</p>
+</div>
+</div>
+<button class="w-full py-md bg-secondary-fixed text-on-secondary-fixed font-bold rounded-xl hover:bg-secondary transition-all flex items-center justify-center gap-2" onclick="toggleModal('schedule-modal')">
+<span class="material-symbols-outlined">calendar_today</span>
+                            Schedule Review Call
+                        </button>
+</div>
+<!-- Subtle background decoration -->
+<div class="absolute -right-12 -bottom-12 w-48 h-48 bg-on-tertiary-fixed/10 rounded-full blur-3xl"></div>
+</div>
+<!-- Monthly Summary List -->
+<div class="p-lg bg-white border border-outline-variant rounded-xl">
+<h3 class="font-label-md font-bold mb-md">Quick Highlights</h3>
+<ul class="space-y-md">
+<li class="flex gap-md items-start">
+<span class="material-symbols-outlined text-secondary" data-weight="fill">check_circle</span>
+<div>
+<p class="text-body-sm font-bold">Regulatory Filings Complete</p>
+<p class="text-label-sm text-on-surface-variant">All SEC quarterly documents submitted.</p>
+</div>
+</li>
+<li class="flex gap-md items-start">
+<span class="material-symbols-outlined text-secondary" data-weight="fill">check_circle</span>
+<div>
+<p class="text-body-sm font-bold">Contract Audit Finalized</p>
+<p class="text-label-sm text-on-surface-variant">Reviewed 15 vendor agreements for 2025.</p>
+</div>
+</li>
+<li class="flex gap-md items-start">
+<span class="material-symbols-outlined text-primary-container">info</span>
+<div>
+<p class="text-body-sm font-bold">Pending Litigation Discovery</p>
+<p class="text-label-sm text-on-surface-variant">Documents required by Friday 5 PM.</p>
+</div>
+</li>
+</ul>
+</div>
+<!-- Document Card -->
+<div class="p-lg bg-surface-container-low border border-outline-variant rounded-xl group cursor-pointer hover:border-primary transition-all">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-md">
+<div class="p-2 bg-white rounded-lg border border-outline-variant group-hover:bg-primary-fixed">
+<span class="material-symbols-outlined text-primary">description</span>
+</div>
+<div>
+<p class="text-label-md font-bold">Strategic Roadmap 2025</p>
+<p class="text-label-sm text-on-surface-variant">Draft Version 2.1</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors">chevron_right</span>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-container-low dark:bg-surface-container-highest w-full py-xl px-margin-desktop flex flex-col md:flex-row justify-between items-center gap-md">
+<div class="flex items-center gap-md">
+<span class="font-label-md text-label-md font-semibold text-on-surface dark:text-inverse-on-surface">Lexington &amp; Associates</span>
+<span class="hidden md:block h-4 w-px bg-outline-variant"></span>
+<p class="font-label-sm text-label-sm text-on-surface-variant dark:text-surface-variant">© 2024 Lexington &amp; Associates. All rights reserved.</p>
+</div>
+<div class="flex gap-lg">
+<a class="font-label-sm text-label-sm text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-inverse-primary underline transition-opacity duration-200" href="#">Support</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-inverse-primary underline transition-opacity duration-200" href="#">Privacy Policy</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-inverse-primary underline transition-opacity duration-200" href="#">Terms of Service</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-inverse-primary underline transition-opacity duration-200" href="#">Contact Us</a>
+</div>
+</footer>
+<!-- Schedule Modal -->
+<div class="fixed inset-0 z-[100] hidden items-center justify-center bg-primary/20 backdrop-blur-sm" id="schedule-modal">
+<div class="bg-white rounded-xl shadow-xl w-full max-w-md overflow-hidden transform transition-all p-xl relative">
+<button class="absolute top-4 right-4 text-on-surface-variant hover:text-primary" onclick="toggleModal('schedule-modal')">
+<span class="material-symbols-outlined">close</span>
+</button>
+<h3 class="font-headline-sm text-headline-sm text-primary mb-md">Schedule Review Call</h3>
+<p class="text-body-sm text-on-surface-variant mb-lg">Select a time for your monthly alignment session with Jonathan Lexing.</p>
+<div class="space-y-md">
+<div>
+<label class="block font-label-sm text-on-surface mb-xs">Available Dates</label>
+<div class="grid grid-cols-4 gap-2">
+<button class="p-2 border border-outline-variant rounded-lg hover:border-secondary active:bg-secondary-fixed transition-colors text-center text-label-sm">Nov 04</button>
+<button class="p-2 border border-outline-variant rounded-lg hover:border-secondary active:bg-secondary-fixed transition-colors text-center text-label-sm">Nov 05</button>
+<button class="p-2 border border-primary bg-primary-fixed/30 rounded-lg text-center text-label-sm font-bold">Nov 06</button>
+<button class="p-2 border border-outline-variant rounded-lg hover:border-secondary active:bg-secondary-fixed transition-colors text-center text-label-sm">Nov 07</button>
+</div>
+</div>
+<div>
+<label class="block font-label-sm text-on-surface mb-xs">Time Slots (EST)</label>
+<select class="w-full p-md border border-outline-variant rounded-lg outline-none focus:border-primary">
+<option>09:00 AM - 09:30 AM</option>
+<option>11:30 AM - 12:00 PM</option>
+<option>02:00 PM - 02:30 PM</option>
+<option>04:30 PM - 05:00 PM</option>
+</select>
+</div>
+<div class="pt-md">
+<button class="w-full py-md bg-primary text-white font-bold rounded-xl hover:bg-primary-container transition-all">Confirm Booking</button>
+</div>
+</div>
+</div>
+</div>
+<script>
+        function toggleModal(id) {
+            const modal = document.getElementById(id);
+            if (modal.classList.contains('hidden')) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+                document.body.style.overflow = 'hidden';
+            } else {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+                document.body.style.overflow = 'auto';
+            }
+        }
+
+        // Micro-interaction for ratings
+        document.querySelectorAll('.rating-star').forEach((star, index, stars) => {
+            star.addEventListener('mouseenter', () => {
+                const parent = star.parentElement;
+                const siblings = parent.querySelectorAll('.rating-star');
+                siblings.forEach((s, i) => {
+                    if (i <= index) {
+                        s.classList.add('text-secondary');
+                        s.style.fontVariationSettings = "'FILL' 1";
+                    }
+                });
+            });
+
+            star.addEventListener('mouseleave', () => {
+                const parent = star.parentElement;
+                const siblings = parent.querySelectorAll('.rating-star');
+                siblings.forEach((s) => {
+                    if (!s.classList.contains('active')) {
+                        s.classList.remove('text-secondary');
+                        s.style.fontVariationSettings = "'FILL' 0";
+                    } else {
+                        s.style.fontVariationSettings = "'FILL' 1";
+                    }
+                });
+            });
+
+            star.addEventListener('click', () => {
+                const parent = star.parentElement;
+                const siblings = parent.querySelectorAll('.rating-star');
+                siblings.forEach((s, i) => {
+                    if (i <= index) {
+                        s.classList.add('active', 'text-secondary');
+                        s.style.fontVariationSettings = "'FILL' 1";
+                    } else {
+                        s.classList.remove('active', 'text-secondary');
+                        s.style.fontVariationSettings = "'FILL' 0";
+                    }
+                });
+            });
+        });
+    </script>
+</body></html>

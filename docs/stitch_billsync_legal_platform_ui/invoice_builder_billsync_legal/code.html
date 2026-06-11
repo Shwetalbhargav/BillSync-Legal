@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Invoice Builder | LexPremium</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "tertiary-container": "#283a56",
+                    "outline-variant": "#c3c6cf",
+                    "surface-container-low": "#edf4ff",
+                    "on-primary": "#ffffff",
+                    "surface-container": "#e4effd",
+                    "error": "#ba1a1a",
+                    "on-secondary-fixed-variant": "#584400",
+                    "secondary-fixed": "#ffe08e",
+                    "surface-container-high": "#dfe9f7",
+                    "on-tertiary-fixed-variant": "#364764",
+                    "on-primary-fixed-variant": "#234871",
+                    "secondary-fixed-dim": "#ecc246",
+                    "on-primary-fixed": "#001c37",
+                    "inverse-on-surface": "#e8f2ff",
+                    "on-tertiary-container": "#92a4c5",
+                    "surface": "#f7f9ff",
+                    "on-secondary-fixed": "#241a00",
+                    "tertiary": "#11243f",
+                    "tertiary-fixed-dim": "#b5c7ea",
+                    "on-tertiary-fixed": "#071c36",
+                    "on-background": "#121d26",
+                    "on-error-container": "#93000a",
+                    "inverse-surface": "#27313c",
+                    "surface-container-lowest": "#ffffff",
+                    "on-surface": "#121d26",
+                    "surface-tint": "#3d608a",
+                    "tertiary-fixed": "#d6e3ff",
+                    "secondary-container": "#fed255",
+                    "on-error": "#ffffff",
+                    "error-container": "#ffdad6",
+                    "outline": "#73777f",
+                    "on-secondary-container": "#735a00",
+                    "primary-fixed-dim": "#a6c9f9",
+                    "surface-container-highest": "#d9e3f1",
+                    "primary-fixed": "#d2e4ff",
+                    "on-primary-container": "#83a6d4",
+                    "surface-variant": "#d9e3f1",
+                    "primary": "#002546",
+                    "surface-dim": "#d1dbe8",
+                    "surface-bright": "#f7f9ff",
+                    "secondary": "#755b00",
+                    "on-surface-variant": "#43474e",
+                    "primary-container": "#123b63",
+                    "on-tertiary": "#ffffff",
+                    "inverse-primary": "#a6c9f9",
+                    "background": "#f7f9ff",
+                    "on-secondary": "#ffffff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "xs": "4px",
+                    "lg": "24px",
+                    "xxl": "48px",
+                    "margin-desktop": "40px",
+                    "sidebar-width": "260px",
+                    "base": "8px",
+                    "xl": "32px",
+                    "md": "16px",
+                    "sm": "12px",
+                    "gutter-desktop": "24px"
+            },
+            "fontFamily": {
+                    "headline-lg-mobile": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "label-md": ["Inter"],
+                    "label-sm": ["Inter"],
+                    "body-sm": ["Inter"],
+                    "body-md": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "display-lg": ["Inter"],
+                    "headline-sm": ["Inter"]
+            },
+            "fontSize": {
+                    "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "600"}],
+                    "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .sidebar-active { border-left: 2px solid #ffe08e; background-color: #283a56; color: #ffffff; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen">
+<!-- Fixed SideNavBar -->
+<aside class="fixed h-full w-sidebar-width left-0 top-0 bg-primary flex flex-col py-xl transition-all z-50">
+<div class="px-lg mb-xxl">
+<h1 class="font-headline-sm text-headline-sm font-bold text-on-primary tracking-tight">LexPremium</h1>
+<p class="text-on-primary-container text-xs opacity-80 uppercase tracking-widest mt-1">Legal Management</p>
+</div>
+<nav class="flex-grow flex flex-col space-y-1">
+<a class="flex items-center gap-md text-on-tertiary-container px-lg py-sm hover:bg-tertiary-container hover:text-on-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-md text-on-tertiary-container px-lg py-sm hover:bg-tertiary-container hover:text-on-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">pending_actions</span>
+<span class="font-label-md text-label-md">Captured Work</span>
+</a>
+<a class="flex items-center gap-md border-l-2 border-secondary-fixed bg-tertiary-container text-on-primary px-lg py-sm transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">receipt_long</span>
+<span class="font-label-md text-label-md">Invoice Builder</span>
+</a>
+<a class="flex items-center gap-md text-on-tertiary-container px-lg py-sm hover:bg-tertiary-container hover:text-on-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="font-label-md text-label-md">Clients</span>
+</a>
+<a class="flex items-center gap-md text-on-tertiary-container px-lg py-sm hover:bg-tertiary-container hover:text-on-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">description</span>
+<span class="font-label-md text-label-md">Documents</span>
+</a>
+<a class="flex items-center gap-md text-on-tertiary-container px-lg py-sm hover:bg-tertiary-container hover:text-on-primary transition-colors duration-200 mt-auto" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-md text-label-md">Settings</span>
+</a>
+</nav>
+<div class="px-lg mt-xl">
+<button class="w-full py-sm bg-secondary-container text-on-secondary-container font-label-md text-label-md rounded-lg flex items-center justify-center gap-2 hover:bg-secondary-fixed transition-colors">
+<span class="material-symbols-outlined text-sm">add</span>
+                New Entry
+            </button>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="ml-sidebar-width min-h-screen">
+<!-- TopNavBar -->
+<header class="flex justify-between items-center h-16 px-margin-desktop bg-surface border-b border-outline-variant sticky top-0 z-40">
+<div class="flex items-center gap-xl">
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">search</span>
+<input class="pl-10 pr-4 py-2 bg-surface-container-low border-none rounded-full text-body-sm w-80 focus:ring-1 focus:ring-primary" placeholder="Search invoices or matters..." type="text"/>
+</div>
+<div class="flex gap-lg border-l border-outline-variant pl-lg">
+<a class="text-on-surface-variant hover:text-primary transition-colors font-label-sm text-label-sm" href="#">Recent</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors font-label-sm text-label-sm" href="#">Favorites</a>
+</div>
+</div>
+<div class="flex items-center gap-lg">
+<button class="text-on-surface-variant hover:text-primary transition-colors relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-0 right-0 w-2 h-2 bg-error rounded-full"></span>
+</button>
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">help_outline</span>
+</button>
+<div class="flex items-center gap-sm ml-lg pl-lg border-l border-outline-variant">
+<div class="text-right">
+<p class="text-label-sm font-bold">Julian Sterling</p>
+<p class="text-[10px] text-on-surface-variant leading-none">Senior Partner</p>
+</div>
+<img alt="User Profile" class="w-8 h-8 rounded-full bg-surface-container-high border border-outline-variant" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD49rJc2yxHWWYDiZoLdwj6OdLHW-a9bKpXdId81cdz4ZbaqQcsxInpI5LQlEh4dOM9_xHc_F5jd2Nkfn0vNLvyqV07VtqvdQJWkgShMuy_UfFp88_1J80vodPzgt-boioYC05hoRb6Di7NoVCIQngvZROGV8uvLoyKKHWatdmXk_1h8f3UhNl0c-YPVKyo7higbMf42pJgDvbSIynyQh1lH7VP5v0Uyy0E2-cW05OvtpVkn9p2K7OvXjp1dCG7nqmDAz5FqTEB_cFx"/>
+</div>
+</div>
+</header>
+<!-- Page Content -->
+<div class="px-margin-desktop py-xl max-w-[1200px] mx-auto">
+<div class="flex justify-between items-end mb-xl">
+<div>
+<nav class="flex gap-2 text-on-surface-variant text-xs mb-2">
+<span>Invoice Builder</span>
+<span>/</span>
+<span class="text-primary font-medium">New Draft</span>
+</nav>
+<h2 class="font-headline-lg text-headline-lg text-primary">Draft Invoice #INV-2024-0812</h2>
+</div>
+<div class="flex gap-md">
+<button class="px-lg py-2 border border-outline text-primary font-label-md text-label-md rounded hover:bg-surface-container transition-colors flex items-center gap-2" id="preview-toggle">
+<span class="material-symbols-outlined text-sm">visibility</span>
+                        Preview Toggle
+                    </button>
+<button class="px-lg py-2 bg-surface-container-highest text-primary font-label-md text-label-md rounded hover:bg-outline-variant transition-colors">
+                        Save as Draft
+                    </button>
+<button class="px-xl py-2 bg-primary text-on-primary font-label-md text-label-md rounded hover:bg-tertiary transition-all shadow-sm">
+                        Finalize &amp; Send
+                    </button>
+</div>
+</div>
+<div class="grid grid-cols-12 gap-gutter-desktop items-start">
+<!-- Left Column: Builder -->
+<div class="col-span-8 space-y-gutter-desktop">
+<!-- Section: Client Selection -->
+<section class="bg-surface-container-lowest p-xl rounded-xl border border-outline-variant shadow-sm">
+<h3 class="font-headline-sm text-headline-sm text-primary mb-lg flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary">business</span>
+                            Client &amp; Matter Information
+                        </h3>
+<div class="grid grid-cols-2 gap-lg">
+<div>
+<label class="block text-label-sm text-on-surface-variant mb-2">Select Client</label>
+<select class="w-full border-outline-variant rounded-lg focus:ring-primary focus:border-primary">
+<option>Summit Global Holdings</option>
+<option>NovaTech Industries</option>
+<option>Riverside Real Estate</option>
+</select>
+</div>
+<div>
+<label class="block text-label-sm text-on-surface-variant mb-2">Matter Reference</label>
+<select class="w-full border-outline-variant rounded-lg focus:ring-primary focus:border-primary">
+<option>SGH-2024: M&amp;A Advisory</option>
+<option>SGH-2023: Intellectual Property Dispute</option>
+</select>
+</div>
+</div>
+</section>
+<!-- Section: Line Items -->
+<section class="bg-surface-container-lowest rounded-xl border border-outline-variant shadow-sm overflow-hidden">
+<div class="p-lg bg-surface border-b border-outline-variant flex justify-between items-center">
+<h3 class="font-headline-sm text-headline-sm text-primary">Line Items</h3>
+<button class="text-primary font-label-md text-label-md flex items-center gap-1 hover:underline">
+<span class="material-symbols-outlined text-sm">add_circle</span>
+                                Add Entry
+                            </button>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead class="bg-surface-container-low">
+<tr>
+<th class="px-lg py-sm font-label-sm text-label-sm text-on-surface-variant">Date</th>
+<th class="px-lg py-sm font-label-sm text-label-sm text-on-surface-variant">Description</th>
+<th class="px-lg py-sm font-label-sm text-label-sm text-on-surface-variant text-right">Hours/Qty</th>
+<th class="px-lg py-sm font-label-sm text-label-sm text-on-surface-variant text-right">Rate</th>
+<th class="px-lg py-sm font-label-sm text-label-sm text-on-surface-variant text-right">Amount</th>
+<th class="w-10 px-lg py-sm"></th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant" id="invoice-items">
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="px-lg py-md text-body-sm align-top">Aug 05, 2024</td>
+<td class="px-lg py-md">
+<input class="w-full border-none bg-transparent p-0 focus:ring-0 text-body-sm font-medium" type="text" value="Legal research on cross-border tax compliance"/>
+<p class="text-[11px] text-on-surface-variant">Assigned to: Julian Sterling</p>
+</td>
+<td class="px-lg py-md text-right">
+<input class="w-16 text-right border-none bg-transparent p-0 focus:ring-0 text-body-sm" type="number" value="4.5"/>
+</td>
+<td class="px-lg py-md text-right text-body-sm">$450.00</td>
+<td class="px-lg py-md text-right text-body-sm font-bold">$2,025.00</td>
+<td class="px-lg py-md">
+<button class="text-outline hover:text-error transition-colors">
+<span class="material-symbols-outlined text-lg">delete</span>
+</button>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="px-lg py-md text-body-sm align-top">Aug 06, 2024</td>
+<td class="px-lg py-md">
+<input class="w-full border-none bg-transparent p-0 focus:ring-0 text-body-sm font-medium" type="text" value="Drafting merger agreement - Section 4.2 updates"/>
+<p class="text-[11px] text-on-surface-variant">Assigned to: Elena Vance</p>
+</td>
+<td class="px-lg py-md text-right">
+<input class="w-16 text-right border-none bg-transparent p-0 focus:ring-0 text-body-sm" type="number" value="2.0"/>
+</td>
+<td class="px-lg py-md text-right text-body-sm">$320.00</td>
+<td class="px-lg py-md text-right text-body-sm font-bold">$640.00</td>
+<td class="px-lg py-md">
+<button class="text-outline hover:text-error transition-colors">
+<span class="material-symbols-outlined text-lg">delete</span>
+</button>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="px-lg py-md text-body-sm align-top">Aug 07, 2024</td>
+<td class="px-lg py-md">
+<input class="w-full border-none bg-transparent p-0 focus:ring-0 text-body-sm font-medium italic" type="text" value="Travel Expense: Client Headquarters Site Visit"/>
+<p class="text-[11px] text-on-surface-variant">Category: Expense</p>
+</td>
+<td class="px-lg py-md text-right text-body-sm">1</td>
+<td class="px-lg py-md text-right text-body-sm">$125.50</td>
+<td class="px-lg py-md text-right text-body-sm font-bold">$125.50</td>
+<td class="px-lg py-md">
+<button class="text-outline hover:text-error transition-colors">
+<span class="material-symbols-outlined text-lg">delete</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</div>
+<!-- Right Column: Totals & Summary -->
+<aside class="col-span-4 space-y-gutter-desktop sticky top-24">
+<div class="bg-primary text-on-primary p-xl rounded-xl shadow-xl">
+<h4 class="font-label-sm text-label-sm uppercase tracking-widest opacity-80 mb-md">Summary Total</h4>
+<div class="flex items-baseline gap-1 mb-xl">
+<span class="text-display-lg font-display-lg">$2,790</span>
+<span class="text-headline-sm font-headline-sm">.50</span>
+</div>
+<div class="space-y-sm pt-xl border-t border-primary-container">
+<div class="flex justify-between text-body-sm">
+<span class="opacity-70">Subtotal</span>
+<span>$2,665.00</span>
+</div>
+<div class="flex justify-between text-body-sm">
+<span class="opacity-70">Expenses</span>
+<span>$125.50</span>
+</div>
+<div class="flex justify-between text-body-sm">
+<span class="opacity-70">Tax (0%)</span>
+<span>$0.00</span>
+</div>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-xl rounded-xl border border-outline-variant shadow-sm">
+<h4 class="font-headline-sm text-headline-sm text-primary mb-lg">Billing Details</h4>
+<div class="space-y-lg">
+<div>
+<label class="block text-[11px] font-bold text-on-surface-variant uppercase mb-1">Billing Period</label>
+<p class="text-body-sm">Aug 01, 2024 - Aug 31, 2024</p>
+</div>
+<div>
+<label class="block text-[11px] font-bold text-on-surface-variant uppercase mb-1">Due Date</label>
+<p class="text-body-sm">Sep 15, 2024</p>
+</div>
+<div>
+<label class="block text-[11px] font-bold text-on-surface-variant uppercase mb-1">Payment Method</label>
+<div class="flex items-center gap-2 mt-1">
+<span class="material-symbols-outlined text-on-surface-variant">account_balance</span>
+<span class="text-body-sm">Wire Transfer (Net 30)</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Progress Checklist -->
+<div class="bg-surface-container p-lg rounded-xl">
+<h4 class="text-label-sm font-bold mb-lg">Finalization Checklist</h4>
+<ul class="space-y-sm">
+<li class="flex items-center gap-3 text-body-sm text-green-700">
+<span class="material-symbols-outlined text-lg">check_circle</span>
+                                Client &amp; Matter linked
+                            </li>
+<li class="flex items-center gap-3 text-body-sm text-green-700">
+<span class="material-symbols-outlined text-lg">check_circle</span>
+                                Expenses verified
+                            </li>
+<li class="flex items-center gap-3 text-body-sm text-on-surface">
+<span class="material-symbols-outlined text-lg text-outline">circle</span>
+                                Partner approval (Required)
+                            </li>
+</ul>
+</div>
+</aside>
+</div>
+</div>
+</main>
+<!-- Preview Modal (Hidden by default) -->
+<div class="fixed inset-0 bg-primary/40 backdrop-blur-sm z-[100] flex items-center justify-center p-xl hidden" id="preview-modal">
+<div class="bg-white w-full max-w-[850px] max-h-[921px] overflow-y-auto rounded shadow-2xl p-xxl relative no-scrollbar">
+<button class="absolute top-6 right-6 p-2 rounded-full hover:bg-surface-container transition-colors" id="close-preview">
+<span class="material-symbols-outlined">close</span>
+</button>
+<!-- Document Paper Look -->
+<div class="border-t-[8px] border-primary mb-xl"></div>
+<div class="flex justify-between items-start mb-xxl">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-primary tracking-tight">LexPremium</h2>
+<p class="text-body-sm text-on-surface-variant">Legal Management &amp; Advisory</p>
+<p class="text-body-sm text-on-surface-variant">1200 Avenue of the Americas</p>
+<p class="text-body-sm text-on-surface-variant">New York, NY 10036</p>
+</div>
+<div class="text-right">
+<h1 class="text-display-lg font-display-lg text-primary opacity-20 leading-none">INVOICE</h1>
+<div class="mt-xl space-y-1">
+<p class="text-label-sm">INVOICE NO: <strong>INV-2024-0812</strong></p>
+<p class="text-label-sm">DATE: <strong>Aug 12, 2024</strong></p>
+<p class="text-label-sm">MATTER: <strong>SGH-2024</strong></p>
+</div>
+</div>
+</div>
+<div class="mb-xxl">
+<p class="text-label-sm font-bold uppercase text-on-surface-variant mb-2">Bill To:</p>
+<p class="font-headline-sm text-headline-sm">Summit Global Holdings</p>
+<p class="text-body-md text-on-surface-variant">Attn: Financial Services Dept.</p>
+<p class="text-body-md text-on-surface-variant">450 Market Street, San Francisco, CA 94105</p>
+</div>
+<table class="w-full mb-xxl">
+<thead class="border-y-2 border-primary">
+<tr>
+<th class="py-4 text-left font-bold text-label-md">Service Details</th>
+<th class="py-4 text-right font-bold text-label-md">Qty/Hrs</th>
+<th class="py-4 text-right font-bold text-label-md">Rate</th>
+<th class="py-4 text-right font-bold text-label-md">Amount</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant">
+<tr>
+<td class="py-4">
+<p class="font-bold text-body-md">Legal Research</p>
+<p class="text-body-sm text-on-surface-variant">Tax compliance advisory for cross-border transactions.</p>
+</td>
+<td class="py-4 text-right">4.50</td>
+<td class="py-4 text-right">$450.00</td>
+<td class="py-4 text-right">$2,025.00</td>
+</tr>
+<tr>
+<td class="py-4">
+<p class="font-bold text-body-md">Agreement Drafting</p>
+<p class="text-body-sm text-on-surface-variant">Refinement of merger agreement Section 4.2.</p>
+</td>
+<td class="py-4 text-right">2.00</td>
+<td class="py-4 text-right">$320.00</td>
+<td class="py-4 text-right">$640.00</td>
+</tr>
+<tr>
+<td class="py-4">
+<p class="font-bold text-body-md italic">Disbursements</p>
+<p class="text-body-sm text-on-surface-variant">Travel to client headquarters.</p>
+</td>
+<td class="py-4 text-right">1.00</td>
+<td class="py-4 text-right">$125.50</td>
+<td class="py-4 text-right">$125.50</td>
+</tr>
+</tbody>
+</table>
+<div class="flex justify-end">
+<div class="w-64 space-y-2">
+<div class="flex justify-between">
+<span class="text-on-surface-variant">Subtotal</span>
+<span>$2,790.50</span>
+</div>
+<div class="flex justify-between border-t-2 border-primary pt-2">
+<span class="font-bold">TOTAL DUE</span>
+<span class="font-bold text-xl text-primary">$2,790.50</span>
+</div>
+</div>
+</div>
+<div class="mt-xxl pt-xxl border-t border-outline-variant">
+<p class="text-xs text-on-surface-variant text-center">Payment is due within 30 days of invoice date. Thank you for choosing LexPremium for your legal advisory needs.</p>
+</div>
+</div>
+</div>
+<script>
+        const previewToggle = document.getElementById('preview-toggle');
+        const previewModal = document.getElementById('preview-modal');
+        const closePreview = document.getElementById('close-preview');
+
+        previewToggle.addEventListener('click', () => {
+            previewModal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        });
+
+        closePreview.addEventListener('click', () => {
+            previewModal.classList.add('hidden');
+            document.body.style.overflow = '';
+        });
+
+        previewModal.addEventListener('click', (e) => {
+            if (e.target === previewModal) {
+                previewModal.classList.add('hidden');
+                document.body.style.overflow = '';
+            }
+        });
+
+        // Simple reactive-like total calculation demo
+        document.querySelectorAll('input[type="number"]').forEach(input => {
+            input.addEventListener('input', () => {
+                // In a real app, this would recalculate the totals
+                console.log('Recalculating...');
+            });
+        });
+    </script>
+</body></html>

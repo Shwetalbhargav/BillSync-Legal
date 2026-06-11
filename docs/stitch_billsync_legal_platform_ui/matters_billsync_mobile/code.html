@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-tertiary-container": "#92a4c5",
+                    "error-container": "#ffdad6",
+                    "surface-container-low": "#edf4ff",
+                    "surface-container-highest": "#d9e3f1",
+                    "on-primary-fixed": "#001c37",
+                    "surface-container-lowest": "#ffffff",
+                    "secondary-fixed": "#ffe08e",
+                    "surface-variant": "#d9e3f1",
+                    "tertiary-fixed-dim": "#b5c7ea",
+                    "surface": "#f7f9ff",
+                    "on-primary-fixed-variant": "#234871",
+                    "outline-variant": "#c3c6cf",
+                    "surface-tint": "#3d608a",
+                    "outline": "#73777f",
+                    "on-tertiary-fixed": "#071c36",
+                    "on-error": "#ffffff",
+                    "secondary": "#755b00",
+                    "on-secondary-fixed": "#241a00",
+                    "background": "#f7f9ff",
+                    "inverse-surface": "#27313c",
+                    "secondary-container": "#fed255",
+                    "tertiary": "#11243f",
+                    "on-primary-container": "#83a6d4",
+                    "inverse-primary": "#a6c9f9",
+                    "tertiary-container": "#283a56",
+                    "surface-container": "#e4effd",
+                    "on-secondary": "#ffffff",
+                    "tertiary-fixed": "#d6e3ff",
+                    "primary-fixed": "#d2e4ff",
+                    "on-surface-variant": "#43474e",
+                    "primary-fixed-dim": "#a6c9f9",
+                    "on-primary": "#ffffff",
+                    "surface-bright": "#f7f9ff",
+                    "on-surface": "#121d26",
+                    "on-tertiary-fixed-variant": "#364764",
+                    "on-secondary-container": "#735a00",
+                    "surface-container-high": "#dfe9f7",
+                    "surface-dim": "#d1dbe8",
+                    "error": "#ba1a1a",
+                    "on-tertiary": "#ffffff",
+                    "secondary-fixed-dim": "#ecc246",
+                    "primary-container": "#123b63",
+                    "on-background": "#121d26",
+                    "inverse-on-surface": "#e8f2ff",
+                    "primary": "#002546",
+                    "on-secondary-fixed-variant": "#584400",
+                    "on-error-container": "#93000a"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "base": "8px",
+                    "xxl": "48px",
+                    "xs": "4px",
+                    "lg": "24px",
+                    "md": "16px",
+                    "xl": "32px",
+                    "sidebar-width": "260px",
+                    "sm": "12px",
+                    "margin-desktop": "40px",
+                    "gutter-desktop": "24px"
+            },
+            "fontFamily": {
+                    "body-md": ["Inter"],
+                    "label-md": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "headline-sm": ["Inter"],
+                    "headline-lg-mobile": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "label-sm": ["Inter"],
+                    "body-sm": ["Inter"],
+                    "display-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "600"}],
+                    "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+            text-transform: none;
+            letter-spacing: normal;
+            word-wrap: normal;
+            white-space: nowrap;
+            direction: ltr;
+        }
+        body {
+            background-color: #f7f9ff;
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+        .bento-card {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .bento-card:active {
+            transform: scale(0.98);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="text-on-surface">
+<!-- TopAppBar -->
+<header class="bg-surface docked full-width top-0 sticky z-40">
+<div class="flex justify-between items-center px-lg py-md w-full max-w-1440px mx-auto">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center overflow-hidden">
+<img alt="User Profile" class="w-full h-full object-cover" data-alt="A professional headshot of a senior legal executive in a high-end corporate office. The person is wearing a tailored navy suit, looking directly at the camera with a confident yet approachable expression. The background is softly blurred, showing hints of a modern glass-walled office with warm, ambient lighting. The overall aesthetic is clean, premium, and sophisticated." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDzzreHb612BYhrvbtMGQj-7Qxq1yoGATgY_VgmZeH-81EUEdkyJ09t0B9_aXrkBZRKmhKF5Fr5UY36y1gsUzOfhpTzWZqgGvjMT2-WpsuCSGLwZZGY_fFgnho7RrGTP7Ay3GS3Fy-XDmKVqMuAoHzDgaH3BAojYUeytkq-YkPYVGZL-7lVEAWchyXlerigkYFJHaeq0m3bGu-aYfKUhtSZKAX2X22ylKQCODWptcWpE5oKgyNN8y_Isiu_4AJ2A40BTa6U3ev2VANu"/>
+</div>
+<h1 class="font-headline-md text-headline-md font-bold text-primary">LegalFlow</h1>
+</div>
+<button class="material-symbols-outlined text-primary p-xs hover:bg-surface-container-high transition-colors rounded-full">
+                notifications
+            </button>
+</div>
+</header>
+<main class="pb-xxl">
+<!-- Search & Filter Section -->
+<section class="px-md pt-md pb-sm sticky top-[72px] bg-surface z-30">
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-md top-1/2 -translate-y-1/2 text-outline">search</span>
+<input class="w-full pl-xl pr-md py-md bg-surface-container-lowest border border-outline-variant rounded-xl font-body-md text-body-md focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all" placeholder="Search matters, clients, or files..." type="text"/>
+</div>
+<div class="flex gap-sm mt-md overflow-x-auto no-scrollbar pb-xs">
+<span class="px-md py-xs bg-primary text-on-primary rounded-full font-label-sm text-label-sm whitespace-nowrap">All Matters</span>
+<span class="px-md py-xs bg-surface-container-high text-on-surface-variant rounded-full font-label-sm text-label-sm whitespace-nowrap">Active</span>
+<span class="px-md py-xs bg-surface-container-high text-on-surface-variant rounded-full font-label-sm text-label-sm whitespace-nowrap">Awaiting Review</span>
+<span class="px-md py-xs bg-surface-container-high text-on-surface-variant rounded-full font-label-sm text-label-sm whitespace-nowrap">Urgent</span>
+</div>
+</section>
+<!-- Matters List (Bento-style Cards) -->
+<section class="px-md flex flex-col gap-md mt-sm">
+<div class="flex justify-between items-center mb-xs">
+<h2 class="font-headline-sm text-headline-sm text-on-surface">Active Matters</h2>
+<span class="font-label-sm text-label-sm text-outline">12 Total</span>
+</div>
+<!-- Matter Card 1 -->
+<div class="bento-card bg-surface-container-lowest p-md rounded-xl border border-outline-variant shadow-sm flex flex-col gap-md">
+<div class="flex justify-between items-start">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-primary tracking-wider uppercase">Case #2024-089</span>
+<h3 class="font-headline-sm text-headline-sm text-on-surface mt-xs">Estate Acquisition - Mercer</h3>
+</div>
+<span class="bg-secondary-container text-on-secondary-container px-sm py-xs rounded-lg font-label-sm text-label-sm">In Discovery</span>
+</div>
+<div class="flex items-center gap-sm">
+<div class="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center">
+<span class="material-symbols-outlined text-on-surface-variant scale-75">person</span>
+</div>
+<span class="font-body-md text-body-md text-on-surface-variant">Mercer Real Estate Holdings</span>
+</div>
+<div class="flex justify-between items-center pt-sm border-t border-outline-variant">
+<div class="flex -space-x-2">
+<div class="w-8 h-8 rounded-full border-2 border-surface bg-tertiary flex items-center justify-center text-[10px] text-white">JS</div>
+<div class="w-8 h-8 rounded-full border-2 border-surface bg-primary flex items-center justify-center text-[10px] text-white">AM</div>
+</div>
+<button class="flex items-center gap-xs text-primary font-label-md text-label-md group">
+                        View Details
+                        <span class="material-symbols-outlined scale-75 group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Matter Card 2 -->
+<div class="bento-card bg-surface-container-lowest p-md rounded-xl border border-outline-variant shadow-sm flex flex-col gap-md">
+<div class="flex justify-between items-start">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-primary tracking-wider uppercase">Case #2024-112</span>
+<h3 class="font-headline-sm text-headline-sm text-on-surface mt-xs">IP Litigation - TechFlow</h3>
+</div>
+<span class="bg-error-container text-on-error-container px-sm py-xs rounded-lg font-label-sm text-label-sm">Awaiting Review</span>
+</div>
+<div class="flex items-center gap-sm">
+<div class="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center">
+<span class="material-symbols-outlined text-on-surface-variant scale-75">apartment</span>
+</div>
+<span class="font-body-md text-body-md text-on-surface-variant">TechFlow Systems Inc.</span>
+</div>
+<div class="flex justify-between items-center pt-sm border-t border-outline-variant">
+<div class="flex items-center gap-xs text-outline">
+<span class="material-symbols-outlined scale-75">schedule</span>
+<span class="font-label-sm text-label-sm">Updated 2h ago</span>
+</div>
+<button class="flex items-center gap-xs text-primary font-label-md text-label-md group">
+                        View Details
+                        <span class="material-symbols-outlined scale-75 group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Matter Card 3 -->
+<div class="bento-card bg-surface-container-lowest p-md rounded-xl border border-outline-variant shadow-sm flex flex-col gap-md">
+<div class="flex justify-between items-start">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-primary tracking-wider uppercase">Case #2024-045</span>
+<h3 class="font-headline-sm text-headline-sm text-on-surface mt-xs">Employment Contract Audit</h3>
+</div>
+<span class="bg-surface-container-high text-on-surface-variant px-sm py-xs rounded-lg font-label-sm text-label-sm">Drafting</span>
+</div>
+<div class="flex items-center gap-sm">
+<div class="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center">
+<span class="material-symbols-outlined text-on-surface-variant scale-75">person</span>
+</div>
+<span class="font-body-md text-body-md text-on-surface-variant">Sarah J. Williams</span>
+</div>
+<div class="flex justify-between items-center pt-sm border-t border-outline-variant">
+<div class="flex items-center gap-xs text-outline">
+<span class="material-symbols-outlined scale-75">history_edu</span>
+<span class="font-label-sm text-label-sm">4 Documents Pending</span>
+</div>
+<button class="flex items-center gap-xs text-primary font-label-md text-label-md group">
+                        View Details
+                        <span class="material-symbols-outlined scale-75 group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Small Utility Bento -->
+<div class="grid grid-cols-2 gap-md">
+<div class="bg-primary-container p-md rounded-xl flex flex-col justify-between aspect-square">
+<span class="material-symbols-outlined text-on-primary-container bg-white/10 w-10 h-10 rounded-lg flex items-center justify-center">add</span>
+<div>
+<p class="font-label-sm text-on-primary-container/80">Start New</p>
+<h4 class="font-headline-sm text-white">Matter</h4>
+</div>
+</div>
+<div class="bg-white p-md rounded-xl border border-outline-variant flex flex-col justify-between aspect-square">
+<span class="material-symbols-outlined text-primary bg-primary-container/30 w-10 h-10 rounded-lg flex items-center justify-center">analytics</span>
+<div>
+<p class="font-label-sm text-on-surface-variant">Active Load</p>
+<h4 class="font-headline-sm text-on-surface">82% Capacity</h4>
+</div>
+</div>
+</div>
+<!-- Recent Activity Matter Card -->
+<div class="bento-card bg-surface-container-lowest p-md rounded-xl border border-outline-variant shadow-sm flex flex-col gap-md">
+<div class="flex justify-between items-start">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-primary tracking-wider uppercase">Case #2024-001</span>
+<h3 class="font-headline-sm text-headline-sm text-on-surface mt-xs">M&amp;A Strategy - Horizon</h3>
+</div>
+<span class="bg-secondary text-on-secondary px-sm py-xs rounded-lg font-label-sm text-label-sm">Closing</span>
+</div>
+<div class="flex items-center gap-sm">
+<div class="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center">
+<span class="material-symbols-outlined text-on-surface-variant scale-75">business</span>
+</div>
+<span class="font-body-md text-body-md text-on-surface-variant">Horizon Logistics Ltd.</span>
+</div>
+<div class="flex justify-between items-center pt-sm border-t border-outline-variant">
+<div class="flex items-center gap-xs text-outline">
+<span class="material-symbols-outlined scale-75">calendar_today</span>
+<span class="font-label-sm text-label-sm">Due Sep 24</span>
+</div>
+<button class="flex items-center gap-xs text-primary font-label-md text-label-md group">
+                        View Details
+                        <span class="material-symbols-outlined scale-75 group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 w-full z-50 flex justify-around items-center px-md py-sm bg-surface border-t border-outline-variant shadow-md">
+<div class="flex flex-col items-center justify-center text-on-surface-variant px-md py-xs hover:text-primary transition-colors cursor-pointer">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-label-sm text-label-sm">Dashboard</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant px-md py-xs hover:text-primary transition-colors cursor-pointer">
+<span class="material-symbols-outlined">history_edu</span>
+<span class="font-label-sm text-label-sm">Captured</span>
+</div>
+<div class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-full px-md py-xs scale-95 transition-transform duration-200 cursor-pointer">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">folder_shared</span>
+<span class="font-label-sm text-label-sm">Matters</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant px-md py-xs hover:text-primary transition-colors cursor-pointer">
+<span class="material-symbols-outlined">smart_toy</span>
+<span class="font-label-sm text-label-sm">AI Assistant</span>
+</div>
+</nav>
+<script>
+        // Simple micro-interaction for cards
+        document.querySelectorAll('.bento-card').forEach(card => {
+            card.addEventListener('click', () => {
+                // Future transition logic to details page
+                console.log('Navigating to matter details...');
+                card.style.opacity = '0.7';
+                setTimeout(() => card.style.opacity = '1', 200);
+            });
+        });
+
+        // Search bar focus effect
+        const searchInput = document.querySelector('input[type="text"]');
+        searchInput.addEventListener('focus', () => {
+            searchInput.parentElement.classList.add('scale-[1.01]');
+        });
+        searchInput.addEventListener('blur', () => {
+            searchInput.parentElement.classList.remove('scale-[1.01]');
+        });
+    </script>
+</body></html>

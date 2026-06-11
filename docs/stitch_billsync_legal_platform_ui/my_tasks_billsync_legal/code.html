@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>My Tasks | BillSync Legal</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .task-card:hover {
+            box-shadow: 0 4px 15px -3px rgba(31, 41, 51, 0.06);
+            transform: translateY(-1px);
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #d9e3f1;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #c3c6cf;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-lowest": "#ffffff",
+                        "inverse-surface": "#27313c",
+                        "on-secondary-container": "#735a00",
+                        "on-primary-fixed": "#001c37",
+                        "on-error": "#ffffff",
+                        "surface-tint": "#3d608a",
+                        "surface-variant": "#d9e3f1",
+                        "secondary": "#755b00",
+                        "inverse-primary": "#a6c9f9",
+                        "surface-container": "#e4effd",
+                        "on-primary-fixed-variant": "#234871",
+                        "on-tertiary-fixed-variant": "#364764",
+                        "surface-dim": "#d1dbe8",
+                        "surface-container-highest": "#d9e3f1",
+                        "tertiary-fixed-dim": "#b5c7ea",
+                        "on-secondary-fixed-variant": "#584400",
+                        "primary-fixed": "#d2e4ff",
+                        "on-surface": "#121d26",
+                        "on-tertiary": "#ffffff",
+                        "secondary-container": "#fed255",
+                        "on-surface-variant": "#43474e",
+                        "outline-variant": "#c3c6cf",
+                        "on-background": "#121d26",
+                        "on-secondary-fixed": "#241a00",
+                        "on-primary-container": "#83a6d4",
+                        "on-tertiary-fixed": "#071c36",
+                        "on-tertiary-container": "#92a4c5",
+                        "inverse-on-surface": "#e8f2ff",
+                        "error-container": "#ffdad6",
+                        "surface": "#f7f9ff",
+                        "secondary-fixed": "#ffe08e",
+                        "tertiary-container": "#283a56",
+                        "error": "#ba1a1a",
+                        "on-error-container": "#93000a",
+                        "primary-container": "#123b63",
+                        "surface-bright": "#f7f9ff",
+                        "tertiary-fixed": "#d6e3ff",
+                        "secondary-fixed-dim": "#ecc246",
+                        "tertiary": "#11243f",
+                        "surface-container-low": "#edf4ff",
+                        "surface-container-high": "#dfe9f7",
+                        "outline": "#73777f",
+                        "primary-fixed-dim": "#a6c9f9",
+                        "primary": "#002546",
+                        "background": "#f7f9ff",
+                        "on-primary": "#ffffff",
+                        "on-secondary": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "md": "16px",
+                        "xl": "32px",
+                        "sm": "12px",
+                        "xs": "4px",
+                        "sidebar-width": "260px",
+                        "base": "8px",
+                        "lg": "24px",
+                        "margin-desktop": "40px",
+                        "gutter-desktop": "24px",
+                        "xxl": "48px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "headline-sm": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "label-md": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "headline-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "600"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}]
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background font-body-md text-on-surface">
+<!-- Sidebar Navigation -->
+<aside class="fixed left-0 top-0 h-full w-sidebar-width bg-tertiary flex flex-col py-lg z-50">
+<div class="px-md mb-xl">
+<h1 class="font-headline-sm text-headline-sm text-surface-container-lowest">BillSync Legal</h1>
+<p class="font-label-sm text-label-sm text-tertiary-fixed-dim opacity-70">Law Firm Management</p>
+</div>
+<nav class="flex-1 space-y-1">
+<!-- Active: Tasks -->
+<a class="flex items-center px-md py-sm font-label-md text-label-md text-tertiary-fixed-dim hover:text-surface-container-lowest transition-colors" href="#">
+<span class="material-symbols-outlined mr-md">dashboard</span> Dashboard
+            </a>
+<a class="flex items-center px-md py-sm font-label-md text-label-md text-tertiary-fixed-dim hover:text-surface-container-lowest transition-colors" href="#">
+<span class="material-symbols-outlined mr-md">group</span> Clients
+            </a>
+<a class="flex items-center px-md py-sm font-label-md text-label-md text-tertiary-fixed-dim hover:text-surface-container-lowest transition-colors" href="#">
+<span class="material-symbols-outlined mr-md">folder_open</span> Matters
+            </a>
+<a class="flex items-center px-md py-sm font-label-md text-label-md text-surface-container-lowest border-l-2 border-secondary font-bold" href="#">
+<span class="material-symbols-outlined mr-md">assignment</span> Tasks
+            </a>
+<a class="flex items-center px-md py-sm font-label-md text-label-md text-tertiary-fixed-dim hover:text-surface-container-lowest transition-colors" href="#">
+<span class="material-symbols-outlined mr-md">timer</span> Work Meter
+            </a>
+<a class="flex items-center px-md py-sm font-label-md text-label-md text-tertiary-fixed-dim hover:text-surface-container-lowest transition-colors" href="#">
+<span class="material-symbols-outlined mr-md">calendar_today</span> Calendar
+            </a>
+<a class="flex items-center px-md py-sm font-label-md text-label-md text-tertiary-fixed-dim hover:text-surface-container-lowest transition-colors" href="#">
+<span class="material-symbols-outlined mr-md">payments</span> Billing
+            </a>
+<a class="flex items-center px-md py-sm font-label-md text-label-md text-tertiary-fixed-dim hover:text-surface-container-lowest transition-colors" href="#">
+<span class="material-symbols-outlined mr-md">description</span> Documents
+            </a>
+<a class="flex items-center px-md py-sm font-label-md text-label-md text-tertiary-fixed-dim hover:text-surface-container-lowest transition-colors" href="#">
+<span class="material-symbols-outlined mr-md">smart_toy</span> AI Assistant
+            </a>
+</nav>
+<div class="px-md pt-lg border-t border-tertiary-container mt-auto">
+<a class="flex items-center py-sm text-tertiary-fixed-dim hover:text-surface-container-lowest transition-colors" href="#">
+<span class="material-symbols-outlined mr-md">settings</span> Settings
+            </a>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="ml-sidebar-width min-h-screen flex flex-col">
+<!-- Top Navigation Bar -->
+<header class="flex justify-between items-center w-full h-16 px-margin-desktop bg-surface border-b border-surface-variant sticky top-0 z-40">
+<div class="flex items-center bg-surface-container-low rounded-xl px-md py-xs w-96 border border-outline-variant">
+<span class="material-symbols-outlined text-on-surface-variant mr-sm">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-body-sm w-full text-on-surface" placeholder="Search tasks or matters..." type="text"/>
+</div>
+<div class="flex items-center space-x-lg">
+<button class="relative text-on-surface-variant hover:bg-surface-container-low p-xs rounded-lg transition-all active:scale-95">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-0 right-0 w-2 h-2 bg-error rounded-full"></span>
+</button>
+<button class="text-on-surface-variant hover:bg-surface-container-low p-xs rounded-lg transition-all active:scale-95">
+<span class="material-symbols-outlined">timer</span>
+</button>
+<div class="flex items-center space-x-md border-l border-outline-variant pl-lg">
+<div class="text-right">
+<p class="font-label-md text-label-md text-primary font-bold">Jonathan Harker</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Senior Associate</p>
+</div>
+<img alt="Profile" class="w-10 h-10 rounded-full bg-primary-container text-surface-container-lowest flex items-center justify-center font-bold" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBYo6kbWy-qvJYRk1_klVMjctKo7fUt6gNhoGBtMTh2S7YjSaGoo15NeVEclQAjdt-CsuCLvTYFDOM0rU1393q5qKm4Eq2BGGqNp1R33OxLE9eE9wn3Kkm-2qa14jd4-9ySgn-9wbh6v0U5XdBM404VJCpBF16mcsDfHyQEmYTE8I6VGSc-MoXyy_CJBlvM-KTjWNHvo03sX5JL4M0qiKzHTiX3rzMput00aj4I1rVav9aNbs-loNy0taFuKK_p9zMtP3ChX9Qrr7xz"/>
+</div>
+</div>
+</header>
+<!-- Content Canvas -->
+<div class="flex-1 p-margin-desktop max-w-[1440px] w-full mx-auto">
+<!-- Page Header & Filters -->
+<div class="flex flex-col md:flex-row md:items-end justify-between mb-xxl gap-lg">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-primary mb-xs">My Tasks</h2>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-2xl">Focus on your immediate priorities. You have 3 overdue items requiring urgent attention.</p>
+</div>
+<div class="flex items-center space-x-sm">
+<button class="flex items-center space-x-xs bg-primary text-on-primary px-lg py-md rounded-xl font-label-md text-label-md transition-all hover:bg-primary-container active:scale-95">
+<span class="material-symbols-outlined">add</span>
+<span>New Task</span>
+</button>
+</div>
+</div>
+<!-- Dashboard Bento / Stats Summary -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-lg mb-xl">
+<div class="bg-surface-container-lowest p-lg rounded-xl border border-surface-variant flex flex-col justify-between">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Total Active</span>
+<div class="flex items-baseline space-x-sm mt-md">
+<span class="font-display-lg text-display-lg text-primary">24</span>
+<span class="font-label-sm text-label-sm text-secondary">+2 from yesterday</span>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-lg rounded-xl border border-surface-variant flex flex-col justify-between">
+<span class="font-label-sm text-label-sm text-error uppercase tracking-wider">Overdue</span>
+<div class="flex items-baseline space-x-sm mt-md">
+<span class="font-display-lg text-display-lg text-error">03</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">High Priority</span>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-lg rounded-xl border border-surface-variant flex flex-col justify-between">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Due Today</span>
+<div class="flex items-baseline space-x-sm mt-md">
+<span class="font-display-lg text-display-lg text-primary">08</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Avg 45m / task</span>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-lg rounded-xl border border-surface-variant flex flex-col justify-between border-l-4 border-l-secondary">
+<span class="font-label-sm text-label-sm text-secondary uppercase tracking-wider">Focus Mode</span>
+<div class="mt-md">
+<p class="font-label-md text-label-md text-primary font-bold">Next: Deposition Prep</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Matter: Smith v. Global Corp</p>
+</div>
+</div>
+</div>
+<!-- Task Filters & Views -->
+<div class="flex flex-wrap items-center gap-md mb-lg">
+<div class="flex bg-surface-container-high p-xs rounded-lg">
+<button class="px-lg py-xs bg-surface-container-lowest rounded-md shadow-sm font-label-md text-label-md text-primary font-bold">Active</button>
+<button class="px-lg py-xs font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors">Completed</button>
+<button class="px-lg py-xs font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors">Archived</button>
+</div>
+<div class="h-8 w-[1px] bg-outline-variant mx-sm"></div>
+<button class="flex items-center space-x-xs border border-outline-variant bg-surface-container-lowest px-md py-xs rounded-lg font-label-md text-label-md text-on-surface-variant hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined text-[18px]">filter_list</span>
+<span>Matter: All</span>
+</button>
+<button class="flex items-center space-x-xs border border-outline-variant bg-surface-container-lowest px-md py-xs rounded-lg font-label-md text-label-md text-on-surface-variant hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined text-[18px]">priority_high</span>
+<span>Priority</span>
+</button>
+<button class="flex items-center space-x-xs border border-outline-variant bg-surface-container-lowest px-md py-xs rounded-lg font-label-md text-label-md text-on-surface-variant hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined text-[18px]">category</span>
+<span>Task Type</span>
+</button>
+</div>
+<!-- Task List Container -->
+<div class="space-y-xl pb-xxl">
+<!-- Section: Overdue -->
+<section>
+<div class="flex items-center space-x-md mb-lg">
+<h3 class="font-headline-sm text-headline-sm text-error">Overdue</h3>
+<div class="h-[1px] flex-1 bg-error-container opacity-50"></div>
+</div>
+<div class="space-y-sm">
+<!-- Task Item 1 -->
+<div class="task-card bg-surface-container-lowest border border-surface-variant rounded-xl p-md flex items-center transition-all duration-200">
+<div class="flex items-center justify-center mr-lg">
+<button class="w-6 h-6 border-2 border-outline-variant rounded-full flex items-center justify-center hover:border-secondary transition-colors group">
+<span class="material-symbols-outlined text-[16px] text-transparent group-hover:text-secondary">check</span>
+</button>
+</div>
+<div class="flex-1">
+<h4 class="font-label-md text-label-md text-primary font-bold">Review Discovery Documents</h4>
+<div class="flex items-center space-x-lg mt-xs">
+<span class="flex items-center text-label-sm text-on-surface-variant">
+<span class="material-symbols-outlined text-[14px] mr-xs">folder_open</span>
+                                        Miller Estate Litigation
+                                    </span>
+<span class="flex items-center text-label-sm text-error font-bold">
+<span class="material-symbols-outlined text-[14px] mr-xs">event</span>
+                                        Due 2 days ago
+                                    </span>
+<span class="bg-error-container text-on-error-container px-sm py-xs rounded-full text-label-sm font-bold uppercase tracking-tighter">High</span>
+</div>
+</div>
+<div class="flex items-center space-x-md">
+<button class="p-sm text-on-surface-variant hover:text-primary hover:bg-surface-container-low rounded-lg transition-colors group relative" title="Start Timer">
+<span class="material-symbols-outlined">timer</span>
+</button>
+<button class="p-sm text-on-surface-variant hover:text-primary hover:bg-surface-container-low rounded-lg transition-colors">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+</div>
+<!-- Task Item 2 -->
+<div class="task-card bg-surface-container-lowest border border-surface-variant rounded-xl p-md flex items-center transition-all duration-200">
+<div class="flex items-center justify-center mr-lg">
+<button class="w-6 h-6 border-2 border-outline-variant rounded-full flex items-center justify-center hover:border-secondary transition-colors group">
+<span class="material-symbols-outlined text-[16px] text-transparent group-hover:text-secondary">check</span>
+</button>
+</div>
+<div class="flex-1">
+<h4 class="font-label-md text-label-md text-primary font-bold">Finalize Employment Agreement</h4>
+<div class="flex items-center space-x-lg mt-xs">
+<span class="flex items-center text-label-sm text-on-surface-variant">
+<span class="material-symbols-outlined text-[14px] mr-xs">folder_open</span>
+                                        TechFlow Onboarding
+                                    </span>
+<span class="flex items-center text-label-sm text-error font-bold">
+<span class="material-symbols-outlined text-[14px] mr-xs">event</span>
+                                        Due yesterday
+                                    </span>
+<span class="bg-surface-container-highest text-on-surface-variant px-sm py-xs rounded-full text-label-sm font-bold uppercase tracking-tighter">Medium</span>
+</div>
+</div>
+<div class="flex items-center space-x-md">
+<button class="p-sm text-on-surface-variant hover:text-primary hover:bg-surface-container-low rounded-lg transition-colors group relative" title="Start Timer">
+<span class="material-symbols-outlined">timer</span>
+</button>
+<button class="p-sm text-on-surface-variant hover:text-primary hover:bg-surface-container-low rounded-lg transition-colors">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Section: Due Today -->
+<section>
+<div class="flex items-center space-x-md mb-lg">
+<h3 class="font-headline-sm text-headline-sm text-primary">Due Today</h3>
+<div class="h-[1px] flex-1 bg-surface-variant"></div>
+</div>
+<div class="space-y-sm">
+<!-- Task Item 3 -->
+<div class="task-card bg-surface-container-lowest border border-secondary/30 border-l-4 border-l-secondary rounded-xl p-md flex items-center transition-all duration-200">
+<div class="flex items-center justify-center mr-lg">
+<button class="w-6 h-6 border-2 border-outline-variant rounded-full flex items-center justify-center hover:border-secondary transition-colors group">
+<span class="material-symbols-outlined text-[16px] text-transparent group-hover:text-secondary">check</span>
+</button>
+</div>
+<div class="flex-1">
+<h4 class="font-label-md text-label-md text-primary font-bold">Draft Deposition Questions</h4>
+<div class="flex items-center space-x-lg mt-xs">
+<span class="flex items-center text-label-sm text-on-surface-variant">
+<span class="material-symbols-outlined text-[14px] mr-xs">folder_open</span>
+                                        Smith v. Global Corp
+                                    </span>
+<span class="flex items-center text-label-sm text-secondary font-bold">
+<span class="material-symbols-outlined text-[14px] mr-xs">schedule</span>
+                                        Due in 3 hours
+                                    </span>
+<span class="bg-secondary-container/20 text-on-secondary-container px-sm py-xs rounded-full text-label-sm font-bold uppercase tracking-tighter border border-secondary-container/30">Active Now</span>
+</div>
+</div>
+<div class="flex items-center space-x-md">
+<button class="flex items-center space-x-xs bg-secondary text-on-primary px-md py-xs rounded-lg font-label-sm text-label-sm shadow-sm transition-all active:scale-95">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">timer</span>
+<span>Stop (00:42:15)</span>
+</button>
+<button class="p-sm text-on-surface-variant hover:text-primary hover:bg-surface-container-low rounded-lg transition-colors">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+</div>
+<!-- Task Item 4 -->
+<div class="task-card bg-surface-container-lowest border border-surface-variant rounded-xl p-md flex items-center transition-all duration-200">
+<div class="flex items-center justify-center mr-lg">
+<button class="w-6 h-6 border-2 border-outline-variant rounded-full flex items-center justify-center hover:border-secondary transition-colors group">
+<span class="material-symbols-outlined text-[16px] text-transparent group-hover:text-secondary">check</span>
+</button>
+</div>
+<div class="flex-1">
+<h4 class="font-label-md text-label-md text-primary font-bold">Client Call: Case Strategy</h4>
+<div class="flex items-center space-x-lg mt-xs">
+<span class="flex items-center text-label-sm text-on-surface-variant">
+<span class="material-symbols-outlined text-[14px] mr-xs">folder_open</span>
+                                        General Advisory
+                                    </span>
+<span class="flex items-center text-label-sm text-on-surface-variant">
+<span class="material-symbols-outlined text-[14px] mr-xs">event</span>
+                                        4:00 PM
+                                    </span>
+<span class="bg-surface-container-highest text-on-surface-variant px-sm py-xs rounded-full text-label-sm font-bold uppercase tracking-tighter">Urgent</span>
+</div>
+</div>
+<div class="flex items-center space-x-md">
+<button class="p-sm text-on-surface-variant hover:text-primary hover:bg-surface-container-low rounded-lg transition-colors">
+<span class="material-symbols-outlined">timer</span>
+</button>
+<button class="p-sm text-on-surface-variant hover:text-primary hover:bg-surface-container-low rounded-lg transition-colors">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Section: Upcoming -->
+<section>
+<div class="flex items-center space-x-md mb-lg">
+<h3 class="font-headline-sm text-headline-sm text-on-surface-variant">Upcoming</h3>
+<div class="h-[1px] flex-1 bg-surface-variant"></div>
+</div>
+<div class="space-y-sm">
+<!-- Task Item 5 -->
+<div class="task-card bg-surface-container-lowest border border-surface-variant rounded-xl p-md flex items-center opacity-80 hover:opacity-100 transition-all duration-200">
+<div class="flex items-center justify-center mr-lg">
+<button class="w-6 h-6 border-2 border-outline-variant rounded-full flex items-center justify-center hover:border-secondary transition-colors group">
+<span class="material-symbols-outlined text-[16px] text-transparent group-hover:text-secondary">check</span>
+</button>
+</div>
+<div class="flex-1">
+<h4 class="font-label-md text-label-md text-primary font-bold">Monthly Billing Review</h4>
+<div class="flex items-center space-x-lg mt-xs">
+<span class="flex items-center text-label-sm text-on-surface-variant">
+<span class="material-symbols-outlined text-[14px] mr-xs">folder_open</span>
+                                        Administrative
+                                    </span>
+<span class="flex items-center text-label-sm text-on-surface-variant">
+<span class="material-symbols-outlined text-[14px] mr-xs">event</span>
+                                        Tomorrow
+                                    </span>
+</div>
+</div>
+<div class="flex items-center space-x-md">
+<button class="p-sm text-on-surface-variant hover:text-primary hover:bg-surface-container-low rounded-lg transition-colors">
+<span class="material-symbols-outlined">timer</span>
+</button>
+<button class="p-sm text-on-surface-variant hover:text-primary hover:bg-surface-container-low rounded-lg transition-colors">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+</div>
+</div>
+<!-- Footer -->
+<footer class="flex justify-between items-center py-md px-margin-desktop ml-sidebar-width bg-background border-t border-surface-variant mt-auto">
+<p class="font-label-sm text-label-sm text-on-surface-variant">© 2024 BillSync Legal. All rights reserved.</p>
+<div class="flex space-x-lg">
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Terms of Service</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Privacy Policy</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Contact Support</a>
+</div>
+</footer>
+</main>
+<!-- Simple Atmospheric Decoration -->
+<div class="fixed bottom-0 right-0 p-xl pointer-events-none opacity-10">
+<span class="material-symbols-outlined text-[240px] text-primary">assignment_turned_in</span>
+</div>
+<script>
+        // Micro-interactions for task completion
+        document.querySelectorAll('.task-card button').forEach(button => {
+            if (button.querySelector('.material-symbols-outlined')?.textContent === 'check') {
+                button.addEventListener('click', function(e) {
+                    const card = this.closest('.task-card');
+                    card.style.transform = 'scale(0.98)';
+                    card.style.opacity = '0.5';
+                    setTimeout(() => {
+                        card.style.display = 'none';
+                    }, 300);
+                });
+            }
+        });
+
+        // Hover lift effect
+        document.querySelectorAll('.task-card').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.borderColor = 'var(--secondary)';
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.borderColor = '';
+            });
+        });
+    </script>
+</body></html>

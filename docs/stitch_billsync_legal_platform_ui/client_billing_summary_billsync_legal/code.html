@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-error-container": "#93000a",
+                        "surface-container": "#e4effd",
+                        "primary-container": "#123b63",
+                        "secondary-container": "#fed255",
+                        "surface": "#f7f9ff",
+                        "background": "#f7f9ff",
+                        "on-tertiary-fixed": "#071c36",
+                        "on-secondary-container": "#735a00",
+                        "on-secondary": "#ffffff",
+                        "on-background": "#121d26",
+                        "on-tertiary": "#ffffff",
+                        "inverse-primary": "#a6c9f9",
+                        "inverse-surface": "#27313c",
+                        "surface-dim": "#d1dbe8",
+                        "outline-variant": "#c3c6cf",
+                        "on-tertiary-fixed-variant": "#364764",
+                        "on-tertiary-container": "#92a4c5",
+                        "on-surface-variant": "#43474e",
+                        "secondary": "#755b00",
+                        "surface-container-high": "#dfe9f7",
+                        "inverse-on-surface": "#e8f2ff",
+                        "surface-variant": "#d9e3f1",
+                        "tertiary": "#11243f",
+                        "on-secondary-fixed": "#241a00",
+                        "surface-container-lowest": "#ffffff",
+                        "error": "#ba1a1a",
+                        "surface-container-highest": "#d9e3f1",
+                        "primary-fixed-dim": "#a6c9f9",
+                        "on-secondary-fixed-variant": "#584400",
+                        "secondary-fixed": "#ffe08e",
+                        "on-primary": "#ffffff",
+                        "on-primary-container": "#83a6d4",
+                        "error-container": "#ffdad6",
+                        "outline": "#73777f",
+                        "on-error": "#ffffff",
+                        "surface-bright": "#f7f9ff",
+                        "surface-container-low": "#edf4ff",
+                        "primary": "#002546",
+                        "tertiary-fixed": "#d6e3ff",
+                        "on-primary-fixed-variant": "#234871",
+                        "primary-fixed": "#d2e4ff",
+                        "on-primary-fixed": "#001c37",
+                        "tertiary-fixed-dim": "#b5c7ea",
+                        "tertiary-container": "#283a56",
+                        "surface-tint": "#3d608a",
+                        "secondary-fixed-dim": "#ecc246",
+                        "on-surface": "#121d26"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "xxl": "48px",
+                        "sm": "12px",
+                        "xl": "32px",
+                        "md": "16px",
+                        "gutter-desktop": "24px",
+                        "base": "8px",
+                        "sidebar-width": "260px",
+                        "lg": "24px",
+                        "xs": "4px",
+                        "margin-desktop": "40px"
+                    },
+                    "fontFamily": {
+                        "headline-sm": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "label-md": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "body-md": ["Inter"],
+                        "body-lg": ["Inter"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; background-color: #f7f9ff; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .glass-card { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(8px); }
+        .bento-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 24px; }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #d1dbe8; border-radius: 10px; }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen">
+<!-- Side Navigation Bar -->
+<aside class="fixed left-0 top-0 h-full w-sidebar-width bg-primary dark:bg-on-tertiary-fixed flex flex-col py-lg shadow-sm border-r border-outline-variant dark:border-on-tertiary-fixed-variant z-50">
+<div class="px-lg mb-xl">
+<h1 class="font-headline-sm text-headline-sm text-on-primary font-bold">LexPremium</h1>
+<p class="font-label-sm text-label-sm text-on-primary-container opacity-80">Elite Counsel Suite</p>
+</div>
+<nav class="flex-1 space-y-base px-sm">
+<!-- Dashboard (Inactive) -->
+<div class="flex items-center gap-md px-md py-sm rounded-lg text-on-primary-container hover:bg-primary-fixed-dim hover:text-on-primary transition-colors duration-200 cursor-pointer active:opacity-80">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</div>
+<!-- Clients (Inactive) -->
+<div class="flex items-center gap-md px-md py-sm rounded-lg text-on-primary-container hover:bg-primary-fixed-dim hover:text-on-primary transition-colors duration-200 cursor-pointer active:opacity-80">
+<span class="material-symbols-outlined">group</span>
+<span class="font-label-md text-label-md">Clients</span>
+</div>
+<!-- Matters (Inactive) -->
+<div class="flex items-center gap-md px-md py-sm rounded-lg text-on-primary-container hover:bg-primary-fixed-dim hover:text-on-primary transition-colors duration-200 cursor-pointer active:opacity-80">
+<span class="material-symbols-outlined">folder_open</span>
+<span class="font-label-md text-label-md">Matters</span>
+</div>
+<!-- Tasks (Inactive) -->
+<div class="flex items-center gap-md px-md py-sm rounded-lg text-on-primary-container hover:bg-primary-fixed-dim hover:text-on-primary transition-colors duration-200 cursor-pointer active:opacity-80">
+<span class="material-symbols-outlined">assignment</span>
+<span class="font-label-md text-label-md">Tasks</span>
+</div>
+<!-- Billing (Active) -->
+<div class="flex items-center gap-md px-md py-sm rounded-lg text-on-primary-fixed border-l-2 border-secondary-fixed bg-primary-container transition-colors duration-200 cursor-pointer active:opacity-80">
+<span class="material-symbols-outlined">receipt_long</span>
+<span class="font-label-md text-label-md">Billing</span>
+</div>
+<!-- Settings (Inactive) -->
+<div class="flex items-center gap-md px-md py-sm rounded-lg text-on-primary-container hover:bg-primary-fixed-dim hover:text-on-primary transition-colors duration-200 cursor-pointer active:opacity-80">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-md text-label-md">Settings</span>
+</div>
+</nav>
+<div class="mt-auto px-lg pt-lg border-t border-on-tertiary-fixed-variant">
+<button class="w-full bg-secondary-fixed text-on-secondary-fixed font-label-md text-label-md py-sm rounded-xl flex items-center justify-center gap-xs hover:bg-secondary-fixed-dim transition-all">
+<span class="material-symbols-outlined">add</span>
+                New Matter
+            </button>
+</div>
+</aside>
+<!-- Top Navigation Bar -->
+<header class="fixed top-0 right-0 w-[calc(100%-260px)] h-16 bg-surface flex items-center justify-between px-gutter-desktop z-40 border-b border-outline-variant">
+<div class="flex items-center gap-xl w-1/2">
+<div class="relative w-full max-w-md focus-within:ring-1 focus-within:ring-primary rounded-lg overflow-hidden">
+<span class="material-symbols-outlined absolute left-md top-1/2 -translate-y-1/2 text-outline">search</span>
+<input class="w-full pl-xl pr-md py-xs bg-surface-container-low border-none focus:ring-0 font-body-md text-body-md outline-none" placeholder="Search invoices, clients or matters..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-lg">
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-all">notifications</button>
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-all">help_outline</button>
+<div class="h-8 w-px bg-outline-variant mx-sm"></div>
+<div class="flex items-center gap-sm cursor-pointer">
+<img alt="Attorney Profile" class="w-10 h-10 rounded-full object-cover border border-outline-variant" data-alt="Professional portrait of a senior legal attorney with a confident expression, wearing a tailored navy suit and standing in a modern corporate office setting. The lighting is soft and natural, emphasizing a high-end light-mode aesthetic with warm beige tones in the background, projecting authority and professional trust." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDCp2DphwfvkJfN-nqLRbivuH1BPw86lc6i0_DWKI9HW2n1oNbH2dXOF96WSdWyJZswEFjZl8GbsCFX6tMGGGHiYWX_-0s-FS6xTAvYWMhkdeceoH0158eW_nAUal3e_LiK1LLUMEOM92Tt6Nd08KxvIXZSMkF5sUGYEUggiMSD8cOf2_zJ1srECuqC6afrTX8icL3qfJM6cQc7XXpokc3E9SBywc-S1hicWT-jYq2-7bdwLws_5joKCKkz2xSYR4SU0M23l9PCtnL5"/>
+<div class="hidden lg:block text-right">
+<p class="font-label-md text-label-md text-on-surface">Alex Sterling</p>
+<p class="font-label-sm text-label-sm text-outline">Senior Partner</p>
+</div>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="ml-sidebar-width pt-16 pb-xxl px-gutter-desktop min-h-screen">
+<div class="max-w-[1440px] mx-auto py-xl">
+<!-- Page Header -->
+<div class="flex items-end justify-between mb-xxl">
+<div>
+<nav class="flex items-center gap-xs text-outline font-label-sm text-label-sm mb-xs">
+<span>Billing</span>
+<span class="material-symbols-outlined text-[14px]">chevron_right</span>
+<span class="text-primary">Global Client Services Inc.</span>
+</nav>
+<h2 class="font-headline-lg text-headline-lg text-on-background">Client Billing Dashboard</h2>
+<p class="text-on-surface-variant font-body-md text-body-md">Financial overview for Global Client Services Inc. — Account #881290</p>
+</div>
+<div class="flex items-center gap-md">
+<button class="flex items-center gap-xs px-lg py-sm rounded-xl border border-outline text-on-surface hover:bg-surface-container-low transition-colors font-label-md text-label-md">
+<span class="material-symbols-outlined">download</span>
+                        Export Statement
+                    </button>
+<button class="flex items-center gap-xs px-lg py-sm rounded-xl bg-primary text-on-primary hover:opacity-90 transition-all font-label-md text-label-md">
+<span class="material-symbols-outlined">add_card</span>
+                        Create Invoice
+                    </button>
+</div>
+</div>
+<!-- Bento Grid Financial Metrics -->
+<div class="bento-grid mb-xxl">
+<!-- Primary Realization Metric -->
+<div class="col-span-12 lg:col-span-4 p-xl rounded-xl bg-surface-container-lowest border border-outline-variant shadow-sm flex flex-col justify-between">
+<div>
+<div class="flex justify-between items-start mb-md">
+<span class="font-label-sm text-label-sm text-outline uppercase tracking-wider">Realization Rate</span>
+<span class="material-symbols-outlined text-secondary">trending_up</span>
+</div>
+<div class="flex items-baseline gap-sm">
+<h3 class="font-display-lg text-display-lg text-primary">94.2%</h3>
+<span class="font-label-md text-label-md text-on-secondary-container bg-secondary-container px-sm py-xs rounded-full">+2.4%</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-sm">Total billable hours vs. collected revenue for this client fiscal year.</p>
+</div>
+<div class="mt-xl h-2 w-full bg-surface-variant rounded-full overflow-hidden">
+<div class="h-full bg-secondary w-[94.2%] rounded-full"></div>
+</div>
+</div>
+<!-- Billable vs Invoiced Comparison -->
+<div class="col-span-12 lg:col-span-8 p-xl rounded-xl bg-surface-container-lowest border border-outline-variant shadow-sm">
+<div class="flex justify-between items-center mb-xl">
+<h4 class="font-headline-sm text-headline-sm text-primary">Revenue Distribution</h4>
+<div class="flex items-center gap-lg">
+<div class="flex items-center gap-xs">
+<span class="w-3 h-3 rounded-full bg-primary"></span>
+<span class="font-label-sm text-label-sm text-outline">Invoiced</span>
+</div>
+<div class="flex items-center gap-xs">
+<span class="w-3 h-3 rounded-full bg-secondary"></span>
+<span class="font-label-sm text-label-sm text-outline">Unbilled</span>
+</div>
+</div>
+</div>
+<div class="flex items-end gap-gutter-desktop h-40">
+<!-- Bar chart visualization -->
+<div class="flex-1 flex flex-col justify-end gap-xs h-full">
+<div class="flex items-end gap-[2px] h-full">
+<div class="w-full bg-primary opacity-20 h-[40%] rounded-t-sm"></div>
+<div class="w-full bg-secondary h-[60%] rounded-t-sm"></div>
+</div>
+<span class="font-label-sm text-label-sm text-center text-outline">Jan</span>
+</div>
+<div class="flex-1 flex flex-col justify-end gap-xs h-full">
+<div class="flex items-end gap-[2px] h-full">
+<div class="w-full bg-primary opacity-20 h-[55%] rounded-t-sm"></div>
+<div class="w-full bg-secondary h-[45%] rounded-t-sm"></div>
+</div>
+<span class="font-label-sm text-label-sm text-center text-outline">Feb</span>
+</div>
+<div class="flex-1 flex flex-col justify-end gap-xs h-full">
+<div class="flex items-end gap-[2px] h-full">
+<div class="w-full bg-primary opacity-20 h-[70%] rounded-t-sm"></div>
+<div class="w-full bg-secondary h-[30%] rounded-t-sm"></div>
+</div>
+<span class="font-label-sm text-label-sm text-center text-outline">Mar</span>
+</div>
+<div class="flex-1 flex flex-col justify-end gap-xs h-full relative">
+<div class="flex items-end gap-[2px] h-full">
+<div class="w-full bg-primary opacity-20 h-[90%] rounded-t-sm"></div>
+<div class="w-full bg-secondary h-[20%] rounded-t-sm"></div>
+</div>
+<span class="font-label-sm text-label-sm text-center text-outline">Apr</span>
+<div class="absolute -top-xl left-1/2 -translate-x-1/2 bg-on-background text-on-primary font-label-sm text-label-sm px-sm py-xs rounded shadow-lg whitespace-nowrap">$42,500 Inv.</div>
+</div>
+<div class="flex-1 flex flex-col justify-end gap-xs h-full">
+<div class="flex items-end gap-[2px] h-full">
+<div class="w-full bg-primary opacity-20 h-[65%] rounded-t-sm"></div>
+<div class="w-full bg-secondary h-[35%] rounded-t-sm"></div>
+</div>
+<span class="font-label-sm text-label-sm text-center text-outline">May</span>
+</div>
+<div class="flex-1 flex flex-col justify-end gap-xs h-full">
+<div class="flex items-end gap-[2px] h-full">
+<div class="w-full bg-primary opacity-20 h-[80%] rounded-t-sm"></div>
+<div class="w-full bg-secondary h-[20%] rounded-t-sm"></div>
+</div>
+<span class="font-label-sm text-label-sm text-center text-outline">Jun</span>
+</div>
+</div>
+</div>
+<!-- Small Stat: Total Outstanding -->
+<div class="col-span-12 lg:col-span-3 p-xl rounded-xl bg-surface-container-lowest border border-outline-variant shadow-sm">
+<p class="font-label-sm text-label-sm text-outline uppercase mb-md">Outstanding</p>
+<h5 class="font-headline-md text-headline-md text-primary">$128,450.00</h5>
+<p class="font-body-sm text-body-sm text-error mt-sm flex items-center gap-xs">
+<span class="material-symbols-outlined text-[16px]">warning</span>
+                        $12k Overdue
+                    </p>
+</div>
+<!-- Small Stat: WIP Amount -->
+<div class="col-span-12 lg:col-span-3 p-xl rounded-xl bg-surface-container-lowest border border-outline-variant shadow-sm">
+<p class="font-label-sm text-label-sm text-outline uppercase mb-md">Work in Progress</p>
+<h5 class="font-headline-md text-headline-md text-on-surface">$45,210.00</h5>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-sm">214 unbilled hours</p>
+</div>
+<!-- Small Stat: Last Payment -->
+<div class="col-span-12 lg:col-span-3 p-xl rounded-xl bg-surface-container-lowest border border-outline-variant shadow-sm">
+<p class="font-label-sm text-label-sm text-outline uppercase mb-md">Last Payment</p>
+<h5 class="font-headline-md text-headline-md text-on-surface">$32,000.00</h5>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-sm">Received Oct 14, 2024</p>
+</div>
+<!-- Small Stat: Avg. Payment Days -->
+<div class="col-span-12 lg:col-span-3 p-xl rounded-xl bg-surface-container-lowest border border-outline-variant shadow-sm">
+<p class="font-label-sm text-label-sm text-outline uppercase mb-md">Avg. Payment Days</p>
+<h5 class="font-headline-md text-headline-md text-on-surface">18 Days</h5>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-sm">Within net-30 terms</p>
+</div>
+</div>
+<!-- Invoices Table Section -->
+<div class="bg-surface-container-lowest rounded-xl border border-outline-variant shadow-sm overflow-hidden">
+<div class="p-xl border-b border-outline-variant flex items-center justify-between">
+<div>
+<h4 class="font-headline-sm text-headline-sm text-primary">Invoice History</h4>
+<p class="font-body-sm text-body-sm text-outline">Manage and track all historical billing records for this client.</p>
+</div>
+<div class="flex items-center gap-md">
+<div class="flex bg-surface-container rounded-lg p-xs">
+<button class="px-md py-xs rounded-md bg-surface-container-lowest shadow-sm text-primary font-label-md text-label-md">All</button>
+<button class="px-md py-xs rounded-md text-on-surface-variant font-label-md text-label-md">Unpaid</button>
+<button class="px-md py-xs rounded-md text-on-surface-variant font-label-md text-label-md">Paid</button>
+</div>
+<button class="material-symbols-outlined text-outline p-xs hover:bg-surface-container-low rounded-lg">filter_list</button>
+</div>
+</div>
+<table class="w-full text-left border-collapse">
+<thead class="bg-surface-variant/30">
+<tr>
+<th class="px-xl py-md font-label-sm text-label-sm text-outline uppercase">Invoice #</th>
+<th class="px-xl py-md font-label-sm text-label-sm text-outline uppercase">Issue Date</th>
+<th class="px-xl py-md font-label-sm text-label-sm text-outline uppercase">Matter</th>
+<th class="px-xl py-md font-label-sm text-label-sm text-outline uppercase">Amount</th>
+<th class="px-xl py-md font-label-sm text-label-sm text-outline uppercase">Status</th>
+<th class="px-xl py-md font-label-sm text-label-sm text-outline uppercase text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant">
+<!-- Overdue Row -->
+<tr class="hover:bg-surface-bright transition-colors group">
+<td class="px-xl py-lg font-label-md text-label-md text-primary">INV-2024-0012</td>
+<td class="px-xl py-lg font-body-sm text-body-sm text-on-surface-variant">Sep 15, 2024</td>
+<td class="px-xl py-lg font-body-sm text-body-sm text-on-surface">Merger &amp; Acquisition - Phase I</td>
+<td class="px-xl py-lg font-label-md text-label-md text-on-surface font-bold">$12,450.00</td>
+<td class="px-xl py-lg">
+<span class="inline-flex items-center px-sm py-xs rounded-full bg-error-container text-on-error-container font-label-sm text-label-sm">
+<span class="w-1.5 h-1.5 rounded-full bg-error mr-xs"></span>
+                                    Overdue
+                                </span>
+</td>
+<td class="px-xl py-lg text-right">
+<button class="material-symbols-outlined text-outline hover:text-primary transition-colors opacity-0 group-hover:opacity-100">more_vert</button>
+</td>
+</tr>
+<!-- Sent Row -->
+<tr class="hover:bg-surface-bright transition-colors group">
+<td class="px-xl py-lg font-label-md text-label-md text-primary">INV-2024-0015</td>
+<td class="px-xl py-lg font-body-sm text-body-sm text-on-surface-variant">Oct 02, 2024</td>
+<td class="px-xl py-lg font-body-sm text-body-sm text-on-surface">Corporate Governance Audit</td>
+<td class="px-xl py-lg font-label-md text-label-md text-on-surface font-bold">$8,900.00</td>
+<td class="px-xl py-lg">
+<span class="inline-flex items-center px-sm py-xs rounded-full bg-surface-container-high text-primary font-label-sm text-label-sm">
+<span class="w-1.5 h-1.5 rounded-full bg-primary mr-xs"></span>
+                                    Sent
+                                </span>
+</td>
+<td class="px-xl py-lg text-right">
+<button class="material-symbols-outlined text-outline hover:text-primary transition-colors opacity-0 group-hover:opacity-100">more_vert</button>
+</td>
+</tr>
+<!-- Paid Row -->
+<tr class="hover:bg-surface-bright transition-colors group">
+<td class="px-xl py-lg font-label-md text-label-md text-primary">INV-2024-0008</td>
+<td class="px-xl py-lg font-body-sm text-body-sm text-on-surface-variant">Aug 14, 2024</td>
+<td class="px-xl py-lg font-body-sm text-body-sm text-on-surface">IP Strategy Consulting</td>
+<td class="px-xl py-lg font-label-md text-label-md text-on-surface font-bold">$32,000.00</td>
+<td class="px-xl py-lg">
+<span class="inline-flex items-center px-sm py-xs rounded-full bg-secondary-container/20 text-on-secondary-container font-label-sm text-label-sm">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary mr-xs"></span>
+                                    Paid
+                                </span>
+</td>
+<td class="px-xl py-lg text-right">
+<button class="material-symbols-outlined text-outline hover:text-primary transition-colors opacity-0 group-hover:opacity-100">more_vert</button>
+</td>
+</tr>
+<!-- Draft Row -->
+<tr class="hover:bg-surface-bright transition-colors group">
+<td class="px-xl py-lg font-label-md text-label-md text-primary">INV-2024-0018</td>
+<td class="px-xl py-lg font-body-sm text-body-sm text-on-surface-variant">Oct 28, 2024</td>
+<td class="px-xl py-lg font-body-sm text-body-sm text-on-surface">Annual Compliance Filing</td>
+<td class="px-xl py-lg font-label-md text-label-md text-on-surface font-bold">$4,200.00</td>
+<td class="px-xl py-lg">
+<span class="inline-flex items-center px-sm py-xs rounded-full bg-surface-variant text-on-surface-variant font-label-sm text-label-sm">
+<span class="w-1.5 h-1.5 rounded-full bg-outline mr-xs"></span>
+                                    Draft
+                                </span>
+</td>
+<td class="px-xl py-lg text-right">
+<button class="material-symbols-outlined text-outline hover:text-primary transition-colors opacity-0 group-hover:opacity-100">more_vert</button>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="p-xl bg-surface-container-low/50 flex items-center justify-between border-t border-outline-variant">
+<p class="font-body-sm text-body-sm text-outline">Showing 1 to 4 of 28 invoices</p>
+<div class="flex items-center gap-xs">
+<button class="w-8 h-8 flex items-center justify-center rounded border border-outline-variant hover:bg-surface-container-lowest transition-colors"><span class="material-symbols-outlined text-[18px]">chevron_left</span></button>
+<button class="w-8 h-8 flex items-center justify-center rounded bg-primary text-on-primary font-label-sm text-label-sm">1</button>
+<button class="w-8 h-8 flex items-center justify-center rounded border border-outline-variant font-label-sm text-label-sm hover:bg-surface-container-lowest">2</button>
+<button class="w-8 h-8 flex items-center justify-center rounded border border-outline-variant font-label-sm text-label-sm hover:bg-surface-container-lowest">3</button>
+<button class="w-8 h-8 flex items-center justify-center rounded border border-outline-variant hover:bg-surface-container-lowest transition-colors"><span class="material-symbols-outlined text-[18px]">chevron_right</span></button>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer Navigation Shell -->
+<footer class="absolute bottom-0 right-0 w-[calc(100%-260px)] bg-surface-container-low border-t border-outline-variant flex justify-between items-center px-gutter-desktop py-md z-30">
+<div class="flex items-center gap-xl">
+<span class="font-label-sm text-label-sm text-on-surface-variant">© 2024 LexPremium Systems. All rights reserved.</span>
+</div>
+<nav class="flex items-center gap-xl">
+<a class="font-label-sm text-label-sm text-outline hover:text-secondary transition-colors" href="#">Support</a>
+<a class="font-label-sm text-label-sm text-outline hover:text-secondary transition-colors" href="#">Privacy Policy</a>
+<a class="font-label-sm text-label-sm text-outline hover:text-secondary transition-colors" href="#">Terms of Service</a>
+<a class="font-label-sm text-label-sm text-outline hover:text-secondary transition-colors" href="#">Security</a>
+</nav>
+</footer>
+<!-- Chart Interaction Script -->
+<script>
+        // Simple micro-interaction for the chart bars
+        document.querySelectorAll('.flex-1.flex.flex-col').forEach(bar => {
+            bar.addEventListener('mouseenter', () => {
+                bar.querySelector('.bg-primary').style.opacity = '0.5';
+                bar.querySelector('.bg-secondary').style.transform = 'scaleY(1.05)';
+                bar.querySelector('.bg-secondary').style.transition = 'all 0.3s ease';
+            });
+            bar.addEventListener('mouseleave', () => {
+                bar.querySelector('.bg-primary').style.opacity = '0.2';
+                bar.querySelector('.bg-secondary').style.transform = 'scaleY(1)';
+            });
+        });
+
+        // Toggle search bar focus
+        const searchInput = document.querySelector('input[type="text"]');
+        const searchContainer = searchInput.parentElement;
+        searchInput.addEventListener('focus', () => {
+            searchContainer.classList.add('shadow-md');
+        });
+        searchInput.addEventListener('blur', () => {
+            searchContainer.classList.remove('shadow-md');
+        });
+    </script>
+</body></html>

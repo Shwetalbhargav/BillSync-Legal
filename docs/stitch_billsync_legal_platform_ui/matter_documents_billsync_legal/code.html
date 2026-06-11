@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Matter Documents - BillSync Legal</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+        .sidebar-active-accent {
+            position: relative;
+        }
+        .sidebar-active-accent::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background-color: #fed255; /* Gold accent from secondary-container */
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F8F5EF; /* Level 0 Background */
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #d1dbe8;
+            border-radius: 10px;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-error-container": "#93000a",
+                      "inverse-surface": "#27313c",
+                      "tertiary-fixed": "#d6e3ff",
+                      "on-error": "#ffffff",
+                      "on-secondary-fixed-variant": "#584400",
+                      "secondary-fixed": "#ffe08e",
+                      "secondary": "#755b00",
+                      "surface-variant": "#d9e3f1",
+                      "primary": "#002546",
+                      "on-primary-fixed-variant": "#234871",
+                      "on-secondary": "#ffffff",
+                      "surface": "#f7f9ff",
+                      "on-tertiary-container": "#92a4c5",
+                      "tertiary": "#11243f",
+                      "outline-variant": "#c3c6cf",
+                      "surface-container-highest": "#d9e3f1",
+                      "primary-container": "#123b63",
+                      "on-primary-container": "#83a6d4",
+                      "on-tertiary-fixed-variant": "#364764",
+                      "on-primary-fixed": "#001c37",
+                      "tertiary-container": "#283a56",
+                      "surface-container-lowest": "#ffffff",
+                      "tertiary-fixed-dim": "#b5c7ea",
+                      "surface-container-high": "#dfe9f7",
+                      "primary-fixed-dim": "#a6c9f9",
+                      "inverse-primary": "#a6c9f9",
+                      "on-tertiary": "#ffffff",
+                      "surface-bright": "#f7f9ff",
+                      "secondary-fixed-dim": "#ecc246",
+                      "on-surface-variant": "#43474e",
+                      "on-primary": "#ffffff",
+                      "surface-container": "#e4effd",
+                      "surface-tint": "#3d608a",
+                      "on-secondary-fixed": "#241a00",
+                      "on-background": "#121d26",
+                      "error-container": "#ffdad6",
+                      "background": "#f7f9ff",
+                      "outline": "#73777f",
+                      "surface-container-low": "#edf4ff",
+                      "surface-dim": "#d1dbe8",
+                      "secondary-container": "#fed255",
+                      "on-secondary-container": "#735a00",
+                      "inverse-on-surface": "#e8f2ff",
+                      "primary-fixed": "#d2e4ff",
+                      "on-tertiary-fixed": "#071c36",
+                      "error": "#ba1a1a",
+                      "on-surface": "#121d26"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "gutter-desktop": "24px",
+                      "md": "16px",
+                      "sidebar-width": "260px",
+                      "base": "8px",
+                      "xs": "4px",
+                      "xl": "32px",
+                      "xxl": "48px",
+                      "lg": "24px",
+                      "sm": "12px",
+                      "margin-desktop": "40px"
+              },
+              "fontFamily": {
+                      "label-md": ["Inter"],
+                      "headline-lg-mobile": ["Inter"],
+                      "label-sm": ["Inter"],
+                      "headline-sm": ["Inter"],
+                      "display-lg": ["Inter"],
+                      "body-lg": ["Inter"],
+                      "headline-lg": ["Inter"],
+                      "headline-md": ["Inter"],
+                      "body-md": ["Inter"],
+                      "body-sm": ["Inter"]
+              },
+              "fontSize": {
+                      "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                      "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                      "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "600"}],
+                      "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                      "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                      "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                      "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                      "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}]
+              }
+            },
+          },
+        }
+      </script>
+</head>
+<body class="bg-background text-on-surface flex min-h-screen">
+<!-- SIDE BAR NAVIGATION -->
+<aside class="flex flex-col h-screen w-sidebar-width fixed left-0 top-0 overflow-y-auto bg-primary text-secondary-container border-r border-outline-variant z-50">
+<div class="p-lg">
+<h1 class="font-headline-md text-headline-md font-bold text-surface-container-lowest">BillSync Legal</h1>
+<p class="font-label-md text-label-md text-on-primary-container opacity-70">Premium Legal Tech</p>
+</div>
+<nav class="mt-md flex-1">
+<ul class="space-y-xs">
+<li>
+<a class="flex items-center px-lg py-sm text-on-primary-container font-label-md text-label-md hover:bg-primary-container hover:text-surface-container-lowest transition-colors group" href="#">
+<span class="material-symbols-outlined mr-md">dashboard</span>
+                        Dashboard
+                    </a>
+</li>
+<li>
+<a class="flex items-center px-lg py-sm text-on-primary-container font-label-md text-label-md hover:bg-primary-container hover:text-surface-container-lowest transition-colors group" href="#">
+<span class="material-symbols-outlined mr-md">folder_shared</span>
+                        Matters
+                    </a>
+</li>
+<li>
+<a class="flex items-center px-lg py-sm text-on-primary-container font-label-md text-label-md hover:bg-primary-container hover:text-surface-container-lowest transition-colors group" href="#">
+<span class="material-symbols-outlined mr-md">payments</span>
+                        Billing
+                    </a>
+</li>
+<li>
+<a class="flex items-center px-lg py-sm sidebar-active-accent text-surface-container-lowest font-bold bg-primary-container transition-all duration-200" href="#">
+<span class="material-symbols-outlined mr-md">description</span>
+                        Documents
+                    </a>
+</li>
+<li>
+<a class="flex items-center px-lg py-sm text-on-primary-container font-label-md text-label-md hover:bg-primary-container hover:text-surface-container-lowest transition-colors group" href="#">
+<span class="material-symbols-outlined mr-md">insights</span>
+                        Intelligence
+                    </a>
+</li>
+</ul>
+</nav>
+<div class="mt-auto p-lg border-t border-primary-container">
+<button class="w-full py-md px-lg bg-secondary-container text-on-secondary-container font-label-md text-label-md rounded-xl font-bold flex items-center justify-center hover:opacity-90 transition-all mb-lg">
+<span class="material-symbols-outlined mr-xs">add</span>
+                New Matter
+            </button>
+<ul class="space-y-xs">
+<li>
+<a class="flex items-center text-on-primary-container font-label-md text-label-md hover:text-surface-container-lowest transition-colors" href="#">
+<span class="material-symbols-outlined mr-md">settings</span>
+                        Settings
+                    </a>
+</li>
+<li class="mt-sm">
+<a class="flex items-center text-on-primary-container font-label-md text-label-md hover:text-surface-container-lowest transition-colors" href="#">
+<span class="material-symbols-outlined mr-md">help</span>
+                        Support
+                    </a>
+</li>
+</ul>
+</div>
+</aside>
+<!-- MAIN CONTENT AREA -->
+<main class="flex-1 ml-sidebar-width min-h-screen flex flex-col">
+<!-- TOP NAV BAR -->
+<header class="flex justify-between items-center w-full h-16 px-gutter-desktop sticky top-0 z-40 bg-surface/80 backdrop-blur-md border-b border-outline-variant">
+<div class="flex items-center space-x-lg">
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">search</span>
+<input class="pl-10 pr-lg py-xs bg-surface-container-low border-none rounded-full text-body-sm w-80 focus:ring-1 focus:ring-primary" placeholder="Search documents..." type="text"/>
+</div>
+</div>
+<div class="flex items-center space-x-lg">
+<button class="text-on-surface-variant hover:text-primary transition-all">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="text-on-surface-variant hover:text-primary transition-all">
+<span class="material-symbols-outlined">history</span>
+</button>
+<button class="text-on-surface-variant hover:text-primary transition-all">
+<span class="material-symbols-outlined">help</span>
+</button>
+<div class="h-8 w-8 rounded-full bg-primary-container overflow-hidden border border-outline-variant">
+<img alt="User Profile" class="h-full w-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCt7LThMi7anS1a3QhuMcmLdgAi2YO51cT7RXDTHryxdQh8LT0iYX1MspgZjCaoA1QtW8MyBR6_kxD54huGIEpRyPfpk9izuSAoV37M8ynUbxr7x9hTSgtweQk3E0TMu3e4tI38WRecUD05zw0tsz1TszTvg6fwfk89zJ8Qz3A0bGi2Ok7OEQ3A0Sx6Xlmjmp-_63T3fuOTq9XxsL8E8GFCarmWzninOP5DSi3Xww00iVb0Fsw9pnbsKudMTRyo5iA5Y-bZeWTfqig8"/>
+</div>
+</div>
+</header>
+<!-- CONTENT CANVAS -->
+<div class="p-gutter-desktop max-w-[1440px] mx-auto w-full">
+<!-- HEADER SECTION -->
+<div class="mb-xxl flex justify-between items-end">
+<div>
+<nav class="flex items-center space-x-xs text-label-sm text-outline mb-xs">
+<span>Matters</span>
+<span class="material-symbols-outlined text-[14px]">chevron_right</span>
+<span class="text-primary font-bold">Matter #2024-082 (Estate of Jenkins)</span>
+</nav>
+<h2 class="font-headline-lg text-headline-lg text-primary">Case Documents</h2>
+</div>
+<div class="flex space-x-md">
+<button class="flex items-center px-lg py-sm bg-surface-container-lowest border border-outline-variant rounded-xl font-label-md text-label-md hover:bg-surface-container-low transition-all">
+<span class="material-symbols-outlined mr-xs">filter_list</span>
+                        Filters
+                    </button>
+<button class="flex items-center px-lg py-sm bg-primary text-on-primary rounded-xl font-label-md text-label-md font-bold hover:opacity-95 transition-all">
+<span class="material-symbols-outlined mr-xs">upload_file</span>
+                        Upload New
+                    </button>
+</div>
+</div>
+<!-- BENTO GRID LAYOUT -->
+<div class="grid grid-cols-12 gap-lg">
+<!-- FILTER CHIPS AREA -->
+<div class="col-span-12 flex space-x-sm mb-base">
+<button class="px-lg py-xs bg-secondary-container text-on-secondary-container rounded-full text-label-sm border border-secondary-fixed">All Documents</button>
+<button class="px-lg py-xs bg-surface-container-lowest text-on-surface-variant rounded-full text-label-sm border border-outline-variant hover:bg-surface-container-low transition-all">Pleadings</button>
+<button class="px-lg py-xs bg-surface-container-lowest text-on-surface-variant rounded-full text-label-sm border border-outline-variant hover:bg-surface-container-low transition-all">Contracts</button>
+<button class="px-lg py-xs bg-surface-container-lowest text-on-surface-variant rounded-full text-label-sm border border-outline-variant hover:bg-surface-container-low transition-all">Correspondence</button>
+<button class="px-lg py-xs bg-surface-container-lowest text-on-surface-variant rounded-full text-label-sm border border-outline-variant hover:bg-surface-container-low transition-all">Financials</button>
+</div>
+<!-- MAIN DOCUMENT LIST (8 cols) -->
+<div class="col-span-8 space-y-md">
+<!-- DOCUMENT ITEM 1 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-lg flex items-center group hover:shadow-lg transition-all duration-300">
+<div class="w-12 h-12 rounded-lg bg-surface-container flex items-center justify-center mr-lg text-primary">
+<span class="material-symbols-outlined text-[32px]">description</span>
+</div>
+<div class="flex-1">
+<h4 class="font-headline-sm text-headline-sm text-primary mb-xs">Amended_Complaint_v3.pdf</h4>
+<div class="flex items-center space-x-md text-label-sm text-outline">
+<span class="flex items-center"><span class="material-symbols-outlined text-[16px] mr-xs">history</span> v3.2</span>
+<span class="flex items-center"><span class="material-symbols-outlined text-[16px] mr-xs">person</span> Modified by Sarah L.</span>
+<span class="flex items-center"><span class="material-symbols-outlined text-[16px] mr-xs">calendar_today</span> Oct 12, 2023</span>
+</div>
+</div>
+<div class="flex items-center space-x-sm">
+<span class="px-base py-xs bg-success/10 text-emerald-700 bg-emerald-50 rounded-lg text-label-sm font-bold uppercase tracking-wider">Pleading</span>
+<button class="p-xs text-outline hover:text-primary transition-colors"><span class="material-symbols-outlined">download</span></button>
+<button class="p-xs text-outline hover:text-primary transition-colors"><span class="material-symbols-outlined">more_vert</span></button>
+</div>
+</div>
+<!-- DOCUMENT ITEM 2 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-lg flex items-center group hover:shadow-lg transition-all duration-300 border-l-4 border-l-secondary-container">
+<div class="w-12 h-12 rounded-lg bg-surface-container flex items-center justify-center mr-lg text-primary">
+<span class="material-symbols-outlined text-[32px]">contract</span>
+</div>
+<div class="flex-1">
+<div class="flex items-center">
+<h4 class="font-headline-sm text-headline-sm text-primary mb-xs mr-sm">Asset_Purchase_Agreement_FINAL.docx</h4>
+<span class="bg-primary text-surface-container-lowest text-[10px] px-xs py-[2px] rounded font-bold">LOCKED</span>
+</div>
+<div class="flex items-center space-x-md text-label-sm text-outline">
+<span class="flex items-center"><span class="material-symbols-outlined text-[16px] mr-xs">history</span> v1.0</span>
+<span class="flex items-center"><span class="material-symbols-outlined text-[16px] mr-xs">person</span> Modified by Michael R.</span>
+<span class="flex items-center"><span class="material-symbols-outlined text-[16px] mr-xs">calendar_today</span> Oct 10, 2023</span>
+</div>
+</div>
+<div class="flex items-center space-x-sm">
+<span class="px-base py-xs bg-amber-50 text-amber-700 rounded-lg text-label-sm font-bold uppercase tracking-wider">Contract</span>
+<button class="p-xs text-outline hover:text-primary transition-colors"><span class="material-symbols-outlined">download</span></button>
+<button class="p-xs text-outline hover:text-primary transition-colors"><span class="material-symbols-outlined">more_vert</span></button>
+</div>
+</div>
+<!-- DOCUMENT ITEM 3 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-lg flex items-center group hover:shadow-lg transition-all duration-300">
+<div class="w-12 h-12 rounded-lg bg-surface-container flex items-center justify-center mr-lg text-primary">
+<span class="material-symbols-outlined text-[32px]">mail</span>
+</div>
+<div class="flex-1">
+<h4 class="font-headline-sm text-headline-sm text-primary mb-xs">Email_Correspondence_Discovery.pst</h4>
+<div class="flex items-center space-x-md text-label-sm text-outline">
+<span class="flex items-center"><span class="material-symbols-outlined text-[16px] mr-xs">history</span> v2.1</span>
+<span class="flex items-center"><span class="material-symbols-outlined text-[16px] mr-xs">person</span> Modified by System</span>
+<span class="flex items-center"><span class="material-symbols-outlined text-[16px] mr-xs">calendar_today</span> Oct 08, 2023</span>
+</div>
+</div>
+<div class="flex items-center space-x-sm">
+<span class="px-base py-xs bg-blue-50 text-blue-700 rounded-lg text-label-sm font-bold uppercase tracking-wider">Correspondence</span>
+<button class="p-xs text-outline hover:text-primary transition-colors"><span class="material-symbols-outlined">download</span></button>
+<button class="p-xs text-outline hover:text-primary transition-colors"><span class="material-symbols-outlined">more_vert</span></button>
+</div>
+</div>
+<!-- DATA TABLE FOR BULK (High-Density List Pattern) -->
+<div class="mt-xl overflow-hidden rounded-xl border border-outline-variant bg-surface-container-lowest">
+<table class="w-full text-left">
+<thead class="bg-surface-container-low border-b border-outline-variant">
+<tr>
+<th class="px-lg py-sm font-label-sm text-label-sm text-outline uppercase tracking-wider">Name</th>
+<th class="px-lg py-sm font-label-sm text-label-sm text-outline uppercase tracking-wider">Type</th>
+<th class="px-lg py-sm font-label-sm text-label-sm text-outline uppercase tracking-wider">Date</th>
+<th class="px-lg py-sm font-label-sm text-label-sm text-outline uppercase tracking-wider">AI Status</th>
+<th class="px-lg py-sm font-label-sm text-label-sm text-outline uppercase tracking-wider">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant">
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-lg py-md flex items-center">
+<span class="material-symbols-outlined mr-sm text-outline text-[18px]">attachment</span>
+<span class="font-body-sm text-primary">Exhibit_A_Photos.zip</span>
+</td>
+<td class="px-lg py-md text-body-sm text-on-surface-variant">Evidence</td>
+<td class="px-lg py-md text-body-sm text-on-surface-variant">Oct 05, 2023</td>
+<td class="px-lg py-md">
+<span class="text-[10px] bg-secondary-container/20 text-secondary px-xs py-[2px] rounded border border-secondary/20">READY</span>
+</td>
+<td class="px-lg py-md text-right opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="text-outline hover:text-primary"><span class="material-symbols-outlined">visibility</span></button>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-lg py-md flex items-center">
+<span class="material-symbols-outlined mr-sm text-outline text-[18px]">table_chart</span>
+<span class="font-body-sm text-primary">Valuation_Spreadsheet.xlsx</span>
+</td>
+<td class="px-lg py-md text-body-sm text-on-surface-variant">Financial</td>
+<td class="px-lg py-md text-body-sm text-on-surface-variant">Sep 28, 2023</td>
+<td class="px-lg py-md">
+<span class="text-[10px] bg-outline-variant/30 text-outline px-xs py-[2px] rounded">PENDING</span>
+</td>
+<td class="px-lg py-md text-right opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="text-outline hover:text-primary"><span class="material-symbols-outlined">visibility</span></button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- SIDEBAR PANEL (4 cols) - AI Insights & Metadata -->
+<div class="col-span-4 space-y-lg">
+<!-- AI SUMMARY CARD -->
+<div class="bg-primary text-surface-container-lowest rounded-xl p-lg shadow-xl relative overflow-hidden">
+<!-- Abstract Background Decoration -->
+<div class="absolute -right-4 -top-4 w-32 h-32 bg-secondary-container/10 rounded-full blur-3xl"></div>
+<div class="relative z-10">
+<div class="flex items-center mb-md">
+<span class="material-symbols-outlined mr-sm text-secondary-container">insights</span>
+<h3 class="font-headline-sm text-headline-sm">BillSync AI Summary</h3>
+</div>
+<p class="font-body-sm text-body-sm text-on-primary-container leading-relaxed mb-lg">
+                                Currently analyzing <span class="text-secondary-container font-bold">Amended_Complaint_v3.pdf</span>. 
+                                The AI has identified three key updates regarding liability clauses in section 4.2.
+                            </p>
+<div class="space-y-sm">
+<div class="p-sm bg-primary-container/50 border border-secondary-container/20 rounded-lg">
+<h5 class="text-label-sm text-secondary-container mb-xs">Key Finding</h5>
+<p class="text-body-sm text-surface-container-lowest">Claim value increased by 15% following the last deposition findings.</p>
+</div>
+<div class="p-sm bg-primary-container/50 border border-secondary-container/20 rounded-lg">
+<h5 class="text-label-sm text-secondary-container mb-xs">Suggested Action</h5>
+<p class="text-body-sm text-surface-container-lowest">Schedule a rebuttal review with the partner by Friday morning.</p>
+</div>
+</div>
+<button class="w-full mt-lg py-sm bg-secondary-container text-on-secondary-container rounded-lg font-bold text-label-md hover:opacity-90 transition-all">Generate Full Report</button>
+</div>
+</div>
+<!-- VERSION CONTROL INDICATOR -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-lg">
+<h3 class="font-label-md text-label-md text-primary mb-lg flex items-center">
+<span class="material-symbols-outlined mr-xs">history</span>
+                            Timeline &amp; Version Control
+                        </h3>
+<div class="relative pl-lg border-l-2 border-outline-variant space-y-xl ml-xs">
+<div class="relative">
+<span class="absolute -left-[27px] top-0 w-3 h-3 rounded-full bg-secondary-container border-2 border-white"></span>
+<p class="text-label-sm font-bold text-primary">New version uploaded (v3.2)</p>
+<p class="text-body-sm text-outline">Today, 2:45 PM by Sarah L.</p>
+</div>
+<div class="relative">
+<span class="absolute -left-[27px] top-0 w-3 h-3 rounded-full bg-outline-variant border-2 border-white"></span>
+<p class="text-label-sm font-bold text-primary">Metadata Edited</p>
+<p class="text-body-sm text-outline">Yesterday, 9:15 AM by Michael R.</p>
+</div>
+<div class="relative">
+<span class="absolute -left-[27px] top-0 w-3 h-3 rounded-full bg-outline-variant border-2 border-white"></span>
+<p class="text-label-sm font-bold text-primary">Initial Draft Processed</p>
+<p class="text-body-sm text-outline">Oct 10, 2023 by BillSync AI</p>
+</div>
+</div>
+<button class="w-full mt-lg text-primary font-label-sm text-label-sm flex items-center justify-center hover:underline">
+                            View full audit trail
+                        </button>
+</div>
+<!-- DOCUMENT TYPE STATS -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-lg">
+<h3 class="font-label-md text-label-md text-primary mb-md">Matter Composition</h3>
+<div class="space-y-md">
+<div>
+<div class="flex justify-between text-label-sm mb-xs">
+<span>Pleadings</span>
+<span class="font-bold">42%</span>
+</div>
+<div class="w-full bg-surface-container h-2 rounded-full overflow-hidden">
+<div class="bg-primary h-full rounded-full" style="width: 42%"></div>
+</div>
+</div>
+<div>
+<div class="flex justify-between text-label-sm mb-xs">
+<span>Contracts</span>
+<span class="font-bold">28%</span>
+</div>
+<div class="w-full bg-surface-container h-2 rounded-full overflow-hidden">
+<div class="bg-secondary-container h-full rounded-full" style="width: 28%"></div>
+</div>
+</div>
+<div>
+<div class="flex justify-between text-label-sm mb-xs">
+<span>Other</span>
+<span class="font-bold">30%</span>
+</div>
+<div class="w-full bg-surface-container h-2 rounded-full overflow-hidden">
+<div class="bg-outline h-full rounded-full" style="width: 30%"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- FLOATING CHAT / AI BUTTON (OPTIONAL AS PER GUIDANCE ON SUPPRESSION, BUT INCLUDED AS AN AI FEATURE COMPONENT) -->
+<div class="fixed bottom-lg right-lg z-50">
+<button class="w-14 h-14 rounded-full bg-primary text-secondary-container flex items-center justify-center shadow-2xl hover:scale-110 transition-all border border-secondary-container/20">
+<span class="material-symbols-outlined text-[32px]" style="font-variation-settings: 'FILL' 1;">bolt</span>
+</button>
+</div>
+<script>
+        // Simple micro-interactions for the document list
+        document.querySelectorAll('.group').forEach(item => {
+            item.addEventListener('mouseenter', () => {
+                // Potential for JS-based subtle elevation change
+            });
+        });
+
+        // Search Bar focus effect
+        const searchInput = document.querySelector('input[type="text"]');
+        searchInput.addEventListener('focus', () => {
+            searchInput.parentElement.classList.add('ring-2', 'ring-secondary-container/30');
+        });
+        searchInput.addEventListener('blur', () => {
+            searchInput.parentElement.classList.remove('ring-2', 'ring-secondary-container/30');
+        });
+    </script>
+</body></html>

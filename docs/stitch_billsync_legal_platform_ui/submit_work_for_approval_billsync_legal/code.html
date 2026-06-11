@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Submit Batch | BillSync Legal</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-lowest": "#ffffff",
+                        "inverse-surface": "#27313c",
+                        "on-secondary-container": "#735a00",
+                        "on-primary-fixed": "#001c37",
+                        "on-error": "#ffffff",
+                        "surface-tint": "#3d608a",
+                        "surface-variant": "#d9e3f1",
+                        "secondary": "#755b00",
+                        "inverse-primary": "#a6c9f9",
+                        "surface-container": "#e4effd",
+                        "on-primary-fixed-variant": "#234871",
+                        "on-tertiary-fixed-variant": "#364764",
+                        "surface-dim": "#d1dbe8",
+                        "surface-container-highest": "#d9e3f1",
+                        "tertiary-fixed-dim": "#b5c7ea",
+                        "on-secondary-fixed-variant": "#584400",
+                        "primary-fixed": "#d2e4ff",
+                        "on-surface": "#121d26",
+                        "on-tertiary": "#ffffff",
+                        "secondary-container": "#fed255",
+                        "on-surface-variant": "#43474e",
+                        "outline-variant": "#c3c6cf",
+                        "on-background": "#121d26",
+                        "on-secondary-fixed": "#241a00",
+                        "on-primary-container": "#83a6d4",
+                        "on-tertiary-fixed": "#071c36",
+                        "on-tertiary-container": "#92a4c5",
+                        "inverse-on-surface": "#e8f2ff",
+                        "error-container": "#ffdad6",
+                        "surface": "#f7f9ff",
+                        "secondary-fixed": "#ffe08e",
+                        "tertiary-container": "#283a56",
+                        "error": "#ba1a1a",
+                        "on-error-container": "#93000a",
+                        "primary-container": "#123b63",
+                        "surface-bright": "#f7f9ff",
+                        "tertiary-fixed": "#d6e3ff",
+                        "secondary-fixed-dim": "#ecc246",
+                        "tertiary": "#11243f",
+                        "surface-container-low": "#edf4ff",
+                        "surface-container-high": "#dfe9f7",
+                        "outline": "#73777f",
+                        "primary-fixed-dim": "#a6c9f9",
+                        "primary": "#002546",
+                        "background": "#f7f9ff",
+                        "on-primary": "#ffffff",
+                        "on-secondary": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "md": "16px",
+                        "xl": "32px",
+                        "sm": "12px",
+                        "xs": "4px",
+                        "sidebar-width": "260px",
+                        "base": "8px",
+                        "lg": "24px",
+                        "margin-desktop": "40px",
+                        "gutter-desktop": "24px",
+                        "xxl": "48px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "headline-sm": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "label-md": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "headline-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "600"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        body {
+            background-color: #F8F5EF; /* Level 0 Background */
+        }
+        .bento-card {
+            background-color: #FFFFFF;
+            border: 1px solid #E5E7EB;
+            transition: box-shadow 0.2s ease-in-out;
+        }
+        .bento-card:hover {
+            box-shadow: 0 4px 15px rgba(31, 41, 51, 0.06);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #d1d5db;
+            border-radius: 2px;
+        }
+    </style>
+</head>
+<body class="font-body-md text-on-surface">
+<!-- Sidebar Navigation -->
+<aside class="fixed left-0 top-0 h-full w-sidebar-width bg-tertiary flex flex-col py-lg z-50">
+<div class="px-md mb-xl">
+<h1 class="font-headline-sm text-headline-sm text-surface-container-lowest tracking-tight">BillSync Legal</h1>
+<p class="font-label-sm text-label-sm text-tertiary-fixed-dim">Law Firm Management</p>
+</div>
+<nav class="flex-1 space-y-1">
+<!-- Active Tab: Billing/Captured Work Context -->
+<a class="flex items-center px-md py-sm text-tertiary-fixed-dim hover:text-surface-container-lowest transition-colors" href="#">
+<span class="material-symbols-outlined mr-md">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</a>
+<a class="flex items-center px-md py-sm text-surface-container-lowest border-l-2 border-secondary font-bold transition-colors" href="#">
+<span class="material-symbols-outlined mr-md">history_edu</span>
+<span class="font-label-md text-label-md">Captured Work</span>
+</a>
+<a class="flex items-center px-md py-sm text-tertiary-fixed-dim hover:text-surface-container-lowest transition-colors" href="#">
+<span class="material-symbols-outlined mr-md">payments</span>
+<span class="font-label-md text-label-md">Billing</span>
+</a>
+<a class="flex items-center px-md py-sm text-tertiary-fixed-dim hover:text-surface-container-lowest transition-colors" href="#">
+<span class="material-symbols-outlined mr-md">folder_open</span>
+<span class="font-label-md text-label-md">Matters</span>
+</a>
+<a class="flex items-center px-md py-sm text-tertiary-fixed-dim hover:text-surface-container-lowest transition-colors" href="#">
+<span class="material-symbols-outlined mr-md">group</span>
+<span class="font-label-md text-label-md">Clients</span>
+</a>
+<a class="flex items-center px-md py-sm text-tertiary-fixed-dim hover:text-surface-container-lowest transition-colors" href="#">
+<span class="material-symbols-outlined mr-md">smart_toy</span>
+<span class="font-label-md text-label-md">AI Assistant</span>
+</a>
+</nav>
+<div class="px-md mt-auto pt-xl">
+<a class="flex items-center px-md py-sm text-tertiary-fixed-dim hover:text-surface-container-lowest transition-colors" href="#">
+<span class="material-symbols-outlined mr-md">settings</span>
+<span class="font-label-md text-label-md">Settings</span>
+</a>
+</div>
+</aside>
+<!-- Top Navigation Bar -->
+<header class="fixed top-0 left-sidebar-width right-0 h-16 bg-surface border-b border-surface-variant flex justify-between items-center px-margin-desktop z-40">
+<div class="flex items-center gap-xl flex-1">
+<div class="relative w-full max-w-md">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">search</span>
+<input class="w-full pl-10 pr-4 py-2 bg-surface-container-low border-none rounded-lg focus:ring-2 focus:ring-primary-container text-body-sm" placeholder="Search billable entries..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<button class="p-2 text-on-surface-variant hover:bg-surface-container-low rounded-full transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:bg-surface-container-low rounded-full transition-colors">
+<span class="material-symbols-outlined">timer</span>
+</button>
+<div class="h-8 w-8 rounded-full overflow-hidden border border-outline-variant ml-md">
+<img class="w-full h-full object-cover" data-alt="A professional headshot of a senior legal partner in a well-lit modern office setting. The person is wearing a tailored navy blazer and has a confident, approachable expression. The background shows soft architectural lines and a hint of a library, emphasizing a corporate and sophisticated atmosphere." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBATOKQq8QT4h8XBq3k57-IH6Y2sjYtfTWkaIzrbv_dkxI4rVKTDUSLD1_o_RtjR9pDbrcRnsz7-CUExsFY8ttyKMX-ITGXN8O1ZGgLbE2zwiNsSmZorHw-Iy4RQLCm5qBZWrtBlo2DG0gdOhf8riw4x6N2_JDtUihRRV0drXuCiNDf0aTxKzV97y0Aqh1SG1hYgNsOwELUtkETa_IVGFrlaHeP9TOtsjVuSdOyxyUEFIH0bcqWDQb4u72u8p15pfFwls1IDSENq4oe"/>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="ml-sidebar-width pt-24 pb-xxl px-margin-desktop min-h-screen">
+<!-- Page Header -->
+<div class="flex justify-between items-end mb-xxl">
+<div>
+<nav class="flex items-center gap-xs text-label-sm text-outline mb-xs">
+<span>Billing</span>
+<span class="material-symbols-outlined text-[14px]">chevron_right</span>
+<span class="text-primary font-bold">Review Batch</span>
+</nav>
+<h2 class="font-headline-lg text-headline-lg text-primary tracking-tight">Submit Work Batch</h2>
+<p class="text-body-md text-on-surface-variant">Reviewing billable entries for <span class="font-semibold text-on-surface">Oct 23 — Oct 29, 2023</span></p>
+</div>
+<div class="flex gap-md">
+<button class="px-lg py-2 border border-outline text-on-surface font-label-md rounded-lg hover:bg-surface-container-low transition-colors">Save Draft</button>
+<button class="px-xl py-2 bg-primary text-on-primary font-label-md rounded-lg hover:bg-primary-container transition-colors shadow-sm">Submit Batch for Review</button>
+</div>
+</div>
+<!-- Summary Statistics Bento -->
+<div class="grid grid-cols-12 gap-lg mb-xl">
+<div class="col-span-12 md:col-span-4 bento-card p-lg rounded-xl flex flex-col justify-center">
+<p class="text-label-sm text-outline uppercase tracking-wider mb-xs">Total Billable Value</p>
+<div class="flex items-baseline gap-xs">
+<span class="font-display-lg text-display-lg text-primary">$14,850.00</span>
+<span class="text-label-md text-secondary font-bold">+12% vs last week</span>
+</div>
+</div>
+<div class="col-span-6 md:col-span-2 bento-card p-lg rounded-xl flex flex-col justify-center border-l-4 border-l-secondary">
+<p class="text-label-sm text-outline uppercase tracking-wider mb-xs">Billable Hours</p>
+<h3 class="font-headline-md text-headline-md text-primary">42.5 hrs</h3>
+</div>
+<div class="col-span-6 md:col-span-2 bento-card p-lg rounded-xl flex flex-col justify-center">
+<p class="text-label-sm text-outline uppercase tracking-wider mb-xs">Total Entries</p>
+<h3 class="font-headline-md text-headline-md text-primary">28</h3>
+</div>
+<div class="col-span-12 md:col-span-4 bento-card p-lg rounded-xl bg-surface-container">
+<div class="flex justify-between items-start mb-md">
+<p class="text-label-sm text-primary font-bold uppercase tracking-wider">Approval Progress</p>
+<span class="text-label-sm text-primary">Step 2 of 3</span>
+</div>
+<div class="w-full bg-surface-container-highest h-2 rounded-full mb-md overflow-hidden">
+<div class="bg-secondary h-full rounded-full" style="width: 66%;"></div>
+</div>
+<p class="text-body-sm text-on-surface-variant">Ready for Final Review and Partner approval.</p>
+</div>
+</div>
+<!-- Batch Content -->
+<div class="grid grid-cols-12 gap-lg items-start">
+<!-- Matter-Grouped Entries List -->
+<div class="col-span-12 lg:col-span-8 space-y-md">
+<!-- Matter Section: Anderson vs. TechCorp -->
+<div class="bento-card rounded-xl overflow-hidden">
+<div class="px-lg py-md bg-surface-container-low flex justify-between items-center border-b border-surface-variant">
+<div class="flex items-center gap-md">
+<input checked="" class="rounded text-primary focus:ring-primary border-outline-variant w-4 h-4 cursor-pointer" type="checkbox"/>
+<div>
+<h4 class="font-label-md text-label-md text-primary">Matter #2488-02: Anderson vs. TechCorp</h4>
+<p class="text-label-sm text-on-surface-variant">Client: Michael Anderson</p>
+</div>
+</div>
+<div class="text-right">
+<p class="text-label-md font-bold text-primary">12.5 hrs</p>
+<p class="text-label-sm text-on-surface-variant">$4,375.00</p>
+</div>
+</div>
+<div class="divide-y divide-surface-variant">
+<!-- Entry 1 -->
+<div class="px-lg py-md flex items-center hover:bg-surface-container-lowest transition-colors">
+<input checked="" class="rounded text-primary focus:ring-primary border-outline-variant w-4 h-4 cursor-pointer mr-lg" type="checkbox"/>
+<div class="flex-1">
+<div class="flex justify-between mb-1">
+<span class="text-label-sm font-bold text-primary">Oct 24, 2023</span>
+<span class="text-label-sm text-on-surface-variant">3.5 hrs @ $350/hr</span>
+</div>
+<p class="text-body-sm text-on-surface">Legal research on state intellectual property statutes; draft summary memo for lead counsel.</p>
+</div>
+<div class="ml-xl text-right">
+<span class="font-label-md text-on-surface font-bold">$1,225.00</span>
+</div>
+</div>
+<!-- Entry 2 -->
+<div class="px-lg py-md flex items-center hover:bg-surface-container-lowest transition-colors">
+<input checked="" class="rounded text-primary focus:ring-primary border-outline-variant w-4 h-4 cursor-pointer mr-lg" type="checkbox"/>
+<div class="flex-1">
+<div class="flex justify-between mb-1">
+<span class="text-label-sm font-bold text-primary">Oct 25, 2023</span>
+<span class="text-label-sm text-on-surface-variant">9.0 hrs @ $350/hr</span>
+</div>
+<p class="text-body-sm text-on-surface">Deposition preparation; review of document production and witness statements.</p>
+</div>
+<div class="ml-xl text-right">
+<span class="font-label-md text-on-surface font-bold">$3,150.00</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Matter Section: Global Logistics Acquisition -->
+<div class="bento-card rounded-xl overflow-hidden">
+<div class="px-lg py-md bg-surface-container-low flex justify-between items-center border-b border-surface-variant">
+<div class="flex items-center gap-md">
+<input checked="" class="rounded text-primary focus:ring-primary border-outline-variant w-4 h-4 cursor-pointer" type="checkbox"/>
+<div>
+<h4 class="font-label-md text-label-md text-primary">Matter #3105-01: Global Logistics Acquisition</h4>
+<p class="text-label-sm text-on-surface-variant">Client: Swift Capital Partners</p>
+</div>
+</div>
+<div class="text-right">
+<p class="text-label-md font-bold text-primary">30.0 hrs</p>
+<p class="text-label-sm text-on-surface-variant">$10,500.00</p>
+</div>
+</div>
+<div class="divide-y divide-surface-variant">
+<!-- Entry 3 -->
+<div class="px-lg py-md flex items-center hover:bg-surface-container-lowest transition-colors">
+<input checked="" class="rounded text-primary focus:ring-primary border-outline-variant w-4 h-4 cursor-pointer mr-lg" type="checkbox"/>
+<div class="flex-1">
+<div class="flex justify-between mb-1">
+<span class="text-label-sm font-bold text-primary">Oct 26-28, 2023</span>
+<span class="text-label-sm text-on-surface-variant">30.0 hrs @ $350/hr</span>
+</div>
+<p class="text-body-sm text-on-surface">Extensive due diligence review of operational contracts and environmental compliance records.</p>
+</div>
+<div class="ml-xl text-right">
+<span class="font-label-md text-on-surface font-bold">$10,500.00</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Final Review Sidebar -->
+<div class="col-span-12 lg:col-span-4 sticky top-24 space-y-lg">
+<!-- Partner Notes & Comment -->
+<div class="bento-card p-lg rounded-xl shadow-sm">
+<div class="flex items-center gap-md mb-md">
+<span class="material-symbols-outlined text-secondary">rate_review</span>
+<h4 class="font-headline-sm text-headline-sm text-primary">Final Review</h4>
+</div>
+<p class="text-body-sm text-on-surface-variant mb-lg">Add any context or special instructions for the reviewing partner (e.g., requested discounts or matter status updates).</p>
+<div class="space-y-md">
+<div>
+<label class="block text-label-sm text-outline mb-xs uppercase">Reviewing Partner</label>
+<select class="w-full bg-surface border border-outline-variant rounded-lg px-md py-2 text-body-sm focus:ring-primary focus:border-primary">
+<option>Marcus Thorne (Lead Partner)</option>
+<option>Elena Vance (Associate Partner)</option>
+</select>
+</div>
+<div>
+<label class="block text-label-sm text-outline mb-xs uppercase">Internal Comments</label>
+<textarea class="w-full bg-surface border border-outline-variant rounded-lg px-md py-2 text-body-sm focus:ring-primary focus:border-primary" placeholder="Type your notes here..." rows="4"></textarea>
+</div>
+<div class="flex items-center gap-md p-md bg-secondary-container/10 border border-secondary/20 rounded-lg">
+<span class="material-symbols-outlined text-secondary">info</span>
+<p class="text-label-sm text-on-secondary-container">Submitting this batch will lock all included entries from further editing until review is complete.</p>
+</div>
+</div>
+</div>
+<!-- Audit Trail Preview -->
+<div class="bento-card p-lg rounded-xl border-dashed">
+<h5 class="text-label-md font-bold text-primary mb-md">Batch Audit History</h5>
+<div class="space-y-md">
+<div class="flex gap-md">
+<div class="w-2 h-2 rounded-full bg-secondary mt-1"></div>
+<div>
+<p class="text-label-sm font-bold text-primary">Batch Created</p>
+<p class="text-label-sm text-outline">Today at 9:14 AM by You</p>
+</div>
+</div>
+<div class="flex gap-md opacity-50">
+<div class="w-2 h-2 rounded-full bg-outline mt-1"></div>
+<div>
+<p class="text-label-sm font-bold text-primary">Awaiting Partner Approval</p>
+<p class="text-label-sm text-outline">Pending submission</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer Area -->
+<footer class="ml-sidebar-width bg-background border-t border-surface-variant py-md px-margin-desktop flex justify-between items-center">
+<div class="flex items-center gap-xl">
+<span class="font-label-md text-label-md font-bold text-on-surface">BillSync Legal</span>
+<div class="flex gap-lg">
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Terms of Service</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Privacy Policy</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Contact Support</a>
+</div>
+</div>
+<p class="font-label-sm text-label-sm text-on-surface-variant">© 2024 BillSync Legal. All rights reserved.</p>
+</footer>
+<!-- Bottom Navigation Shell (Hidden on Desktop) -->
+<nav class="md:hidden fixed bottom-0 left-0 right-0 bg-surface border-t border-surface-variant px-md py-xs flex justify-around items-center z-50">
+<a class="flex flex-col items-center p-2 text-on-surface-variant" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="text-[10px] mt-1 font-medium">Home</span>
+</a>
+<a class="flex flex-col items-center p-2 text-primary" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">history_edu</span>
+<span class="text-[10px] mt-1 font-bold">Review</span>
+</a>
+<a class="flex flex-col items-center p-2 text-on-surface-variant" href="#">
+<span class="material-symbols-outlined">payments</span>
+<span class="text-[10px] mt-1 font-medium">Billing</span>
+</a>
+<a class="flex flex-col items-center p-2 text-on-surface-variant" href="#">
+<span class="material-symbols-outlined">account_circle</span>
+<span class="text-[10px] mt-1 font-medium">Profile</span>
+</a>
+</nav>
+<script>
+        // Simple Interaction Logic
+        document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const parentRow = this.closest('.flex');
+                if (this.checked) {
+                    parentRow.classList.remove('opacity-60');
+                } else {
+                    parentRow.classList.add('opacity-60');
+                }
+                // Mock calculation update logic could go here
+            });
+        });
+
+        // Button Click Animation
+        const mainCta = document.querySelector('button.bg-primary');
+        mainCta.addEventListener('click', () => {
+            mainCta.classList.add('scale-95');
+            setTimeout(() => {
+                mainCta.classList.remove('scale-95');
+                alert('Batch submitted successfully for partner review.');
+            }, 150);
+        });
+    </script>
+</body></html>

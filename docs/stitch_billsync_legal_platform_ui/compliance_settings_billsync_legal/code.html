@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f7f9ff;
+        }
+        .bento-card {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .bento-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(31, 41, 51, 0.06);
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                "surface-dim": "#d1dbe8",
+                "on-tertiary-fixed": "#071c36",
+                "on-secondary-fixed": "#241a00",
+                "primary-fixed": "#d2e4ff",
+                "primary-container": "#123b63",
+                "inverse-primary": "#a6c9f9",
+                "background": "#f7f9ff",
+                "on-tertiary": "#ffffff",
+                "on-surface": "#121d26",
+                "on-primary-fixed": "#001c37",
+                "on-error-container": "#93000a",
+                "on-primary-container": "#83a6d4",
+                "secondary-fixed-dim": "#ecc246",
+                "secondary-container": "#fed255",
+                "surface-tint": "#3d608a",
+                "on-surface-variant": "#43474e",
+                "on-tertiary-container": "#92a4c5",
+                "surface-container-highest": "#d9e3f1",
+                "error": "#ba1a1a",
+                "tertiary-container": "#283a56",
+                "tertiary-fixed-dim": "#b5c7ea",
+                "surface-container-lowest": "#ffffff",
+                "surface": "#f7f9ff",
+                "surface-container-high": "#dfe9f7",
+                "on-secondary-fixed-variant": "#584400",
+                "inverse-surface": "#27313c",
+                "tertiary-fixed": "#d6e3ff",
+                "tertiary": "#11243f",
+                "primary": "#002546",
+                "secondary-fixed": "#ffe08e",
+                "on-background": "#121d26",
+                "inverse-on-surface": "#e8f2ff",
+                "on-primary": "#ffffff",
+                "surface-container-low": "#edf4ff",
+                "secondary": "#755b00",
+                "on-secondary-container": "#735a00",
+                "on-tertiary-fixed-variant": "#364764",
+                "error-container": "#ffdad6",
+                "surface-variant": "#d9e3f1",
+                "surface-bright": "#f7f9ff",
+                "outline-variant": "#c3c6cf",
+                "on-secondary": "#ffffff",
+                "surface-container": "#e4effd",
+                "outline": "#73777f",
+                "on-primary-fixed-variant": "#234871",
+                "primary-fixed-dim": "#a6c9f9",
+                "on-error": "#ffffff"
+              },
+              "borderRadius": {
+                "DEFAULT": "0.125rem",
+                "lg": "0.25rem",
+                "xl": "0.5rem",
+                "full": "0.75rem"
+              },
+              "spacing": {
+                "xl": "32px",
+                "md": "16px",
+                "sidebar-width": "260px",
+                "xxl": "48px",
+                "sm": "12px",
+                "margin-desktop": "40px",
+                "base": "8px",
+                "gutter-desktop": "24px",
+                "xs": "4px",
+                "lg": "24px"
+              },
+              "fontFamily": {
+                "body-lg": ["Inter"], "label-sm": ["Inter"], "label-md": ["Inter"], "body-md": ["Inter"], "headline-md": ["Inter"], "headline-sm": ["Inter"], "headline-lg": ["Inter"], "display-lg": ["Inter"], "headline-lg-mobile": ["Inter"], "body-sm": ["Inter"]
+              },
+              "fontSize": {
+                "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "600"}],
+                "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}]
+              }
+            }
+          }
+        }
+    </script>
+</head>
+<body class="bg-background text-on-surface">
+<!-- SideNavBar Shell -->
+<aside class="fixed h-full w-sidebar-width left-0 top-0 bg-primary dark:bg-primary border-r border-outline-variant flex flex-col h-screen py-lg px-md shadow-sm z-50">
+<div class="mb-xxl">
+<h1 class="font-headline-sm text-headline-sm font-bold text-on-primary">BillSync Legal</h1>
+<p class="text-on-primary/60 font-body-sm">Professional Suite</p>
+</div>
+<nav class="flex-grow space-y-base">
+<a class="flex items-center gap-md p-sm text-on-primary/70 font-medium hover:text-on-primary hover:bg-primary-container/10 transition-colors" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-body-md text-body-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-md p-sm text-on-primary/70 font-medium hover:text-on-primary hover:bg-primary-container/10 transition-colors" href="#">
+<span class="material-symbols-outlined">account_balance</span>
+<span class="font-body-md text-body-md">GST Compliance</span>
+</a>
+<a class="flex items-center gap-md p-sm text-on-primary/70 font-medium hover:text-on-primary hover:bg-primary-container/10 transition-colors" href="#">
+<span class="material-symbols-outlined">receipt_long</span>
+<span class="font-body-md text-body-md">TDS Management</span>
+</a>
+<a class="flex items-center gap-md p-sm text-on-primary/70 font-medium hover:text-on-primary hover:bg-primary-container/10 transition-colors" href="#">
+<span class="material-symbols-outlined">chat</span>
+<span class="font-body-md text-body-md">Communications</span>
+</a>
+<a class="flex items-center gap-md p-sm border-l-2 border-secondary-fixed text-on-primary font-bold bg-primary-container/20 transition-all" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-body-md text-body-md">Settings</span>
+</a>
+</nav>
+<div class="mt-auto pt-lg border-t border-on-primary/10 space-y-base">
+<button class="w-full py-md px-lg bg-secondary-fixed text-on-secondary-fixed font-bold rounded-lg mb-md hover:bg-secondary-container transition-all">
+                New Filing
+            </button>
+<a class="flex items-center gap-md p-sm text-on-primary/70 font-medium hover:text-on-primary hover:bg-primary-container/10 transition-colors" href="#">
+<span class="material-symbols-outlined">help</span>
+<span class="font-body-md text-body-md">Support</span>
+</a>
+<a class="flex items-center gap-md p-sm text-on-primary/70 font-medium hover:text-on-primary hover:bg-primary-container/10 transition-colors" href="#">
+<span class="material-symbols-outlined">logout</span>
+<span class="font-body-md text-body-md">Sign Out</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="ml-[260px] min-h-screen">
+<!-- TopNavBar Shell -->
+<header class="fixed top-0 right-0 w-[calc(100%-260px)] border-b border-outline-variant bg-surface-container-lowest flex items-center justify-between px-margin-desktop h-16 z-40">
+<div class="flex items-center flex-grow max-w-2xl">
+<div class="relative w-full">
+<span class="material-symbols-outlined absolute left-md top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="w-full bg-surface-container-low border-none rounded-full py-base pl-12 pr-md text-label-md focus:ring-2 focus:ring-primary/20" placeholder="Search compliance settings..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-lg ml-xl">
+<button class="text-on-surface-variant hover:text-primary transition-colors active:scale-95">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<div class="flex items-center gap-sm cursor-pointer active:scale-95 transition-transform">
+<div class="text-right">
+<p class="font-label-md text-label-md text-primary font-bold">Adv. Julian Vance</p>
+<p class="text-xs text-on-surface-variant">Senior Partner</p>
+</div>
+<span class="material-symbols-outlined text-primary text-4xl" style="font-variation-settings: 'FILL' 1;">account_circle</span>
+</div>
+</div>
+</header>
+<div class="pt-xxl px-margin-desktop pb-xl mt-16">
+<!-- Header Section -->
+<div class="mb-xxl">
+<h2 class="font-headline-lg text-headline-lg text-primary tracking-tight">Compliance &amp; Tax Settings</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mt-xs">Manage your legal entity's tax profiles, portal integrations, and filing schedules.</p>
+</div>
+<!-- Settings Grid -->
+<div class="grid grid-cols-12 gap-lg">
+<!-- Left Column: Primary Config -->
+<div class="col-span-12 lg:col-span-8 space-y-lg">
+<!-- GSTIN Details Section -->
+<section class="bg-surface-container-lowest border border-outline-variant rounded-xl p-lg bento-card">
+<div class="flex items-center justify-between mb-xl">
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-primary bg-primary-fixed p-sm rounded-lg" style="font-variation-settings: 'FILL' 1;">business</span>
+<h3 class="font-headline-sm text-headline-sm text-on-surface">GSTIN Configuration</h3>
+</div>
+<span class="bg-green-100 text-green-800 text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider">Verified</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-xl">
+<div class="space-y-xs">
+<label class="font-label-sm text-label-sm text-on-surface-variant block">GST Identification Number</label>
+<input class="w-full border border-outline-variant rounded-lg p-md font-body-md focus:border-primary focus:ring-1 focus:ring-primary-fixed outline-none transition-all" type="text" value="27AAACG1234F1Z5"/>
+</div>
+<div class="space-y-xs">
+<label class="font-label-sm text-label-sm text-on-surface-variant block">Filing Frequency</label>
+<select class="w-full border border-outline-variant rounded-lg p-md font-body-md focus:border-primary focus:ring-1 focus:ring-primary-fixed outline-none transition-all appearance-none bg-no-repeat bg-[right_16px_center]">
+<option>Monthly (GSTR-1 &amp; 3B)</option>
+<option selected="">Quarterly (QRMP Scheme)</option>
+</select>
+</div>
+<div class="space-y-xs col-span-1 md:col-span-2">
+<label class="font-label-sm text-label-sm text-on-surface-variant block">Business Legal Name</label>
+<input class="w-full border border-outline-variant rounded-lg p-md font-body-md bg-surface-container-low text-on-surface-variant cursor-not-allowed" disabled="" type="text" value="Vance &amp; Associates Legal Services LLP"/>
+</div>
+</div>
+</section>
+<!-- TDS & TAN Management -->
+<section class="bg-surface-container-lowest border border-outline-variant rounded-xl p-lg bento-card">
+<div class="flex items-center gap-md mb-xl">
+<span class="material-symbols-outlined text-primary bg-primary-fixed p-sm rounded-lg" style="font-variation-settings: 'FILL' 1;">description</span>
+<h3 class="font-headline-sm text-headline-sm text-on-surface">TDS Rates &amp; TAN</h3>
+</div>
+<div class="space-y-lg">
+<div class="flex items-center gap-md p-md bg-surface-container-low rounded-lg border border-outline-variant/50">
+<div class="flex-grow">
+<p class="font-label-md text-label-md text-on-surface">TAN: MUMB09876C</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Tax Deduction and Collection Account Number</p>
+</div>
+<button class="text-primary font-bold text-label-md hover:underline">Update</button>
+</div>
+<div class="overflow-hidden border border-outline-variant rounded-lg">
+<table class="w-full text-left font-body-sm">
+<thead class="bg-surface-container-high text-on-surface-variant uppercase tracking-wider font-label-sm text-[11px]">
+<tr>
+<th class="p-md">Section</th>
+<th class="p-md">Nature of Payment</th>
+<th class="p-md">Standard Rate</th>
+<th class="p-md text-right">Action</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant">
+<tr>
+<td class="p-md font-bold">194J</td>
+<td class="p-md">Professional/Technical Services</td>
+<td class="p-md">10.0%</td>
+<td class="p-md text-right"><span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary">edit</span></td>
+</tr>
+<tr>
+<td class="p-md font-bold">194C</td>
+<td class="p-md">Payments to Contractors</td>
+<td class="p-md">2.0%</td>
+<td class="p-md text-right"><span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary">edit</span></td>
+</tr>
+<tr>
+<td class="p-md font-bold">194I</td>
+<td class="p-md">Rent (Plant &amp; Machinery)</td>
+<td class="p-md">2.0%</td>
+<td class="p-md text-right"><span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary">edit</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<!-- Portal Integrations -->
+<section class="bg-surface-container-lowest border border-outline-variant rounded-xl p-lg bento-card relative overflow-hidden">
+<div class="absolute -right-16 -top-16 opacity-5 pointer-events-none">
+<span class="material-symbols-outlined text-[200px]">hub</span>
+</div>
+<div class="flex items-center gap-md mb-xl">
+<span class="material-symbols-outlined text-primary bg-primary-fixed p-sm rounded-lg" style="font-variation-settings: 'FILL' 1;">lan</span>
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Portal Integrations</h3>
+</div>
+<div class="space-y-md">
+<!-- Integration Row 1 -->
+<div class="flex items-center justify-between p-md border border-outline-variant rounded-lg hover:border-primary transition-all">
+<div class="flex items-center gap-lg">
+<div class="w-12 h-12 bg-white rounded-lg border border-outline-variant flex items-center justify-center p-xs overflow-hidden">
+<div class="w-full h-full bg-blue-50 flex items-center justify-center text-blue-800 font-bold text-xs rounded">GSTN</div>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-surface font-bold">GST Common Portal</p>
+<p class="text-xs text-on-surface-variant">Last synced: 2 hours ago</p>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<span class="flex items-center gap-xs text-green-600 text-[12px] font-bold"><span class="w-2 h-2 rounded-full bg-green-500"></span> Connected</span>
+<button class="bg-surface-container-high px-md py-sm rounded-lg text-label-sm font-bold hover:bg-surface-dim transition-colors">Configure</button>
+</div>
+</div>
+<!-- Integration Row 2 -->
+<div class="flex items-center justify-between p-md border border-outline-variant rounded-lg hover:border-primary transition-all">
+<div class="flex items-center gap-lg">
+<div class="w-12 h-12 bg-white rounded-lg border border-outline-variant flex items-center justify-center p-xs overflow-hidden">
+<div class="w-full h-full bg-orange-50 flex items-center justify-center text-orange-800 font-bold text-xs rounded">TRACES</div>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-surface font-bold">TRACES / CPC Portal</p>
+<p class="text-xs text-on-surface-variant">Integration inactive</p>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<button class="bg-primary text-on-primary px-md py-sm rounded-lg text-label-sm font-bold hover:opacity-90 transition-all">Connect Now</button>
+</div>
+</div>
+</div>
+</section>
+</div>
+<!-- Right Column: Sidebar Actions & Context -->
+<div class="col-span-12 lg:col-span-4 space-y-lg">
+<!-- Save Changes -->
+<div class="bg-surface-container-high rounded-xl p-lg sticky top-24">
+<h4 class="font-headline-sm text-headline-sm text-primary mb-md">Summary</h4>
+<div class="space-y-md mb-xl">
+<div class="flex justify-between text-body-sm">
+<span class="text-on-surface-variant">Pending Changes</span>
+<span class="font-bold">0</span>
+</div>
+<div class="flex justify-between text-body-sm">
+<span class="text-on-surface-variant">Sync Status</span>
+<span class="text-green-600 font-bold">Active</span>
+</div>
+</div>
+<button class="w-full py-md bg-primary text-on-primary rounded-lg font-bold shadow-lg hover:shadow-primary/20 transition-all mb-md">
+                            Save All Settings
+                        </button>
+<button class="w-full py-md border border-outline text-primary rounded-lg font-bold hover:bg-surface-container-highest transition-all">
+                            Discard Changes
+                        </button>
+</div>
+<!-- Automated Alert Preferences -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-lg">
+<div class="flex items-center gap-sm mb-lg">
+<span class="material-symbols-outlined text-secondary font-bold">notifications_active</span>
+<h4 class="font-label-md text-label-md text-on-surface font-bold">Automated Alerts</h4>
+</div>
+<div class="space-y-xl">
+<div class="flex items-start gap-md">
+<div class="relative inline-flex items-center cursor-pointer mt-1">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-10 h-5 bg-surface-container-highest rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary"></div>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-surface">Filing Deadlines</p>
+<p class="text-xs text-on-surface-variant">Notify 7, 3, and 1 day before due date.</p>
+</div>
+</div>
+<div class="flex items-start gap-md">
+<div class="relative inline-flex items-center cursor-pointer mt-1">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-10 h-5 bg-surface-container-highest rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary"></div>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-surface">Credit Mismatch (2B)</p>
+<p class="text-xs text-on-surface-variant">Alert if ITC exceeds GSTR-2B by 5%.</p>
+</div>
+</div>
+<div class="flex items-start gap-md">
+<div class="relative inline-flex items-center cursor-pointer mt-1">
+<input class="sr-only peer" type="checkbox"/>
+<div class="w-10 h-5 bg-surface-container-highest rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary"></div>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-surface">Daily Sync Report</p>
+<p class="text-xs text-on-surface-variant">Email summary of daily portal activity.</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Compliance Health Score -->
+<div class="bg-primary text-on-primary rounded-xl p-lg overflow-hidden relative">
+<div class="relative z-10">
+<h4 class="font-label-md text-label-md font-bold mb-xs">Compliance Score</h4>
+<div class="flex items-end gap-sm mb-md">
+<span class="text-4xl font-bold">98</span>
+<span class="text-sm opacity-70 mb-1">/100</span>
+</div>
+<div class="w-full bg-on-primary/20 h-2 rounded-full mb-lg">
+<div class="bg-secondary-fixed h-full rounded-full w-[98%]"></div>
+</div>
+<p class="text-[11px] opacity-80 uppercase tracking-widest font-bold">Excellence Status</p>
+</div>
+<!-- Abstract BG Shape -->
+<div class="absolute -right-4 -bottom-4 w-32 h-32 bg-secondary-fixed/10 rounded-full blur-2xl"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Footer Help Sticky (Sub-action) -->
+<div class="fixed bottom-lg right-lg z-30">
+<button class="flex items-center gap-md bg-surface-container-lowest border border-outline-variant shadow-xl px-lg py-md rounded-full text-primary font-bold hover:bg-primary-container hover:text-on-primary-container transition-all group">
+<span class="material-symbols-outlined group-hover:rotate-12 transition-transform">support_agent</span>
+<span>Tax Consultant Support</span>
+</button>
+</div>
+</main>
+<!-- Overlay / Modal Placeholder for Config -->
+<div class="fixed inset-0 bg-black/40 backdrop-blur-sm z-[60] hidden flex items-center justify-center" id="modal-backdrop">
+<div class="bg-surface-container-lowest w-full max-w-lg rounded-xl p-xl shadow-2xl scale-95 opacity-0 transition-all duration-300" id="modal-container">
+<div class="flex justify-between items-start mb-lg">
+<h3 class="font-headline-sm text-headline-sm text-primary">Configure GST Portal</h3>
+<button class="text-on-surface-variant hover:text-error transition-colors" onclick="closeModal()">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+<div class="space-y-lg">
+<div class="p-md bg-surface-container-low rounded-lg text-body-sm text-on-surface-variant">
+                    Authenticate using your GST portal credentials or API token to enable automated filings.
+                </div>
+<div class="space-y-xs">
+<label class="font-label-sm text-label-sm text-on-surface-variant">Username</label>
+<input class="w-full border border-outline-variant rounded-lg p-md focus:ring-1 focus:ring-primary outline-none" type="text"/>
+</div>
+<div class="space-y-xs">
+<label class="font-label-sm text-label-sm text-on-surface-variant">API Secret Key</label>
+<input class="w-full border border-outline-variant rounded-lg p-md focus:ring-1 focus:ring-primary outline-none" type="password"/>
+</div>
+<div class="flex gap-md pt-md">
+<button class="flex-grow py-md bg-primary text-on-primary font-bold rounded-lg hover:opacity-90">Verify &amp; Save</button>
+<button class="flex-grow py-md border border-outline text-on-surface font-bold rounded-lg hover:bg-surface-container-high" onclick="closeModal()">Cancel</button>
+</div>
+</div>
+</div>
+</div>
+<script>
+        function openModal() {
+            const backdrop = document.getElementById('modal-backdrop');
+            const container = document.getElementById('modal-container');
+            backdrop.classList.remove('hidden');
+            backdrop.classList.add('flex');
+            setTimeout(() => {
+                container.classList.remove('scale-95', 'opacity-0');
+                container.classList.add('scale-100', 'opacity-100');
+            }, 10);
+        }
+
+        function closeModal() {
+            const backdrop = document.getElementById('modal-backdrop');
+            const container = document.getElementById('modal-container');
+            container.classList.add('scale-95', 'opacity-0');
+            container.classList.remove('scale-100', 'opacity-100');
+            setTimeout(() => {
+                backdrop.classList.add('hidden');
+                backdrop.classList.remove('flex');
+            }, 300);
+        }
+
+        // Attach modal trigger to GST Configure button for demo
+        document.querySelector('button[class*="bg-surface-container-high px-md"]').addEventListener('click', openModal);
+    </script>
+</body></html>

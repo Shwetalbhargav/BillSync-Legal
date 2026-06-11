@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Research Capture Review | LexisFlow</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "tertiary-fixed-dim": "#b5c7ea",
+                    "surface-bright": "#f7f9ff",
+                    "secondary": "#755b00",
+                    "on-primary-fixed": "#001c37",
+                    "on-secondary-container": "#735a00",
+                    "inverse-surface": "#27313c",
+                    "on-background": "#121d26",
+                    "on-tertiary-container": "#92a4c5",
+                    "secondary-container": "#fed255",
+                    "primary": "#002546",
+                    "outline": "#73777f",
+                    "tertiary-container": "#283a56",
+                    "surface-container-highest": "#d9e3f1",
+                    "tertiary-fixed": "#d6e3ff",
+                    "primary-container": "#123b63",
+                    "on-surface-variant": "#43474e",
+                    "on-primary": "#ffffff",
+                    "on-primary-fixed-variant": "#234871",
+                    "inverse-primary": "#a6c9f9",
+                    "outline-variant": "#c3c6cf",
+                    "on-tertiary": "#ffffff",
+                    "surface": "#f7f9ff",
+                    "primary-fixed-dim": "#a6c9f9",
+                    "on-tertiary-fixed": "#071c36",
+                    "on-surface": "#121d26",
+                    "secondary-fixed": "#ffe08e",
+                    "on-secondary-fixed": "#241a00",
+                    "surface-container-low": "#edf4ff",
+                    "surface-dim": "#d1dbe8",
+                    "surface-container-lowest": "#ffffff",
+                    "primary-fixed": "#d2e4ff",
+                    "on-primary-container": "#83a6d4",
+                    "surface-container": "#e4effd",
+                    "error-container": "#ffdad6",
+                    "error": "#ba1a1a",
+                    "surface-container-high": "#dfe9f7",
+                    "background": "#f7f9ff",
+                    "on-secondary-fixed-variant": "#584400",
+                    "on-error-container": "#93000a",
+                    "surface-variant": "#d9e3f1",
+                    "secondary-fixed-dim": "#ecc246",
+                    "on-secondary": "#ffffff",
+                    "on-error": "#ffffff",
+                    "tertiary": "#11243f",
+                    "surface-tint": "#3d608a",
+                    "on-tertiary-fixed-variant": "#364764",
+                    "inverse-on-surface": "#e8f2ff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "sidebar-width": "260px",
+                    "xxl": "48px",
+                    "sm": "12px",
+                    "md": "16px",
+                    "gutter-desktop": "24px",
+                    "margin-desktop": "40px",
+                    "base": "8px",
+                    "xl": "32px",
+                    "xs": "4px",
+                    "lg": "24px"
+            },
+            "fontFamily": {
+                    "headline-sm": ["Inter"],
+                    "body-sm": ["Inter"],
+                    "body-md": ["Inter"],
+                    "label-sm": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "label-md": ["Inter"],
+                    "headline-lg-mobile": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "display-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "600"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                    "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; background-color: #F8F5EF; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .sidebar-active { border-left: 2px solid #fed255; background-color: #123b63; }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #d1dbe8; border-radius: 10px; }
+    </style>
+</head>
+<body class="text-on-surface">
+<!-- Side Navigation Shell -->
+<aside class="fixed left-0 top-0 bottom-0 w-sidebar-width bg-primary py-xl flex flex-col shadow-sm z-50">
+<div class="px-lg mb-xl">
+<h1 class="font-headline-md text-headline-md font-bold text-on-primary">LexisFlow</h1>
+<p class="font-label-md text-label-md text-surface-variant opacity-80">Premier Legal Mgmt</p>
+</div>
+<nav class="flex-1 space-y-xs">
+<a class="flex items-center gap-md px-lg py-sm text-surface-variant opacity-80 hover:bg-primary-container/50 hover:opacity-100 transition-all font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined">dashboard</span> Dashboard
+            </a>
+<a class="flex items-center gap-md px-lg py-sm text-surface-variant opacity-80 hover:bg-primary-container/50 hover:opacity-100 transition-all font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined">folder_shared</span> Matters
+            </a>
+<a class="flex items-center gap-md px-lg py-sm sidebar-active text-on-primary-fixed-variant font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined">timer</span> Time Tracking
+            </a>
+<a class="flex items-center gap-md px-lg py-sm text-surface-variant opacity-80 hover:bg-primary-container/50 hover:opacity-100 transition-all font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined">description</span> Documents
+            </a>
+<a class="flex items-center gap-md px-lg py-sm text-surface-variant opacity-80 hover:bg-primary-container/50 hover:opacity-100 transition-all font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined">account_balance_wallet</span> Billing
+            </a>
+<a class="flex items-center gap-md px-lg py-sm text-surface-variant opacity-80 hover:bg-primary-container/50 hover:opacity-100 transition-all font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined">group</span> Contacts
+            </a>
+</nav>
+<div class="px-lg mt-auto space-y-xs pt-lg border-t border-primary-container">
+<button class="w-full bg-secondary-container text-on-secondary-container py-md rounded-xl font-label-md text-label-md font-bold mb-lg hover:brightness-110 transition-all">
+                New Matter
+            </button>
+<a class="flex items-center gap-md py-sm text-surface-variant opacity-80 hover:opacity-100 transition-all font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined">settings</span> Settings
+            </a>
+<a class="flex items-center gap-md py-sm text-surface-variant opacity-80 hover:opacity-100 transition-all font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined">contact_support</span> Support
+            </a>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="ml-sidebar-width min-h-screen">
+<!-- Top Navigation Bar -->
+<header class="fixed top-0 right-0 left-sidebar-width h-16 bg-surface-container-lowest border-b border-outline-variant flex justify-between items-center px-gutter-desktop z-40">
+<div class="flex items-center gap-md">
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="pl-10 pr-4 py-2 bg-surface-container-low border-none rounded-full w-64 focus:ring-1 focus:ring-primary transition-all text-body-sm" placeholder="Search sessions..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-lg">
+<div class="flex items-center gap-md">
+<button class="material-symbols-outlined text-on-surface-variant hover:bg-surface-container-low p-2 rounded-full transition-colors">notifications</button>
+<button class="material-symbols-outlined text-on-surface-variant hover:bg-surface-container-low p-2 rounded-full transition-colors">help</button>
+<button class="material-symbols-outlined text-on-surface-variant hover:bg-surface-container-low p-2 rounded-full transition-colors">settings</button>
+</div>
+<div class="h-8 w-[1px] bg-outline-variant"></div>
+<div class="flex items-center gap-sm">
+<img class="h-8 w-8 rounded-full object-cover" data-alt="A professional headshot of a middle-aged male attorney with a confident smile, wearing a sharp navy blue suit and silk tie. The background is a soft-focus corporate office with warm wooden tones and subtle ambient lighting, conveying a sense of authority and approachability in a premium legal environment." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBaPQTYD9Q2lDVN6DVVIVu4eDyPOm9JbiJre1gBUIVPszOt952tQogrhkt1UTzj9KDh767ylePwr7-y5lraEjDydCak23G1UqYp93_wnqC_mPVUzlK9kTaQILrPYThHlPRZQYcbVfROAPUZdVIuHmOV_Ys6RFe8Ma8wVVUfxyPBEwwP4RffF7Y4NVlR1kgaODBOgEGx-LBrtldQUXJTGC0-TPcOgIj6_4_XS2ZsXd9jUfOp_htfhodeIqvFUa1GKiVjynJ1jpjJDMn0"/>
+<span class="font-label-md text-label-md text-primary">A. Sterling</span>
+</div>
+</div>
+</header>
+<!-- Page Header -->
+<div class="pt-24 px-margin-desktop pb-lg">
+<div class="flex justify-between items-end">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-primary">Research Capture Review</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mt-xs">Verify and assign automatically tracked legal research sessions to your active matters.</p>
+</div>
+<div class="flex gap-md">
+<button class="px-lg py-md rounded-xl border border-outline text-on-surface hover:bg-surface-container-low transition-all font-label-md text-label-md">
+                        Mark as Personal
+                    </button>
+<button class="px-lg py-md rounded-xl bg-primary text-on-primary hover:brightness-125 transition-all font-label-md text-label-md shadow-sm">
+                        Bill Selected (3)
+                    </button>
+</div>
+</div>
+</div>
+<!-- Dashboard Layout: Bento Grid -->
+<div class="px-margin-desktop grid grid-cols-12 gap-lg pb-xxl">
+<!-- Research Sessions List -->
+<div class="col-span-8 bg-surface-container-lowest rounded-xl border border-outline-variant shadow-sm overflow-hidden flex flex-col">
+<div class="px-lg py-md border-b border-outline-variant bg-surface-container-low flex justify-between items-center">
+<h3 class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant">Captured Sessions</h3>
+<div class="flex gap-sm">
+<button class="text-xs px-3 py-1 bg-surface-container-lowest border border-outline-variant rounded-full text-on-surface-variant">Today</button>
+<button class="text-xs px-3 py-1 hover:bg-surface-container-lowest rounded-full text-on-surface-variant">Last 7 Days</button>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead class="bg-surface-container-lowest">
+<tr>
+<th class="px-lg py-md font-label-sm text-label-sm text-on-surface-variant border-b border-outline-variant w-10">
+<input class="rounded border-outline-variant text-primary focus:ring-primary" type="checkbox"/>
+</th>
+<th class="px-lg py-md font-label-sm text-label-sm text-on-surface-variant border-b border-outline-variant">Research Site</th>
+<th class="px-lg py-md font-label-sm text-label-sm text-on-surface-variant border-b border-outline-variant">Topic / Query</th>
+<th class="px-lg py-md font-label-sm text-label-sm text-on-surface-variant border-b border-outline-variant text-right">Active Time</th>
+<th class="px-lg py-md font-label-sm text-label-sm text-on-surface-variant border-b border-outline-variant">Suggested Matter</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant">
+<!-- Row 1: Selected/Active State -->
+<tr class="hover:bg-surface-container-low transition-colors cursor-pointer bg-surface-container-lowest">
+<td class="px-lg py-lg">
+<input checked="" class="rounded border-outline-variant text-primary focus:ring-primary" type="checkbox"/>
+</td>
+<td class="px-lg py-lg">
+<div class="flex items-center gap-sm">
+<div class="w-8 h-8 rounded-lg bg-[#004b91] flex items-center justify-center text-white font-bold text-xs">W</div>
+<span class="font-label-md text-label-md text-on-surface">Westlaw Precision</span>
+</div>
+</td>
+<td class="px-lg py-lg">
+<p class="font-body-sm text-body-sm text-on-surface font-medium">Liability in Autonomous Vehicle Collision...</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">October 24, 2023 · 2:15 PM</p>
+</td>
+<td class="px-lg py-lg text-right">
+<span class="font-body-md text-body-md text-primary font-semibold">42m</span>
+</td>
+<td class="px-lg py-lg">
+<span class="inline-flex items-center px-sm py-1 rounded-full bg-secondary-container/20 text-secondary font-label-sm text-label-sm border border-secondary-container/50">
+                                        Thompson vs. Waymo
+                                    </span>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-surface-container-low transition-colors cursor-pointer bg-surface-container-lowest">
+<td class="px-lg py-lg">
+<input class="rounded border-outline-variant text-primary focus:ring-primary" type="checkbox"/>
+</td>
+<td class="px-lg py-lg">
+<div class="flex items-center gap-sm">
+<div class="w-8 h-8 rounded-lg bg-[#e31a22] flex items-center justify-center text-white font-bold text-xs">LN</div>
+<span class="font-label-md text-label-md text-on-surface">LexisNexis+</span>
+</div>
+</td>
+<td class="px-lg py-lg">
+<p class="font-body-sm text-body-sm text-on-surface font-medium">Delaware Chancery - Non-compete Enforce...</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">October 24, 2023 · 10:04 AM</p>
+</td>
+<td class="px-lg py-lg text-right">
+<span class="font-body-md text-body-md text-primary font-semibold">1h 12m</span>
+</td>
+<td class="px-lg py-lg">
+<span class="inline-flex items-center px-sm py-1 rounded-full bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm">
+                                        M&amp;A: Project Phoenix
+                                    </span>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-surface-container-low transition-colors cursor-pointer bg-surface-container-lowest">
+<td class="px-lg py-lg">
+<input class="rounded border-outline-variant text-primary focus:ring-primary" type="checkbox"/>
+</td>
+<td class="px-lg py-lg">
+<div class="flex items-center gap-sm">
+<div class="w-8 h-8 rounded-lg bg-surface-dim flex items-center justify-center text-on-surface font-bold text-xs">?</div>
+<span class="font-label-md text-label-md text-on-surface">Google Scholar</span>
+</div>
+</td>
+<td class="px-lg py-lg">
+<p class="font-body-sm text-body-sm text-on-surface font-medium">Patent Infringement Trends 2024</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">October 23, 2023 · 4:45 PM</p>
+</td>
+<td class="px-lg py-lg text-right">
+<span class="font-body-md text-body-md text-primary font-semibold">18m</span>
+</td>
+<td class="px-lg py-lg">
+<button class="text-primary hover:underline font-label-sm text-label-sm flex items-center gap-xs">
+<span class="material-symbols-outlined text-[16px]">add_circle</span> Assign Matter
+                                    </button>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="hover:bg-surface-container-low transition-colors cursor-pointer bg-surface-container-lowest">
+<td class="px-lg py-lg">
+<input class="rounded border-outline-variant text-primary focus:ring-primary" type="checkbox"/>
+</td>
+<td class="px-lg py-lg">
+<div class="flex items-center gap-sm">
+<div class="w-8 h-8 rounded-lg bg-[#004b91] flex items-center justify-center text-white font-bold text-xs">W</div>
+<span class="font-label-md text-label-md text-on-surface">Westlaw Precision</span>
+</div>
+</td>
+<td class="px-lg py-lg">
+<p class="font-body-sm text-body-sm text-on-surface font-medium">Rules of Civil Procedure - Rule 56 Summary Judgement</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">October 23, 2023 · 11:20 AM</p>
+</td>
+<td class="px-lg py-lg text-right">
+<span class="font-body-md text-body-md text-primary font-semibold">22m</span>
+</td>
+<td class="px-lg py-lg">
+<span class="inline-flex items-center px-sm py-1 rounded-full bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm">
+                                        General Counsel
+                                    </span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="p-lg mt-auto border-t border-outline-variant text-center">
+<button class="font-label-md text-label-md text-primary hover:text-primary-container transition-colors">Load Older Sessions</button>
+</div>
+</div>
+<!-- Detail View / Session Analysis -->
+<div class="col-span-4 space-y-lg">
+<!-- Selected Session Details -->
+<div class="bg-surface-container-lowest rounded-xl border border-outline-variant shadow-sm p-lg">
+<div class="flex justify-between items-start mb-lg">
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-secondary-container bg-primary p-2 rounded-lg">history</span>
+<div>
+<h4 class="font-headline-sm text-headline-sm text-primary">Session Detail</h4>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Thompson vs. Waymo</p>
+</div>
+</div>
+<button class="material-symbols-outlined text-on-surface-variant">more_vert</button>
+</div>
+<div class="space-y-md">
+<div class="p-md rounded-xl bg-surface-container-low border border-outline-variant">
+<p class="font-label-sm text-label-sm uppercase text-on-surface-variant mb-xs">Primary Focus</p>
+<p class="font-body-md text-body-md font-semibold text-primary">Liability Analysis: Autonomous Vehicles</p>
+</div>
+<div>
+<p class="font-label-sm text-label-sm uppercase text-on-surface-variant mb-sm">Activity Timeline</p>
+<div class="space-y-md relative before:absolute before:left-[11px] before:top-2 before:bottom-2 before:w-[2px] before:bg-outline-variant">
+<div class="relative pl-lg flex flex-col">
+<span class="absolute left-0 top-1 w-6 h-6 rounded-full bg-white border-2 border-primary flex items-center justify-center z-10">
+<span class="w-2 h-2 rounded-full bg-primary"></span>
+</span>
+<span class="font-label-md text-label-md text-on-surface font-semibold">Search Query Started</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant italic">"comparative negligence autonomous sensors"</span>
+<span class="font-label-sm text-label-sm text-outline mt-xs">2:15 PM</span>
+</div>
+<div class="relative pl-lg flex flex-col">
+<span class="absolute left-0 top-1 w-6 h-6 rounded-full bg-white border-2 border-outline-variant flex items-center justify-center z-10">
+<span class="w-2 h-2 rounded-full bg-outline-variant"></span>
+</span>
+<span class="font-label-md text-label-md text-on-surface font-semibold">Statute Review</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Cal. Veh. Code § 38750</span>
+<span class="font-label-sm text-label-sm text-outline mt-xs">2:28 PM</span>
+</div>
+<div class="relative pl-lg flex flex-col">
+<span class="absolute left-0 top-1 w-6 h-6 rounded-full bg-white border-2 border-outline-variant flex items-center justify-center z-10">
+<span class="w-2 h-2 rounded-full bg-outline-variant"></span>
+</span>
+<span class="font-label-md text-label-md text-on-surface font-semibold">Case Law Analysis</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant italic">Vilas v. Waymo LLC, 2022</span>
+<span class="font-label-sm text-label-sm text-outline mt-xs">2:42 PM</span>
+</div>
+</div>
+</div>
+<div class="pt-lg border-t border-outline-variant">
+<div class="flex justify-between items-center mb-md">
+<span class="font-label-md text-label-md text-on-surface-variant">Total Duration</span>
+<span class="font-headline-sm text-headline-sm text-primary">42m 12s</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="font-label-md text-label-md text-on-surface-variant">Billable Amount (est.)</span>
+<span class="font-headline-sm text-headline-sm text-secondary font-bold">$385.00</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Insights Card -->
+<div class="bg-primary rounded-xl p-lg text-on-primary shadow-lg overflow-hidden relative">
+
+<div class="relative z-10">
+<div class="flex items-center gap-sm mb-md">
+<span class="material-symbols-outlined text-secondary-container">auto_awesome</span>
+<h4 class="font-label-md text-label-md font-bold uppercase tracking-widest">AI Capture Insight</h4>
+</div>
+<p class="font-body-md text-body-md mb-lg">This session was highly concentrated on California Tort law. We've automatically flagged 3 related cases for your next research session.</p>
+<button class="w-full py-md rounded-lg bg-on-primary text-primary font-label-md text-label-md font-bold hover:bg-surface-container-low transition-colors">
+                            View Suggested Cases
+                        </button>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Contextual Toast / Micro-interaction Feedback (Hidden by Default) -->
+<div class="fixed bottom-gutter-desktop right-gutter-desktop transform translate-y-20 opacity-0 transition-all duration-300 z-[60]" id="toast">
+<div class="bg-inverse-surface text-inverse-on-surface px-lg py-md rounded-xl flex items-center gap-md shadow-xl">
+<span class="material-symbols-outlined text-secondary-container">check_circle</span>
+<span class="font-label-md text-label-md">3 Sessions assigned to Thompson vs. Waymo</span>
+</div>
+</div>
+<script>
+        // Simple micro-interaction for the "Bill Selected" button
+        const billBtn = document.querySelector('button.bg-primary');
+        const toast = document.getElementById('toast');
+
+        if(billBtn) {
+            billBtn.addEventListener('click', () => {
+                toast.classList.remove('translate-y-20', 'opacity-0');
+                toast.classList.add('translate-y-0', 'opacity-100');
+                
+                setTimeout(() => {
+                    toast.classList.add('translate-y-20', 'opacity-0');
+                    toast.classList.remove('translate-y-0', 'opacity-100');
+                }, 3000);
+            });
+        }
+    </script>
+</body></html>

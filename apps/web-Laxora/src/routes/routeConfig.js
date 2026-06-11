@@ -26,6 +26,7 @@ import {
   Lock,
   Mail,
   NotebookTabs,
+  Palette,
   Plug,
   ReceiptText,
   Search,
@@ -43,6 +44,7 @@ import {
 
 export const navigationItems = [
   { label: "Dashboard", path: "/app/dashboard", icon: LayoutDashboard, moduleKey: "dashboard" },
+  { label: "Design System", path: "/app/design-system", icon: Palette, moduleKey: "dashboard" },
   { label: "Clients", path: "/app/clients", icon: Users, moduleKey: "clients" },
   { label: "Matters", path: "/app/matters", icon: BriefcaseBusiness, moduleKey: "matters" },
   { label: "Tasks", path: "/app/tasks", icon: CheckSquare, moduleKey: "tasks" },
@@ -56,6 +58,7 @@ export const navigationItems = [
 
 export const appRoutes = [
   { path: "/app/dashboard", title: "Dashboard", module: "Daily Work", moduleKey: "dashboard", roleGroup: "All roles", icon: Gauge },
+  { path: "/app/design-system", title: "Component Gallery", module: "Workspace", moduleKey: "dashboard", roleGroup: "All roles", icon: Palette },
   { path: "/app/setup-status", title: "My Setup Status", module: "Onboarding", moduleKey: "extension", roleGroup: "All roles", icon: Plug },
   { path: "/app/notifications", title: "Notifications", module: "Workspace", moduleKey: "dashboard", roleGroup: "All roles", icon: Bell },
   { path: "/app/search", title: "Global Search", module: "Workspace", moduleKey: "dashboard", roleGroup: "All roles", icon: Search },

@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-lowest": "#ffffff",
+                        "inverse-surface": "#27313c",
+                        "on-secondary-container": "#735a00",
+                        "on-primary-fixed": "#001c37",
+                        "on-error": "#ffffff",
+                        "surface-tint": "#3d608a",
+                        "surface-variant": "#d9e3f1",
+                        "secondary": "#755b00",
+                        "inverse-primary": "#a6c9f9",
+                        "surface-container": "#e4effd",
+                        "on-primary-fixed-variant": "#234871",
+                        "on-tertiary-fixed-variant": "#364764",
+                        "surface-dim": "#d1dbe8",
+                        "surface-container-highest": "#d9e3f1",
+                        "tertiary-fixed-dim": "#b5c7ea",
+                        "on-secondary-fixed-variant": "#584400",
+                        "primary-fixed": "#d2e4ff",
+                        "on-surface": "#121d26",
+                        "on-tertiary": "#ffffff",
+                        "secondary-container": "#fed255",
+                        "on-surface-variant": "#43474e",
+                        "outline-variant": "#c3c6cf",
+                        "on-background": "#121d26",
+                        "on-secondary-fixed": "#241a00",
+                        "on-primary-container": "#83a6d4",
+                        "on-tertiary-fixed": "#071c36",
+                        "on-tertiary-container": "#92a4c5",
+                        "inverse-on-surface": "#e8f2ff",
+                        "error-container": "#ffdad6",
+                        "surface": "#f7f9ff",
+                        "secondary-fixed": "#ffe08e",
+                        "tertiary-container": "#283a56",
+                        "error": "#ba1a1a",
+                        "on-error-container": "#93000a",
+                        "primary-container": "#123b63",
+                        "surface-bright": "#f7f9ff",
+                        "tertiary-fixed": "#d6e3ff",
+                        "secondary-fixed-dim": "#ecc246",
+                        "tertiary": "#11243f",
+                        "surface-container-low": "#edf4ff",
+                        "surface-container-high": "#dfe9f7",
+                        "outline": "#73777f",
+                        "primary-fixed-dim": "#a6c9f9",
+                        "primary": "#002546",
+                        "background": "#f7f9ff",
+                        "on-primary": "#ffffff",
+                        "on-secondary": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "md": "16px",
+                        "xl": "32px",
+                        "sm": "12px",
+                        "xs": "4px",
+                        "sidebar-width": "260px",
+                        "base": "8px",
+                        "lg": "24px",
+                        "margin-desktop": "40px",
+                        "gutter-desktop": "24px",
+                        "xxl": "48px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "headline-sm": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "label-md": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "headline-lg": ["Inter"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .timer-glow {
+            text-shadow: 0 0 20px rgba(115, 90, 0, 0.15);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #d9e3f1;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="bg-[#F8F5EF] font-body-md text-on-surface">
+<!-- Sidebar Navigation Shell -->
+<aside class="fixed left-0 top-0 h-full w-sidebar-width bg-tertiary dark:bg-tertiary-container flex flex-col py-lg z-50">
+<div class="px-lg mb-xxl">
+<h1 class="font-headline-sm text-headline-sm text-surface-container-lowest tracking-tight">BillSync Legal</h1>
+<p class="font-label-sm text-label-sm text-tertiary-fixed-dim opacity-70">Law Firm Management</p>
+</div>
+<nav class="flex-1 overflow-y-auto custom-scrollbar px-sm space-y-xs">
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-tertiary-fixed-dim hover:text-surface-container-lowest transition-colors group" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-label-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-tertiary-fixed-dim hover:text-surface-container-lowest transition-colors group" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="font-label-md">Clients</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-tertiary-fixed-dim hover:text-surface-container-lowest transition-colors group" href="#">
+<span class="material-symbols-outlined">folder_open</span>
+<span class="font-label-md">Matters</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-tertiary-fixed-dim hover:text-surface-container-lowest transition-colors group" href="#">
+<span class="material-symbols-outlined">assignment</span>
+<span class="font-label-md">Tasks</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-surface-container-lowest border-l-2 border-secondary font-bold bg-white/5" href="#">
+<span class="material-symbols-outlined">timer</span>
+<span class="font-label-md">Work Meter</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-tertiary-fixed-dim hover:text-surface-container-lowest transition-colors group" href="#">
+<span class="material-symbols-outlined">calendar_today</span>
+<span class="font-label-md">Calendar</span>
+</a>
+<!-- Additional items suppressed for focus -->
+</nav>
+<div class="px-lg mt-auto border-t border-white/10 pt-md">
+<div class="flex items-center gap-sm">
+<div class="w-8 h-8 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary-container font-bold text-xs">JS</div>
+<div class="flex-1 min-w-0">
+<p class="text-surface-container-lowest font-label-md truncate">Julian Sterling</p>
+<p class="text-tertiary-fixed-dim text-xs truncate">Senior Partner</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="ml-sidebar-width min-h-screen flex flex-col">
+<!-- Top Nav Bar Shell -->
+<header class="flex justify-between items-center w-full h-16 px-margin-desktop bg-surface border-b border-surface-variant">
+<div class="flex items-center gap-xl w-1/2">
+<div class="relative w-full max-w-md group">
+<span class="material-symbols-outlined absolute left-md top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="w-full bg-surface-container-low border-none rounded-full py-xs pl-xl pr-md text-body-sm focus:ring-2 focus:ring-secondary/20 transition-all" placeholder="Search matters or client files..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-lg">
+<button class="material-symbols-outlined text-on-surface-variant hover:bg-surface-container-low p-xs rounded-full transition-all">notifications</button>
+<button class="material-symbols-outlined text-on-surface-variant hover:bg-surface-container-low p-xs rounded-full transition-all">timer</button>
+<div class="w-px h-6 bg-outline-variant"></div>
+<button class="material-symbols-outlined text-on-surface-variant hover:bg-surface-container-low p-xs rounded-full transition-all">account_circle</button>
+</div>
+</header>
+<section class="flex-1 p-margin-desktop max-w-[1200px] mx-auto w-full">
+<!-- Header Section -->
+<div class="mb-xxl">
+<h2 class="font-headline-lg text-headline-lg text-primary mb-xs">Work Meter</h2>
+<p class="font-body-md text-on-surface-variant">Precise time tracking for billing and productivity analysis.</p>
+</div>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-12 gap-lg items-start">
+<!-- Main Timer Module (Level 1 Panel) -->
+<div class="col-span-12 lg:col-span-8 bg-white rounded-xl border border-outline-variant p-xl shadow-sm overflow-hidden relative">
+<div class="absolute top-0 left-0 w-1 h-full bg-secondary"></div>
+<!-- Timer Display Area -->
+<div class="flex flex-col items-center justify-center py-xl mb-xl border-b border-surface-variant">
+<div class="font-display-lg text-display-lg text-primary tracking-widest tabular-nums timer-glow mb-md scale-110 lg:scale-125 transition-transform" id="timer-display">
+                            00:42:15
+                        </div>
+<div class="flex items-center gap-xs text-on-surface-variant font-label-md">
+<span class="w-2 h-2 rounded-full bg-secondary animate-pulse"></span>
+                            ACTIVE SESSION
+                        </div>
+</div>
+<!-- Form Controls -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-lg mb-xl">
+<div class="space-y-xs">
+<label class="font-label-sm text-on-surface-variant uppercase tracking-wider">Matter Selection</label>
+<div class="relative">
+<select class="w-full border border-outline-variant rounded-lg p-md bg-surface-container-low font-body-md focus:border-secondary focus:ring-0 transition-all appearance-none">
+<option>Matter #2024-881: Harrison Acquisition</option>
+<option>Matter #2024-912: IP Litigation - Vox Media</option>
+<option>General Administration</option>
+</select>
+<span class="material-symbols-outlined absolute right-md top-1/2 -translate-y-1/2 pointer-events-none text-outline">expand_more</span>
+</div>
+</div>
+<div class="space-y-xs">
+<label class="font-label-sm text-on-surface-variant uppercase tracking-wider">Task / Activity Code</label>
+<div class="relative">
+<select class="w-full border border-outline-variant rounded-lg p-md bg-surface-container-low font-body-md focus:border-secondary focus:ring-0 transition-all appearance-none">
+<option>L110 - Case Assessment &amp; Development</option>
+<option>L120 - Research &amp; Analysis</option>
+<option>L210 - Client Communication</option>
+<option>A105 - Administrative/Internal</option>
+</select>
+<span class="material-symbols-outlined absolute right-md top-1/2 -translate-y-1/2 pointer-events-none text-outline">expand_more</span>
+</div>
+</div>
+</div>
+<!-- Action Controls -->
+<div class="flex flex-wrap items-center justify-between gap-md">
+<div class="flex items-center gap-md">
+<button class="flex items-center gap-sm px-xl py-md bg-surface-container-high text-primary font-label-md rounded-lg hover:bg-surface-variant transition-all active:scale-95" id="pause-btn">
+<span class="material-symbols-outlined">pause_circle</span>
+                                PAUSE
+                            </button>
+<button class="flex items-center gap-sm px-xl py-md bg-primary text-white font-label-md rounded-lg hover:bg-primary-container transition-all active:scale-95 shadow-md">
+<span class="material-symbols-outlined">save</span>
+                                STOP &amp; SAVE
+                            </button>
+</div>
+<button class="flex items-center gap-sm px-md py-md text-error font-label-md rounded-lg hover:bg-error-container/20 transition-all">
+<span class="material-symbols-outlined">delete_forever</span>
+                            DISCARD SESSION
+                        </button>
+</div>
+</div>
+<!-- Session Context & Today's History -->
+<div class="col-span-12 lg:col-span-4 space-y-lg">
+<!-- Stats Card -->
+<div class="bg-white rounded-xl border border-outline-variant p-lg shadow-sm">
+<h3 class="font-headline-sm text-headline-sm text-primary mb-md">Today's Summary</h3>
+<div class="grid grid-cols-2 gap-md">
+<div class="p-md bg-surface-container-low rounded-lg">
+<p class="text-xs text-on-surface-variant font-label-sm mb-xs uppercase">Billable Hours</p>
+<p class="text-headline-md font-bold text-primary">6.4h</p>
+</div>
+<div class="p-md bg-surface-container-low rounded-lg">
+<p class="text-xs text-on-surface-variant font-label-sm mb-xs uppercase">Efficiency</p>
+<p class="text-headline-md font-bold text-secondary">92%</p>
+</div>
+</div>
+</div>
+<!-- History List -->
+<div class="bg-white rounded-xl border border-outline-variant overflow-hidden shadow-sm">
+<div class="p-lg border-b border-surface-variant flex justify-between items-center">
+<h3 class="font-label-md text-primary font-bold">Today's Sessions</h3>
+<button class="text-secondary font-label-sm hover:underline">View All</button>
+</div>
+<div class="divide-y divide-surface-variant max-h-[400px] overflow-y-auto custom-scrollbar">
+<!-- Session 1 -->
+<div class="p-lg hover:bg-surface-container-lowest transition-colors">
+<div class="flex justify-between items-start mb-xs">
+<p class="font-label-md text-primary font-semibold">Harrison Acquisition</p>
+<span class="text-body-sm text-on-surface-variant tabular-nums">02:15:00</span>
+</div>
+<p class="text-xs text-on-surface-variant truncate mb-md">Reviewing merger compliance docs</p>
+<div class="flex items-center gap-sm">
+<span class="px-xs py-[2px] bg-secondary-container/30 text-on-secondary-container text-[10px] font-bold rounded uppercase">Billable</span>
+<span class="text-[10px] text-outline">09:15 AM - 11:30 AM</span>
+</div>
+</div>
+<!-- Session 2 -->
+<div class="p-lg hover:bg-surface-container-lowest transition-colors">
+<div class="flex justify-between items-start mb-xs">
+<p class="font-label-md text-primary font-semibold">IP Litigation - Vox</p>
+<span class="text-body-sm text-on-surface-variant tabular-nums">01:40:12</span>
+</div>
+<p class="text-xs text-on-surface-variant truncate mb-md">Drafting response to interrogatories</p>
+<div class="flex items-center gap-sm">
+<span class="px-xs py-[2px] bg-secondary-container/30 text-on-secondary-container text-[10px] font-bold rounded uppercase">Billable</span>
+<span class="text-[10px] text-outline">01:00 PM - 02:40 PM</span>
+</div>
+</div>
+<!-- Session 3 -->
+<div class="p-lg hover:bg-surface-container-lowest transition-colors opacity-60">
+<div class="flex justify-between items-start mb-xs">
+<p class="font-label-md text-primary font-semibold">Admin / Training</p>
+<span class="text-body-sm text-on-surface-variant tabular-nums">00:30:00</span>
+</div>
+<p class="text-xs text-on-surface-variant truncate mb-md">Weekly team sync</p>
+<div class="flex items-center gap-sm">
+<span class="px-xs py-[2px] bg-surface-variant text-on-surface-variant text-[10px] font-bold rounded uppercase">Internal</span>
+<span class="text-[10px] text-outline">02:45 PM - 03:15 PM</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Atmosphere / Image Section -->
+<div class="mt-xxl grid grid-cols-1 md:grid-cols-2 gap-lg">
+<div class="rounded-xl overflow-hidden relative h-64 shadow-lg group">
+<img alt="Legal Professional" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="A sophisticated close-up photograph of a professional lawyer's workspace. A sleek, silver high-end watch rests on a polished dark wood desk next to a modern smartphone displaying a timer interface. Soft, warm ambient lighting filters through a high-rise office window, illuminating leather-bound legal volumes in the soft-focus background. The mood is calm, precise, and authoritative, reflecting the premium corporate aesthetic of a top-tier law firm with a palette of navy, gold, and warm amber." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDRwqo_Jdovh3CggkBcLFeJ-YGV4JWz-fvoxIwdL17cOXPwOYZZbyKvyxycGkWjnZnL2PZ4g9L628_7J1MaOODmw9J5xYGAiUQSpl1BzInf3IoNXBpQaEd5w7HmsEB1n8ANu20k5FO1ZQZnujXbIma7oYw-ky8Zg54_UFpCe7Dx90fOQJhyfoWW3lIMK82yj0H3av_3vTJpWlsFmLIS4_1DvLoa-cuLW4sGFvMEVJbKmXVJnK2lihZUE_ho2s3GMKNpfAiNjBOlpxkG"/>
+<div class="absolute inset-0 bg-gradient-to-t from-primary/80 to-transparent flex flex-col justify-end p-xl">
+<h4 class="text-surface-container-lowest font-headline-sm mb-xs">Precision Matters</h4>
+<p class="text-surface-container-lowest/80 text-body-sm">Every minute captured is value delivered to your clients.</p>
+</div>
+</div>
+<div class="rounded-xl overflow-hidden relative h-64 shadow-lg group">
+<img alt="Document Signing" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="A minimalist, top-down view of a high-end fountain pen resting on a clean, ivory-colored legal document. The scene is shot with a shallow depth of field, highlighting the crisp texture of the paper and the metallic sheen of the pen. The lighting is bright and airy, characteristic of a high-key modern office space. Deep navy and gold accents are subtly integrated into the composition, maintaining a professional and orderly atmosphere that evokes trust and high-end craftsmanship." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDCHTE6bz9Numg4kqBtFhVvKh431NM3lajXgQJ0Dpp54sfFeNiISDxRw-0BWbkeGrzsF4yX-aQrodHrRmZnNdQ1QMBq_vPNAwKVEJsK2pvIi__ed0iBnwodP0EwTO6YlS02tNdDQ2lyVjxEBePKXSY6AvGrkXGADuFlDYHNSbl00XinoBJ3LANeH0wqbLd9xXNqy4IN7vEOyGYkqba2o-RqNCzsa7j4xW8YK9ktiFTZIGr1WsAVUyyytu0C9DO0ZNfSsR3M1TsBjGnO"/>
+<div class="absolute inset-0 bg-gradient-to-t from-secondary/80 to-transparent flex flex-col justify-end p-xl">
+<h4 class="text-surface-container-lowest font-headline-sm mb-xs">Seamless Integration</h4>
+<p class="text-surface-container-lowest/80 text-body-sm">Synced directly with your Billing and Court Sync modules.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Footer Shell -->
+<footer class="mt-auto flex justify-between items-center py-md px-margin-desktop bg-background border-t border-surface-variant">
+<div class="flex items-center gap-xl">
+<span class="font-label-md font-bold text-on-surface">BillSync</span>
+<p class="font-label-sm text-on-surface-variant">© 2024 BillSync Legal. All rights reserved.</p>
+</div>
+<div class="flex gap-lg">
+<a class="font-label-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Terms of Service</a>
+<a class="font-label-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Privacy Policy</a>
+<a class="font-label-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Contact Support</a>
+</div>
+</footer>
+</main>
+<!-- Simple Timer Logic -->
+<script>
+        let seconds = 2535; // 42:15
+        const timerDisplay = document.getElementById('timer-display');
+        const pauseBtn = document.getElementById('pause-btn');
+        let isPaused = false;
+
+        setInterval(() => {
+            if (!isPaused) {
+                seconds++;
+                const hrs = Math.floor(seconds / 3600);
+                const mins = Math.floor((seconds % 3600) / 60);
+                const secs = seconds % 60;
+                timerDisplay.innerText = 
+                    `${hrs.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            }
+        }, 1000);
+
+        pauseBtn.addEventListener('click', () => {
+            isPaused = !isPaused;
+            pauseBtn.innerHTML = isPaused ? 
+                '<span class="material-symbols-outlined">play_circle</span> RESUME' : 
+                '<span class="material-symbols-outlined">pause_circle</span> PAUSE';
+            
+            if (isPaused) {
+                timerDisplay.classList.remove('timer-glow');
+                timerDisplay.classList.add('opacity-50');
+            } else {
+                timerDisplay.classList.add('timer-glow');
+                timerDisplay.classList.remove('opacity-50');
+            }
+        });
+    </script>
+</body></html>

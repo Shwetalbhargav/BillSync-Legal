@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>BillSync Legal | Preparing Workspace</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-container": "#e4effd",
+                      "on-tertiary-fixed-variant": "#364764",
+                      "on-primary-fixed": "#001c37",
+                      "tertiary-fixed": "#d6e3ff",
+                      "on-surface": "#121d26",
+                      "surface-container-highest": "#d9e3f1",
+                      "primary-container": "#123b63",
+                      "primary-fixed": "#d2e4ff",
+                      "tertiary-fixed-dim": "#b5c7ea",
+                      "secondary-fixed-dim": "#ecc246",
+                      "primary": "#002546",
+                      "on-tertiary-container": "#92a4c5",
+                      "on-secondary": "#ffffff",
+                      "surface-container-lowest": "#ffffff",
+                      "outline": "#73777f",
+                      "on-secondary-container": "#735a00",
+                      "inverse-on-surface": "#e8f2ff",
+                      "on-secondary-fixed": "#241a00",
+                      "surface-variant": "#d9e3f1",
+                      "surface-dim": "#d1dbe8",
+                      "tertiary": "#11243f",
+                      "secondary": "#755b00",
+                      "secondary-fixed": "#ffe08e",
+                      "surface-container-low": "#edf4ff",
+                      "surface": "#f7f9ff",
+                      "inverse-surface": "#27313c",
+                      "error-container": "#ffdad6",
+                      "tertiary-container": "#283a56",
+                      "outline-variant": "#c3c6cf",
+                      "on-tertiary": "#ffffff",
+                      "on-primary": "#ffffff",
+                      "surface-bright": "#f7f9ff",
+                      "on-error-container": "#93000a",
+                      "surface-container-high": "#dfe9f7",
+                      "on-primary-container": "#83a6d4",
+                      "background": "#f7f9ff",
+                      "on-secondary-fixed-variant": "#584400",
+                      "inverse-primary": "#a6c9f9",
+                      "secondary-container": "#fed255",
+                      "on-background": "#121d26",
+                      "surface-tint": "#3d608a",
+                      "on-primary-fixed-variant": "#234871",
+                      "error": "#ba1a1a",
+                      "primary-fixed-dim": "#a6c9f9",
+                      "on-surface-variant": "#43474e",
+                      "on-tertiary-fixed": "#071c36",
+                      "on-error": "#ffffff",
+                      "brand-bg": "#F8F5EF",
+                      "brand-navy": "#123B63"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "sidebar-width": "260px",
+                      "md": "16px",
+                      "xxl": "48px",
+                      "xs": "4px",
+                      "gutter-desktop": "24px",
+                      "xl": "32px",
+                      "base": "8px",
+                      "margin-desktop": "40px",
+                      "sm": "12px",
+                      "lg": "24px"
+              },
+              "fontFamily": {
+                      "body-sm": ["Inter"],
+                      "headline-lg": ["Inter"],
+                      "headline-md": ["Inter"],
+                      "headline-sm": ["Inter"],
+                      "label-md": ["Inter"],
+                      "label-sm": ["Inter"]
+              }
+            }
+          }
+        }
+    </script>
+<style>
+        @keyframes ring-draw {
+            0% { stroke-dashoffset: 283; transform: rotate(0deg); }
+            50% { stroke-dashoffset: 70; transform: rotate(180deg); }
+            100% { stroke-dashoffset: 283; transform: rotate(360deg); }
+        }
+        .animate-ring {
+            stroke-dasharray: 283;
+            animation: ring-draw 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+            transform-origin: center;
+        }
+        .fade-in-up {
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .subtle-pulse {
+            animation: pulse-opacity 3s ease-in-out infinite;
+        }
+        @keyframes pulse-opacity {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+    </style>
+</head>
+<body class="bg-brand-bg min-h-screen flex items-center justify-center overflow-hidden">
+<div class="relative flex flex-col items-center justify-center max-w-md w-full px-lg text-center">
+<!-- Logo Section -->
+<div class="mb-xxl fade-in-up" style="animation-delay: 0.1s;">
+<div class="flex items-center gap-sm">
+<div class="w-12 h-12 bg-primary-container rounded flex items-center justify-center">
+<span class="material-symbols-outlined text-surface-container-lowest text-headline-sm" data-icon="account_balance">account_balance</span>
+</div>
+<div class="text-left">
+<h1 class="font-headline-md text-headline-md text-primary tracking-tight leading-none">BillSync Legal</h1>
+<p class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest mt-xs">Law Firm Management</p>
+</div>
+</div>
+</div>
+<!-- Progress Indicator -->
+<div class="relative w-24 h-24 mb-xl fade-in-up" style="animation-delay: 0.3s;">
+<!-- Static background ring -->
+<svg class="w-full h-full transform -rotate-90">
+<circle class="text-outline-variant opacity-20" cx="48" cy="48" fill="transparent" r="40" stroke="currentColor" stroke-width="3"></circle>
+<!-- Animated primary ring -->
+<circle class="animate-ring" cx="48" cy="48" fill="transparent" r="40" stroke="#123B63" stroke-linecap="round" stroke-width="3"></circle>
+</svg>
+<!-- Center Icon -->
+<div class="absolute inset-0 flex items-center justify-center">
+<span class="material-symbols-outlined text-brand-navy subtle-pulse" data-icon="sync">sync</span>
+</div>
+</div>
+<!-- Reassuring Text -->
+<div class="fade-in-up space-y-sm" style="animation-delay: 0.5s;">
+<h2 class="font-headline-sm text-headline-sm text-primary">Preparing your workspace...</h2>
+<p class="font-body-md text-body-md text-on-surface-variant opacity-80">Securing your legal records and synchronizing matter data.</p>
+</div>
+<!-- Status Details (Subtle) -->
+<div class="absolute bottom-[-80px] w-full fade-in-up opacity-40" style="animation-delay: 0.7s;">
+<div class="flex flex-col items-center gap-xs">
+<div class="font-label-sm text-label-sm text-on-surface-variant" id="status-text">Connecting to encrypted vault...</div>
+<div class="w-32 h-0.5 bg-outline-variant rounded-full overflow-hidden">
+<div class="h-full bg-secondary-container transition-all duration-1000 ease-in-out" id="progress-bar" style="width: 15%"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Background Decorative Elements -->
+<div class="fixed top-0 left-0 w-full h-full pointer-events-none z-[-1] opacity-30">
+<div class="absolute top-[-10%] right-[-5%] w-[400px] h-[400px] rounded-full blur-[120px] bg-primary-fixed-dim"></div>
+<div class="absolute bottom-[-10%] left-[-5%] w-[300px] h-[300px] rounded-full blur-[100px] bg-secondary-fixed"></div>
+</div>
+<script>
+        // Simple script to cycle through loading messages for enhanced "premium" feel
+        const statusText = document.getElementById('status-text');
+        const progressBar = document.getElementById('progress-bar');
+        const messages = [
+            "Authenticating secure session...",
+            "Loading client matters...",
+            "Checking court sync status...",
+            "Optimizing billing dashboard...",
+            "Finalizing workspace layout..."
+        ];
+        
+        let currentStep = 0;
+        let progress = 15;
+
+        const updateStatus = () => {
+            if (currentStep < messages.length) {
+                statusText.innerText = messages[currentStep];
+                progress += Math.floor(Math.random() * 15) + 5;
+                if (progress > 95) progress = 98;
+                progressBar.style.width = `${progress}%`;
+                currentStep++;
+                
+                // Random delay for a more natural "human-centric" feel
+                setTimeout(updateStatus, 1500 + Math.random() * 2000);
+            }
+        };
+
+        setTimeout(updateStatus, 2000);
+    </script>
+</body></html>

@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>LexPremium | Advanced Productivity Analytics</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "tertiary-fixed-dim": "#b5c7ea",
+                    "primary-fixed": "#d2e4ff",
+                    "on-tertiary": "#ffffff",
+                    "tertiary-container": "#283a56",
+                    "tertiary-fixed": "#d6e3ff",
+                    "on-secondary-fixed-variant": "#584400",
+                    "primary-container": "#123b63",
+                    "on-secondary": "#ffffff",
+                    "secondary-fixed-dim": "#ecc246",
+                    "on-tertiary-fixed-variant": "#364764",
+                    "surface-variant": "#d9e3f1",
+                    "on-primary-container": "#83a6d4",
+                    "surface-dim": "#d1dbe8",
+                    "surface": "#f7f9ff",
+                    "primary": "#002546",
+                    "primary-fixed-dim": "#a6c9f9",
+                    "on-error": "#ffffff",
+                    "error-container": "#ffdad6",
+                    "on-surface-variant": "#43474e",
+                    "on-background": "#121d26",
+                    "on-secondary-fixed": "#241a00",
+                    "inverse-surface": "#27313c",
+                    "on-secondary-container": "#735a00",
+                    "inverse-on-surface": "#e8f2ff",
+                    "background": "#f7f9ff",
+                    "on-tertiary-container": "#92a4c5",
+                    "on-error-container": "#93000a",
+                    "secondary": "#755b00",
+                    "error": "#ba1a1a",
+                    "on-tertiary-fixed": "#071c36",
+                    "surface-container-high": "#dfe9f7",
+                    "on-primary-fixed-variant": "#234871",
+                    "surface-tint": "#3d608a",
+                    "surface-container-highest": "#d9e3f1",
+                    "secondary-container": "#fed255",
+                    "tertiary": "#11243f",
+                    "on-primary-fixed": "#001c37",
+                    "inverse-primary": "#a6c9f9",
+                    "outline": "#73777f",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-container-low": "#edf4ff",
+                    "on-surface": "#121d26",
+                    "surface-container": "#e4effd",
+                    "secondary-fixed": "#ffe08e",
+                    "outline-variant": "#c3c6cf",
+                    "on-primary": "#ffffff",
+                    "surface-bright": "#f7f9ff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "margin-desktop": "40px",
+                    "xs": "4px",
+                    "gutter-desktop": "24px",
+                    "base": "8px",
+                    "xl": "32px",
+                    "lg": "24px",
+                    "sm": "12px",
+                    "xxl": "48px",
+                    "sidebar-width": "260px",
+                    "md": "16px"
+            },
+            "fontFamily": {
+                    "headline-sm": ["Inter"],
+                    "label-md": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "label-sm": ["Inter"],
+                    "headline-lg-mobile": ["Inter"],
+                    "body-md": ["Inter"],
+                    "display-lg": ["Inter"],
+                    "body-sm": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "body-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "600"}],
+                    "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .heat-map-cell { transition: all 0.2s ease; }
+        .heat-map-cell:hover { transform: scale(1.1); z-index: 10; cursor: pointer; }
+        .chart-bar { transition: height 1s ease-out; }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(229, 231, 235, 0.5);
+        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #c3c6cf; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #73777f; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body-md overflow-hidden flex h-screen">
+<!-- SideNavBar Anchor -->
+<aside class="fixed h-full w-sidebar-width left-0 top-0 bg-primary dark:bg-primary flex flex-col py-xl z-50">
+<div class="px-lg mb-xxl">
+<h1 class="font-headline-sm text-headline-sm font-bold text-on-primary">LexPremium</h1>
+<p class="text-on-primary-container text-label-sm font-label-sm opacity-80 uppercase tracking-widest mt-xs">Legal Management</p>
+</div>
+<nav class="flex-1 space-y-xs">
+<!-- Dashboard (Active) -->
+<a class="flex items-center gap-md border-l-2 border-secondary-fixed bg-tertiary-container text-on-primary px-lg py-sm transition-colors duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-md text-on-tertiary-container px-lg py-sm hover:bg-tertiary-container hover:text-on-primary transition-colors duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined">pending_actions</span>
+<span class="font-label-md text-label-md">Captured Work</span>
+</a>
+<a class="flex items-center gap-md text-on-tertiary-container px-lg py-sm hover:bg-tertiary-container hover:text-on-primary transition-colors duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined">receipt_long</span>
+<span class="font-label-md text-label-md">Invoice Builder</span>
+</a>
+<a class="flex items-center gap-md text-on-tertiary-container px-lg py-sm hover:bg-tertiary-container hover:text-on-primary transition-colors duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="font-label-md text-label-md">Clients</span>
+</a>
+<a class="flex items-center gap-md text-on-tertiary-container px-lg py-sm hover:bg-tertiary-container hover:text-on-primary transition-colors duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined">description</span>
+<span class="font-label-md text-label-md">Documents</span>
+</a>
+<a class="flex items-center gap-md text-on-tertiary-container px-lg py-sm hover:bg-tertiary-container hover:text-on-primary transition-colors duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-md text-label-md">Settings</span>
+</a>
+</nav>
+<div class="px-lg mt-auto">
+<button class="w-full py-md px-lg bg-secondary text-on-secondary font-label-md text-label-md rounded-lg hover:brightness-110 transition-all flex items-center justify-center gap-sm">
+<span class="material-symbols-outlined">add</span>
+                New Entry
+            </button>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="ml-sidebar-width flex-1 flex flex-col h-full bg-[#F8F5EF] overflow-hidden">
+<!-- TopNavBar Anchor -->
+<header class="flex justify-between items-center h-16 px-margin-desktop w-full bg-surface dark:bg-surface-container-lowest border-b border-outline-variant shrink-0">
+<div class="flex items-center gap-xl">
+<div class="relative">
+<span class="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-outline">search</span>
+<input class="pl-10 pr-4 py-1.5 bg-surface-container-low border border-outline-variant rounded-full text-label-md focus:outline-none focus:ring-1 focus:ring-primary w-64" placeholder="Search analytics..." type="text"/>
+</div>
+<div class="flex gap-lg">
+<a class="text-on-surface-variant font-label-sm text-label-sm hover:text-primary transition-colors duration-200" href="#">Recent</a>
+<a class="text-on-surface-variant font-label-sm text-label-sm hover:text-primary transition-colors duration-200" href="#">Favorites</a>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<button class="p-2 text-on-surface-variant hover:bg-surface-container-high rounded-full transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:bg-surface-container-high rounded-full transition-colors">
+<span class="material-symbols-outlined">help_outline</span>
+</button>
+<div class="h-8 w-8 rounded-full overflow-hidden border border-outline-variant ml-sm">
+<img alt="User Profile" data-alt="A professional headshot of a senior law firm partner in a charcoal grey suit with a confident, friendly expression. The background is a blurred office environment with warm wooden textures and soft ambient lighting, matching the premium corporate dashboard aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCNb1VRy20THzimMGn5N_mSDzm6AVpwQjJiG_-5GtNTyvFqce4JVeXBbeiNRZm3i6OxRgIY1thbrYlNneYEkskxzdeFNMIg40Ddk0iUDqeW6vMrjs4CCjuNGArwBoyDoSxHzRgF-AYNzlGHZsfYv6DJ1kLyXMn0V-yZovtbUEN1djJSmjPYbDQ57tdkGI58XJNQF5P2IljcSFdhADQl1NRVJoqBAqUmHO5u5Yyd-Snz11cCy0_N8dKdCBEGZfAOUWF_EUJd4iTCfK0U"/>
+</div>
+</div>
+</header>
+<!-- Dashboard Canvas -->
+<div class="flex-1 overflow-y-auto p-margin-desktop custom-scroll">
+<!-- Dashboard Header & Filters -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-lg mb-xl">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-primary tracking-tight">Productivity Analytics</h2>
+<p class="text-on-surface-variant font-body-md mt-1">Global performance overview for Partners</p>
+</div>
+<div class="flex items-center gap-md glass-panel p-2 rounded-xl shadow-sm">
+<div class="flex items-center gap-xs px-3 py-2 bg-surface rounded-lg border border-outline-variant">
+<span class="material-symbols-outlined text-label-md">calendar_today</span>
+<select class="bg-transparent border-none text-label-md focus:ring-0 cursor-pointer">
+<option>Last 30 Days</option>
+<option>This Quarter</option>
+<option>Year to Date</option>
+</select>
+</div>
+<div class="flex items-center gap-xs px-3 py-2 bg-surface rounded-lg border border-outline-variant">
+<span class="material-symbols-outlined text-label-md">person_search</span>
+<select class="bg-transparent border-none text-label-md focus:ring-0 cursor-pointer">
+<option>All Roles</option>
+<option>Senior Partner</option>
+<option>Associate</option>
+<option>Paralegal</option>
+</select>
+</div>
+<button class="bg-primary text-on-primary px-lg py-2 rounded-lg font-label-md transition-all hover:shadow-md">
+                        Export Report
+                    </button>
+</div>
+</div>
+<!-- Bento Grid Dashboard Layout -->
+<div class="grid grid-cols-12 gap-gutter-desktop auto-rows-[minmax(180px,auto)]">
+<!-- KPI Row -->
+<div class="col-span-12 md:col-span-3 bg-white p-lg rounded-xl shadow-sm border border-outline-variant flex flex-col justify-between">
+<div>
+<div class="flex justify-between items-start">
+<span class="text-on-surface-variant font-label-sm uppercase tracking-wider">Total Billable Hours</span>
+<span class="text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded text-xs font-bold flex items-center gap-xs">
+<span class="material-symbols-outlined text-[14px]">trending_up</span> 12%
+                            </span>
+</div>
+<p class="font-display-lg text-display-lg text-primary mt-base">4,812</p>
+</div>
+<div class="mt-xl h-1 bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-primary w-[75%]"></div>
+</div>
+</div>
+<div class="col-span-12 md:col-span-3 bg-white p-lg rounded-xl shadow-sm border border-outline-variant flex flex-col justify-between">
+<div>
+<div class="flex justify-between items-start">
+<span class="text-on-surface-variant font-label-sm uppercase tracking-wider">Realization Rate</span>
+<span class="text-amber-600 bg-amber-50 px-2 py-0.5 rounded text-xs font-bold flex items-center gap-xs">
+<span class="material-symbols-outlined text-[14px]">trending_flat</span> 0%
+                            </span>
+</div>
+<p class="font-display-lg text-display-lg text-primary mt-base">92.4%</p>
+</div>
+<div class="mt-xl h-1 bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-secondary w-[92%]"></div>
+</div>
+</div>
+<div class="col-span-12 md:col-span-3 bg-white p-lg rounded-xl shadow-sm border border-outline-variant flex flex-col justify-between">
+<div>
+<div class="flex justify-between items-start">
+<span class="text-on-surface-variant font-label-sm uppercase tracking-wider">Time Leakage Index</span>
+<span class="text-error bg-error-container/20 px-2 py-0.5 rounded text-xs font-bold flex items-center gap-xs">
+<span class="material-symbols-outlined text-[14px]">trending_up</span> 4%
+                            </span>
+</div>
+<p class="font-display-lg text-display-lg text-error mt-base">14.2%</p>
+</div>
+<div class="mt-xl h-1 bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-error w-[14%]"></div>
+</div>
+</div>
+<div class="col-span-12 md:col-span-3 bg-white p-lg rounded-xl shadow-sm border border-outline-variant flex flex-col justify-between bg-primary text-on-primary">
+<div>
+<div class="flex justify-between items-start">
+<span class="text-primary-fixed font-label-sm uppercase tracking-wider">AI Forecast (Next Mo)</span>
+<span class="material-symbols-outlined text-secondary-fixed">auto_awesome</span>
+</div>
+<p class="font-display-lg text-display-lg text-white mt-base">$1.24M</p>
+</div>
+<p class="text-primary-fixed text-label-sm mt-xl">+8.5% projection vs last month</p>
+</div>
+<!-- Main Visualization: Stacked Bar Chart -->
+<div class="col-span-12 lg:col-span-8 bg-white p-xl rounded-xl shadow-sm border border-outline-variant min-h-[400px]">
+<div class="flex justify-between items-center mb-xl">
+<div>
+<h3 class="font-headline-sm text-headline-sm text-primary">Captured vs. Billed by Attorney</h3>
+<p class="text-on-surface-variant text-body-sm">Gap analysis between effort and invoice realization</p>
+</div>
+<div class="flex items-center gap-lg">
+<div class="flex items-center gap-2">
+<span class="w-3 h-3 bg-primary rounded-full"></span>
+<span class="text-label-sm">Billed</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="w-3 h-3 bg-secondary rounded-full"></span>
+<span class="text-label-sm">Captured</span>
+</div>
+</div>
+</div>
+<div class="h-[280px] flex items-end justify-between px-md gap-gutter-desktop mt-8">
+<!-- Chart Bar 1 -->
+<div class="flex-1 flex flex-col items-center gap-base">
+<div class="w-full flex flex-col-reverse justify-end h-[240px] gap-0.5">
+<div class="bg-primary w-full h-[60%] rounded-t-sm" title="Billed: 120h"></div>
+<div class="bg-secondary w-full h-[15%] rounded-t-sm" title="Captured: 30h"></div>
+</div>
+<span class="text-label-sm font-semibold truncate w-full text-center">Arthur P.</span>
+</div>
+<!-- Chart Bar 2 -->
+<div class="flex-1 flex flex-col items-center gap-base">
+<div class="w-full flex flex-col-reverse justify-end h-[240px] gap-0.5">
+<div class="bg-primary w-full h-[75%] rounded-t-sm" title="Billed: 150h"></div>
+<div class="bg-secondary w-full h-[5%] rounded-t-sm" title="Captured: 10h"></div>
+</div>
+<span class="text-label-sm font-semibold truncate w-full text-center">Elena G.</span>
+</div>
+<!-- Chart Bar 3 -->
+<div class="flex-1 flex flex-col items-center gap-base">
+<div class="w-full flex flex-col-reverse justify-end h-[240px] gap-0.5">
+<div class="bg-primary w-full h-[50%] rounded-t-sm" title="Billed: 100h"></div>
+<div class="bg-secondary w-full h-[25%] rounded-t-sm" title="Captured: 50h"></div>
+</div>
+<span class="text-label-sm font-semibold truncate w-full text-center">Marcus L.</span>
+</div>
+<!-- Chart Bar 4 -->
+<div class="flex-1 flex flex-col items-center gap-base">
+<div class="w-full flex flex-col-reverse justify-end h-[240px] gap-0.5">
+<div class="bg-primary w-full h-[85%] rounded-t-sm" title="Billed: 170h"></div>
+<div class="bg-secondary w-full h-[8%] rounded-t-sm" title="Captured: 16h"></div>
+</div>
+<span class="text-label-sm font-semibold truncate w-full text-center">Sarah K.</span>
+</div>
+<!-- Chart Bar 5 -->
+<div class="flex-1 flex flex-col items-center gap-base">
+<div class="w-full flex flex-col-reverse justify-end h-[240px] gap-0.5">
+<div class="bg-primary w-full h-[40%] rounded-t-sm" title="Billed: 80h"></div>
+<div class="bg-secondary w-full h-[30%] rounded-t-sm" title="Captured: 60h"></div>
+</div>
+<span class="text-label-sm font-semibold truncate w-full text-center">Thomas W.</span>
+</div>
+<!-- Chart Bar 6 -->
+<div class="flex-1 flex flex-col items-center gap-base">
+<div class="w-full flex flex-col-reverse justify-end h-[240px] gap-0.5">
+<div class="bg-primary w-full h-[70%] rounded-t-sm" title="Billed: 140h"></div>
+<div class="bg-secondary w-full h-[12%] rounded-t-sm" title="Captured: 24h"></div>
+</div>
+<span class="text-label-sm font-semibold truncate w-full text-center">Jane D.</span>
+</div>
+</div>
+</div>
+<!-- Time Leakage Panel -->
+<div class="col-span-12 lg:col-span-4 bg-white p-xl rounded-xl shadow-sm border border-outline-variant">
+<div class="flex items-center gap-sm mb-lg">
+<span class="material-symbols-outlined text-secondary font-bold">leak_add</span>
+<h3 class="font-headline-sm text-headline-sm text-primary">Time Leakage</h3>
+</div>
+<div class="space-y-lg">
+<div class="p-lg bg-surface-container rounded-lg border-l-4 border-secondary">
+<p class="text-label-sm text-on-surface-variant uppercase font-bold tracking-tight">AI Detected Potential</p>
+<p class="text-headline-md font-headline-md text-primary mt-1">$42,500 <span class="text-body-sm font-normal text-on-surface-variant">uncaptured</span></p>
+<div class="mt-md flex gap-sm">
+<span class="px-2 py-1 bg-secondary-container text-on-secondary-container rounded text-[10px] font-bold">EMAIL DRAFTING</span>
+<span class="px-2 py-1 bg-secondary-container text-on-secondary-container rounded text-[10px] font-bold">CLIENT CALLS</span>
+</div>
+</div>
+<div class="space-y-md">
+<div class="flex justify-between items-center group cursor-pointer p-1 hover:translate-x-1 transition-transform">
+<div class="flex items-center gap-md">
+<div class="p-2 bg-error-container/30 rounded-full">
+<span class="material-symbols-outlined text-error text-[20px]">mark_email_unread</span>
+</div>
+<div>
+<p class="text-label-md font-bold">Email Auto-Sync</p>
+<p class="text-body-sm text-on-surface-variant">24.5 hrs missed</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline">chevron_right</span>
+</div>
+<div class="flex justify-between items-center group cursor-pointer p-1 hover:translate-x-1 transition-transform">
+<div class="flex items-center gap-md">
+<div class="p-2 bg-tertiary-container/10 rounded-full">
+<span class="material-symbols-outlined text-tertiary text-[20px]">calendar_month</span>
+</div>
+<div>
+<p class="text-label-md font-bold">Meeting Overruns</p>
+<p class="text-body-sm text-on-surface-variant">12.2 hrs missed</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline">chevron_right</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Heat Map Section -->
+<div class="col-span-12 bg-white p-xl rounded-xl shadow-sm border border-outline-variant">
+<div class="flex justify-between items-center mb-xl">
+<div>
+<h3 class="font-headline-sm text-headline-sm text-primary">Billable Hours Density</h3>
+<p class="text-on-surface-variant text-body-sm">Peak productivity periods by day and hour</p>
+</div>
+<div class="flex items-center gap-base">
+<span class="text-[10px] text-on-surface-variant uppercase font-bold">Intensity</span>
+<div class="flex h-3 w-32 rounded-full overflow-hidden">
+<div class="flex-1 bg-surface-container"></div>
+<div class="flex-1 bg-primary-container"></div>
+<div class="flex-1 bg-primary"></div>
+</div>
+</div>
+</div>
+<div class="overflow-x-auto">
+<div class="min-w-[800px]">
+<!-- Hour Labels -->
+<div class="flex mb-2">
+<div class="w-16"></div>
+<div class="flex-1 flex justify-between px-2 text-[10px] font-bold text-outline">
+<span>8 AM</span><span>10 AM</span><span>12 PM</span><span>2 PM</span><span>4 PM</span><span>6 PM</span><span>8 PM</span>
+</div>
+</div>
+<!-- Rows (Days) -->
+<div class="space-y-1">
+<!-- Mon -->
+<div class="flex items-center gap-2">
+<span class="w-16 text-label-sm font-bold text-on-surface-variant">Mon</span>
+<div class="flex-1 grid grid-cols-24 gap-1">
+<!-- JS will ideally populate this, but we'll hardcode some for style -->
+<div class="h-8 bg-surface-container rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-surface-container rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-surface-container rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-surface-container rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-primary-container opacity-20 rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-primary-container opacity-40 rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-primary-container opacity-60 rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-primary rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-primary opacity-90 rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-primary rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-primary-container opacity-80 rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-primary-container opacity-40 rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-primary rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-primary rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-primary rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-primary-container opacity-50 rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-surface-container rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-surface-container rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-surface-container rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-surface-container rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-surface-container rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-surface-container rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-surface-container rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-surface-container rounded-sm heat-map-cell"></div>
+</div>
+</div>
+<!-- Tue -->
+<div class="flex items-center gap-2">
+<span class="w-16 text-label-sm font-bold text-on-surface-variant">Tue</span>
+<div class="flex-1 grid grid-cols-24 gap-1">
+<div class="h-8 bg-surface-container rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-surface-container rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-surface-container rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-primary-container opacity-30 rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-primary-container opacity-50 rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-primary rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-primary rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-primary rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-primary opacity-60 rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-primary-container opacity-20 rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-primary rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-primary rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-primary rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-primary rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-primary-container opacity-80 rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-primary-container opacity-30 rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-surface-container rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-surface-container rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-surface-container rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-surface-container rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-surface-container rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-surface-container rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-surface-container rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-surface-container rounded-sm heat-map-cell"></div>
+</div>
+</div>
+<!-- Wed -->
+<div class="flex items-center gap-2">
+<span class="w-16 text-label-sm font-bold text-on-surface-variant">Wed</span>
+<div class="flex-1 grid grid-cols-24 gap-1">
+<div class="h-8 bg-surface-container rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-surface-container rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-primary-container opacity-20 rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-primary-container opacity-40 rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-primary-container opacity-60 rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-primary rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-primary rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-primary rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-primary rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-primary-container opacity-10 rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-primary rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-primary rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-primary rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-primary-container opacity-90 rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-primary-container opacity-50 rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-primary-container opacity-20 rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-surface-container rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-surface-container rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-surface-container rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-surface-container rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-surface-container rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-surface-container rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-surface-container rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-surface-container rounded-sm heat-map-cell"></div>
+</div>
+</div>
+<!-- Thu -->
+<div class="flex items-center gap-2">
+<span class="w-16 text-label-sm font-bold text-on-surface-variant">Thu</span>
+<div class="flex-1 grid grid-cols-24 gap-1">
+<div class="h-8 bg-surface-container rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-surface-container rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-surface-container rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-primary-container opacity-20 rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-primary-container opacity-40 rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-primary-container opacity-80 rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-primary rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-primary rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-primary rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-primary rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-primary rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-primary-container opacity-60 rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-primary-container opacity-30 rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-primary-container opacity-10 rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-surface-container rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-surface-container rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-surface-container rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-surface-container rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-surface-container rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-surface-container rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-surface-container rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-surface-container rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-surface-container rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-surface-container rounded-sm heat-map-cell"></div>
+</div>
+</div>
+<!-- Fri -->
+<div class="flex items-center gap-2">
+<span class="w-16 text-label-sm font-bold text-on-surface-variant">Fri</span>
+<div class="flex-1 grid grid-cols-24 gap-1">
+<div class="h-8 bg-surface-container rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-surface-container rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-surface-container rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-surface-container rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-primary-container opacity-10 rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-primary-container opacity-30 rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-primary-container opacity-50 rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-primary-container opacity-70 rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-primary-container opacity-90 rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-primary rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-primary rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-primary-container opacity-80 rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-primary-container opacity-50 rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-primary-container opacity-20 rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-surface-container rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-surface-container rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-surface-container rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-surface-container rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-surface-container rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-surface-container rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-surface-container rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-surface-container rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-surface-container rounded-sm heat-map-cell"></div>
+<div class="h-8 bg-surface-container rounded-sm heat-map-cell"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Recent Activity/Performance -->
+<div class="col-span-12 bg-white rounded-xl shadow-sm border border-outline-variant overflow-hidden">
+<div class="p-xl border-b border-outline-variant flex justify-between items-center">
+<h3 class="font-headline-sm text-headline-sm text-primary">High-Impact Attorney Performance</h3>
+<button class="text-primary font-label-md hover:underline flex items-center gap-xs">
+                            View All Data <span class="material-symbols-outlined text-[18px]">open_in_new</span>
+</button>
+</div>
+<table class="w-full text-left">
+<thead class="bg-surface-container/50">
+<tr>
+<th class="px-xl py-md text-label-sm text-on-surface-variant font-bold uppercase tracking-wider">Attorney</th>
+<th class="px-xl py-md text-label-sm text-on-surface-variant font-bold uppercase tracking-wider">Utilization</th>
+<th class="px-xl py-md text-label-sm text-on-surface-variant font-bold uppercase tracking-wider">WIP Value</th>
+<th class="px-xl py-md text-label-sm text-on-surface-variant font-bold uppercase tracking-wider">Status</th>
+<th class="px-xl py-md text-label-sm text-on-surface-variant font-bold uppercase tracking-wider">Trend</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant">
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="px-xl py-lg">
+<div class="flex items-center gap-md">
+<div class="h-10 w-10 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center font-bold">AP</div>
+<div>
+<p class="font-bold text-label-md">Arthur Pendragon</p>
+<p class="text-body-sm text-on-surface-variant">Senior Partner</p>
+</div>
+</div>
+</td>
+<td class="px-xl py-lg">
+<div class="flex items-center gap-base">
+<div class="flex-1 h-2 bg-surface-container rounded-full w-24 overflow-hidden">
+<div class="h-full bg-primary w-[88%]"></div>
+</div>
+<span class="text-label-sm font-bold">88%</span>
+</div>
+</td>
+<td class="px-xl py-lg font-bold text-primary">$182,400</td>
+<td class="px-xl py-lg">
+<span class="px-3 py-1 bg-emerald-100 text-emerald-800 rounded-full text-xs font-bold uppercase">Optimal</span>
+</td>
+<td class="px-xl py-lg text-emerald-600">
+<span class="material-symbols-outlined">trending_up</span>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="px-xl py-lg">
+<div class="flex items-center gap-md">
+<div class="h-10 w-10 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center font-bold">EG</div>
+<div>
+<p class="font-bold text-label-md">Elena Gilbert</p>
+<p class="text-body-sm text-on-surface-variant">Mid-Level Associate</p>
+</div>
+</div>
+</td>
+<td class="px-xl py-lg">
+<div class="flex items-center gap-base">
+<div class="flex-1 h-2 bg-surface-container rounded-full w-24 overflow-hidden">
+<div class="h-full bg-primary w-[94%]"></div>
+</div>
+<span class="text-label-sm font-bold">94%</span>
+</div>
+</td>
+<td class="px-xl py-lg font-bold text-primary">$94,200</td>
+<td class="px-xl py-lg">
+<span class="px-3 py-1 bg-amber-100 text-amber-800 rounded-full text-xs font-bold uppercase">At Capacity</span>
+</td>
+<td class="px-xl py-lg text-amber-600">
+<span class="material-symbols-outlined">trending_flat</span>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="px-xl py-lg">
+<div class="flex items-center gap-md">
+<div class="h-10 w-10 rounded-full bg-surface-variant text-on-surface-variant flex items-center justify-center font-bold">ML</div>
+<div>
+<p class="font-bold text-label-md">Marcus Lannister</p>
+<p class="text-body-sm text-on-surface-variant">Junior Associate</p>
+</div>
+</div>
+</td>
+<td class="px-xl py-lg">
+<div class="flex items-center gap-base">
+<div class="flex-1 h-2 bg-surface-container rounded-full w-24 overflow-hidden">
+<div class="h-full bg-primary w-[62%]"></div>
+</div>
+<span class="text-label-sm font-bold">62%</span>
+</div>
+</td>
+<td class="px-xl py-lg font-bold text-primary">$45,000</td>
+<td class="px-xl py-lg">
+<span class="px-3 py-1 bg-surface-variant text-on-surface-variant rounded-full text-xs font-bold uppercase">Under-utilised</span>
+</td>
+<td class="px-xl py-lg text-error">
+<span class="material-symbols-outlined">trending_down</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- Bottom spacing -->
+<div class="h-xxl"></div>
+</div>
+</main>
+<!-- Interactions Script -->
+<script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Animate bars on load
+            const bars = document.querySelectorAll('.bg-primary, .bg-secondary');
+            bars.forEach(bar => {
+                const finalHeight = bar.style.height;
+                bar.style.height = '0';
+                setTimeout(() => {
+                    bar.style.transition = 'height 1s cubic-bezier(0.34, 1.56, 0.64, 1)';
+                    bar.style.height = finalHeight;
+                }, 100);
+            });
+
+            // Heatmap Hover Effects
+            const cells = document.querySelectorAll('.heat-map-cell');
+            cells.forEach(cell => {
+                cell.addEventListener('mouseenter', (e) => {
+                    const opacity = window.getComputedStyle(e.target).opacity;
+                    if(opacity < 0.2) return; // ignore very empty cells
+                });
+            });
+        });
+    </script>
+</body></html>

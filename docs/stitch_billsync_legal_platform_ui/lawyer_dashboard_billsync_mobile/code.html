@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>LegalFlow - Mobile Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-tertiary-container": "#92a4c5",
+                    "error-container": "#ffdad6",
+                    "surface-container-low": "#edf4ff",
+                    "surface-container-highest": "#d9e3f1",
+                    "on-primary-fixed": "#001c37",
+                    "surface-container-lowest": "#ffffff",
+                    "secondary-fixed": "#ffe08e",
+                    "surface-variant": "#d9e3f1",
+                    "tertiary-fixed-dim": "#b5c7ea",
+                    "surface": "#f7f9ff",
+                    "on-primary-fixed-variant": "#234871",
+                    "outline-variant": "#c3c6cf",
+                    "surface-tint": "#3d608a",
+                    "outline": "#73777f",
+                    "on-tertiary-fixed": "#071c36",
+                    "on-error": "#ffffff",
+                    "secondary": "#755b00",
+                    "on-secondary-fixed": "#241a00",
+                    "background": "#f7f9ff",
+                    "inverse-surface": "#27313c",
+                    "secondary-container": "#fed255",
+                    "tertiary": "#11243f",
+                    "on-primary-container": "#83a6d4",
+                    "inverse-primary": "#a6c9f9",
+                    "tertiary-container": "#283a56",
+                    "surface-container": "#e4effd",
+                    "on-secondary": "#ffffff",
+                    "tertiary-fixed": "#d6e3ff",
+                    "primary-fixed": "#d2e4ff",
+                    "on-surface-variant": "#43474e",
+                    "primary-fixed-dim": "#a6c9f9",
+                    "on-primary": "#ffffff",
+                    "surface-bright": "#f7f9ff",
+                    "on-surface": "#121d26",
+                    "on-tertiary-fixed-variant": "#364764",
+                    "on-secondary-container": "#735a00",
+                    "surface-container-high": "#dfe9f7",
+                    "surface-dim": "#d1dbe8",
+                    "error": "#ba1a1a",
+                    "on-tertiary": "#ffffff",
+                    "secondary-fixed-dim": "#ecc246",
+                    "primary-container": "#123b63",
+                    "on-background": "#121d26",
+                    "inverse-on-surface": "#e8f2ff",
+                    "primary": "#002546",
+                    "on-secondary-fixed-variant": "#584400",
+                    "on-error-container": "#93000a"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "base": "8px",
+                    "xxl": "48px",
+                    "xs": "4px",
+                    "lg": "24px",
+                    "md": "16px",
+                    "xl": "32px",
+                    "sidebar-width": "260px",
+                    "sm": "12px",
+                    "margin-desktop": "40px",
+                    "gutter-desktop": "24px"
+            },
+            "fontFamily": {
+                    "body-md": ["Inter"],
+                    "label-md": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "headline-sm": ["Inter"],
+                    "headline-lg-mobile": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "label-sm": ["Inter"],
+                    "body-sm": ["Inter"],
+                    "display-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "600"}],
+                    "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #F8F5EF; /* Level 0 Background as per Style Guidance */
+            font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(229, 231, 235, 0.5);
+        }
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+        .quick-capture-gradient {
+            background: linear-gradient(135deg, #002546 0%, #123b63 100%);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="text-on-background antialiased pb-32">
+<!-- Top App Bar -->
+<header class="bg-surface dark:bg-on-background docked full-width top-0 sticky z-40">
+<div class="flex justify-between items-center px-lg py-md w-full max-w-1440px mx-auto">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded-full overflow-hidden border-2 border-primary-fixed">
+<img alt="User Profile" class="w-full h-full object-cover" data-alt="A professional headshot of a lawyer in a sharp navy suit, looking confident and approachable. The lighting is bright and airy, typical of a modern law office, with a soft-focus background of a clean, minimalist workspace. The image has a premium, high-end corporate feel with a calm and trustworthy mood." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDsI9FboT0jjRxex1V90JJUxtufNGv9grq7uwH8YT0-cgLIOduh_I0s15cT2PiiZ4RzjlD4kO-gFrTyEXlN8itrQrKrN_XCXRL-vSe55gTO2rkCsVxSWFIeoiDIKFZhFs-4NtIze6UjV5Wrej5yg5dm9ipKG--DfSQzTzHD06YWCmF9sFtlkyAMVXnCMy4F1wh0Lwzw11meHDIHVgjOZH9LVMJh1gCzWzVliUP2bATeVQa_JPcZR_yOojcgmoZ_HwZ7U8H_XsJBNKsC"/>
+</div>
+<h1 class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed">LegalFlow</h1>
+</div>
+<button class="w-10 h-10 flex items-center justify-center rounded-full text-on-surface-variant hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+</div>
+</header>
+<main class="px-md mt-md space-y-xl">
+<!-- Welcome Section -->
+<section class="space-y-xs">
+<p class="font-label-md text-label-md text-on-surface-variant">Good morning, Julian</p>
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile text-primary">Overview</h2>
+</section>
+<!-- Summary Cards - Bento Layout -->
+<section class="bento-grid">
+<!-- Billables Card -->
+<div class="col-span-1 bg-white rounded-xl p-md shadow-sm border border-outline-variant flex flex-col justify-between h-40">
+<div class="flex items-center justify-between">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">payments</span>
+<span class="font-label-sm text-label-sm text-secondary bg-secondary-container px-xs py-0.5 rounded-full">+12%</span>
+</div>
+<div>
+<p class="font-display-lg text-display-lg text-primary leading-none">6.5</p>
+<p class="font-label-md text-label-md text-on-surface-variant">Today's Billables (Hrs)</p>
+</div>
+</div>
+<!-- Active Matters Card -->
+<div class="col-span-1 bg-white rounded-xl p-md shadow-sm border border-outline-variant flex flex-col justify-between h-40">
+<div class="flex items-center justify-between">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">folder_shared</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">4 Active</span>
+</div>
+<div>
+<p class="font-display-lg text-display-lg text-primary leading-none">4</p>
+<p class="font-label-md text-label-md text-on-surface-variant">Open Matters</p>
+</div>
+</div>
+<!-- Productivity Insight -->
+<div class="col-span-2 bg-primary text-on-primary rounded-xl p-lg relative overflow-hidden">
+<div class="relative z-10 space-y-xs">
+<p class="font-label-sm text-label-sm text-on-primary-container uppercase tracking-wider">AI Insight</p>
+<p class="font-body-md text-body-md leading-relaxed">You've captured 85% of your target billables for today. Only 1.5 hours remaining to hit your daily goal.</p>
+</div>
+<div class="absolute -right-4 -bottom-4 opacity-10">
+<span class="material-symbols-outlined text-[120px]">trending_up</span>
+</div>
+</div>
+</section>
+<!-- Quick Capture Action -->
+<section>
+<button class="quick-capture-gradient w-full py-xl rounded-xl shadow-lg flex flex-col items-center justify-center gap-sm active:scale-95 transition-transform">
+<div class="w-14 h-14 bg-white/10 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-on-primary text-[32px]" style="font-variation-settings: 'FILL' 1;">mic</span>
+</div>
+<div class="text-center">
+<h3 class="font-headline-sm text-headline-sm text-on-primary">Quick Capture</h3>
+<p class="font-body-sm text-body-sm text-on-primary-container">Start recording or add manual entry</p>
+</div>
+</button>
+</section>
+<!-- Recent Activity Feed -->
+<section class="space-y-md">
+<div class="flex items-center justify-between px-xs">
+<h2 class="font-headline-sm text-headline-sm text-primary">Recent Activity</h2>
+<button class="font-label-md text-label-md text-secondary">View all</button>
+</div>
+<div class="space-y-sm">
+<!-- Activity Item 1 -->
+<div class="bg-white rounded-xl p-md border border-outline-variant flex gap-md items-start">
+<div class="w-10 h-10 bg-surface-container-high rounded-full flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-primary">description</span>
+</div>
+<div class="flex-grow space-y-1">
+<div class="flex justify-between items-start">
+<h4 class="font-label-md text-label-md text-on-surface">Smith vs. Continental</h4>
+<span class="font-label-sm text-label-sm text-on-surface-variant">10m ago</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Updated deposition transcript analysis.</p>
+<div class="flex items-center gap-xs mt-xs">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span class="font-label-sm text-label-sm text-secondary">Document Review</span>
+</div>
+</div>
+</div>
+<!-- Activity Item 2 -->
+<div class="bg-white rounded-xl p-md border border-outline-variant flex gap-md items-start">
+<div class="w-10 h-10 bg-surface-container-high rounded-full flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-primary">schedule</span>
+</div>
+<div class="flex-grow space-y-1">
+<div class="flex justify-between items-start">
+<h4 class="font-label-md text-label-md text-on-surface">Estate of Martha Wayne</h4>
+<span class="font-label-sm text-label-sm text-on-surface-variant">2h ago</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Logged 2.5 hours for Client Consultation.</p>
+<div class="flex items-center gap-xs mt-xs">
+<span class="w-2 h-2 rounded-full bg-primary"></span>
+<span class="font-label-sm text-label-sm text-primary">Time Entry</span>
+</div>
+</div>
+</div>
+<!-- Activity Item 3 -->
+<div class="bg-white rounded-xl p-md border border-outline-variant flex gap-md items-start opacity-70">
+<div class="w-10 h-10 bg-surface-container-high rounded-full flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-primary">mail</span>
+</div>
+<div class="flex-grow space-y-1">
+<div class="flex justify-between items-start">
+<h4 class="font-label-md text-label-md text-on-surface">TechCorp Acquisition</h4>
+<span class="font-label-sm text-label-sm text-on-surface-variant">5h ago</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Received signed NDA from opposing counsel.</p>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 w-full z-50 flex justify-around items-center px-md py-sm bg-surface dark:bg-on-background border-t border-outline-variant dark:border-outline shadow-md dark:shadow-none">
+<!-- Dashboard (Active) -->
+<a class="flex flex-col items-center justify-center bg-secondary-container dark:bg-secondary text-on-secondary-container dark:text-on-secondary rounded-full px-md py-xs scale-95 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+<span class="font-label-sm text-label-sm">Dashboard</span>
+</a>
+<!-- Captured -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant px-md py-xs hover:text-primary dark:hover:text-primary-fixed transition-colors" href="#">
+<span class="material-symbols-outlined">history_edu</span>
+<span class="font-label-sm text-label-sm">Captured</span>
+</a>
+<!-- Matters -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant px-md py-xs hover:text-primary dark:hover:text-primary-fixed transition-colors" href="#">
+<span class="material-symbols-outlined">folder_shared</span>
+<span class="font-label-sm text-label-sm">Matters</span>
+</a>
+<!-- AI Assistant -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant px-md py-xs hover:text-primary dark:hover:text-primary-fixed transition-colors" href="#">
+<span class="material-symbols-outlined">smart_toy</span>
+<span class="font-label-sm text-label-sm">AI Assistant</span>
+</a>
+</nav>
+<script>
+        // Micro-interaction for capture button
+        const captureBtn = document.querySelector('.quick-capture-gradient');
+        captureBtn.addEventListener('click', () => {
+            // Simulate interaction feedback
+            const ripple = document.createElement('div');
+            ripple.className = 'absolute bg-white/20 rounded-full w-4 h-4 animate-ping';
+            captureBtn.appendChild(ripple);
+            setTimeout(() => ripple.remove(), 1000);
+            
+            console.log('Capture mode initiated');
+        });
+
+        // Pull-to-refresh feel for activity feed (Visual only)
+        let touchStart = 0;
+        document.addEventListener('touchstart', e => touchStart = e.touches[0].pageY);
+        document.addEventListener('touchmove', e => {
+            if (window.scrollY === 0 && e.touches[0].pageY > touchStart + 50) {
+                // Potential pull-to-refresh trigger
+            }
+        });
+    </script>
+</body></html>

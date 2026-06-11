@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>LexPremium | Advanced Financial Reporting</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f7f9ff;
+        }
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 24px;
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(8px);
+            border: 1px solid #e5e7eb;
+        }
+        .waterfall-bar {
+            transition: height 1s ease-out;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-fixed-dim": "#b5c7ea",
+                        "primary-fixed": "#d2e4ff",
+                        "on-tertiary": "#ffffff",
+                        "tertiary-container": "#283a56",
+                        "tertiary-fixed": "#d6e3ff",
+                        "on-secondary-fixed-variant": "#584400",
+                        "primary-container": "#123b63",
+                        "on-secondary": "#ffffff",
+                        "secondary-fixed-dim": "#ecc246",
+                        "on-tertiary-fixed-variant": "#364764",
+                        "surface-variant": "#d9e3f1",
+                        "on-primary-container": "#83a6d4",
+                        "surface-dim": "#d1dbe8",
+                        "surface": "#f7f9ff",
+                        "primary": "#002546",
+                        "primary-fixed-dim": "#a6c9f9",
+                        "on-error": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "on-surface-variant": "#43474e",
+                        "on-background": "#121d26",
+                        "on-secondary-fixed": "#241a00",
+                        "inverse-surface": "#27313c",
+                        "on-secondary-container": "#735a00",
+                        "inverse-on-surface": "#e8f2ff",
+                        "background": "#f7f9ff",
+                        "on-tertiary-container": "#92a4c5",
+                        "on-error-container": "#93000a",
+                        "secondary": "#755b00",
+                        "error": "#ba1a1a",
+                        "on-tertiary-fixed": "#071c36",
+                        "surface-container-high": "#dfe9f7",
+                        "on-primary-fixed-variant": "#234871",
+                        "surface-tint": "#3d608a",
+                        "surface-container-highest": "#d9e3f1",
+                        "secondary-container": "#fed255",
+                        "tertiary": "#11243f",
+                        "on-primary-fixed": "#001c37",
+                        "inverse-primary": "#a6c9f9",
+                        "outline": "#73777f",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container-low": "#edf4ff",
+                        "on-surface": "#121d26",
+                        "surface-container": "#e4effd",
+                        "secondary-fixed": "#ffe08e",
+                        "outline-variant": "#c3c6cf",
+                        "on-primary": "#ffffff",
+                        "surface-bright": "#f7f9ff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "margin-desktop": "40px",
+                        "xs": "4px",
+                        "gutter-desktop": "24px",
+                        "base": "8px",
+                        "xl": "32px",
+                        "lg": "24px",
+                        "sm": "12px",
+                        "xxl": "48px",
+                        "sidebar-width": "260px",
+                        "md": "16px"
+                    },
+                    "fontFamily": {
+                        "headline-sm": ["Inter"],
+                        "label-md": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "body-md": ["Inter"],
+                        "display-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "600"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-surface text-on-surface overflow-x-hidden">
+<!-- SideNavBar -->
+<aside class="fixed h-full w-sidebar-width left-0 top-0 bg-primary dark:bg-primary flex flex-col h-full py-xl z-50">
+<div class="px-lg mb-xxl">
+<h1 class="font-headline-sm text-headline-sm font-bold text-on-primary">LexPremium</h1>
+<p class="text-on-tertiary-container font-label-sm text-[10px] tracking-widest uppercase mt-1">Legal Management</p>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-md border-l-2 border-secondary-fixed bg-tertiary-container text-on-primary px-lg py-sm transition-colors duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-md text-on-tertiary-container px-lg py-sm hover:bg-tertiary-container hover:text-on-primary transition-colors duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="pending_actions">pending_actions</span>
+<span class="font-label-md text-label-md">Captured Work</span>
+</a>
+<a class="flex items-center gap-md text-on-tertiary-container px-lg py-sm hover:bg-tertiary-container hover:text-on-primary transition-colors duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="receipt_long">receipt_long</span>
+<span class="font-label-md text-label-md">Invoice Builder</span>
+</a>
+<a class="flex items-center gap-md text-on-tertiary-container px-lg py-sm hover:bg-tertiary-container hover:text-on-primary transition-colors duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span class="font-label-md text-label-md">Clients</span>
+</a>
+<a class="flex items-center gap-md text-on-tertiary-container px-lg py-sm hover:bg-tertiary-container hover:text-on-primary transition-colors duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="description">description</span>
+<span class="font-label-md text-label-md">Documents</span>
+</a>
+<a class="flex items-center gap-md text-on-tertiary-container px-lg py-sm hover:bg-tertiary-container hover:text-on-primary transition-colors duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-label-md text-label-md">Settings</span>
+</a>
+</nav>
+<div class="px-lg mt-auto">
+<button class="w-full py-md bg-secondary text-on-secondary rounded-lg font-label-md flex items-center justify-center gap-2 hover:bg-opacity-90 transition-all">
+<span class="material-symbols-outlined text-[18px]" data-icon="add">add</span>
+                New Entry
+            </button>
+</div>
+</aside>
+<!-- TopNavBar -->
+<header class="flex justify-between items-center h-16 ml-sidebar-width px-margin-desktop w-[calc(100%-theme(spacing.sidebar-width))] bg-surface dark:bg-surface-container-lowest border-b border-outline-variant z-40 fixed top-0">
+<div class="flex items-center gap-xl">
+<div class="relative w-64">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px]" data-icon="search">search</span>
+<input class="w-full bg-surface-container-low border-none rounded-full py-2 pl-10 pr-4 text-label-sm focus:ring-1 focus:ring-primary" placeholder="Search firm records..." type="text"/>
+</div>
+<nav class="flex gap-lg">
+<a class="text-primary font-bold border-b-2 border-secondary-fixed pb-1 font-label-sm text-label-sm" href="#">Recent</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors font-label-sm text-label-sm" href="#">Favorites</a>
+</nav>
+</div>
+<div class="flex items-center gap-lg">
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="help_outline">help_outline</span>
+</button>
+<div class="h-8 w-8 rounded-full bg-primary-container flex items-center justify-center overflow-hidden">
+<img alt="User Profile" class="h-full w-full object-cover" data-alt="A professional headshot of a mature executive male with graying hair and glasses, wearing a tailored navy suit. The lighting is soft and corporate, set against a blurred office environment with warm wooden tones and professional decor." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDtq6TT0zugX_oldLqNHKPoxjyJX1nDD9t9Dnu_a6ZNns7Y-sMQ2qTwTSattXf_Ti0Yfpmy5Wj5C6mgb3alQlQgy5LBtnMtQ6XvzYYxXVU9WbrSFkKgGbhW0oeoJqDuC_Shc-AyRDcV_Zb2s2mz-nYuNv9kltkIAuomYPbLR5w65rlC8qdi5vC-Twp8ejYvZcDFMBIO93m_eVKrsoxnLuNn96oOLcbsxbbgEm8jIvkQ9ti6PDVfMh91mR_k-pJMP0PWxZZec96nz4Q7"/>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="ml-sidebar-width pt-24 px-margin-desktop pb-xl min-h-screen">
+<!-- Header & Filters -->
+<div class="flex flex-col md:flex-row justify-between items-end mb-xxl gap-lg">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-primary tracking-tight">Advanced Financial Reporting</h2>
+<p class="text-on-surface-variant font-body-md mt-1">Real-time health monitoring and fiscal forensics for firm partners.</p>
+</div>
+<div class="flex items-center gap-sm bg-white p-2 rounded-xl shadow-sm border border-outline-variant">
+<div class="px-3 border-r border-outline-variant">
+<label class="block text-[10px] uppercase font-bold text-on-surface-variant mb-1">Client</label>
+<select class="border-none p-0 text-label-sm font-semibold bg-transparent focus:ring-0 cursor-pointer">
+<option>All Clients</option>
+<option>Global Tech Inc</option>
+<option>Vanguard Group</option>
+</select>
+</div>
+<div class="px-3 border-r border-outline-variant">
+<label class="block text-[10px] uppercase font-bold text-on-surface-variant mb-1">Partner</label>
+<select class="border-none p-0 text-label-sm font-semibold bg-transparent focus:ring-0 cursor-pointer">
+<option>Jameson, L.</option>
+<option>Chen, W.</option>
+<option>Sterling, S.</option>
+</select>
+</div>
+<div class="px-3">
+<label class="block text-[10px] uppercase font-bold text-on-surface-variant mb-1">Office</label>
+<select class="border-none p-0 text-label-sm font-semibold bg-transparent focus:ring-0 cursor-pointer">
+<option>London HQ</option>
+<option>New York</option>
+<option>Singapore</option>
+</select>
+</div>
+</div>
+</div>
+<!-- Dashboard Grid -->
+<div class="bento-grid">
+<!-- Revenue Waterfall Chart -->
+<div class="col-span-12 lg:col-span-8 bg-white rounded-xl p-lg border border-outline-variant shadow-sm relative overflow-hidden">
+<div class="flex justify-between items-start mb-xl">
+<div>
+<h3 class="font-headline-sm text-headline-sm text-primary">Revenue Pipeline</h3>
+<p class="text-label-sm text-on-surface-variant">Work in Progress (WIP) to Realized Revenue</p>
+</div>
+<span class="text-secondary font-bold font-headline-sm">$1.24M Total</span>
+</div>
+<div class="h-64 flex items-end justify-between px-xl gap-xl relative">
+<!-- Baseline -->
+<div class="absolute bottom-0 left-0 right-0 h-px bg-outline-variant"></div>
+<!-- WIP -->
+<div class="flex-1 flex flex-col items-center group">
+<div class="w-full bg-primary-container rounded-t-lg relative waterfall-bar" style="height: 100%;">
+<div class="absolute -top-8 left-1/2 -translate-x-1/2 font-bold text-primary font-label-sm">$540k</div>
+</div>
+<span class="mt-4 font-label-sm text-on-surface-variant">Work in Progress</span>
+</div>
+<!-- Connectors -->
+<div class="flex flex-col justify-center text-error items-center pb-12">
+<span class="material-symbols-outlined text-[20px]" data-icon="trending_down">trending_down</span>
+<span class="text-[10px] font-bold">-$42k Adjust</span>
+</div>
+<!-- Invoiced -->
+<div class="flex-1 flex flex-col items-center group">
+<div class="w-full bg-primary-fixed-dim rounded-t-lg relative waterfall-bar" style="height: 85%;">
+<div class="absolute -top-8 left-1/2 -translate-x-1/2 font-bold text-primary font-label-sm">$498k</div>
+</div>
+<span class="mt-4 font-label-sm text-on-surface-variant">Invoiced</span>
+</div>
+<!-- Connectors -->
+<div class="flex flex-col justify-center text-on-tertiary-container items-center pb-12">
+<span class="material-symbols-outlined text-[20px]" data-icon="pending">pending</span>
+<span class="text-[10px] font-bold">Pending</span>
+</div>
+<!-- Collected -->
+<div class="flex-1 flex flex-col items-center group">
+<div class="w-full bg-secondary-container rounded-t-lg relative waterfall-bar" style="height: 70%;">
+<div class="absolute -top-8 left-1/2 -translate-x-1/2 font-bold text-primary font-label-sm">$410k</div>
+</div>
+<span class="mt-4 font-label-sm text-on-surface-variant">Collected</span>
+</div>
+</div>
+</div>
+<!-- Profitability Radar Chart -->
+<div class="col-span-12 lg:col-span-4 bg-white rounded-xl p-lg border border-outline-variant shadow-sm flex flex-col">
+<div class="mb-lg">
+<h3 class="font-headline-sm text-headline-sm text-primary">Profitability by Practice</h3>
+<p class="text-label-sm text-on-surface-variant">Margin analysis across matter types</p>
+</div>
+<div class="flex-1 flex items-center justify-center relative">
+<!-- Radar Chart Simulation -->
+<div class="relative w-48 h-48 border border-outline-variant rounded-full flex items-center justify-center">
+<div class="absolute w-36 h-36 border border-outline-variant rounded-full"></div>
+<div class="absolute w-24 h-24 border border-outline-variant rounded-full"></div>
+<!-- Spokes -->
+<div class="absolute w-full h-px bg-outline-variant rotate-0"></div>
+<div class="absolute w-full h-px bg-outline-variant rotate-60"></div>
+<div class="absolute w-full h-px bg-outline-variant rotate-120"></div>
+<!-- Radar Shape (SVG) -->
+<svg class="absolute inset-0 w-full h-full p-2 drop-shadow-lg" viewbox="0 0 100 100">
+<polygon fill="rgba(117, 91, 0, 0.2)" points="50,10 85,30 80,75 50,90 20,70 15,35" stroke="#755b00" stroke-width="2"></polygon>
+<circle cx="50" cy="10" fill="#755b00" r="2"></circle>
+<circle cx="85" cy="30" fill="#755b00" r="2"></circle>
+<circle cx="80" cy="75" fill="#755b00" r="2"></circle>
+<circle cx="50" cy="90" fill="#755b00" r="2"></circle>
+<circle cx="20" cy="70" fill="#755b00" r="2"></circle>
+<circle cx="15" cy="35" fill="#755b00" r="2"></circle>
+</svg>
+<!-- Labels -->
+<span class="absolute -top-4 font-label-sm text-[10px]">Corporate</span>
+<span class="absolute top-1/4 -right-8 font-label-sm text-[10px]">M&amp;A</span>
+<span class="absolute bottom-1/4 -right-10 font-label-sm text-[10px]">Litigation</span>
+<span class="absolute -bottom-4 font-label-sm text-[10px]">Tax</span>
+<span class="absolute bottom-1/4 -left-10 font-label-sm text-[10px]">Real Estate</span>
+<span class="absolute top-1/4 -left-6 font-label-sm text-[10px]">IP</span>
+</div>
+</div>
+</div>
+<!-- AR Aging Chart -->
+<div class="col-span-12 bg-white rounded-xl p-lg border border-outline-variant shadow-sm">
+<div class="flex justify-between items-center mb-xl">
+<div>
+<h3 class="font-headline-sm text-headline-sm text-primary">Accounts Receivable Aging</h3>
+<p class="text-label-sm text-on-surface-variant">Outstanding balance duration tracking</p>
+</div>
+<div class="flex gap-md">
+<div class="flex items-center gap-2">
+<div class="w-3 h-3 rounded-full bg-primary"></div>
+<span class="text-label-sm">High Value</span>
+</div>
+<div class="flex items-center gap-2">
+<div class="w-3 h-3 rounded-full bg-secondary-fixed-dim"></div>
+<span class="text-label-sm">Standard</span>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-4 gap-lg">
+<!-- 30 Days -->
+<div class="p-md bg-surface-container-low rounded-lg border border-outline-variant">
+<div class="flex justify-between items-start mb-2">
+<span class="text-label-sm uppercase text-on-surface-variant">0-30 Days</span>
+<span class="text-green-600 font-bold text-label-sm">+12%</span>
+</div>
+<div class="font-headline-md text-primary">$312,450</div>
+<div class="mt-4 w-full h-2 bg-surface-variant rounded-full overflow-hidden">
+<div class="h-full bg-primary w-[75%]"></div>
+</div>
+<p class="mt-2 text-[10px] text-on-surface-variant">14 Pending Invoices</p>
+</div>
+<!-- 60 Days -->
+<div class="p-md bg-surface-container-low rounded-lg border border-outline-variant">
+<div class="flex justify-between items-start mb-2">
+<span class="text-label-sm uppercase text-on-surface-variant">31-60 Days</span>
+<span class="text-secondary font-bold text-label-sm">-2%</span>
+</div>
+<div class="font-headline-md text-primary">$185,200</div>
+<div class="mt-4 w-full h-2 bg-surface-variant rounded-full overflow-hidden">
+<div class="h-full bg-primary w-[45%]"></div>
+</div>
+<p class="mt-2 text-[10px] text-on-surface-variant">9 Pending Invoices</p>
+</div>
+<!-- 90 Days -->
+<div class="p-md bg-surface-container-low rounded-lg border border-outline-variant">
+<div class="flex justify-between items-start mb-2">
+<span class="text-label-sm uppercase text-on-surface-variant">61-90 Days</span>
+<span class="text-error font-bold text-label-sm">+15%</span>
+</div>
+<div class="font-headline-md text-primary">$92,000</div>
+<div class="mt-4 w-full h-2 bg-surface-variant rounded-full overflow-hidden">
+<div class="h-full bg-secondary w-[25%]"></div>
+</div>
+<p class="mt-2 text-[10px] text-on-surface-variant">6 At Risk</p>
+</div>
+<!-- 90+ Days -->
+<div class="p-md bg-error-container rounded-lg border border-error">
+<div class="flex justify-between items-start mb-2">
+<span class="text-label-sm uppercase text-on-error-container">90+ Days (Critical)</span>
+<span class="material-symbols-outlined text-error" data-icon="warning">warning</span>
+</div>
+<div class="font-headline-md text-on-error-container">$48,500</div>
+<div class="mt-4 w-full h-2 bg-white rounded-full overflow-hidden">
+<div class="h-full bg-error w-[15%]"></div>
+</div>
+<p class="mt-2 text-[10px] text-on-error-container">3 Legal Actions Recommended</p>
+</div>
+</div>
+</div>
+<!-- Key Performance Indicators (Bento Style) -->
+<div class="col-span-12 lg:col-span-6 flex flex-col gap-lg">
+<div class="bg-primary text-on-primary p-lg rounded-xl flex items-center justify-between shadow-lg">
+<div>
+<h4 class="text-label-sm uppercase opacity-70">Utilization Rate</h4>
+<div class="text-display-lg font-display-lg">84.2%</div>
+<p class="text-label-sm text-primary-fixed-dim mt-2">+3.1% vs last month</p>
+</div>
+<div class="h-24 w-24">
+<svg class="w-full h-full transform -rotate-90" viewbox="0 0 36 36">
+<path class="text-on-primary-container" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-dasharray="100, 100" stroke-width="2"></path>
+<path class="text-secondary-fixed" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-dasharray="84, 100" stroke-linecap="round" stroke-width="3"></path>
+</svg>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-lg">
+<div class="bg-white p-lg rounded-xl border border-outline-variant shadow-sm">
+<span class="material-symbols-outlined text-secondary text-[32px] mb-2" data-icon="account_balance_wallet">account_balance_wallet</span>
+<div class="text-label-sm text-on-surface-variant uppercase">Realization Rate</div>
+<div class="text-headline-md text-primary mt-1">96.4%</div>
+</div>
+<div class="bg-white p-lg rounded-xl border border-outline-variant shadow-sm">
+<span class="material-symbols-outlined text-on-primary-container text-[32px] mb-2" data-icon="hourglass_empty">hourglass_empty</span>
+<div class="text-label-sm text-on-surface-variant uppercase">Avg. Collection Cycle</div>
+<div class="text-headline-md text-primary mt-1">42 Days</div>
+</div>
+</div>
+</div>
+<!-- Top Matters Table (Bento Style) -->
+<div class="col-span-12 lg:col-span-6 bg-white rounded-xl border border-outline-variant shadow-sm overflow-hidden flex flex-col">
+<div class="p-lg border-b border-outline-variant flex justify-between items-center">
+<h3 class="font-headline-sm text-headline-sm text-primary">High-Value Matters</h3>
+<button class="text-primary font-label-sm flex items-center gap-1 hover:underline">
+                        View Report <span class="material-symbols-outlined text-[16px]" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+<div class="flex-1 overflow-x-auto">
+<table class="w-full text-left">
+<thead>
+<tr class="bg-surface-container-low">
+<th class="px-lg py-3 text-label-sm text-on-surface-variant uppercase font-bold">Matter Name</th>
+<th class="px-lg py-3 text-label-sm text-on-surface-variant uppercase font-bold text-right">WIP</th>
+<th class="px-lg py-3 text-label-sm text-on-surface-variant uppercase font-bold text-right">Realization</th>
+<th class="px-lg py-3 text-label-sm text-on-surface-variant uppercase font-bold text-center">Status</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant">
+<tr class="hover:bg-surface-container-lowest transition-colors">
+<td class="px-lg py-4">
+<div class="font-label-md text-primary">Global Tech Merger</div>
+<div class="text-[10px] text-on-surface-variant">M&amp;A / Jameson, L.</div>
+</td>
+<td class="px-lg py-4 text-right font-label-md">$142,500</td>
+<td class="px-lg py-4 text-right font-label-md">98%</td>
+<td class="px-lg py-4 text-center">
+<span class="px-2 py-1 bg-green-50 text-green-700 rounded-full text-[10px] font-bold uppercase">Healthy</span>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-lowest transition-colors">
+<td class="px-lg py-4">
+<div class="font-label-md text-primary">Vanguard IP Defense</div>
+<div class="text-[10px] text-on-surface-variant">Litigation / Chen, W.</div>
+</td>
+<td class="px-lg py-4 text-right font-label-md">$89,200</td>
+<td class="px-lg py-4 text-right font-label-md">92%</td>
+<td class="px-lg py-4 text-center">
+<span class="px-2 py-1 bg-secondary-container text-on-secondary-container rounded-full text-[10px] font-bold uppercase">Review</span>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-lowest transition-colors">
+<td class="px-lg py-4">
+<div class="font-label-md text-primary">Sterling Asset Restructure</div>
+<div class="text-[10px] text-on-surface-variant">Tax / Sterling, S.</div>
+</td>
+<td class="px-lg py-4 text-right font-label-md">$64,000</td>
+<td class="px-lg py-4 text-right font-label-md">84%</td>
+<td class="px-lg py-4 text-center">
+<span class="px-2 py-1 bg-error-container text-error rounded-full text-[10px] font-bold uppercase">At Risk</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</main>
+<script>
+        // Simple Micro-interactions for the dashboard
+        document.querySelectorAll('.waterfall-bar').forEach(bar => {
+            bar.addEventListener('mouseenter', () => {
+                bar.style.filter = 'brightness(1.1)';
+                bar.style.transform = 'translateY(-4px)';
+                bar.style.transition = 'all 0.3s ease';
+            });
+            bar.addEventListener('mouseleave', () => {
+                bar.style.filter = 'brightness(1)';
+                bar.style.transform = 'translateY(0)';
+            });
+        });
+
+        // Toggle dropdowns or filters (visual only for this demo)
+        document.querySelectorAll('select').forEach(sel => {
+            sel.addEventListener('change', () => {
+                // Simulate data reload
+                const main = document.querySelector('main');
+                main.style.opacity = '0.5';
+                setTimeout(() => {
+                    main.style.opacity = '1';
+                    main.style.transition = 'opacity 0.5s ease';
+                }, 400);
+            });
+        });
+    </script>
+</body></html>

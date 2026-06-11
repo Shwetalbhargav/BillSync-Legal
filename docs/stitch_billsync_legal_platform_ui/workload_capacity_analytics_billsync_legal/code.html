@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>LexOps Suite | Team Capacity Planner</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-background": "#121d26",
+                        "tertiary-container": "#283a56",
+                        "on-secondary-container": "#735a00",
+                        "inverse-primary": "#a6c9f9",
+                        "on-tertiary-fixed": "#071c36",
+                        "primary-fixed": "#d2e4ff",
+                        "surface-bright": "#f7f9ff",
+                        "tertiary-fixed": "#d6e3ff",
+                        "error": "#ba1a1a",
+                        "secondary": "#755b00",
+                        "outline": "#73777f",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container-highest": "#d9e3f1",
+                        "on-primary-fixed": "#001c37",
+                        "on-surface": "#121d26",
+                        "on-primary-fixed-variant": "#234871",
+                        "on-error-container": "#93000a",
+                        "on-error": "#ffffff",
+                        "on-tertiary-fixed-variant": "#364764",
+                        "on-tertiary": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "tertiary": "#11243f",
+                        "surface-tint": "#3d608a",
+                        "surface": "#f7f9ff",
+                        "primary-container": "#123b63",
+                        "on-surface-variant": "#43474e",
+                        "inverse-on-surface": "#e8f2ff",
+                        "tertiary-fixed-dim": "#b5c7ea",
+                        "secondary-fixed-dim": "#ecc246",
+                        "on-secondary": "#ffffff",
+                        "surface-container": "#e4effd",
+                        "on-primary-container": "#83a6d4",
+                        "surface-dim": "#d1dbe8",
+                        "on-primary": "#ffffff",
+                        "secondary-fixed": "#ffe08e",
+                        "primary-fixed-dim": "#a6c9f9",
+                        "on-tertiary-container": "#92a4c5",
+                        "surface-container-high": "#dfe9f7",
+                        "on-secondary-fixed": "#241a00",
+                        "secondary-container": "#fed255",
+                        "primary": "#002546",
+                        "inverse-surface": "#27313c",
+                        "outline-variant": "#c3c6cf",
+                        "on-secondary-fixed-variant": "#584400",
+                        "background": "#f7f9ff",
+                        "surface-container-low": "#edf4ff",
+                        "surface-variant": "#d9e3f1"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "xl": "32px",
+                        "base": "8px",
+                        "sm": "12px",
+                        "sidebar-width": "260px",
+                        "lg": "24px",
+                        "xs": "4px",
+                        "gutter-desktop": "24px",
+                        "md": "16px",
+                        "margin-desktop": "40px",
+                        "xxl": "48px"
+                    },
+                    "fontFamily": {
+                        "display-lg": ["Inter"],
+                        "label-md": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "body-md": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "headline-sm": ["Inter"],
+                        "body-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "600"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f7f9ff;
+            color: #121d26;
+            margin: 0;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .capacity-scroll::-webkit-scrollbar {
+            height: 8px;
+        }
+        .capacity-scroll::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        .capacity-scroll::-webkit-scrollbar-thumb {
+            background: #d9e3f1;
+            border-radius: 4px;
+        }
+        .drag-handle {
+            cursor: grab;
+        }
+        .drag-handle:active {
+            cursor: grabbing;
+        }
+    </style>
+</head>
+<body class="bg-background">
+<!-- Sidebar Navigation (SideNavBar) -->
+<aside class="fixed left-0 top-0 h-full w-sidebar-width bg-primary dark:bg-on-primary-fixed border-r border-outline-variant dark:border-outline flex flex-col py-lg px-md z-50">
+<div class="mb-xxl">
+<h1 class="font-headline-md text-headline-md font-bold text-surface dark:text-surface-bright">LexOps Suite</h1>
+<p class="font-label-sm text-label-sm text-on-primary-container opacity-80 uppercase tracking-wider mt-xs">Enterprise Admin</p>
+</div>
+<nav class="flex-grow space-y-base">
+<a class="flex items-center gap-md px-md py-sm duration-200 ease-in-out text-on-primary-container dark:text-on-tertiary-container hover:bg-primary-container dark:hover:bg-tertiary-container hover:text-surface rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm duration-200 ease-in-out text-on-primary-container dark:text-on-tertiary-container hover:bg-primary-container dark:hover:bg-tertiary-container hover:text-surface rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="groups">groups</span>
+<span class="font-label-md text-label-md">Team</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm duration-200 ease-in-out text-on-primary-container dark:text-on-tertiary-container hover:bg-primary-container dark:hover:bg-tertiary-container hover:text-surface rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="payments">payments</span>
+<span class="font-label-md text-label-md">Payroll</span>
+</a>
+<!-- Active Navigation -->
+<a class="flex items-center gap-md px-md py-sm duration-200 ease-in-out border-l-2 border-secondary-container text-surface-container-lowest font-semibold bg-primary-container/30 rounded-r-lg" href="#">
+<span class="material-symbols-outlined" data-icon="equalizer" style="font-variation-settings: 'FILL' 1;">equalizer</span>
+<span class="font-label-md text-label-md">Capacity</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm duration-200 ease-in-out text-on-primary-container dark:text-on-tertiary-container hover:bg-primary-container dark:hover:bg-tertiary-container hover:text-surface rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-label-md text-label-md">Settings</span>
+</a>
+</nav>
+<div class="mt-auto space-y-base pt-lg border-t border-on-primary-container/20">
+<button class="w-full bg-secondary-container text-on-secondary-fixed font-semibold py-md px-lg rounded-lg hover:brightness-110 transition-all flex items-center justify-center gap-sm">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+<span>Generate Report</span>
+</button>
+<a class="flex items-center gap-md px-md py-sm text-on-primary-container hover:text-surface transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+<span class="font-label-md text-label-md">Help Center</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm text-on-primary-container hover:text-surface transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+<span class="font-label-md text-label-md">Logout</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="ml-sidebar-width min-h-screen">
+<!-- Top Navigation Bar (TopNavBar) -->
+<header class="fixed top-0 right-0 w-[calc(100%-260px)] h-16 bg-surface-container-lowest border-b border-outline-variant flex justify-between items-center px-gutter-desktop z-40 shadow-sm">
+<div class="flex items-center gap-xl">
+<h2 class="font-headline-sm text-headline-sm font-semibold text-primary">Capacity Planner</h2>
+<div class="relative w-96">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-body-md" data-icon="search">search</span>
+<input class="w-full pl-10 pr-4 py-2 bg-surface-container-low border-none rounded-full text-body-sm focus:ring-2 focus:ring-primary/20" placeholder="Search team members or projects..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-lg">
+<div class="flex items-center gap-md px-md py-2 border-r border-outline-variant mr-md">
+<span class="font-body-md text-body-md text-on-surface-variant hover:text-primary cursor-pointer transition-all">Directory</span>
+<span class="font-body-md text-body-md text-on-surface-variant hover:text-primary cursor-pointer transition-all">Policies</span>
+<span class="font-body-md text-body-md text-on-surface-variant hover:text-primary cursor-pointer transition-all">Compliance</span>
+</div>
+<div class="flex items-center gap-sm">
+<button class="p-2 text-on-surface-variant hover:bg-surface-variant rounded-full transition-all">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:bg-surface-variant rounded-full transition-all">
+<span class="material-symbols-outlined" data-icon="apps">apps</span>
+</button>
+<div class="w-10 h-10 rounded-full overflow-hidden border-2 border-primary-fixed ml-sm">
+<img alt="User Profile Avatar" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA3DDd4RP6HdonV3OzuYMSG_2G5cuqAYu8PoaAb8mNb49Q6OXFHZD4mglFNVog48Nc-039X4oAoDyEo-zR-kiRdtf29R-TW3tDO5QMHUfyEX5n7z3v_V4bVEc8StUUOQ0attzMTMQ34AXbn645vwqeZ_3Z1i1g4h2d-8iNl94b0IwAeZpmUY2a-z7dO2vWTI7g-CMMMhXJpjqEzmt70_H3o0dE88ONk7ccf0PA34hvX-dGyK7LSusIqpDxEnGYccSlnayIcBqlhbpsu"/>
+</div>
+</div>
+</div>
+</header>
+<!-- Page Content -->
+<div class="pt-16 p-gutter-desktop flex gap-xl h-[calc(100vh-4rem)]">
+<!-- Left Canvas: Filters and Timeline -->
+<div class="flex-grow flex flex-col space-y-xl overflow-hidden">
+<!-- Filters Bar -->
+<section class="bg-surface-container-lowest p-lg rounded-xl shadow-sm flex flex-wrap items-center justify-between gap-lg">
+<div class="flex items-center gap-xl">
+<div class="space-y-xs">
+<p class="font-label-sm text-label-sm text-outline uppercase tracking-tight">Practice Area</p>
+<select class="border-outline-variant rounded-lg font-body-sm text-body-sm min-w-[180px] focus:ring-primary focus:border-primary">
+<option>All Practices</option>
+<option>Corporate Law</option>
+<option>Litigation</option>
+<option>Intellectual Property</option>
+<option>M&amp;A</option>
+</select>
+</div>
+<div class="space-y-xs">
+<p class="font-label-sm text-label-sm text-outline uppercase tracking-tight">Seniority</p>
+<select class="border-outline-variant rounded-lg font-body-sm text-body-sm min-w-[180px] focus:ring-primary focus:border-primary">
+<option>All Roles</option>
+<option>Partner</option>
+<option>Senior Associate</option>
+<option>Associate</option>
+<option>Paralegal</option>
+</select>
+</div>
+<div class="h-10 w-px bg-outline-variant self-end mb-1"></div>
+<div class="flex items-center gap-md self-end mb-1">
+<div class="flex items-center gap-xs">
+<span class="w-3 h-3 rounded-full bg-error"></span>
+<span class="font-label-sm text-label-sm">Over-allocated</span>
+</div>
+<div class="flex items-center gap-xs">
+<span class="w-3 h-3 rounded-full bg-secondary"></span>
+<span class="font-label-sm text-label-sm">At Capacity</span>
+</div>
+<div class="flex items-center gap-xs">
+<span class="w-3 h-3 rounded-full bg-primary-fixed-dim"></span>
+<span class="font-label-sm text-label-sm">Available</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-md self-end">
+<div class="flex p-1 bg-surface-variant rounded-lg">
+<button class="px-md py-1 bg-white shadow-sm rounded-md font-label-md text-label-md text-primary">4 Weeks</button>
+<button class="px-md py-1 font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-colors">Quarterly</button>
+</div>
+<button class="bg-primary text-white px-lg py-2 rounded-lg font-label-md text-label-md flex items-center gap-sm shadow-md hover:brightness-125 transition-all">
+<span class="material-symbols-outlined text-[18px]" data-icon="ios_share">ios_share</span>
+                            Export View
+                        </button>
+</div>
+</section>
+<!-- Capacity Timeline Grid -->
+<div class="flex-grow overflow-auto capacity-scroll bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant relative">
+<table class="w-full border-collapse">
+<thead class="sticky top-0 z-20 bg-surface-container-high">
+<tr>
+<th class="w-64 p-lg text-left font-label-sm text-label-sm text-on-surface-variant border-b border-r border-outline-variant bg-surface-container-high sticky left-0 z-30">TEAM MEMBER</th>
+<th class="p-md text-center font-label-sm text-label-sm text-outline border-b border-r border-outline-variant" colspan="7">WEEK 1 (OCT 2-8)</th>
+<th class="p-md text-center font-label-sm text-label-sm text-outline border-b border-r border-outline-variant" colspan="7">WEEK 2 (OCT 9-15)</th>
+<th class="p-md text-center font-label-sm text-label-sm text-outline border-b border-r border-outline-variant" colspan="7">WEEK 3 (OCT 16-22)</th>
+<th class="p-md text-center font-label-sm text-label-sm text-outline border-b border-outline-variant" colspan="7">WEEK 4 (OCT 23-29)</th>
+</tr>
+<tr class="bg-surface-container-low">
+<th class="p-md border-r border-b border-outline-variant sticky left-0 z-30 bg-surface-container-low"></th>
+<!-- Day headers (repeated 4 times for weeks) -->
+<script>
+                                    for(let w=0; w<4; w++) {
+                                        ['M','T','W','T','F','S','S'].forEach(d => {
+                                            document.write(`<th class="w-10 py-2 font-label-sm text-[10px] text-outline border-b border-r border-outline-variant">${d}</th>`);
+                                        });
+                                    }
+                                </script>
+</tr>
+</thead>
+<tbody>
+<!-- Row 1: Over-allocated -->
+<tr class="hover:bg-surface-variant/30 transition-colors">
+<td class="p-md border-r border-b border-outline-variant sticky left-0 z-10 bg-white">
+<div class="flex items-center gap-md">
+<div class="w-8 h-8 rounded-full overflow-hidden flex-shrink-0">
+<img alt="Attorney Avatar" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCgP_DfyocT3AdPpsCJVamXW_r8NXxrL_RBPAJF8LVP-aNXjzYzL8rIhJQBmy1ThqpKFPvKVlIeJzdkdbpkQH-7WZrhVTleGLZ-X-ok4f_HALtjRtJOvR0_9VW48RUozgXahImTn4_y1NTZXvC1d01J9-E1ipEzGuP908RH79kANOecid6nRM7Hzn-S3DyUWLbDQYnRziPnONcisusvK2NnIGM6WUvEWlabdPYL5_47lmPv29i9YPn-2VUpPvs3HChaYDynjYWoa85p"/>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-surface leading-tight">Sarah Jenkins</p>
+<p class="text-[10px] text-on-surface-variant font-medium">Partner · Litigation</p>
+</div>
+</div>
+</td>
+<!-- Capacity blocks -->
+<td class="p-xs border-b border-r border-outline-variant" colspan="5">
+<div class="h-10 w-full bg-error/90 rounded-lg flex items-center px-md text-white font-label-sm text-[11px] shadow-sm cursor-pointer hover:brightness-110">
+                                        Smith Merger (120%)
+                                    </div>
+</td>
+<td class="p-xs border-b border-r border-outline-variant bg-surface-dim/20" colspan="2"></td>
+<td class="p-xs border-b border-r border-outline-variant bg-surface-dim/10" colspan="7"></td>
+<td class="p-xs border-b border-outline-variant" colspan="14"></td>
+</tr>
+<!-- Row 2: At Capacity -->
+<tr class="hover:bg-surface-variant/30 transition-colors">
+<td class="p-md border-r border-b border-outline-variant sticky left-0 z-10 bg-white">
+<div class="flex items-center gap-md">
+<div class="w-8 h-8 rounded-full overflow-hidden flex-shrink-0">
+<img alt="Attorney Avatar" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDJZBYE8HJoDMa9OU7ow7evz8KudUMnKsbd-cUxYRBmzYEhZefMJmrUwCbFC4WxiCFgQtE5H0y9VhTETg0KIciK__xWY6j8Yv-MhPahHB8dY1df3EhT0YFIf2gSzvqmKLFQ50P_zNQLdkhRrQRCJdbtvjsORN8u1USZwKiL96kDhH2UNpeDSOIPzGylM4iw4E-R7HKk207EqrkikorDxjzy08dBXOj7Zf2vjF7ZKMc6qgmaBPCJ1JUsaN42kcsmCzBydWT_vxiAdxIh"/>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-surface leading-tight">David Chen</p>
+<p class="text-[10px] text-on-surface-variant font-medium">Sr. Associate · IP</p>
+</div>
+</div>
+</td>
+<td class="p-xs border-b border-r border-outline-variant" colspan="10">
+<div class="h-10 w-full bg-secondary rounded-lg flex items-center px-md text-on-secondary-fixed font-label-sm text-[11px] shadow-sm cursor-pointer hover:brightness-110">
+                                        Patent Audit (100%)
+                                    </div>
+</td>
+<td class="p-xs border-b border-outline-variant" colspan="18"></td>
+</tr>
+<!-- Row 3: Available -->
+<tr class="hover:bg-surface-variant/30 transition-colors">
+<td class="p-md border-r border-b border-outline-variant sticky left-0 z-10 bg-white">
+<div class="flex items-center gap-md">
+<div class="w-8 h-8 rounded-full overflow-hidden flex-shrink-0">
+<img alt="Attorney Avatar" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBhN7ge2rS0hpfUXNPvpxDT1f9FDtS08TkZGMfbBCSvceU0b2b1sbXqxsrEWx1YDGxg4pTQHM85i4-aqVjR8vq1NFp2JrZVHWxjX8HB8ysgmarQ7cAq0a4VOam6Sk2XrRTI--RC3-j3tXLHy8oEaRyzs3SVmftj8sLik1CiUlSsVJyrk_ocYcMXNjAyZYI6SViUNVtjU5X5H7mjjC49olVNzhu06WD3VM7JtqLpZUs8An-cHIg-Yw03Fl2N3om7AXalplEXjcwd0txq"/>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-surface leading-tight">Elena Rodriguez</p>
+<p class="text-[10px] text-on-surface-variant font-medium">Associate · Corporate</p>
+</div>
+</div>
+</td>
+<td class="p-xs border-b border-r border-outline-variant" colspan="3">
+<div class="h-10 w-full bg-primary-fixed-dim/40 rounded-lg flex items-center px-md text-primary font-label-sm text-[11px] border border-primary-fixed-dim/60 cursor-pointer hover:bg-primary-fixed-dim/60">
+                                        Available (40%)
+                                    </div>
+</td>
+<td class="p-xs border-b border-r border-outline-variant" colspan="5">
+<div class="h-10 w-full bg-secondary/80 rounded-lg flex items-center px-md text-on-secondary-fixed font-label-sm text-[11px] shadow-sm">
+                                        Entity Review (90%)
+                                    </div>
+</td>
+<td class="p-xs border-b border-outline-variant" colspan="20"></td>
+</tr>
+<!-- Row 4: Mixed -->
+<tr class="hover:bg-surface-variant/30 transition-colors">
+<td class="p-md border-r border-b border-outline-variant sticky left-0 z-10 bg-white">
+<div class="flex items-center gap-md">
+<div class="w-8 h-8 rounded-full overflow-hidden flex-shrink-0">
+<img alt="Attorney Avatar" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBFzsKhKOc6ERyyQHCe2WtyiQavr4WWlHu-lXNfGxehZNq7M-5ygpkxhdj0ULY4OWV9FtecGYaJKvJp67jabtIaWeKpuxNlDtzUtK-2u1w4kJK_4-t4a116362mI4YtpDFftnTEswJtdvDN9K7iYRWfL3aaGhqXJENd2oiGv1cDk5SfSerRxcnIjNI9Rd0OlRiRou6uN5ZdqCj73ljyVx5g3w5uTYmSX8KZv-xoWTFeqFRn_AKivnVGHa4h3oMWzdYGpwYCEBalTUK0"/>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-surface leading-tight">Marcus Thorne</p>
+<p class="text-[10px] text-on-surface-variant font-medium">Associate · M&amp;A</p>
+</div>
+</div>
+</td>
+<td class="p-xs border-b border-r border-outline-variant bg-surface-dim/5" colspan="14"></td>
+<td class="p-xs border-b border-r border-outline-variant" colspan="7">
+<div class="h-10 w-full bg-primary-fixed-dim/40 rounded-lg flex items-center px-md text-primary font-label-sm text-[11px] border border-primary-fixed-dim/60">
+                                        Available (100%)
+                                    </div>
+</td>
+<td class="p-xs border-b border-outline-variant" colspan="7"></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- Right Sidebar: Unassigned Tasks -->
+<aside class="w-80 flex flex-col space-y-lg overflow-hidden h-full">
+<div class="bg-surface-container-lowest p-lg rounded-xl shadow-sm border border-outline-variant flex flex-col h-full">
+<div class="flex items-center justify-between mb-lg">
+<h3 class="font-headline-sm text-[18px] text-primary">Unassigned Tasks</h3>
+<span class="bg-primary-container text-on-primary-container text-[10px] font-bold px-2 py-0.5 rounded-full">12 NEW</span>
+</div>
+<div class="relative mb-lg">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[18px]" data-icon="filter_list">filter_list</span>
+<input class="w-full pl-10 pr-4 py-2 bg-surface-container-low border-none rounded-lg text-body-sm focus:ring-1 focus:ring-primary" placeholder="Filter tasks..." type="text"/>
+</div>
+<div class="flex-grow overflow-y-auto space-y-md capacity-scroll pr-1">
+<!-- Task Card 1 -->
+<div class="p-md bg-white border border-outline-variant rounded-lg shadow-sm drag-handle hover:border-primary transition-all group">
+<div class="flex justify-between items-start mb-2">
+<span class="px-2 py-0.5 bg-error-container text-on-error-container text-[10px] font-bold rounded">URGENT</span>
+<span class="material-symbols-outlined text-outline group-hover:text-primary" data-icon="drag_indicator">drag_indicator</span>
+</div>
+<p class="font-label-md text-label-md text-on-surface mb-1">Contract Revision - Alpha Corp</p>
+<p class="text-body-sm text-on-surface-variant mb-3 line-clamp-2">Standard commercial lease agreement requires urgent update by EOW.</p>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-xs text-outline">
+<span class="material-symbols-outlined text-[14px]" data-icon="schedule">schedule</span>
+<span class="text-[11px] font-medium">12 hrs</span>
+</div>
+<div class="flex items-center gap-xs text-outline">
+<span class="material-symbols-outlined text-[14px]" data-icon="flag">flag</span>
+<span class="text-[11px] font-medium">M&amp;A</span>
+</div>
+</div>
+</div>
+<!-- Task Card 2 -->
+<div class="p-md bg-white border border-outline-variant rounded-lg shadow-sm drag-handle hover:border-primary transition-all group">
+<div class="flex justify-between items-start mb-2">
+<span class="px-2 py-0.5 bg-surface-container-high text-on-surface-variant text-[10px] font-bold rounded">MEDIUM</span>
+<span class="material-symbols-outlined text-outline group-hover:text-primary" data-icon="drag_indicator">drag_indicator</span>
+</div>
+<p class="font-label-md text-label-md text-on-surface mb-1">IP Disclosure Filing</p>
+<p class="text-body-sm text-on-surface-variant mb-3 line-clamp-2">Annual patent portfolio update and USPTO submission prep.</p>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-xs text-outline">
+<span class="material-symbols-outlined text-[14px]" data-icon="schedule">schedule</span>
+<span class="text-[11px] font-medium">24 hrs</span>
+</div>
+<div class="flex items-center gap-xs text-outline">
+<span class="material-symbols-outlined text-[14px]" data-icon="flag">flag</span>
+<span class="text-[11px] font-medium">IP</span>
+</div>
+</div>
+</div>
+<!-- Task Card 3 -->
+<div class="p-md bg-white border border-outline-variant rounded-lg shadow-sm drag-handle hover:border-primary transition-all group">
+<div class="flex justify-between items-start mb-2">
+<span class="px-2 py-0.5 bg-surface-container-high text-on-surface-variant text-[10px] font-bold rounded">MEDIUM</span>
+<span class="material-symbols-outlined text-outline group-hover:text-primary" data-icon="drag_indicator">drag_indicator</span>
+</div>
+<p class="font-label-md text-label-md text-on-surface mb-1">Litigation Discovery - Case B-90</p>
+<p class="text-body-sm text-on-surface-variant mb-3 line-clamp-2">Review 400+ documents for evidentiary relevance.</p>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-xs text-outline">
+<span class="material-symbols-outlined text-[14px]" data-icon="schedule">schedule</span>
+<span class="text-[11px] font-medium">40 hrs</span>
+</div>
+<div class="flex items-center gap-xs text-outline">
+<span class="material-symbols-outlined text-[14px]" data-icon="flag">flag</span>
+<span class="text-[11px] font-medium">Litigation</span>
+</div>
+</div>
+</div>
+<!-- Task Card 4 -->
+<div class="p-md bg-white border border-outline-variant rounded-lg shadow-sm drag-handle hover:border-primary transition-all group">
+<div class="flex justify-between items-start mb-2">
+<span class="px-2 py-0.5 bg-primary-fixed-dim/40 text-primary text-[10px] font-bold rounded">LOW</span>
+<span class="material-symbols-outlined text-outline group-hover:text-primary" data-icon="drag_indicator">drag_indicator</span>
+</div>
+<p class="font-label-md text-label-md text-on-surface mb-1">Compliance Policy Audit</p>
+<p class="text-body-sm text-on-surface-variant mb-3 line-clamp-2">Quarterly internal compliance check for employment law updates.</p>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-xs text-outline">
+<span class="material-symbols-outlined text-[14px]" data-icon="schedule">schedule</span>
+<span class="text-[11px] font-medium">8 hrs</span>
+</div>
+<div class="flex items-center gap-xs text-outline">
+<span class="material-symbols-outlined text-[14px]" data-icon="flag">flag</span>
+<span class="text-[11px] font-medium">Ethics</span>
+</div>
+</div>
+</div>
+</div>
+<div class="mt-lg pt-lg border-t border-outline-variant">
+<button class="w-full py-3 border-2 border-dashed border-outline-variant rounded-xl text-outline font-label-md text-label-md flex items-center justify-center gap-sm hover:border-primary hover:text-primary transition-all">
+<span class="material-symbols-outlined" data-icon="add_circle">add_circle</span>
+                            Quick-Add Task
+                        </button>
+</div>
+</div>
+</aside>
+</div>
+</main>
+<!-- Micro-interaction Scripts -->
+<script>
+        // Simple drag and drop simulation feedback
+        document.querySelectorAll('.drag-handle').forEach(card => {
+            card.addEventListener('mousedown', () => {
+                card.style.transform = 'scale(0.98)';
+                card.style.boxShadow = '0 10px 15px -3px rgba(0, 0, 0, 0.1)';
+            });
+            card.addEventListener('mouseup', () => {
+                card.style.transform = 'scale(1)';
+                card.style.boxShadow = 'none';
+            });
+        });
+
+        // Toggle dropdowns or navigation logic
+        document.querySelectorAll('nav a').forEach(link => {
+            link.addEventListener('click', (e) => {
+                // Prevent real navigation for demo
+                if(link.getAttribute('href') === '#') e.preventDefault();
+            });
+        });
+    </script>
+</body></html>

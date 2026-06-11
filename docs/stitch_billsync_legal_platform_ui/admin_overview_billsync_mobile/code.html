@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>LegalFlow Admin Overview</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-tertiary-container": "#92a4c5",
+                    "error-container": "#ffdad6",
+                    "surface-container-low": "#edf4ff",
+                    "surface-container-highest": "#d9e3f1",
+                    "on-primary-fixed": "#001c37",
+                    "surface-container-lowest": "#ffffff",
+                    "secondary-fixed": "#ffe08e",
+                    "surface-variant": "#d9e3f1",
+                    "tertiary-fixed-dim": "#b5c7ea",
+                    "surface": "#f7f9ff",
+                    "on-primary-fixed-variant": "#234871",
+                    "outline-variant": "#c3c6cf",
+                    "surface-tint": "#3d608a",
+                    "outline": "#73777f",
+                    "on-tertiary-fixed": "#071c36",
+                    "on-error": "#ffffff",
+                    "secondary": "#755b00",
+                    "on-secondary-fixed": "#241a00",
+                    "background": "#f7f9ff",
+                    "inverse-surface": "#27313c",
+                    "secondary-container": "#fed255",
+                    "tertiary": "#11243f",
+                    "on-primary-container": "#83a6d4",
+                    "inverse-primary": "#a6c9f9",
+                    "tertiary-container": "#283a56",
+                    "surface-container": "#e4effd",
+                    "on-secondary": "#ffffff",
+                    "tertiary-fixed": "#d6e3ff",
+                    "primary-fixed": "#d2e4ff",
+                    "on-surface-variant": "#43474e",
+                    "primary-fixed-dim": "#a6c9f9",
+                    "on-primary": "#ffffff",
+                    "surface-bright": "#f7f9ff",
+                    "on-surface": "#121d26",
+                    "on-tertiary-fixed-variant": "#364764",
+                    "on-secondary-container": "#735a00",
+                    "surface-container-high": "#dfe9f7",
+                    "surface-dim": "#d1dbe8",
+                    "error": "#ba1a1a",
+                    "on-tertiary": "#ffffff",
+                    "secondary-fixed-dim": "#ecc246",
+                    "primary-container": "#123b63",
+                    "on-background": "#121d26",
+                    "inverse-on-surface": "#e8f2ff",
+                    "primary": "#002546",
+                    "on-secondary-fixed-variant": "#584400",
+                    "on-error-container": "#93000a"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "base": "8px",
+                    "xxl": "48px",
+                    "xs": "4px",
+                    "lg": "24px",
+                    "md": "16px",
+                    "xl": "32px",
+                    "sidebar-width": "260px",
+                    "sm": "12px",
+                    "margin-desktop": "40px",
+                    "gutter-desktop": "24px"
+            },
+            "fontFamily": {
+                    "body-md": ["Inter"],
+                    "label-md": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "headline-sm": ["Inter"],
+                    "headline-lg-mobile": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "label-sm": ["Inter"],
+                    "body-sm": ["Inter"],
+                    "display-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "600"}],
+                    "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f7f9ff;
+            -webkit-font-smoothing: antialiased;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .sparkline-container {
+            height: 32px;
+            width: 80px;
+        }
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(8px);
+            border: 1px solid #E5E7EB;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface mb-24">
+<!-- Top App Bar -->
+<header class="bg-surface docked full-width top-0 z-50">
+<div class="flex justify-between items-center px-lg py-md w-full max-w-1440px mx-auto">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center text-on-primary-container overflow-hidden">
+<img alt="User Profile" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuALJsIP4KpgT9Xtsefghy9FUch2ywFrdkEza23pq3wFyHURpRtJwqYLcDU929ApIbp15JfMo31X9qVIB3UNDkMIHMBF9sm17hlftCHt3HDFr96jc4IFH9MHJinhWcTBeYI2TK-YpHxnVQ5Mm80HVo4Uf6k_48bb5XEEIknQjxYkX1K29eFmG2udoI_np02O4aMibWw2tD9MgRS42qtyric3Izo8hKL54kLJ2ZufqIRXNlNGvFMIR2RIntaPyyyZ7fBmJDyt0y6o9FZw"/>
+</div>
+<h1 class="font-headline-md text-headline-md font-bold text-primary">LegalFlow</h1>
+</div>
+<div class="flex items-center">
+<button class="material-symbols-outlined p-xs rounded-full hover:bg-surface-container-high transition-colors text-primary">notifications</button>
+</div>
+</div>
+</header>
+<main class="px-md pt-lg pb-xxl space-y-lg">
+<!-- Welcome Header -->
+<section class="space-y-xs">
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile text-primary">Firm Overview</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Real-time performance metrics for Q3.</p>
+</section>
+<!-- KPI Bento Grid -->
+<section class="grid grid-cols-1 gap-md">
+<!-- Total Billable - Full Width Accent -->
+<div class="glass-card rounded-xl p-md flex flex-col justify-between shadow-sm border-l-4 border-primary">
+<div class="flex justify-between items-start">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Total Billable</span>
+<span class="material-symbols-outlined text-primary">payments</span>
+</div>
+<div class="flex items-end justify-between mt-md">
+<div>
+<p class="font-headline-lg-mobile text-headline-lg-mobile text-primary">$412,850</p>
+<p class="font-label-sm text-label-sm text-secondary flex items-center gap-xs">
+<span class="material-symbols-outlined text-[14px]">trending_up</span> +12.5% vs LW
+                        </p>
+</div>
+<div class="sparkline-container flex items-end gap-[2px]">
+<div class="bg-primary/20 w-1 h-[40%]" style="height: 30%;"></div>
+<div class="bg-primary/20 w-1 h-[50%]" style="height: 45%;"></div>
+<div class="bg-primary/20 w-1 h-[70%]" style="height: 60%;"></div>
+<div class="bg-primary/20 w-1 h-[60%]" style="height: 55%;"></div>
+<div class="bg-primary w-1 h-[90%]" style="height: 85%;"></div>
+</div>
+</div>
+</div>
+<div class="bento-grid">
+<!-- Collections -->
+<div class="glass-card rounded-xl p-md shadow-sm">
+<div class="flex flex-col gap-sm">
+<div class="flex justify-between items-center">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Collections</span>
+<span class="material-symbols-outlined text-secondary text-md">account_balance_wallet</span>
+</div>
+<p class="font-headline-sm text-headline-sm text-primary">$328,400</p>
+<div class="w-full bg-surface-container-high h-1 rounded-full overflow-hidden">
+<div class="bg-secondary h-full w-[78%]"></div>
+</div>
+<p class="font-label-sm text-label-sm text-on-surface-variant">78% of Target</p>
+</div>
+</div>
+<!-- Outstanding AR -->
+<div class="glass-card rounded-xl p-md shadow-sm">
+<div class="flex flex-col gap-sm">
+<div class="flex justify-between items-center">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Outstanding AR</span>
+<span class="material-symbols-outlined text-error text-md">pending_actions</span>
+</div>
+<p class="font-headline-sm text-headline-sm text-primary">$84,450</p>
+<div class="flex items-center gap-xs text-error font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[14px]">warning</span> High
+                        </div>
+</div>
+</div>
+</div>
+</section>
+<!-- Firm Health Section -->
+<section class="space-y-md">
+<h3 class="font-headline-sm text-headline-sm text-primary px-xs">Firm Health</h3>
+<div class="space-y-sm">
+<!-- System Status -->
+<div class="bg-surface rounded-xl p-md border border-outline-variant flex items-center justify-between">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">cloud_done</span>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-surface">Cloud Systems</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">All services operational</p>
+</div>
+</div>
+<span class="inline-flex items-center px-sm py-xs rounded-full bg-green-100 text-green-800 text-[10px] font-bold uppercase">Online</span>
+</div>
+<!-- Active Users Card -->
+<div class="bg-surface rounded-xl p-md border border-outline-variant">
+<div class="flex justify-between items-center mb-md">
+<p class="font-label-md text-label-md text-on-surface">User Engagement</p>
+<span class="font-label-sm text-label-sm text-primary">Live Now</span>
+</div>
+<div class="flex items-center -space-x-2 overflow-hidden mb-sm">
+<img alt="User 1" class="inline-block h-8 w-8 rounded-full ring-2 ring-surface" data-alt="Close-up portrait of a professional female lawyer in a modern legal office environment, soft daylight illumination, neutral corporate aesthetic, 8k resolution, high-end photography style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB_LCfXszB7rnALy-UeNXd5kiTDbgWHUeE7B7GL3BGCCI6710NZ8NY_ybeqHSFA4adOaRmhMbkuDXEGf2ezEh7FYRjaDxxqGQe1j7qHODcmukQihe6ImZ32xHsO4ppnpQze7i_Wr7i3QzzmC8A0hER7ijEbC5wuWqzdILSs2_4wFTWLhIWD7XnT0gBS40oL27G1-3QnSMrhuqY9FUBOWFmQG2UakUQanGnapXNvIPBsfDbHfj81vOrkJZjhC310yaG4EsDBL-wUjIWG"/>
+<img alt="User 2" class="inline-block h-8 w-8 rounded-full ring-2 ring-surface" data-alt="Portrait of a male partner in a crisp white shirt and navy tie, looking confident in a high-end law firm lobby, minimalist and quiet luxury vibe, professional lighting, cinematic depth of field." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCMp9bgEPZkFTVsg3GP1A3xboBFtdJDqECHz6e4yETCmkwpP8VkDcoFKB-wnFtaZoKq5dbJFDWY4XRUPzufYk5D0L0JHXLarWMpC0qTJayAP3chgiWUH7Rl1yA1zbdSd4tcoDi9ZANdAdwMwQaewwZHbOU5BW20mv5JsdoVD13dyu5mZZIGfy56BOTYG1FKpOCs6D7ByZCLAoOEOMk8lO151VDXjXvHXP_n1r-qNNborpZvD8STb_-6ypAzdDPL6LDi3u2IOxMRBrmj"/>
+<img alt="User 3" class="inline-block h-8 w-8 rounded-full ring-2 ring-surface" data-alt="Professional woman of color working in a modern legal technology office, soft glowing screens in background, minimalist design language, calm and sophisticated atmosphere, corporate photography." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAzQC-j-Ixq0LG-2cg1BoiStqoO6HBvDGXYHz0hR0gK_Wh7Lcz7e607kRBt-0471gHSc-ZHDc3Rj0u1HBDUOf05ghNa8rYjYIRc-3rPPzueS12-HOKcs2-Vs_8FTN12vUdRVSMzmYn1Qja6WOWhcCiXRD-kEKF_jUIJFG1tVOEJMMOD_SEus5zbLS_Lr6QymIu-KAz3-jj0WuNxhQaSdUE5aFGvsNgSQs6dUMKkPvxVUGIPT8mTdyTgBp3JR-X-m4pgOyZH6Ov5-GxU"/>
+<div class="flex h-8 w-8 items-center justify-center rounded-full bg-surface-container-highest ring-2 ring-surface text-[10px] font-bold">+14</div>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">17 of 24 attorneys are currently active across matters.</p>
+</div>
+</div>
+</section>
+<!-- Recent Announcements -->
+<section class="bg-primary-container text-on-primary-container rounded-xl p-lg relative overflow-hidden">
+<div class="relative z-10 space-y-sm">
+<span class="font-label-sm text-label-sm bg-on-primary-container/20 px-sm py-1 rounded-full">New Update</span>
+<h4 class="font-headline-sm text-headline-sm">AI Matter Summaries</h4>
+<p class="font-body-sm text-body-sm opacity-90">Auto-generated weekly summaries for all active matters are now live in your inbox.</p>
+<button class="bg-on-primary-container text-primary-container font-label-md text-label-md px-md py-sm rounded-lg mt-sm active:opacity-80 transition-opacity">Read Release Notes</button>
+</div>
+<!-- Decorative Gradient Background -->
+<div class="absolute top-0 right-0 w-32 h-32 bg-secondary opacity-10 rounded-full -mr-16 -mt-16 blur-3xl"></div>
+</section>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 w-full z-50 flex justify-around items-center px-md py-sm bg-surface shadow-md border-t border-outline-variant">
+<!-- Dashboard (Active) -->
+<a class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-full px-md py-xs scale-95 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+<span class="font-label-sm text-label-sm">Dashboard</span>
+</a>
+<!-- Captured -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary px-md py-xs" href="#">
+<span class="material-symbols-outlined">history_edu</span>
+<span class="font-label-sm text-label-sm">Captured</span>
+</a>
+<!-- Matters -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary px-md py-xs" href="#">
+<span class="material-symbols-outlined">folder_shared</span>
+<span class="font-label-sm text-label-sm">Matters</span>
+</a>
+<!-- AI Assistant -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary px-md py-xs" href="#">
+<span class="material-symbols-outlined">smart_toy</span>
+<span class="font-label-sm text-label-sm">AI Assistant</span>
+</a>
+</nav>
+<!-- Floating Action Button (Contextual for Home/Dashboard) -->
+<button class="fixed right-md bottom-24 w-14 h-14 bg-primary text-on-primary rounded-full shadow-lg flex items-center justify-center active:scale-95 transition-transform duration-200">
+<span class="material-symbols-outlined text-[28px]">add</span>
+</button>
+<script>
+        // Micro-interaction for KPI cards
+        document.querySelectorAll('.glass-card').forEach(card => {
+            card.addEventListener('touchstart', () => {
+                card.style.transform = 'scale(0.98)';
+                card.style.transition = 'transform 0.1s ease';
+            });
+            card.addEventListener('touchend', () => {
+                card.style.transform = 'scale(1)';
+            });
+        });
+
+        // Atmospheric fade-in for list items
+        document.addEventListener('DOMContentLoaded', () => {
+            const sections = document.querySelectorAll('section');
+            sections.forEach((s, index) => {
+                s.style.opacity = '0';
+                s.style.transform = 'translateY(10px)';
+                setTimeout(() => {
+                    s.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                    s.style.opacity = '1';
+                    s.style.transform = 'translateY(0)';
+                }, 100 * index);
+            });
+        });
+    </script>
+</body></html>

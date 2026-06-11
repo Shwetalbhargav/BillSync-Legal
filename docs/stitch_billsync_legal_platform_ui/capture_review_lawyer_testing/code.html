@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Activity Capture Review | LexisFlow BillSync</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-container": "#c8dbfe",
+                        "surface-container-high": "#dfe9f7",
+                        "inverse-on-surface": "#e8f2ff",
+                        "on-error-container": "#93000a",
+                        "secondary-fixed-dim": "#b5c7ea",
+                        "on-secondary": "#ffffff",
+                        "outline-variant": "#c3c6cf",
+                        "surface-tint": "#3d608a",
+                        "primary-fixed": "#d2e4ff",
+                        "outline": "#73777f",
+                        "on-surface": "#121d26",
+                        "on-tertiary-fixed-variant": "#584400",
+                        "on-secondary-container": "#4e607e",
+                        "surface-bright": "#f7f9ff",
+                        "primary-container": "#123b63",
+                        "error-container": "#ffdad6",
+                        "on-primary-container": "#83a6d4",
+                        "primary-fixed-dim": "#a6c9f9",
+                        "error": "#ba1a1a",
+                        "background": "#f7f9ff",
+                        "tertiary-fixed-dim": "#ecc246",
+                        "tertiary-fixed": "#ffe08e",
+                        "secondary-fixed": "#d6e3ff",
+                        "on-secondary-fixed": "#071c36",
+                        "on-primary": "#ffffff",
+                        "inverse-surface": "#27313c",
+                        "primary": "#002546",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary": "#ffffff",
+                        "on-tertiary-fixed": "#241a00",
+                        "surface-container-highest": "#d9e3f1",
+                        "surface-dim": "#d1dbe8",
+                        "surface-container-low": "#edf4ff",
+                        "inverse-primary": "#a6c9f9",
+                        "on-primary-fixed": "#001c37",
+                        "on-error": "#ffffff",
+                        "on-surface-variant": "#43474e",
+                        "tertiary": "#755b00",
+                        "on-primary-fixed-variant": "#234871",
+                        "tertiary-container": "#cea72c",
+                        "on-background": "#121d26",
+                        "on-tertiary-container": "#4f3d00",
+                        "surface-variant": "#d9e3f1",
+                        "secondary": "#4d5f7d",
+                        "surface-container": "#e4effd",
+                        "surface": "#f7f9ff",
+                        "on-secondary-fixed-variant": "#364764"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "sidebar-width": "260px",
+                        "xl": "48px",
+                        "margin-desktop": "40px",
+                        "xs": "8px",
+                        "gutter": "24px",
+                        "lg": "32px",
+                        "sm": "16px",
+                        "md": "24px",
+                        "margin-mobile": "16px",
+                        "base": "4px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Inter"],
+                        "label-md": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "headline-sm": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "600"}],
+                        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body {
+            background-color: #f7f9ff;
+            font-family: 'Inter', sans-serif;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #d1dbe8;
+            border-radius: 10px;
+        }
+        .email-row.active {
+            background-color: #edf4ff;
+            border-left: 4px solid #002546;
+        }
+    </style>
+</head>
+<body class="overflow-hidden">
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-0 bottom-0 w-sidebar-width bg-primary shadow-sm flex flex-col h-full py-xl z-50">
+<div class="px-lg mb-xl">
+<h1 class="font-headline-md text-headline-md font-bold text-on-primary">LexisFlow</h1>
+<p class="font-label-md text-label-md text-primary-fixed-dim opacity-80">Premier Legal Mgmt</p>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center px-lg py-md text-primary-fixed-dim opacity-80 hover:opacity-100 hover:bg-primary-container/50 transition-all duration-150 ease-in-out" href="#">
+<span class="material-symbols-outlined mr-md" data-icon="dashboard">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</a>
+<a class="flex items-center px-lg py-md text-primary-fixed-dim opacity-80 hover:opacity-100 hover:bg-primary-container/50 transition-all duration-150 ease-in-out" href="#">
+<span class="material-symbols-outlined mr-md" data-icon="folder_shared">folder_shared</span>
+<span class="font-label-md text-label-md">Matters</span>
+</a>
+<a class="flex items-center px-lg py-md text-primary-fixed-dim opacity-80 hover:opacity-100 hover:bg-primary-container/50 transition-all duration-150 ease-in-out" href="#">
+<span class="material-symbols-outlined mr-md" data-icon="description">description</span>
+<span class="font-label-md text-label-md">Documents</span>
+</a>
+<a class="flex items-center px-lg py-md border-l-4 border-secondary-container bg-primary-container text-on-primary-fixed transition-all duration-150 ease-in-out" href="#">
+<span class="material-symbols-outlined mr-md" data-icon="account_balance_wallet">account_balance_wallet</span>
+<span class="font-label-md text-label-md">Billing</span>
+</a>
+<a class="flex items-center px-lg py-md text-primary-fixed-dim opacity-80 hover:opacity-100 hover:bg-primary-container/50 transition-all duration-150 ease-in-out" href="#">
+<span class="material-symbols-outlined mr-md" data-icon="timer">timer</span>
+<span class="font-label-md text-label-md">Time Tracking</span>
+</a>
+<a class="flex items-center px-lg py-md text-primary-fixed-dim opacity-80 hover:opacity-100 hover:bg-primary-container/50 transition-all duration-150 ease-in-out" href="#">
+<span class="material-symbols-outlined mr-md" data-icon="group">group</span>
+<span class="font-label-md text-label-md">Contacts</span>
+</a>
+</nav>
+<div class="px-lg mt-auto mb-md">
+<button class="w-full py-md bg-secondary-container text-on-secondary-container rounded-xl font-label-md text-label-md hover:opacity-90 transition-opacity flex items-center justify-center font-bold">
+<span class="material-symbols-outlined mr-xs" data-icon="add">add</span>
+                New Matter
+            </button>
+</div>
+<div class="border-t border-primary-container/30 pt-md space-y-1">
+<a class="flex items-center px-lg py-sm text-primary-fixed-dim opacity-80 hover:opacity-100 hover:bg-primary-container/50 transition-all duration-150 ease-in-out" href="#">
+<span class="material-symbols-outlined mr-md" data-icon="settings">settings</span>
+<span class="font-label-md text-label-md">Settings</span>
+</a>
+<a class="flex items-center px-lg py-sm text-primary-fixed-dim opacity-80 hover:opacity-100 hover:bg-primary-container/50 transition-all duration-150 ease-in-out" href="#">
+<span class="material-symbols-outlined mr-md" data-icon="contact_support">contact_support</span>
+<span class="font-label-md text-label-md">Support</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="fixed top-0 right-0 left-[260px] w-[calc(100%-260px)] h-screen flex flex-col">
+<!-- TopNavBar -->
+<header class="bg-surface-container-lowest border-b border-outline-variant flex justify-between items-center h-16 px-gutter z-40">
+<div class="flex items-center flex-1">
+<div class="relative w-96">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant" data-icon="search">search</span>
+<input class="w-full pl-10 pr-4 py-2 bg-surface-container-low rounded-lg border-none focus:ring-2 focus:ring-primary text-body-md font-body-md outline-none" placeholder="Search billing entries..." type="text"/>
+</div>
+</div>
+<div class="flex items-center space-x-md">
+<div class="flex space-x-sm">
+<div class="flex items-center px-3 py-1 bg-surface-container rounded-full text-label-md text-on-surface-variant">
+<span class="w-2 h-2 rounded-full bg-green-500 mr-2"></span>
+                        Gmail Capture Working
+                    </div>
+<div class="flex items-center px-3 py-1 bg-surface-container rounded-full text-label-md text-on-surface-variant">
+<span class="w-2 h-2 rounded-full bg-green-500 mr-2"></span>
+                        Research Capture Working
+                    </div>
+</div>
+<div class="flex items-center space-x-md border-l border-outline-variant pl-lg">
+<div class="text-right">
+<p class="font-label-md text-label-md text-on-surface">Eleanor Vance, JD</p>
+<p class="font-label-md text-label-md text-on-surface-variant opacity-70">Senior Partner</p>
+</div>
+<img alt="Attorney Profile" class="w-10 h-10 rounded-full object-cover border border-outline-variant" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAQDGmF3uC2UTUlJKjJO4LQNwvtDpgvne4S5VDzPiDAdJeX7G5cIVMkoofL5xyX9NMKIkX4n7w1NWgm-UaK2gjXC7aqLklTkWcQXZbFWgPhFrBhwNlxmepz8vAwhWbYZW1IHsDLSI2Dcd3d874g3xzrF_pCH2aPi42j7dYyIuAZBuWVBovgAJ4Da9vMlBDFOb4kMJXeVesHtZMxGIHgZsrzPv5BBcPTKc3l8qxJpge7kz4grBr6y4Ebk9F3LM3p7i8NFytS61NnnyJ9"/>
+</div>
+</div>
+</header>
+<!-- Page Content -->
+<div class="flex-1 flex overflow-hidden">
+<!-- List View (Left Column) -->
+<div class="w-3/5 flex flex-col bg-surface-container-lowest border-r border-outline-variant">
+<div class="p-lg bg-white border-b border-outline-variant">
+<div class="mb-md">
+<h2 class="font-headline-lg text-headline-lg text-primary">Review Captured Work</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mt-xs">Review and confirm emails and research activities found by the LexisFlow extension.</p>
+</div>
+<div class="flex justify-between items-center py-sm">
+<div class="flex items-center space-x-md">
+<label class="flex items-center space-x-xs cursor-pointer group">
+<input class="w-4 h-4 rounded text-primary border-outline-variant focus:ring-primary transition-all" id="selectAll" type="checkbox"/>
+<span class="font-label-md text-label-md text-on-surface-variant group-hover:text-primary transition-colors">Select All</span>
+</label>
+<span class="text-outline-variant">|</span>
+<span class="font-label-md text-label-md text-on-surface-variant">14 items to review</span>
+</div>
+<div class="flex space-x-sm">
+<button class="px-md py-2 border border-outline text-on-surface font-label-md text-label-md rounded-lg hover:bg-surface-container-low transition-colors flex items-center">
+<span class="material-symbols-outlined mr-xs text-[18px]" data-icon="close">close</span>
+                                Dismiss
+                            </button>
+<button class="px-md py-2 bg-primary text-on-primary font-label-md text-label-md rounded-lg hover:bg-primary-container transition-colors flex items-center">
+<span class="material-symbols-outlined mr-xs text-[18px]" data-icon="check_circle">check_circle</span>
+                                Confirm as Billable
+                            </button>
+</div>
+</div>
+</div>
+<!-- Tabs -->
+<div class="flex border-b border-outline-variant bg-surface-container-low">
+<button class="px-lg py-3 border-b-2 border-primary text-primary font-label-md text-label-md bg-white">All Activities</button>
+<button class="px-lg py-3 text-on-surface-variant font-label-md text-label-md hover:bg-surface-container transition-colors">Gmail Captures</button>
+<button class="px-lg py-3 text-on-surface-variant font-label-md text-label-md hover:bg-surface-container transition-colors">Research Captures</button>
+</div>
+<!-- Scrollable Table -->
+<div class="flex-1 overflow-y-auto custom-scrollbar">
+<table class="w-full border-collapse">
+<thead class="sticky top-0 bg-surface-container-high z-10">
+<tr class="text-left">
+<th class="pl-lg py-md w-12"><span class="sr-only">Select</span></th>
+<th class="px-md py-md font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Type &amp; Subject</th>
+<th class="px-md py-md font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Date</th>
+<th class="px-md py-md font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Time</th>
+<th class="pr-lg py-md font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Matter</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant">
+<!-- Gmail Row -->
+<tr class="email-row active cursor-pointer group hover:bg-surface-container-low transition-colors" onclick="selectRow(this, 'gmail')">
+<td class="pl-lg py-lg align-top">
+<input checked="" class="w-4 h-4 rounded text-primary border-outline-variant focus:ring-primary cursor-pointer" type="checkbox"/>
+</td>
+<td class="px-md py-lg align-top">
+<div class="flex flex-col">
+<div class="flex items-center mb-1">
+<span class="material-symbols-outlined text-[18px] text-primary mr-2" data-icon="mail">mail</span>
+<span class="font-label-md text-label-md text-primary font-bold">Email: Updated Merger Agreement</span>
+</div>
+<div class="text-on-surface-variant font-body-sm text-body-sm pl-7">
+                                            From Sarah Miller • Project Acheron
+                                        </div>
+</div>
+</td>
+<td class="px-md py-lg align-top whitespace-nowrap">
+<span class="font-body-sm text-body-sm text-on-surface-variant">Oct 24, 2023</span>
+</td>
+<td class="px-md py-lg align-top whitespace-nowrap">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full bg-primary-container text-on-primary-container font-label-md text-label-md">0.2 hrs</span>
+</td>
+<td class="pr-lg py-lg align-top">
+<div class="relative">
+<select class="w-full bg-transparent border border-outline-variant rounded-lg py-1 px-3 font-label-sm text-label-sm focus:ring-1 focus:ring-primary outline-none appearance-none">
+<option>Acheron Holdings vs. L...</option>
+<option>Global Tech Acquisition</option>
+</select>
+</div>
+</td>
+</tr>
+<!-- Research Row -->
+<tr class="email-row cursor-pointer group hover:bg-surface-container-low transition-colors" onclick="selectRow(this, 'research')">
+<td class="pl-lg py-lg align-top">
+<input class="w-4 h-4 rounded text-primary border-outline-variant focus:ring-primary cursor-pointer" type="checkbox"/>
+</td>
+<td class="px-md py-lg align-top">
+<div class="flex flex-col">
+<div class="flex items-center mb-1">
+<span class="material-symbols-outlined text-[18px] text-tertiary mr-2" data-icon="history_edu">history_edu</span>
+<span class="font-label-md text-label-md text-primary font-bold">Research: Liability Limitation Clauses</span>
+</div>
+<div class="text-on-surface-variant font-body-sm text-body-sm pl-7">
+                                            LexisNexis • Case Law Search
+                                        </div>
+</div>
+</td>
+<td class="px-md py-lg align-top whitespace-nowrap">
+<span class="font-body-sm text-body-sm text-on-surface-variant">Oct 24, 2023</span>
+</td>
+<td class="px-md py-lg align-top whitespace-nowrap">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full bg-primary-container text-on-primary-container font-label-md text-label-md">0.5 hrs</span>
+</td>
+<td class="pr-lg py-lg align-top">
+<div class="relative">
+<select class="w-full bg-transparent border border-outline-variant rounded-lg py-1 px-3 font-label-sm text-label-sm focus:ring-1 focus:ring-primary outline-none appearance-none">
+<option>Global Tech Acquisition</option>
+<option selected="">Acheron Holdings vs. L...</option>
+</select>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- Preview Pane (Right Column) -->
+<div class="w-2/5 flex flex-col bg-surface-container-low shadow-inner" id="preview-pane">
+<div class="flex-1 overflow-y-auto custom-scrollbar flex flex-col">
+<!-- Preview Header -->
+<div class="bg-white p-lg border-b border-outline-variant">
+<div class="flex justify-between items-start mb-lg">
+<div class="flex-1">
+<div class="flex items-center space-x-2 mb-2">
+<span class="px-2 py-1 bg-surface-container rounded font-label-md text-label-md text-primary uppercase tracking-tight">Gmail Capture</span>
+<span class="text-on-surface-variant font-label-md text-label-md">• October 24, 2023</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-primary mb-2" id="preview-title">Re: Updated Merger Agreement - Project Acheron</h3>
+<div class="flex items-center space-x-md text-on-surface-variant font-body-sm text-body-sm">
+<img alt="User Avatar" class="w-8 h-8 rounded-full border border-outline-variant" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB4QhrTmNLcZTFHlOwUc6463_3s2uhbMmBF4LbfIiUDD_TEciZRIwvHaglLlqf9QJ7dWQs-G1Wsg6DZI6vih5C0GeiqkT65NWz9iTn38xTIE7sCRJX-5fVRM62memoPu0QwWoOe48vjGy7I9z-WLcfGQFK-bXiqbyICyq9aFnpctZAT2HqlIkYze9GYJG5czn7J4pNTEEu0SbKRYpSQDxDu6JSawcGyGPJMxN4FD3RaI9gSsYRQ42nJUmtcTwGRpE463NuifeLtTGS8"/>
+<div>
+<p><span class="font-semibold text-on-surface">Sarah Miller</span> &lt;sarah.miller@millercorp.com&gt;</p>
+<p>to James Sterling, Legal Team</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Preview Content Area -->
+<div class="p-lg flex-1">
+<div class="bg-white p-lg rounded-xl shadow-sm border border-outline-variant">
+<div class="font-body-md text-body-md text-on-surface space-y-md" id="preview-body">
+<p>Hi James,</p>
+<p>I’ve reviewed the latest draft of the merger agreement that you sent over this morning. Most of the changes in Section 7 look appropriate, however, we still have concerns regarding the liability caps discussed in our previous call.</p>
+<p>Specifically, the wording in paragraph 7.4.2 seems a bit broad. Can we narrow this to only cover direct losses rather than consequential damages?</p>
+<p>Best regards,<br/>Sarah Miller<br/>CEO, MillerCorp</p>
+</div>
+</div>
+</div>
+<!-- Confirm Action -->
+<div class="p-lg bg-surface-container-high border-t border-outline-variant">
+<div class="flex items-center justify-between">
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface font-bold">0.2 Hours tracked</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Captured via LexisFlow Extension</span>
+</div>
+<button class="px-xl py-3 bg-primary text-on-primary font-label-md text-label-md rounded-xl hover:bg-primary-container shadow-md transition-all font-bold">
+                                Confirm as Billable
+                            </button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<script>
+        function selectRow(element, type) {
+            document.querySelectorAll('.email-row').forEach(row => {
+                row.classList.remove('active');
+            });
+            element.classList.add('active');
+            
+            const title = element.querySelector('.font-bold').innerText;
+            document.getElementById('preview-title').innerText = title.split(': ')[1];
+            
+            // Toggle preview type label
+            const label = document.querySelector('#preview-pane .uppercase');
+            if (type === 'research') {
+                label.innerText = 'Research Capture';
+                label.classList.remove('text-primary');
+                label.classList.add('text-tertiary');
+                document.getElementById('preview-body').innerHTML = `
+                    <div class="space-y-4">
+                        <div class="p-4 bg-surface-container-low rounded-lg border border-outline-variant">
+                            <h4 class="font-bold text-primary mb-1">Search Parameters</h4>
+                            <p class="text-body-sm">"liability limitation clauses" AND "commercial merger" AND "consequential damages"</p>
+                        </div>
+                        <div class="space-y-3">
+                            <p class="font-bold">Summary of Activity:</p>
+                            <p>35 minutes spent reviewing 4 cases on LexisNexis regarding jurisdictional variance in liability caps. Key findings focused on Delaware court interpretations of "direct losses" vs "consequential damages".</p>
+                            <ul class="list-disc pl-5 text-body-sm space-y-1">
+                                <li>Viewed: Smith v. Global Holdings (2021)</li>
+                                <li>Viewed: TechCorp v. AssetTrust (2019)</li>
+                                <li>Saved 2 documents to Matter 104-B</li>
+                            </ul>
+                        </div>
+                    </div>
+                `;
+            } else {
+                label.innerText = 'Gmail Capture';
+                label.classList.add('text-primary');
+                label.classList.remove('text-tertiary');
+                document.getElementById('preview-body').innerHTML = `
+                    <p>Hi James,</p>
+                    <p>I’ve reviewed the latest draft of the merger agreement that you sent over this morning. Most of the changes in Section 7 look appropriate...</p>
+                    <p>Best regards,<br/>Sarah Miller<br/>CEO, MillerCorp</p>
+                `;
+            }
+        }
+
+        const selectAll = document.getElementById('selectAll');
+        const checkboxes = document.querySelectorAll('tbody input[type="checkbox"]');
+        selectAll.addEventListener('change', (e) => {
+            checkboxes.forEach(cb => {
+                cb.checked = e.target.checked;
+            });
+        });
+    </script>
+</body></html>

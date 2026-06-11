@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Invoices | Lexington &amp; Associates</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-container-low": "#edf4ff",
+                    "secondary-fixed": "#ffe08e",
+                    "error-container": "#ffdad6",
+                    "on-primary-container": "#83a6d4",
+                    "on-secondary-fixed": "#241a00",
+                    "on-background": "#121d26",
+                    "on-surface-variant": "#43474e",
+                    "surface-variant": "#d9e3f1",
+                    "primary-fixed-dim": "#a6c9f9",
+                    "on-tertiary-container": "#92a4c5",
+                    "on-primary-fixed-variant": "#234871",
+                    "surface-container-lowest": "#ffffff",
+                    "secondary-fixed-dim": "#ecc246",
+                    "tertiary-fixed-dim": "#b5c7ea",
+                    "surface-dim": "#d1dbe8",
+                    "on-secondary-container": "#735a00",
+                    "on-primary-fixed": "#001c37",
+                    "on-surface": "#121d26",
+                    "on-error-container": "#93000a",
+                    "on-secondary-fixed-variant": "#584400",
+                    "tertiary-container": "#283a56",
+                    "surface-tint": "#3d608a",
+                    "outline": "#73777f",
+                    "tertiary": "#11243f",
+                    "on-tertiary-fixed-variant": "#364764",
+                    "on-error": "#ffffff",
+                    "background": "#f7f9ff",
+                    "primary": "#002546",
+                    "surface-bright": "#f7f9ff",
+                    "outline-variant": "#c3c6cf",
+                    "on-tertiary-fixed": "#071c36",
+                    "on-secondary": "#ffffff",
+                    "inverse-primary": "#a6c9f9",
+                    "error": "#ba1a1a",
+                    "inverse-on-surface": "#e8f2ff",
+                    "surface-container-high": "#dfe9f7",
+                    "on-tertiary": "#ffffff",
+                    "surface-container": "#e4effd",
+                    "primary-fixed": "#d2e4ff",
+                    "tertiary-fixed": "#d6e3ff",
+                    "surface-container-highest": "#d9e3f1",
+                    "surface": "#f7f9ff",
+                    "on-primary": "#ffffff",
+                    "secondary": "#755b00",
+                    "secondary-container": "#fed255",
+                    "inverse-surface": "#27313c",
+                    "primary-container": "#123b63"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "margin-desktop": "40px",
+                    "sidebar-width": "260px",
+                    "gutter-desktop": "24px",
+                    "base": "8px",
+                    "xxl": "48px",
+                    "xs": "4px",
+                    "sm": "12px",
+                    "lg": "24px",
+                    "md": "16px",
+                    "xl": "32px"
+            },
+            "fontFamily": {
+                    "headline-lg-mobile": ["Inter"],
+                    "headline-sm": ["Inter"],
+                    "label-sm": ["Inter"],
+                    "label-md": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "body-md": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "display-lg": ["Inter"],
+                    "body-sm": ["Inter"]
+            },
+            "fontSize": {
+                    "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "600"}],
+                    "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        body {
+            background-color: #f7f9ff;
+            font-family: 'Inter', sans-serif;
+        }
+        .status-pill {
+            padding: 4px 12px;
+            border-radius: 9999px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body class="text-on-surface">
+<!-- Top Navigation Bar -->
+<header class="bg-surface dark:bg-inverse-surface border-b border-outline-variant dark:border-outline fixed top-0 left-0 right-0 z-50">
+<nav class="flex justify-between items-center w-full px-margin-desktop max-w-[1440px] mx-auto h-20">
+<div class="font-headline-md text-headline-md font-bold text-primary dark:text-inverse-primary">
+                Lexington &amp; Associates
+            </div>
+<div class="hidden md:flex items-center gap-xl">
+<a class="text-on-surface-variant dark:text-surface-variant font-body-md text-body-md hover:text-primary dark:hover:text-inverse-primary transition-colors duration-200 ease-in-out" href="#">Overview</a>
+<a class="text-on-surface-variant dark:text-surface-variant font-body-md text-body-md hover:text-primary dark:hover:text-inverse-primary transition-colors duration-200 ease-in-out" href="#">Matters</a>
+<a class="text-primary dark:text-inverse-primary font-bold border-b-2 border-secondary-fixed font-body-md text-body-md transition-colors duration-200 ease-in-out" href="#">Invoices</a>
+<a class="text-on-surface-variant dark:text-surface-variant font-body-md text-body-md hover:text-primary dark:hover:text-inverse-primary transition-colors duration-200 ease-in-out" href="#">Payments</a>
+</div>
+<div class="flex items-center gap-md">
+<button class="text-on-surface-variant p-2 rounded-full hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="text-on-surface-variant p-2 rounded-full hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined" data-icon="account_circle">account_circle</span>
+</button>
+</div>
+</nav>
+</header>
+<main class="pt-32 pb-xxl px-margin-desktop max-w-[1440px] mx-auto min-h-screen">
+<!-- Header Section & Outstanding Balance -->
+<div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-xl gap-lg">
+<div>
+<h1 class="font-headline-lg text-headline-lg text-primary mb-2">Billing &amp; Invoices</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">Manage your account balances and matter-related expenses.</p>
+</div>
+<!-- Bento-style Summary Card -->
+<div class="bg-white p-xl rounded-xl border border-outline-variant shadow-sm min-w-[320px] relative overflow-hidden">
+<div class="absolute top-0 right-0 p-4 opacity-5">
+<span class="material-symbols-outlined text-[120px]" data-icon="account_balance_wallet">account_balance_wallet</span>
+</div>
+<p class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-1">Total Outstanding</p>
+<div class="flex items-baseline gap-2">
+<span class="font-display-lg text-display-lg text-primary">$12,450.00</span>
+<span class="font-label-md text-label-md text-error font-semibold flex items-center">
+<span class="material-symbols-outlined text-sm mr-1" data-icon="warning">warning</span>
+                        2 Overdue
+                    </span>
+</div>
+<button class="mt-md w-full bg-primary text-on-primary py-3 rounded-lg font-label-md text-label-md hover:bg-primary-container transition-colors flex justify-center items-center gap-2">
+<span class="material-symbols-outlined text-md" data-icon="payments">payments</span>
+                    Pay Outstanding Balance
+                </button>
+</div>
+</div>
+<!-- Filters and Search Area -->
+<div class="flex flex-col md:flex-row justify-between items-center gap-md mb-lg">
+<div class="flex bg-surface-container rounded-full p-1 w-full md:w-auto overflow-x-auto no-scrollbar">
+<button class="px-6 py-2 rounded-full font-label-md text-label-md bg-white text-primary shadow-sm transition-all">All</button>
+<button class="px-6 py-2 rounded-full font-label-md text-label-md text-on-surface-variant hover:text-primary transition-all">Paid</button>
+<button class="px-6 py-2 rounded-full font-label-md text-label-md text-on-surface-variant hover:text-primary transition-all">Unpaid</button>
+<button class="px-6 py-2 rounded-full font-label-md text-label-md text-on-surface-variant hover:text-primary transition-all">Overdue</button>
+</div>
+<div class="relative w-full md:w-80">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant" data-icon="search">search</span>
+<input class="w-full pl-10 pr-4 py-2 bg-white border border-outline-variant rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none font-body-sm text-body-sm" placeholder="Search by Matter or ID..." type="text"/>
+</div>
+</div>
+<!-- Invoices Table -->
+<div class="bg-white rounded-xl border border-outline-variant shadow-sm overflow-hidden mb-xxl">
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-low border-b border-outline-variant">
+<th class="px-lg py-md font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Invoice #</th>
+<th class="px-lg py-md font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Date</th>
+<th class="px-lg py-md font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Matter Name</th>
+<th class="px-lg py-md font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Amount</th>
+<th class="px-lg py-md font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Status</th>
+<th class="px-lg py-md font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant">
+<!-- Invoice Row 1 -->
+<tr class="hover:bg-surface-bright transition-colors group">
+<td class="px-lg py-lg font-body-md text-body-md text-primary font-semibold">INV-2024-081</td>
+<td class="px-lg py-lg font-body-sm text-body-sm text-on-surface-variant">Oct 24, 2023</td>
+<td class="px-lg py-lg">
+<p class="font-body-md text-body-md font-medium text-on-surface">Estate Planning - Sterling &amp; Co</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Client ID: LX-1102</p>
+</td>
+<td class="px-lg py-lg font-body-md text-body-md font-bold">$4,200.00</td>
+<td class="px-lg py-lg">
+<span class="status-pill bg-[#ffdad6] text-[#93000a]">Overdue</span>
+</td>
+<td class="px-lg py-lg text-right">
+<div class="flex justify-end items-center gap-sm">
+<button class="p-2 text-on-surface-variant hover:text-primary hover:bg-surface-container rounded-lg transition-all" title="Download PDF">
+<span class="material-symbols-outlined" data-icon="download">download</span>
+</button>
+<button class="bg-secondary text-on-secondary px-4 py-2 rounded-lg font-label-md text-label-md hover:opacity-90 transition-all">Pay Now</button>
+</div>
+</td>
+</tr>
+<!-- Invoice Row 2 -->
+<tr class="hover:bg-surface-bright transition-colors group">
+<td class="px-lg py-lg font-body-md text-body-md text-primary font-semibold">INV-2024-079</td>
+<td class="px-lg py-lg font-body-sm text-body-sm text-on-surface-variant">Oct 18, 2023</td>
+<td class="px-lg py-lg">
+<p class="font-body-md text-body-md font-medium text-on-surface">IP Litigation - Aurora Tech</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Client ID: LX-0945</p>
+</td>
+<td class="px-lg py-lg font-body-md text-body-md font-bold">$8,250.00</td>
+<td class="px-lg py-lg">
+<span class="status-pill bg-[#ffdad6] text-[#93000a]">Overdue</span>
+</td>
+<td class="px-lg py-lg text-right">
+<div class="flex justify-end items-center gap-sm">
+<button class="p-2 text-on-surface-variant hover:text-primary hover:bg-surface-container rounded-lg transition-all" title="Download PDF">
+<span class="material-symbols-outlined" data-icon="download">download</span>
+</button>
+<button class="bg-secondary text-on-secondary px-4 py-2 rounded-lg font-label-md text-label-md hover:opacity-90 transition-all">Pay Now</button>
+</div>
+</td>
+</tr>
+<!-- Invoice Row 3 -->
+<tr class="hover:bg-surface-bright transition-colors group">
+<td class="px-lg py-lg font-body-md text-body-md text-primary font-semibold">INV-2024-075</td>
+<td class="px-lg py-lg font-body-sm text-body-sm text-on-surface-variant">Sep 30, 2023</td>
+<td class="px-lg py-lg">
+<p class="font-body-md text-body-md font-medium text-on-surface">Real Estate Acquisition - Midtown</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Client ID: LX-0812</p>
+</td>
+<td class="px-lg py-lg font-body-md text-body-md font-bold">$2,100.00</td>
+<td class="px-lg py-lg">
+<span class="status-pill bg-[#e0f2f1] text-[#00695c]">Paid</span>
+</td>
+<td class="px-lg py-lg text-right">
+<div class="flex justify-end items-center gap-sm">
+<button class="p-2 text-on-surface-variant hover:text-primary hover:bg-surface-container rounded-lg transition-all" title="Download PDF">
+<span class="material-symbols-outlined" data-icon="download">download</span>
+</button>
+<button class="text-on-surface-variant px-4 py-2 rounded-lg font-label-md text-label-md border border-outline-variant hover:bg-surface-container transition-all">Receipt</button>
+</div>
+</td>
+</tr>
+<!-- Invoice Row 4 -->
+<tr class="hover:bg-surface-bright transition-colors group">
+<td class="px-lg py-lg font-body-md text-body-md text-primary font-semibold">INV-2024-072</td>
+<td class="px-lg py-lg font-body-sm text-body-sm text-on-surface-variant">Sep 15, 2023</td>
+<td class="px-lg py-lg">
+<p class="font-body-md text-body-md font-medium text-on-surface">Consultation - General Counsel</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Client ID: LX-0755</p>
+</td>
+<td class="px-lg py-lg font-body-md text-body-md font-bold">$950.00</td>
+<td class="px-lg py-lg">
+<span class="status-pill bg-[#e0f2f1] text-[#00695c]">Paid</span>
+</td>
+<td class="px-lg py-lg text-right">
+<div class="flex justify-end items-center gap-sm">
+<button class="p-2 text-on-surface-variant hover:text-primary hover:bg-surface-container rounded-lg transition-all" title="Download PDF">
+<span class="material-symbols-outlined" data-icon="download">download</span>
+</button>
+<button class="text-on-surface-variant px-4 py-2 rounded-lg font-label-md text-label-md border border-outline-variant hover:bg-surface-container transition-all">Receipt</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination-like Footer -->
+<div class="px-lg py-md bg-surface-container-low border-t border-outline-variant flex justify-between items-center">
+<p class="font-body-sm text-body-sm text-on-surface-variant">Showing 1 to 4 of 24 invoices</p>
+<div class="flex gap-2">
+<button class="p-2 rounded border border-outline-variant hover:bg-white transition-colors disabled:opacity-50" disabled="">
+<span class="material-symbols-outlined" data-icon="chevron_left">chevron_left</span>
+</button>
+<button class="p-2 rounded border border-outline-variant hover:bg-white transition-colors">
+<span class="material-symbols-outlined" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Help Section (Asymmetric / Modern UI Element) -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-lg mt-xxl">
+<div class="md:col-span-8 bg-primary-container text-on-primary-container p-xl rounded-2xl flex flex-col md:flex-row gap-xl items-center relative overflow-hidden">
+<div class="relative z-10">
+<h3 class="font-headline-sm text-headline-sm mb-2">Need assistance with your billing?</h3>
+<p class="font-body-md text-body-md opacity-90 mb-xl">Our finance team is available for any questions regarding Matter-specific expenses or payment installments.</p>
+<button class="bg-secondary-fixed text-on-secondary-fixed px-xl py-3 rounded-full font-label-md text-label-md font-bold hover:shadow-lg transition-all">Contact Billing Dept</button>
+</div>
+<div class="hidden lg:block relative w-48 h-48 flex-shrink-0">
+<div class="absolute inset-0 bg-secondary-fixed opacity-10 rounded-full blur-3xl animate-pulse"></div>
+<span class="material-symbols-outlined text-[160px] text-white opacity-20" data-icon="support_agent">support_agent</span>
+</div>
+</div>
+<div class="md:col-span-4 bg-white border border-outline-variant p-xl rounded-2xl shadow-sm">
+<h3 class="font-headline-sm text-headline-sm text-primary mb-md">Payment Methods</h3>
+<div class="space-y-md">
+<div class="flex items-center gap-md p-md rounded-lg border border-outline-variant hover:border-primary transition-all cursor-pointer">
+<span class="material-symbols-outlined text-primary text-2xl" data-icon="credit_card">credit_card</span>
+<div>
+<p class="font-label-md text-label-md text-on-surface">Visa ending in 4421</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Primary Method</p>
+</div>
+</div>
+<div class="flex items-center gap-md p-md rounded-lg border border-outline-variant hover:border-primary transition-all cursor-pointer">
+<span class="material-symbols-outlined text-primary text-2xl" data-icon="account_balance">account_balance</span>
+<div>
+<p class="font-label-md text-label-md text-on-surface">Chase Checking ****012</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Secondary Method</p>
+</div>
+</div>
+<button class="w-full text-center font-label-md text-label-md text-primary mt-2">+ Add New Payment Method</button>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-container-low dark:bg-surface-container-highest w-full py-xl px-margin-desktop flex flex-col md:flex-row justify-between items-center gap-md">
+<div class="font-label-md text-label-md font-semibold text-on-surface dark:text-inverse-on-surface">
+            Lexington &amp; Associates
+        </div>
+<div class="flex gap-lg flex-wrap justify-center">
+<a class="font-label-sm text-label-sm text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-inverse-primary underline transition-opacity duration-200" href="#">Support</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-inverse-primary underline transition-opacity duration-200" href="#">Privacy Policy</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-inverse-primary underline transition-opacity duration-200" href="#">Terms of Service</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-inverse-primary underline transition-opacity duration-200" href="#">Contact Us</a>
+</div>
+<div class="font-label-sm text-label-sm text-on-surface-variant dark:text-surface-variant">
+            © 2024 Lexington &amp; Associates. All rights reserved.
+        </div>
+</footer>
+<script>
+        // Micro-interactions for the table rows
+        document.querySelectorAll('tbody tr').forEach(row => {
+            row.addEventListener('mouseenter', () => {
+                row.style.transform = 'scale(1.002)';
+                row.style.transition = 'all 0.2s ease';
+            });
+            row.addEventListener('mouseleave', () => {
+                row.style.transform = 'scale(1)';
+            });
+        });
+
+        // Filter button toggles
+        const filterButtons = document.querySelectorAll('.flex.bg-surface-container button');
+        filterButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                filterButtons.forEach(b => {
+                    b.classList.remove('bg-white', 'text-primary', 'shadow-sm');
+                    b.classList.add('text-on-surface-variant');
+                });
+                btn.classList.add('bg-white', 'text-primary', 'shadow-sm');
+                btn.classList.remove('text-on-surface-variant');
+            });
+        });
+    </script>
+</body></html>

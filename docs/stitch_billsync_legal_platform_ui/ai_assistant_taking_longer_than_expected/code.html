@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>BillSync AI Assistant | Busy State</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container": "#e4effd",
+                        "on-tertiary-fixed-variant": "#364764",
+                        "on-primary-fixed": "#001c37",
+                        "tertiary-fixed": "#d6e3ff",
+                        "on-surface": "#121d26",
+                        "surface-container-highest": "#d9e3f1",
+                        "primary-container": "#123b63",
+                        "primary-fixed": "#d2e4ff",
+                        "tertiary-fixed-dim": "#b5c7ea",
+                        "secondary-fixed-dim": "#ecc246",
+                        "primary": "#002546",
+                        "on-tertiary-container": "#92a4c5",
+                        "on-secondary": "#ffffff",
+                        "surface-container-lowest": "#ffffff",
+                        "outline": "#73777f",
+                        "on-secondary-container": "#735a00",
+                        "inverse-on-surface": "#e8f2ff",
+                        "on-secondary-fixed": "#241a00",
+                        "surface-variant": "#d9e3f1",
+                        "surface-dim": "#d1dbe8",
+                        "tertiary": "#11243f",
+                        "secondary": "#755b00",
+                        "secondary-fixed": "#ffe08e",
+                        "surface-container-low": "#edf4ff",
+                        "surface": "#f7f9ff",
+                        "inverse-surface": "#27313c",
+                        "error-container": "#ffdad6",
+                        "tertiary-container": "#283a56",
+                        "outline-variant": "#c3c6cf",
+                        "on-tertiary": "#ffffff",
+                        "on-primary": "#ffffff",
+                        "surface-bright": "#f7f9ff",
+                        "on-error-container": "#93000a",
+                        "surface-container-high": "#dfe9f7",
+                        "on-primary-container": "#83a6d4",
+                        "background": "#f7f9ff",
+                        "on-secondary-fixed-variant": "#584400",
+                        "inverse-primary": "#a6c9f9",
+                        "secondary-container": "#fed255",
+                        "on-background": "#121d26",
+                        "surface-tint": "#3d608a",
+                        "on-primary-fixed-variant": "#234871",
+                        "error": "#ba1a1a",
+                        "primary-fixed-dim": "#a6c9f9",
+                        "on-surface-variant": "#43474e",
+                        "on-tertiary-fixed": "#071c36",
+                        "on-error": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "sidebar-width": "260px",
+                        "md": "16px",
+                        "xxl": "48px",
+                        "xs": "4px",
+                        "gutter-desktop": "24px",
+                        "xl": "32px",
+                        "base": "8px",
+                        "margin-desktop": "40px",
+                        "sm": "12px",
+                        "lg": "24px"
+                    },
+                    "fontFamily": {
+                        "body-sm": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "label-md": ["Inter"],
+                        "headline-sm": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "headline-md": ["Inter"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .dot-pulse {
+            animation: pulse 1.5s infinite ease-in-out;
+        }
+        .dot-pulse:nth-child(2) { animation-delay: 0.2s; }
+        .dot-pulse:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes pulse {
+            0%, 100% { opacity: 0.3; transform: scale(0.8); }
+            50% { opacity: 1; transform: scale(1.1); }
+        }
+        .ai-glass {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen overflow-hidden flex">
+<!-- SideNavBar (from JSON) -->
+<aside class="fixed left-0 top-0 h-full w-sidebar-width bg-tertiary dark:bg-tertiary-container flex flex-col py-lg z-50">
+<div class="px-lg mb-xl">
+<h1 class="font-headline-sm text-headline-sm text-surface-container-lowest">BillSync Legal</h1>
+<p class="font-label-sm text-label-sm text-tertiary-fixed-dim opacity-70">Law Firm Management</p>
+</div>
+<nav class="flex-1 overflow-y-auto">
+<ul class="space-y-xs px-md">
+<!-- Determined "AI Assistant" as active state -->
+<li><a class="flex items-center gap-md py-sm px-md rounded-lg text-tertiary-fixed-dim hover:text-surface-container-lowest transition-colors" href="#"><span class="material-symbols-outlined" data-icon="dashboard">dashboard</span> <span class="font-label-md text-label-md">Dashboard</span></a></li>
+<li><a class="flex items-center gap-md py-sm px-md rounded-lg text-tertiary-fixed-dim hover:text-surface-container-lowest transition-colors" href="#"><span class="material-symbols-outlined" data-icon="group">group</span> <span class="font-label-md text-label-md">Clients</span></a></li>
+<li><a class="flex items-center gap-md py-sm px-md rounded-lg text-tertiary-fixed-dim hover:text-surface-container-lowest transition-colors" href="#"><span class="material-symbols-outlined" data-icon="folder_open">folder_open</span> <span class="font-label-md text-label-md">Matters</span></a></li>
+<li><a class="flex items-center gap-md py-sm px-md rounded-lg text-tertiary-fixed-dim hover:text-surface-container-lowest transition-colors" href="#"><span class="material-symbols-outlined" data-icon="assignment">assignment</span> <span class="font-label-md text-label-md">Tasks</span></a></li>
+<li>
+<a class="flex items-center gap-md py-sm px-md rounded-lg text-surface-container-lowest border-l-2 border-secondary font-bold bg-white/5 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="smart_toy" style="font-variation-settings: 'FILL' 1;">smart_toy</span>
+<span class="font-label-md text-label-md">AI Assistant</span>
+</a>
+</li>
+<li><a class="flex items-center gap-md py-sm px-md rounded-lg text-tertiary-fixed-dim hover:text-surface-container-lowest transition-colors" href="#"><span class="material-symbols-outlined" data-icon="payments">payments</span> <span class="font-label-md text-label-md">Billing</span></a></li>
+<li><a class="flex items-center gap-md py-sm px-md rounded-lg text-tertiary-fixed-dim hover:text-surface-container-lowest transition-colors" href="#"><span class="material-symbols-outlined" data-icon="settings">settings</span> <span class="font-label-md text-label-md">Settings</span></a></li>
+</ul>
+</nav>
+</aside>
+<!-- Main Content Area -->
+<main class="ml-sidebar-width flex-1 flex flex-col min-h-screen relative">
+<!-- TopNavBar (from JSON) -->
+<header class="flex justify-between items-center w-full h-16 px-margin-desktop bg-surface border-b border-surface-variant z-40">
+<div class="flex items-center gap-xl">
+<span class="font-headline-md text-headline-md font-bold text-primary">BillSync</span>
+<div class="relative w-80">
+<span class="material-symbols-outlined absolute left-md top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="w-full bg-surface-container-low border-none rounded-full pl-xxl pr-md py-xs text-body-sm focus:ring-1 focus:ring-primary" placeholder="Search matters or documents..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-lg">
+<button class="material-symbols-outlined text-on-surface-variant hover:bg-surface-container-low p-xs rounded-full transition-all active:scale-95 duration-150">notifications</button>
+<button class="material-symbols-outlined text-on-surface-variant hover:bg-surface-container-low p-xs rounded-full transition-all active:scale-95 duration-150">timer</button>
+<button class="material-symbols-outlined text-primary hover:bg-surface-container-low p-xs rounded-full transition-all active:scale-95 duration-150">account_circle</button>
+</div>
+</header>
+<!-- Chat Workspace Canvas -->
+<section class="flex-1 p-margin-desktop flex gap-lg bg-[#F8F5EF] relative overflow-hidden">
+<!-- Background Decoration -->
+<div class="absolute inset-0 pointer-events-none opacity-20">
+<div class="absolute top-[-10%] right-[-5%] w-[400px] h-[400px] bg-primary-fixed rounded-full blur-[120px]"></div>
+<div class="absolute bottom-[-5%] left-[-5%] w-[300px] h-[300px] bg-tertiary-fixed-dim rounded-full blur-[100px]"></div>
+</div>
+<!-- Left Panel: Context/Thread Info -->
+<div class="w-1/4 hidden lg:flex flex-col gap-md z-10">
+<div class="bg-white p-lg rounded-xl border border-outline-variant shadow-sm">
+<h3 class="font-headline-sm text-headline-sm text-primary mb-md">Current Analysis</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-xl">Analyzing deposition transcripts for Matter #2024-081 (State vs. Miller).</p>
+<div class="space-y-md">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-secondary text-body-md" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="font-label-md text-label-md text-on-surface">Data extraction complete</span>
+</div>
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-secondary text-body-md" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="font-label-md text-label-md text-on-surface">Timeline verification</span>
+</div>
+<div class="flex items-center gap-sm">
+<div class="w-4 h-4 border-2 border-secondary border-t-transparent rounded-full animate-spin"></div>
+<span class="font-label-md text-label-md text-primary font-bold">Generating Summary</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Center Panel: AI Assistant Interface -->
+<div class="flex-1 flex flex-col bg-white rounded-xl border border-outline-variant shadow-sm overflow-hidden z-10">
+<!-- Chat Header -->
+<div class="px-lg py-md border-b border-outline-variant flex items-center justify-between">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 bg-primary-container rounded-lg flex items-center justify-center text-on-primary-container">
+<span class="material-symbols-outlined">smart_toy</span>
+</div>
+<div>
+<h2 class="font-headline-sm text-headline-sm text-primary">Case Intelligence Assistant</h2>
+<span class="font-label-sm text-label-sm text-secondary flex items-center gap-xs">
+<span class="w-2 h-2 bg-secondary rounded-full"></span>
+                                System Processing
+                            </span>
+</div>
+</div>
+<button class="material-symbols-outlined text-on-surface-variant p-xs hover:bg-surface-container rounded-full">more_vert</button>
+</div>
+<!-- Chat Messages Scroll Area -->
+<div class="flex-1 p-lg overflow-y-auto space-y-xl bg-surface-container-low/30">
+<!-- User Message -->
+<div class="flex justify-end">
+<div class="max-w-[80%] bg-primary text-white p-lg rounded-tl-xl rounded-tr-xl rounded-bl-xl shadow-sm">
+<p class="font-body-md text-body-md">Can you summarize the inconsistencies found in the three depositions from today's session? I need a clear table of conflicting dates.</p>
+</div>
+</div>
+<!-- AI Delayed Response State (THE TASK) -->
+<div class="flex items-start gap-md">
+<div class="w-10 h-10 bg-primary-container rounded-lg flex-shrink-0 flex items-center justify-center text-on-primary-container">
+<span class="material-symbols-outlined">smart_toy</span>
+</div>
+<div class="max-w-[80%] space-y-md">
+<!-- Loading Dots Bubble -->
+<div class="ai-glass p-lg rounded-tr-xl rounded-br-xl rounded-bl-xl shadow-sm space-y-md">
+<div class="flex gap-xs mb-md">
+<div class="w-2 h-2 bg-primary rounded-full dot-pulse"></div>
+<div class="w-2 h-2 bg-primary rounded-full dot-pulse"></div>
+<div class="w-2 h-2 bg-primary rounded-full dot-pulse"></div>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant leading-relaxed">
+                                    AI is taking longer than expected. You can keep working and I will notify you when the summary is ready.
+                                </p>
+</div>
+<!-- Action Buttons -->
+<div class="flex items-center gap-md">
+<button class="bg-primary text-on-primary px-lg py-sm rounded-full font-label-md text-label-md hover:bg-primary-container transition-all active:scale-95">
+                                    Try Again
+                                </button>
+<button class="border border-outline text-primary px-lg py-sm rounded-full font-label-md text-label-md hover:bg-surface-container transition-all active:scale-95">
+                                    Continue Working
+                                </button>
+</div>
+</div>
+</div>
+</div>
+<!-- Chat Input (Disabled State) -->
+<div class="p-lg border-t border-outline-variant bg-surface">
+<div class="relative flex items-center">
+<input class="w-full border border-outline-variant rounded-xl py-lg px-xl bg-surface-container-lowest text-body-md opacity-50 cursor-not-allowed" disabled="" placeholder="Assistant is busy processing..." type="text"/>
+<div class="absolute right-md flex items-center gap-sm">
+<span class="material-symbols-outlined text-outline-variant">attach_file</span>
+<button class="bg-outline-variant text-white p-sm rounded-lg cursor-not-allowed">
+<span class="material-symbols-outlined">send</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Footer (from JSON) -->
+<footer class="flex justify-between items-center py-md px-margin-desktop bg-background border-t border-surface-variant z-40">
+<div class="font-label-md text-label-md font-bold text-on-surface">BillSync Legal</div>
+<div class="flex gap-xl">
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Terms of Service</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Privacy Policy</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Contact Support</a>
+</div>
+<div class="font-label-sm text-label-sm text-on-surface-variant">© 2024 BillSync Legal. All rights reserved.</div>
+</footer>
+</main>
+<script>
+        // Micro-interactions for buttons
+        document.querySelectorAll('button').forEach(btn => {
+            btn.addEventListener('click', function() {
+                this.classList.add('opacity-90');
+                setTimeout(() => this.classList.remove('opacity-90'), 200);
+            });
+        });
+
+        // Floating ambient effect
+        const bgElements = document.querySelectorAll('.blur-full');
+        document.addEventListener('mousemove', (e) => {
+            const mouseX = e.clientX / window.innerWidth;
+            const mouseY = e.clientY / window.innerHeight;
+            
+            bgElements.forEach((el, index) => {
+                const moveX = (mouseX - 0.5) * (10 * (index + 1));
+                const moveY = (mouseY - 0.5) * (10 * (index + 1));
+                el.style.transform = `translate(${moveX}px, ${moveY}px)`;
+            });
+        });
+    </script>
+</body></html>

@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Payment Reconciliation | BillSync Legal</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind Configuration -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-secondary-container": "#735a00",
+                    "surface-container-lowest": "#ffffff",
+                    "primary-fixed-dim": "#a6c9f9",
+                    "on-primary-fixed-variant": "#234871",
+                    "inverse-on-surface": "#e8f2ff",
+                    "on-primary-fixed": "#001c37",
+                    "tertiary-fixed": "#d6e3ff",
+                    "surface": "#f7f9ff",
+                    "secondary-fixed": "#ffe08e",
+                    "tertiary-container": "#283a56",
+                    "primary-container": "#123b63",
+                    "tertiary-fixed-dim": "#b5c7ea",
+                    "surface-dim": "#d1dbe8",
+                    "surface-container-low": "#edf4ff",
+                    "on-tertiary-fixed": "#071c36",
+                    "on-background": "#121d26",
+                    "on-error-container": "#93000a",
+                    "error": "#ba1a1a",
+                    "background": "#f7f9ff",
+                    "outline": "#73777f",
+                    "on-error": "#ffffff",
+                    "on-primary": "#ffffff",
+                    "surface-variant": "#d9e3f1",
+                    "on-tertiary-fixed-variant": "#364764",
+                    "surface-container-high": "#dfe9f7",
+                    "on-surface-variant": "#43474e",
+                    "on-surface": "#121d26",
+                    "on-primary-container": "#83a6d4",
+                    "primary-fixed": "#d2e4ff",
+                    "on-secondary": "#ffffff",
+                    "tertiary": "#11243f",
+                    "on-tertiary-container": "#92a4c5",
+                    "surface-bright": "#f7f9ff",
+                    "secondary-container": "#fed255",
+                    "error-container": "#ffdad6",
+                    "primary": "#002546",
+                    "inverse-surface": "#27313c",
+                    "surface-container-highest": "#d9e3f1",
+                    "secondary": "#755b00",
+                    "surface-container": "#e4effd",
+                    "on-secondary-fixed": "#241a00",
+                    "secondary-fixed-dim": "#ecc246",
+                    "outline-variant": "#c3c6cf",
+                    "on-tertiary": "#ffffff",
+                    "on-secondary-fixed-variant": "#584400",
+                    "inverse-primary": "#a6c9f9",
+                    "surface-tint": "#3d608a"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "base": "8px",
+                    "xl": "32px",
+                    "xs": "4px",
+                    "lg": "24px",
+                    "sm": "12px",
+                    "xxl": "48px",
+                    "gutter-desktop": "24px",
+                    "md": "16px",
+                    "margin-desktop": "40px",
+                    "sidebar-width": "260px"
+            },
+            "fontFamily": {
+                    "body-sm": ["Inter"],
+                    "label-md": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "headline-sm": ["Inter"],
+                    "body-md": ["Inter"],
+                    "label-sm": ["Inter"],
+                    "headline-md": ["Inter"]
+            }
+          }
+        }
+      }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #c3c6cf; border-radius: 10px; }
+    </style>
+</head>
+<body class="bg-background text-on-surface">
+<!-- Side Navigation Bar -->
+<aside class="fixed left-0 top-0 h-screen w-sidebar-width bg-primary dark:bg-primary border-r border-outline-variant/10 flex flex-col py-lg z-50">
+<div class="px-lg mb-xxl flex items-center gap-sm">
+<div class="w-8 h-8 bg-secondary-container rounded flex items-center justify-center">
+<span class="material-symbols-outlined text-on-secondary-container" style="font-variation-settings: 'FILL' 1;">account_balance</span>
+</div>
+<div>
+<h1 class="text-headline-sm font-headline-sm font-bold text-surface">LexisPremium</h1>
+<p class="text-[10px] uppercase tracking-widest text-on-primary-container/70">Elite Law Management</p>
+</div>
+</div>
+<nav class="flex-1 px-sm space-y-1 custom-scrollbar overflow-y-auto">
+<!-- Navigation Items Mapping from JSON -->
+<a class="flex items-center gap-md px-md py-sm font-body-md text-body-md text-surface-variant hover:bg-primary-container/20 hover:text-surface transition-colors rounded-lg group" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span>Dashboard</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm font-body-md text-body-md text-surface-variant hover:bg-primary-container/20 hover:text-surface transition-colors rounded-lg group" href="#">
+<span class="material-symbols-outlined" data-icon="folder_open">folder_open</span>
+<span>Matters</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm font-body-md text-body-md text-surface dark:text-surface border-l-2 border-secondary-container bg-primary-container/30 rounded-lg group" href="#">
+<span class="material-symbols-outlined" data-icon="receipt_long">receipt_long</span>
+<span>Billing</span>
+</a>
+<!-- Simplified nav for brevity while keeping core structure -->
+<a class="flex items-center gap-md px-md py-sm font-body-md text-body-md text-surface-variant hover:bg-primary-container/20 hover:text-surface transition-colors rounded-lg group" href="#">
+<span class="material-symbols-outlined" data-icon="groups">groups</span>
+<span>Clients</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm font-body-md text-body-md text-surface-variant hover:bg-primary-container/20 hover:text-surface transition-colors rounded-lg group" href="#">
+<span class="material-symbols-outlined" data-icon="assessment">assessment</span>
+<span>Reporting</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm font-body-md text-body-md text-surface-variant hover:bg-primary-container/20 hover:text-surface transition-colors rounded-lg group" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span>Settings</span>
+</a>
+</nav>
+<div class="mt-auto px-sm pt-lg border-t border-outline-variant/10 space-y-1">
+<a class="flex items-center gap-md px-md py-sm font-body-md text-body-md text-surface-variant hover:bg-primary-container/20 hover:text-surface transition-colors rounded-lg group" href="#">
+<span class="material-symbols-outlined" data-icon="help_outline">help_outline</span>
+<span>Help Center</span>
+</a>
+<div class="p-md flex items-center gap-md bg-primary-container/10 rounded-lg mt-sm">
+<img alt="Attorney Profile" class="w-10 h-10 rounded-full border border-outline-variant/30" data-alt="A professional headshot of a senior male attorney in a sharp charcoal suit against a softly blurred law library background. The lighting is crisp and executive, emphasizing authority and professional calm. The overall tone is sophisticated, aligning with high-end corporate legal services." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAL7cMYwpS2bFaHU6u1oU-KZNXSrJ53QA2O53KgD2ADDqz19GSpl-Hp-KsTU5BdaEpwfTHAg9ZLLTGKl_CRrzIuRbJBHA8VDrfOE0fL0UL_9hNSCGFzJSXNhVfidrrjOjPlIbqKtbErImqOcLVqcgXxI1V3XAd2t6iXYpMgVW48xl6PKjuQiq5c0bc2RMSN9YtDGKRdv4vr3m5BlWTRTeTC9KKfWSaUEMadrkn75lhR3VX1ugyEbsDkSPOVQFZ73rABgb2hIBjMswZk"/>
+<div class="flex-1 overflow-hidden">
+<p class="text-label-md text-surface font-bold truncate">R. Vance, Esq.</p>
+<p class="text-label-sm text-surface-variant truncate">Principal Partner</p>
+</div>
+<span class="material-symbols-outlined text-surface-variant cursor-pointer" data-icon="logout">logout</span>
+</div>
+</div>
+</aside>
+<!-- Main Content Shell -->
+<main class="ml-sidebar-width flex flex-col min-h-screen">
+<!-- Top Nav Bar -->
+<header class="flex justify-between items-center h-16 px-margin-desktop bg-surface border-b border-outline-variant shadow-sm sticky top-0 z-40">
+<div class="flex items-center gap-xl">
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-md top-1/2 -translate-y-1/2 text-outline" data-icon="search">search</span>
+<input class="bg-surface-container-low border-none rounded-full pl-11 pr-xl py-2 text-label-md focus:ring-2 focus:ring-primary/20 w-80 transition-all" placeholder="Search invoices or payments..." type="text"/>
+</div>
+<nav class="hidden md:flex gap-lg items-center h-full">
+<a class="font-label-md text-label-md text-primary font-bold border-b-2 border-secondary-container h-full flex items-center pt-1" href="#">Reconciliation</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" href="#">Pending Invoices</a>
+</nav>
+</div>
+<div class="flex items-center gap-lg">
+<div class="flex items-center gap-sm">
+<button class="p-2 text-on-surface-variant hover:bg-surface-container rounded-full transition-all">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:bg-surface-container rounded-full transition-all">
+<span class="material-symbols-outlined" data-icon="history">history</span>
+</button>
+</div>
+<button class="bg-primary text-on-primary px-lg py-2 rounded-full font-label-md text-label-md flex items-center gap-sm hover:opacity-90 active:scale-95 transition-all">
+<span class="material-symbols-outlined text-[20px]" data-icon="add_circle">add_circle</span>
+                    Create Invoice
+                </button>
+</div>
+</header>
+<!-- Content Canvas -->
+<div class="flex-1 p-margin-desktop space-y-xl max-w-[1440px] mx-auto w-full">
+<!-- Page Header -->
+<div class="flex justify-between items-end">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface">Payment Reconciliation</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Match 24 client portal payments with outstanding invoices across your matters.</p>
+</div>
+<div class="flex gap-md">
+<button class="flex items-center gap-sm px-lg py-md border border-secondary text-secondary font-label-md text-label-md rounded-xl hover:bg-secondary/5 transition-all" id="autoMatchBtn">
+<span class="material-symbols-outlined" data-icon="auto_awesome">auto_awesome</span>
+                        Run Auto-Match
+                    </button>
+<button class="flex items-center gap-sm px-lg py-md bg-secondary-container text-on-secondary-container font-label-md text-label-md rounded-xl hover:shadow-md transition-all">
+<span class="material-symbols-outlined" data-icon="check_circle">check_circle</span>
+                        Batch Reconcile
+                    </button>
+</div>
+</div>
+<!-- Dashboard Stats Summary -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-lg">
+<div class="bg-surface-container-lowest p-lg rounded-xl border border-outline-variant shadow-sm">
+<p class="text-label-sm text-on-surface-variant uppercase tracking-wider mb-xs">Unmatched Payments</p>
+<p class="text-headline-md font-headline-md text-secondary">24 <span class="text-body-sm font-normal text-on-surface-variant">($48,250)</span></p>
+</div>
+<div class="bg-surface-container-lowest p-lg rounded-xl border border-outline-variant shadow-sm">
+<p class="text-label-sm text-on-surface-variant uppercase tracking-wider mb-xs">Open Invoices</p>
+<p class="text-headline-md font-headline-md text-primary">112 <span class="text-body-sm font-normal text-on-surface-variant">($1.2M Total)</span></p>
+</div>
+<div class="bg-surface-container-lowest p-lg rounded-xl border border-outline-variant shadow-sm">
+<p class="text-label-sm text-on-surface-variant uppercase tracking-wider mb-xs">Avg. Time to Match</p>
+<p class="text-headline-md font-headline-md">1.2 hrs</p>
+</div>
+<div class="bg-surface-container-lowest p-lg rounded-xl border border-outline-variant shadow-sm relative overflow-hidden group">
+<div class="relative z-10">
+<p class="text-label-sm text-on-surface-variant uppercase tracking-wider mb-xs">Reconciliation Score</p>
+<p class="text-headline-md font-headline-md text-on-tertiary-fixed-variant">98.4%</p>
+</div>
+<div class="absolute right-0 bottom-0 opacity-10 group-hover:opacity-20 transition-opacity">
+<span class="material-symbols-outlined text-[64px]" data-icon="trending_up">trending_up</span>
+</div>
+</div>
+</div>
+<!-- Reconciliation Workspace (Split-View) -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-xl items-stretch">
+<!-- LEFT: Unreconciled Payments -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl flex flex-col h-[600px] shadow-sm">
+<div class="p-lg border-b border-outline-variant flex justify-between items-center bg-surface-container-low/30">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-secondary" data-icon="input">input</span>
+<h3 class="font-headline-sm text-headline-sm">Unreconciled Payments</h3>
+</div>
+<span class="bg-secondary-container/20 text-on-secondary-container px-sm py-xs rounded text-label-sm">24 Remaining</span>
+</div>
+<div class="p-md flex gap-sm border-b border-outline-variant">
+<button class="flex-1 py-xs text-label-sm bg-surface-container-high rounded text-primary font-bold">Newest First</button>
+<button class="flex-1 py-xs text-label-sm text-on-surface-variant hover:bg-surface-container-low transition-all">By Amount</button>
+</div>
+<div class="flex-1 overflow-y-auto custom-scrollbar p-md space-y-md">
+<!-- Payment Card 1 -->
+<div class="payment-card group border border-outline-variant hover:border-secondary hover:shadow-md rounded-lg p-lg cursor-pointer transition-all bg-white relative overflow-hidden" onclick="toggleActive(this, 'payment')">
+<div class="flex justify-between items-start relative z-10">
+<div>
+<div class="flex items-center gap-sm mb-xs">
+<span class="font-bold text-body-md">Sterling &amp; Associates</span>
+<span class="text-xs text-on-surface-variant font-mono">#PAY-8821</span>
+</div>
+<p class="text-body-sm text-on-surface-variant">Via Client Portal • Amex ****4210</p>
+</div>
+<div class="text-right">
+<p class="text-headline-sm text-secondary font-bold">$12,500.00</p>
+<p class="text-label-sm text-on-surface-variant">Oct 24, 2024</p>
+</div>
+</div>
+<div class="mt-md flex items-center gap-sm text-label-sm text-on-surface-variant opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-sm" data-icon="link">link</span>
+                                Click to link this payment
+                            </div>
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-secondary scale-y-0 transition-transform origin-top group-[.active]:scale-y-100"></div>
+</div>
+<!-- Payment Card 2 -->
+<div class="payment-card group border border-outline-variant hover:border-secondary hover:shadow-md rounded-lg p-lg cursor-pointer transition-all bg-white relative overflow-hidden" onclick="toggleActive(this, 'payment')">
+<div class="flex justify-between items-start relative z-10">
+<div>
+<div class="flex items-center gap-sm mb-xs">
+<span class="font-bold text-body-md">Elena Rodriguez</span>
+<span class="text-xs text-on-surface-variant font-mono">#PAY-8822</span>
+</div>
+<p class="text-body-sm text-on-surface-variant">Bank Transfer • Ref: Invoice 202-A</p>
+</div>
+<div class="text-right">
+<p class="text-headline-sm text-secondary font-bold">$4,200.00</p>
+<p class="text-label-sm text-on-surface-variant">Oct 25, 2024</p>
+</div>
+</div>
+<div class="mt-md flex items-center gap-sm text-label-sm text-on-surface-variant opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-sm" data-icon="link">link</span>
+                                Click to link this payment
+                            </div>
+</div>
+<!-- Payment Card 3 -->
+<div class="payment-card group border border-outline-variant hover:border-secondary hover:shadow-md rounded-lg p-lg cursor-pointer transition-all bg-white relative overflow-hidden" onclick="toggleActive(this, 'payment')">
+<div class="flex justify-between items-start relative z-10">
+<div>
+<div class="flex items-center gap-sm mb-xs">
+<span class="font-bold text-body-md">Global Logistics Corp</span>
+<span class="text-xs text-on-surface-variant font-mono">#PAY-8823</span>
+</div>
+<p class="text-body-sm text-on-surface-variant">Via Client Portal • ACH</p>
+</div>
+<div class="text-right">
+<p class="text-headline-sm text-secondary font-bold">$25,000.00</p>
+<p class="text-label-sm text-on-surface-variant">Oct 25, 2024</p>
+</div>
+</div>
+<div class="mt-md flex items-center gap-sm text-label-sm text-on-surface-variant opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-sm" data-icon="link">link</span>
+                                Click to link this payment
+                            </div>
+</div>
+</div>
+</div>
+<!-- RIGHT: Open Invoices -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl flex flex-col h-[600px] shadow-sm">
+<div class="p-lg border-b border-outline-variant flex justify-between items-center bg-surface-container-low/30">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary" data-icon="outbox">outbox</span>
+<h3 class="font-headline-sm text-headline-sm">Open Invoices</h3>
+</div>
+<div class="flex items-center gap-xs">
+<span class="material-symbols-outlined text-on-surface-variant text-[20px]" data-icon="filter_list">filter_list</span>
+<span class="text-label-sm text-on-surface-variant">Filter</span>
+</div>
+</div>
+<div class="p-md border-b border-outline-variant">
+<div class="relative">
+<span class="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-outline text-sm" data-icon="search">search</span>
+<input class="w-full pl-lg pr-md py-1.5 text-label-sm border border-outline-variant rounded-lg focus:ring-1 focus:ring-primary" placeholder="Filter by client or matter name..." type="text"/>
+</div>
+</div>
+<div class="flex-1 overflow-y-auto custom-scrollbar p-md space-y-md">
+<!-- Invoice Card 1 (Potential Match) -->
+<div class="invoice-card group border border-outline-variant hover:border-primary hover:shadow-md rounded-lg p-lg cursor-pointer transition-all bg-white relative overflow-hidden" onclick="toggleActive(this, 'invoice')">
+<div class="flex justify-between items-start relative z-10">
+<div class="flex-1">
+<div class="flex items-center gap-sm mb-xs">
+<span class="font-bold text-body-md text-primary">Sterling &amp; Associates</span>
+<span class="bg-primary-fixed text-on-primary-fixed px-xs py-[2px] rounded text-[10px] font-bold uppercase">95% Match</span>
+</div>
+<p class="text-body-sm font-medium text-on-surface">General Counsel Retainer - Q4</p>
+<p class="text-label-sm text-on-surface-variant">Matter: GC-2024-001 • Sent: Oct 15</p>
+</div>
+<div class="text-right">
+<p class="text-headline-sm text-primary font-bold">$12,500.00</p>
+<p class="text-label-sm text-on-surface-variant">Due: Nov 15</p>
+</div>
+</div>
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-primary scale-y-0 transition-transform origin-top group-[.active]:scale-y-100"></div>
+</div>
+<!-- Invoice Card 2 -->
+<div class="invoice-card group border border-outline-variant hover:border-primary hover:shadow-md rounded-lg p-lg cursor-pointer transition-all bg-white relative overflow-hidden" onclick="toggleActive(this, 'invoice')">
+<div class="flex justify-between items-start relative z-10">
+<div class="flex-1">
+<div class="flex items-center gap-sm mb-xs">
+<span class="font-bold text-body-md text-primary">Rodriguez Property</span>
+</div>
+<p class="text-body-sm font-medium text-on-surface">Land Transfer &amp; Filing Fees</p>
+<p class="text-label-sm text-on-surface-variant">Matter: REL-2024-88 • Sent: Oct 18</p>
+</div>
+<div class="text-right">
+<p class="text-headline-sm text-primary font-bold">$4,200.00</p>
+<p class="text-label-sm text-on-surface-variant font-bold text-error">Overdue 2 Days</p>
+</div>
+</div>
+</div>
+<!-- Invoice Card 3 -->
+<div class="invoice-card group border border-outline-variant hover:border-primary hover:shadow-md rounded-lg p-lg cursor-pointer transition-all bg-white relative overflow-hidden" onclick="toggleActive(this, 'invoice')">
+<div class="flex justify-between items-start relative z-10">
+<div class="flex-1">
+<div class="flex items-center gap-sm mb-xs">
+<span class="font-bold text-body-md text-primary">Global Logistics Corp</span>
+</div>
+<p class="text-body-sm font-medium text-on-surface">M&amp;A Strategy Consultation</p>
+<p class="text-label-sm text-on-surface-variant">Matter: CORP-MA-102 • Sent: Oct 20</p>
+</div>
+<div class="text-right">
+<p class="text-headline-sm text-primary font-bold">$38,000.00</p>
+<p class="text-label-sm text-on-surface-variant">Due: Nov 20</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Manual Link Controller Bar (Floating Action) -->
+<div class="hidden fixed bottom-12 left-1/2 -translate-x-1/2 w-fit min-w-[500px] bg-inverse-surface text-inverse-on-surface p-md rounded-full shadow-2xl z-50 flex items-center justify-between gap-xl ring-4 ring-primary/10" id="reconcileBar">
+<div class="flex items-center gap-lg pl-md">
+<div class="flex flex-col">
+<span class="text-[10px] uppercase font-bold text-surface-variant">Selected Payment</span>
+<span class="text-label-md font-bold text-white" id="selectedPaymentText">None</span>
+</div>
+<span class="material-symbols-outlined text-secondary" data-icon="compare_arrows">compare_arrows</span>
+<div class="flex flex-col">
+<span class="text-[10px] uppercase font-bold text-surface-variant">Selected Invoice</span>
+<span class="text-label-md font-bold text-white" id="selectedInvoiceText">None</span>
+</div>
+</div>
+<button class="bg-secondary-container text-on-secondary-container px-lg py-2.5 rounded-full font-bold text-label-md flex items-center gap-sm hover:scale-105 active:scale-95 transition-all">
+                    Link &amp; Reconcile
+                    <span class="material-symbols-outlined text-[20px]" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+<!-- Recent Activity Table -->
+<section class="space-y-lg">
+<div class="flex items-center gap-md">
+<h3 class="font-headline-sm text-headline-sm">Recently Reconciled</h3>
+<div class="h-px flex-1 bg-outline-variant"></div>
+</div>
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden shadow-sm">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-low/50">
+<th class="px-lg py-md text-label-sm text-on-surface-variant font-bold">DATE</th>
+<th class="px-lg py-md text-label-sm text-on-surface-variant font-bold">CLIENT / MATTER</th>
+<th class="px-lg py-md text-label-sm text-on-surface-variant font-bold text-right">AMOUNT</th>
+<th class="px-lg py-md text-label-sm text-on-surface-variant font-bold">METHOD</th>
+<th class="px-lg py-md text-label-sm text-on-surface-variant font-bold">STATUS</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/30">
+<tr class="hover:bg-surface-container-low/20 transition-colors">
+<td class="px-lg py-md text-body-sm">Oct 24, 02:15 PM</td>
+<td class="px-lg py-md">
+<p class="text-body-sm font-bold">Apex Ventures Ltd</p>
+<p class="text-xs text-on-surface-variant">Contract Review #22-01</p>
+</td>
+<td class="px-lg py-md text-right font-bold text-body-sm">$1,850.00</td>
+<td class="px-lg py-md text-body-sm">Credit Card</td>
+<td class="px-lg py-md">
+<span class="bg-primary-fixed text-on-primary-fixed-variant px-sm py-[2px] rounded-full text-[10px] font-bold uppercase">Success</span>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low/20 transition-colors">
+<td class="px-lg py-md text-body-sm">Oct 24, 11:30 AM</td>
+<td class="px-lg py-md">
+<p class="text-body-sm font-bold">Nova Health Systems</p>
+<p class="text-xs text-on-surface-variant">General Retainer 2024</p>
+</td>
+<td class="px-lg py-md text-right font-bold text-body-sm">$15,000.00</td>
+<td class="px-lg py-md text-body-sm">ACH</td>
+<td class="px-lg py-md">
+<span class="bg-primary-fixed text-on-primary-fixed-variant px-sm py-[2px] rounded-full text-[10px] font-bold uppercase">Success</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</div>
+<!-- Footer Shell -->
+<footer class="ml-sidebar-width p-lg flex justify-between items-center bg-surface-container-low border-t border-outline-variant mt-auto">
+<div class="flex items-center gap-xl">
+<span class="text-label-sm font-label-sm font-bold text-primary">LexisPremium</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant">© 2024 LexisPremium Legal Systems. All rights reserved.</p>
+</div>
+<div class="flex gap-lg">
+<a class="font-body-sm text-body-sm text-on-surface-variant hover:text-secondary transition-colors" href="#">Privacy Policy</a>
+<a class="font-body-sm text-body-sm text-on-surface-variant hover:text-secondary transition-colors" href="#">Terms of Service</a>
+<a class="font-body-sm text-body-sm text-on-surface-variant hover:text-secondary transition-colors" href="#">Compliance</a>
+</div>
+</footer>
+</main>
+<script>
+        let selectedPayment = null;
+        let selectedInvoice = null;
+
+        function toggleActive(el, type) {
+            const containerClass = type === 'payment' ? '.payment-card' : '.invoice-card';
+            const cards = document.querySelectorAll(containerClass);
+            
+            cards.forEach(card => {
+                if (card !== el) card.classList.remove('active', 'border-secondary', 'border-primary', 'ring-2');
+            });
+
+            const isActive = el.classList.toggle('active');
+            const color = type === 'payment' ? 'border-secondary' : 'border-primary';
+            
+            if (isActive) {
+                el.classList.add(color, 'ring-2', 'ring-offset-2', 'ring-opacity-50');
+                if (type === 'payment') {
+                    el.classList.add('ring-secondary');
+                    selectedPayment = el.querySelector('.font-bold').innerText;
+                } else {
+                    el.classList.add('ring-primary');
+                    selectedInvoice = el.querySelector('.text-primary').innerText;
+                }
+            } else {
+                el.classList.remove(color, 'ring-2');
+                if (type === 'payment') selectedPayment = null;
+                else selectedInvoice = null;
+            }
+
+            updateReconcileBar();
+        }
+
+        function updateReconcileBar() {
+            const bar = document.getElementById('reconcileBar');
+            const payText = document.getElementById('selectedPaymentText');
+            const invText = document.getElementById('selectedInvoiceText');
+
+            if (selectedPayment || selectedInvoice) {
+                bar.classList.remove('hidden');
+                bar.classList.add('flex');
+                payText.innerText = selectedPayment || '...';
+                invText.innerText = selectedInvoice || '...';
+            } else {
+                bar.classList.add('hidden');
+                bar.classList.remove('flex');
+            }
+        }
+
+        document.getElementById('autoMatchBtn').addEventListener('click', function() {
+            this.innerHTML = '<span class="material-symbols-outlined animate-spin" data-icon="sync">sync</span> Processing...';
+            setTimeout(() => {
+                this.innerHTML = '<span class="material-symbols-outlined text-success" data-icon="check">check</span> 12 Matches Found';
+                setTimeout(() => {
+                    this.innerHTML = '<span class="material-symbols-outlined" data-icon="auto_awesome">auto_awesome</span> Run Auto-Match';
+                }, 3000);
+            }, 1500);
+        });
+    </script>
+</body></html>

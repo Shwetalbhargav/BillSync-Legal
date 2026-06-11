@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AI Matter Summary - Anderson v. TechCorp</title>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Google Fonts: Inter -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "surface-variant": "#d9e3f1",
+            "on-error": "#ffffff",
+            "surface-container-highest": "#d9e3f1",
+            "on-primary-fixed": "#001c37",
+            "inverse-primary": "#a6c9f9",
+            "tertiary": "#11243f",
+            "outline": "#73777f",
+            "on-tertiary-container": "#92a4c5",
+            "on-primary": "#ffffff",
+            "on-surface": "#121d26",
+            "surface-container": "#e4effd",
+            "on-secondary": "#ffffff",
+            "surface-dim": "#d1dbe8",
+            "primary-fixed": "#d2e4ff",
+            "secondary-fixed-dim": "#ecc246",
+            "secondary": "#755b00",
+            "primary-container": "#123b63",
+            "on-primary-container": "#83a6d4",
+            "surface-bright": "#f7f9ff",
+            "surface-container-low": "#edf4ff",
+            "on-surface-variant": "#43474e",
+            "error-container": "#ffdad6",
+            "inverse-surface": "#27313c",
+            "on-tertiary": "#ffffff",
+            "surface-container-lowest": "#ffffff",
+            "tertiary-fixed-dim": "#b5c7ea",
+            "on-primary-fixed-variant": "#234871",
+            "surface-container-high": "#dfe9f7",
+            "on-error-container": "#93000a",
+            "outline-variant": "#c3c6cf",
+            "on-secondary-fixed": "#241a00",
+            "tertiary-fixed": "#d6e3ff",
+            "on-secondary-container": "#735a00",
+            "surface": "#f7f9ff",
+            "error": "#ba1a1a",
+            "primary-fixed-dim": "#a6c9f9",
+            "inverse-on-surface": "#e8f2ff",
+            "on-background": "#121d26",
+            "on-tertiary-fixed-variant": "#364764",
+            "tertiary-container": "#283a56",
+            "secondary-container": "#fed255",
+            "primary": "#002546",
+            "on-tertiary-fixed": "#071c36",
+            "on-secondary-fixed-variant": "#584400",
+            "background": "#f7f9ff",
+            "secondary-fixed": "#ffe08e",
+            "surface-tint": "#3d608a"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          "spacing": {
+            "xs": "4px",
+            "base": "8px",
+            "xxl": "48px",
+            "xl": "32px",
+            "md": "16px",
+            "margin-desktop": "40px",
+            "gutter-desktop": "24px",
+            "lg": "24px",
+            "sm": "12px",
+            "sidebar-width": "260px"
+          },
+          "fontFamily": {
+            "headline-sm": ["Inter"],
+            "label-sm": ["Inter"],
+            "body-lg": ["Inter"],
+            "label-md": ["Inter"],
+            "headline-lg-mobile": ["Inter"],
+            "display-lg": ["Inter"],
+            "body-md": ["Inter"],
+            "headline-md": ["Inter"],
+            "body-sm": ["Inter"],
+            "headline-lg": ["Inter"]
+          },
+          "fontSize": {
+            "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+            "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "600"}],
+            "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+            "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500"}],
+            "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+            "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+            "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+            "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+            "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+            "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    body { font-family: 'Inter', sans-serif; }
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+    .custom-scrollbar::-webkit-scrollbar { height: 4px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: #d1dbe8; border-radius: 10px; }
+    
+    /* Animation for card entry */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fade-in { animation: fadeInUp 0.5s ease forwards; }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface min-h-screen pb-xxl">
+<!-- TopAppBar -->
+<header class="flex justify-between items-center px-md h-16 w-full sticky top-0 z-50 bg-surface border-b border-outline-variant">
+<div class="flex items-center gap-base">
+<button class="flex items-center justify-center w-10 h-10 rounded-full hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-primary">arrow_back</span>
+</button>
+<div class="flex flex-col">
+<h1 class="font-headline-sm text-headline-sm text-primary leading-tight">AI Matter Summary</h1>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Anderson v. TechCorp • #2024-0892</span>
+</div>
+</div>
+<div class="w-10 h-10 rounded-full overflow-hidden border border-outline-variant">
+<img alt="Lawyer Profile" class="w-full h-full object-cover" data-alt="A professional portrait of a senior legal partner in a tailored navy blue suit, set against a blurred background of a high-end, modern architectural law firm office. The lighting is soft and flattering, emphasizing a mood of corporate authority, trust, and sophisticated minimalism. The overall aesthetic is clean and premium, consistent with a high-end SaaS legal platform." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCTN7MAU9ahl5QE3itieU-0a24uy1YS9uuj1Q9YXGQIyiYFe1G_sMwQlc1jCXpmdKO6t2S0oTCfYEA4MBv1ZkS09dFgE2sE3BSWFNfoVfMTXK2EOkw11PaNFnP-9eGPMTOZtw_rixDCwHNjC1_4xwNB_cOW9wgMctM0FIxEIYRDkLADn5Ielp5i8KEibgzbWFe9PLc2O4jCJ416JXWaHdlb8MLIWU7TBeyal_AQEO_UnbIbS6fcgYqUyBAY1bV7fIK6PLhFcFdIBjYr"/>
+</div>
+</header>
+<main class="px-md mt-md space-y-lg max-w-md mx-auto">
+<!-- AI Executive Summary Card -->
+<section class="animate-fade-in" style="animation-delay: 0.1s;">
+<div class="bg-primary-container text-on-primary-container p-lg rounded-xl shadow-sm relative overflow-hidden">
+<!-- Subtle AI background glow/pattern -->
+<div class="absolute -top-12 -right-12 w-32 h-32 bg-secondary-container/20 rounded-full blur-3xl"></div>
+<div class="flex items-center gap-xs mb-sm">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">smart_toy</span>
+<h2 class="font-label-sm text-label-sm tracking-wider uppercase opacity-80">AI Executive Summary</h2>
+</div>
+<p class="font-body-md text-body-md text-surface-bright leading-relaxed">
+          TechCorp has failed to produce the requested source code documentation by the court-ordered deadline. Preliminary analysis of recent deposition transcripts reveals a significant contradiction regarding the CTO's awareness of the data breach timeline. 
+        </p>
+<div class="mt-md flex items-center gap-xs text-secondary-fixed text-label-sm">
+<span class="material-symbols-outlined text-[16px]">verified</span>
+<span>Verified Insight • 2 mins ago</span>
+</div>
+</div>
+</section>
+<!-- Risk & Opportunity Badges -->
+<section class="animate-fade-in" style="animation-delay: 0.2s;">
+<div class="flex flex-wrap gap-sm">
+<div class="flex items-center gap-xs bg-error-container/40 border border-error/20 px-sm py-xs rounded-full">
+<span class="material-symbols-outlined text-error text-[18px]">warning</span>
+<span class="text-error font-label-sm text-label-sm">Missed Deadline Risk</span>
+</div>
+<div class="flex items-center gap-xs bg-secondary-container/40 border border-secondary/20 px-sm py-xs rounded-full">
+<span class="material-symbols-outlined text-on-secondary-container text-[18px]">payments</span>
+<span class="text-on-secondary-container font-label-sm text-label-sm">Billing Opportunity</span>
+</div>
+<div class="flex items-center gap-xs bg-surface-container-high border border-outline-variant px-sm py-xs rounded-full">
+<span class="material-symbols-outlined text-primary text-[18px]">trending_up</span>
+<span class="text-on-surface-variant font-label-sm text-label-sm">Precedent Found</span>
+</div>
+</div>
+</section>
+<!-- Key Developments Vertical Timeline -->
+<section class="animate-fade-in" style="animation-delay: 0.3s;">
+<h3 class="font-headline-sm text-headline-sm text-on-surface mb-md px-xs">Key Developments</h3>
+<div class="relative ml-xs space-y-xl before:absolute before:left-[11px] before:top-2 before:bottom-2 before:w-[2px] before:bg-surface-variant">
+<!-- Timeline Item 1 -->
+<div class="relative pl-lg">
+<div class="absolute left-0 top-1 w-6 h-6 rounded-full bg-primary flex items-center justify-center z-10">
+<span class="material-symbols-outlined text-white text-[14px]">description</span>
+</div>
+<div>
+<span class="font-label-sm text-label-sm text-on-surface-variant block mb-xs">Today, 10:45 AM</span>
+<h4 class="font-label-md text-label-md text-on-surface">Deposition Transcript Analyzed</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-xs">AI flagged 3 discrepancies in CTO testimony regarding security protocols.</p>
+</div>
+</div>
+<!-- Timeline Item 2 -->
+<div class="relative pl-lg">
+<div class="absolute left-0 top-1 w-6 h-6 rounded-full bg-surface-container-highest border-2 border-primary-fixed-dim flex items-center justify-center z-10">
+<span class="material-symbols-outlined text-primary text-[14px]">gavel</span>
+</div>
+<div>
+<span class="font-label-sm text-label-sm text-on-surface-variant block mb-xs">Yesterday</span>
+<h4 class="font-label-md text-label-md text-on-surface">Motion to Compel Filed</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-xs">Drafted and submitted to court addressing missing TechCorp discovery docs.</p>
+</div>
+</div>
+<!-- Timeline Item 3 -->
+<div class="relative pl-lg">
+<div class="absolute left-0 top-1 w-6 h-6 rounded-full bg-surface-container-highest border-2 border-primary-fixed-dim flex items-center justify-center z-10">
+<span class="material-symbols-outlined text-primary text-[14px]">mail</span>
+</div>
+<div>
+<span class="font-label-sm text-label-sm text-on-surface-variant block mb-xs">Aug 12, 2024</span>
+<h4 class="font-label-md text-label-md text-on-surface">Opposing Counsel Communication</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-xs">Email received regarding settlement window extension.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Action Items Checklist -->
+<section class="animate-fade-in bg-white border border-outline-variant p-md rounded-xl shadow-[0_4px_12px_rgba(31,41,51,0.06)]" style="animation-delay: 0.4s;">
+<div class="flex justify-between items-center mb-md">
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Action Items</h3>
+<span class="bg-secondary-container text-on-secondary-fixed px-base py-0.5 rounded-full font-label-sm text-label-sm">2 Pending</span>
+</div>
+<div class="space-y-md">
+<label class="flex items-start gap-md group cursor-pointer">
+<input class="mt-1 w-5 h-5 rounded border-outline-variant text-primary focus:ring-primary" type="checkbox"/>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface group-hover:text-primary transition-colors">Review AI Redline Analysis</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Due today • High Priority</span>
+</div>
+</label>
+<label class="flex items-start gap-md group cursor-pointer">
+<input class="mt-1 w-5 h-5 rounded border-outline-variant text-primary focus:ring-primary" type="checkbox"/>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface group-hover:text-primary transition-colors">Call Client: Anderson</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Update on discovery motion status</span>
+</div>
+</label>
+<label class="flex items-start gap-md group cursor-pointer opacity-50">
+<input checked="" class="mt-1 w-5 h-5 rounded border-outline-variant text-primary focus:ring-primary" type="checkbox"/>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface line-through">Draft Notice of Deposition</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Completed yesterday</span>
+</div>
+</label>
+</div>
+</section>
+<!-- Related Documents Horizontal Scroll -->
+<section class="animate-fade-in" style="animation-delay: 0.5s;">
+<div class="flex justify-between items-center mb-md px-xs">
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Related Documents</h3>
+<button class="text-primary font-label-sm text-label-sm hover:underline">View All</button>
+</div>
+<div class="flex overflow-x-auto gap-md pb-md custom-scrollbar -mx-md px-md">
+<!-- Doc 1 -->
+<div class="flex-shrink-0 w-40 bg-white border border-outline-variant p-md rounded-xl hover:shadow-md transition-shadow cursor-pointer">
+<div class="w-10 h-10 bg-surface-container rounded-lg flex items-center justify-center mb-base">
+<span class="material-symbols-outlined text-primary">description</span>
+</div>
+<span class="font-label-md text-label-md text-on-surface line-clamp-2">Complaints_Initial_v1.pdf</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant mt-xs">2.4 MB</span>
+</div>
+<!-- Doc 2 -->
+<div class="flex-shrink-0 w-40 bg-white border border-outline-variant p-md rounded-xl hover:shadow-md transition-shadow cursor-pointer">
+<div class="w-10 h-10 bg-surface-container rounded-lg flex items-center justify-center mb-base">
+<span class="material-symbols-outlined text-primary">table_chart</span>
+</div>
+<span class="font-label-md text-label-md text-on-surface line-clamp-2">Discovery_Log_Q3.xlsx</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant mt-xs">1.1 MB</span>
+</div>
+<!-- Doc 3 -->
+<div class="flex-shrink-0 w-40 bg-white border border-outline-variant p-md rounded-xl hover:shadow-md transition-shadow cursor-pointer">
+<div class="w-10 h-10 bg-surface-container rounded-lg flex items-center justify-center mb-base">
+<span class="material-symbols-outlined text-primary">audio_file</span>
+</div>
+<span class="font-label-md text-label-md text-on-surface line-clamp-2">Depo_Audio_Excerpt.mp3</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant mt-xs">15 MB</span>
+</div>
+<!-- Doc 4 -->
+<div class="flex-shrink-0 w-40 bg-white border border-outline-variant p-md rounded-xl hover:shadow-md transition-shadow cursor-pointer">
+<div class="w-10 h-10 bg-surface-container rounded-lg flex items-center justify-center mb-base">
+<span class="material-symbols-outlined text-primary">picture_as_pdf</span>
+</div>
+<span class="font-label-md text-label-md text-on-surface line-clamp-2">Exhibit_A_Photos.pdf</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant mt-xs">8.7 MB</span>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 w-full z-50 flex justify-around items-center px-base py-sm bg-surface shadow-[0_-2px_10px_rgba(0,0,0,0.05)] rounded-t-xl">
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-label-sm text-label-sm">Dashboard</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">receipt_long</span>
+<span class="font-label-sm text-label-sm">Captured</span>
+</a>
+<a class="flex flex-col items-center justify-center text-primary bg-secondary-container/30 rounded-full px-4 py-1" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">folder_open</span>
+<span class="font-label-sm text-label-sm">Matters</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">smart_toy</span>
+<span class="font-label-sm text-label-sm">AI Assistant</span>
+</a>
+</nav>
+<!-- Floating Chat/AI Button -->
+<button class="fixed right-md bottom-24 w-14 h-14 bg-primary text-white rounded-full shadow-lg flex items-center justify-center active:scale-95 transition-transform">
+<span class="material-symbols-outlined">chat_bubble</span>
+</button>
+<script>
+    // Simple intersection observer for scroll animations
+    const observerOptions = {
+      threshold: 0.1
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('animate-fade-in');
+        }
+      });
+    }, observerOptions);
+
+    document.querySelectorAll('section').forEach(section => {
+      observer.observe(section);
+    });
+
+    // Handle checkmarks for micro-interaction
+    document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+      checkbox.addEventListener('change', function() {
+        const parent = this.closest('label');
+        if(this.checked) {
+          parent.classList.add('opacity-50');
+          parent.querySelector('span:first-of-type').classList.add('line-through');
+        } else {
+          parent.classList.remove('opacity-50');
+          parent.querySelector('span:first-of-type').classList.remove('line-through');
+        }
+      });
+    });
+  </script>
+</body></html>
