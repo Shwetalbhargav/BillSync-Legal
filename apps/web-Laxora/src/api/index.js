@@ -31,6 +31,7 @@ export * from "./reports.js";
 export * from "./resources.js";
 export * from "./revenue.js";
 export * from "./tasks.js";
+export * from "./taxWorkspace.js";
 export * from "./timeEntries.js";
 export * from "./users.js";
 export * from "./workSessions.js";

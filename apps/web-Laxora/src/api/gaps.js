@@ -118,4 +118,10 @@ export const backendGapAdapters = {
     note: "The report route exists but returns a not-implemented response until PDF generation is wired.",
     load: unavailable("Board pack export is not configured yet."),
   },
+  tdsSettings: {
+    routeNeeded: "GET /api/tax/tds-settings and PATCH /api/tax/tds-settings",
+    note: "TDS setup, deduction rules, certificates, and summaries are planned; current backend has GST-style invoice tax fields only.",
+    load: unavailable("TDS setup is not configured yet."),
+    update: unavailable("TDS setup is not configured yet."),
+  },
 };

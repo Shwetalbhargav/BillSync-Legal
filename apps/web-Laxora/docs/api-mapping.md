@@ -284,3 +284,14 @@ The frontend connects payment recording, reconciliation, receivables aging, and 
 
 The frontend connects finance dashboard, report downloads, saved KPI snapshots, and audit event review to available resources. PDF report generation remains a clearly documented backend gap because the route currently returns a not-implemented response.
 
+## GST TDS Tax Branch Usage
+
+- `GET /api/firms/:firmId/settings`
+- `PATCH /api/firms/:firmId/tax-settings`
+- `GET /api/reports/gst-summary`
+- `GET /api/reports/gst.csv`
+- `GET /api/invoices`
+- `GET /api/analytics/invoices`
+
+The frontend connects GST settings, invoice tax review, and GST summaries to available firm, invoice, and report resources. TDS is represented as a not-turned-on state until deduction settings, certificates, and summary routes are available.
+
