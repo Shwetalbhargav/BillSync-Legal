@@ -152,3 +152,23 @@ The frontend uses `/api/tasks` filters for status, assignee, and due-date window
 
 The frontend uses available hearing activity and time-entry resources for manual court time capture. Calendar-provider sync is represented as a not-connected state until a provider event route is available.
 
+## Work Meter Time Capture Branch Usage
+
+- `GET /api/work-sessions/current`
+- `GET /api/work-sessions`
+- `POST /api/work-sessions/start`
+- `POST /api/work-sessions/:id/pause`
+- `POST /api/work-sessions/:id/resume`
+- `POST /api/work-sessions/:id/stop`
+- `POST /api/work-sessions/:id/discard`
+- `GET /api/activities`
+- `POST /api/activities/:activityId/review`
+- `POST /api/time-entries`
+- `GET /api/time-entries`
+- `POST /api/time-entries/from-activity/:activityId`
+- `POST /api/time-entries/:id/submit`
+- `GET /api/cases`
+- `GET /api/clients`
+
+The frontend stop flow can save captured work as a draft time entry or submit it for review in one step.
+

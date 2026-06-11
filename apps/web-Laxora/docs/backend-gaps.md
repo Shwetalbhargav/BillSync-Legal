@@ -113,3 +113,11 @@ These are not blockers for `feat/frontend-bootstrap`; they are tracked so featur
 - Future work: allow `calendarEvent` on work-session start validation.
 - Frontend adapter: `backendGapAdapters.hearingWorkSessionCalendarEvent`.
 
+## Time Entry To Billable Conversion
+
+- Desired frontend need: approved time entries can become billables without re-entering duration and matter context.
+- Current available backend routes: captured activity to time entry, draft time entry submission, and manual billable creation.
+- Current frontend approach: work meter creates captured work and draft/submitted time entries; billable conversion is documented for a later billing branch.
+- Future work: add `POST /api/billables/from-time-entry/:timeEntryId`.
+- Frontend adapter: `backendGapAdapters.timeEntryBillableConversion`.
+

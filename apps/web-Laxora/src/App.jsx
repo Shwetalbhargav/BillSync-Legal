@@ -41,6 +41,11 @@ import { TaskDetailPage } from "./pages/tasks/TaskDetailPage";
 import { TaskFormPage } from "./pages/tasks/TaskFormPage";
 import { TaskListPage } from "./pages/tasks/TaskListPage";
 import { UserManagementPage } from "./pages/UserManagementPage";
+import { CapturedWorkReviewPage } from "./pages/work/CapturedWorkReviewPage";
+import { ManualTimeEntryPage } from "./pages/work/ManualTimeEntryPage";
+import { SubmitWorkPage } from "./pages/work/SubmitWorkPage";
+import { WorkMeterPage } from "./pages/work/WorkMeterPage";
+import { WorkSessionHistoryPage } from "./pages/work/WorkSessionHistoryPage";
 
 function ProtectedShell() {
   const { isAuthenticated, isLoading, logout, role, user } = useAuth();
@@ -104,6 +109,12 @@ function ProtectedPage({ route }) {
   if (route.path === "/app/my-work-today") return <MyWorkTodayPage />;
   if (route.path === "/app/calendar" || route.path === "/app/hearings") return <CalendarHearingsPage />;
   if (route.path === "/app/hearings/manual-time") return <ManualCourtTimeEntryPage />;
+  if (route.path === "/app/work-meter") return <WorkMeterPage />;
+  if (route.path === "/app/work-sessions") return <WorkSessionHistoryPage />;
+  if (route.path === "/app/time-entry/new") return <ManualTimeEntryPage />;
+  if (route.path === "/app/time-entries") return <WorkSessionHistoryPage />;
+  if (route.path === "/app/captured-work" || route.path === "/app/activities") return <CapturedWorkReviewPage />;
+  if (route.path === "/app/submit-work") return <SubmitWorkPage />;
   if (route.path === "/app/profile") return <ProfilePage />;
   if (route.path === "/app/admin/users") return <UserManagementPage />;
   return <PlaceholderPage route={route} />;

@@ -166,6 +166,8 @@ export function normalizePayment(item = {}) {
 }
 
 export function normalizeActivity(item = {}) {
+  const matter = item.caseId || item.case || {};
+  const client = item.clientId || item.client || {};
   return {
     id: toId(item),
     title: safeText(item.narrative || item.activityCode || item.activityType, "Captured work"),
@@ -174,18 +176,29 @@ export function normalizeActivity(item = {}) {
     status: item.status || "Captured",
     minutes: Number(item.roundedDurationMinutes ?? item.durationMinutes ?? 0),
     billable: Boolean(item.billable),
+    matter: matter.title || matter.name || item.caseName || "",
+    matterId: toId(matter) || item.caseId || "",
+    client: client.displayName || client.name || item.clientName || "",
+    clientId: toId(client) || item.clientId || "",
+    conversionStatus: item.conversionStatus || "",
     occurredAt: item.workDate || item.startedAt || item.createdAt || "",
     raw: item,
   };
 }
 
 export function normalizeTimeEntry(item = {}) {
+  const matter = item.caseId || item.case || {};
+  const client = item.clientId || item.client || {};
   return {
     id: toId(item),
     title: safeText(item.description || item.narrative || item.notes, "Time entry"),
     status: item.status || "Draft",
     minutes: Number(item.durationMinutes ?? item.billableMinutes ?? item.nonbillableMinutes ?? item.minutes ?? 0),
     amount: normalizeMoney(item.amount || item.total),
+    matter: matter.title || matter.name || item.caseName || "",
+    matterId: toId(matter) || item.caseId || "",
+    client: client.displayName || client.name || item.clientName || "",
+    clientId: toId(client) || item.clientId || "",
     occurredAt: item.workDate || item.date || item.createdAt || "",
     raw: item,
   };
