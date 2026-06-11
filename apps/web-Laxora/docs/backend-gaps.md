@@ -138,6 +138,14 @@ These are not blockers for `feat/frontend-bootstrap`; they are tracked so featur
 - Future work: add `GET /api/invoice-templates` and `POST /api/invoices/:id/share-link`.
 - Frontend adapters: `backendGapAdapters.invoiceTemplates`, `backendGapAdapters.invoiceShareLink`.
 
+## External Payment Gateway
+
+- Desired frontend need: collect online payments, confirm collection status, and update invoices after gateway confirmation.
+- Current available backend routes: payment records, write-offs, reconciliation, portal link creation, and client payment-detail submission.
+- Current frontend approach: let clients submit payment details through the payment page, then keep reconciliation manual and clearly mark online collection as not connected.
+- Future work: add `POST /api/payments/gateway/session`, gateway status checks, and webhook handling for cleared or failed payments.
+- Frontend adapter: `backendGapAdapters.paymentGateway`.
+
 ## Extension Health And Test Event
 
 - Desired frontend need: one status response for installed extension version, last capture, browser permission state, and reconnect guidance.
