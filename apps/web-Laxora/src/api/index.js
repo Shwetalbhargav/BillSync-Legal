@@ -1,6 +1,7 @@
 export * from "./activities.js";
 export * from "./admin.js";
 export * from "./ai.js";
+export * from "./aiDocumentsWorkspace.js";
 export * from "./aiWorkspace.js";
 export * from "./analytics.js";
 export * from "./ar.js";
