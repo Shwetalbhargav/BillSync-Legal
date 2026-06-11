@@ -129,4 +129,10 @@ export const backendGapAdapters = {
     note: "Attendance summaries are planned; current HR screens derive workload from time entries and work sessions.",
     load: unavailable("Attendance overview is not configured yet."),
   },
+  payrollRuns: {
+    routeNeeded: "GET /api/payroll/runs, GET /api/payroll/runs/:runId, and POST /api/payroll/runs",
+    note: "Payroll runs, compensation records, approvals, and payslip generation are planned. Current screens show setup readiness only.",
+    load: unavailable("Payroll is not configured yet."),
+    create: unavailable("Payroll is not configured yet."),
+  },
 };

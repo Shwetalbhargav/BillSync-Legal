@@ -170,6 +170,14 @@ These are not blockers for `feat/frontend-bootstrap`; they are tracked so featur
 - Future work: add `GET /api/hr/attendance`, `GET /api/hr/attendance/:userId`, and attendance/leave update routes.
 - Frontend adapter: `backendGapAdapters.attendanceOverview`.
 
+## Payroll Runs And Compensation
+
+- Desired frontend need: payroll run list/detail/create, compensation records, review approvals, and payslip generation.
+- Current available backend routes: users, role profiles, time entries, and work sessions.
+- Current frontend approach: render payroll runs, payroll detail, and compensation setup as honest not-turned-on screens while using team records for setup readiness.
+- Future work: add `GET /api/payroll/runs`, `POST /api/payroll/runs`, `GET /api/payroll/runs/:runId`, `GET /api/payroll/compensation`, `PATCH /api/payroll/compensation/:userId`, `POST /api/payroll/runs/:runId/approve`, and `POST /api/payroll/runs/:runId/payslips`.
+- Frontend adapter: `backendGapAdapters.payrollRuns`.
+
 ## Extension Health And Test Event
 
 - Desired frontend need: one status response for installed extension version, last capture, browser permission state, and reconnect guidance.
