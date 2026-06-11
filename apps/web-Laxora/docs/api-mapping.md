@@ -334,3 +334,15 @@ The frontend uses people and workload records to show payroll setup readiness. P
 
 The frontend connects the storage library, document viewer, metadata save form, storage settings, and matter document links to existing document-storage records. Direct binary transfer, signed document download, Google Drive setup, and AWS-style storage setup are represented with explicit frontend adapters until those resources exist.
 
+## AI Assistant Core Branch Usage
+
+- `POST /api/ai/generate-email`
+- `POST /api/ai/assist`
+- `POST /api/ai/email-to-billable`
+- `GET /api/ai/matter-documents`
+- `POST /api/ai/matter-documents`
+- `POST /api/ai/matter-chat`
+- `POST /api/ai/generate-document`
+
+The frontend connects the assistant, email writer, and research-notes modes to available AI routes. Output is always editable before use. Streaming chat and source-backed legal research citations are represented as documented gaps.
+

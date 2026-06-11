@@ -34,6 +34,7 @@ import { InvoiceLinesPage } from "./pages/invoices/InvoiceLinesPage";
 import { InvoiceListPage } from "./pages/invoices/InvoiceListPage";
 import { LoginPage } from "./pages/LoginPage";
 import { ManualCourtTimeEntryPage } from "./pages/calendar/ManualCourtTimeEntryPage";
+import { AssistantCorePage } from "./pages/assistant/AssistantCorePage";
 import { MatterAssignmentsPage } from "./pages/matters/MatterAssignmentsPage";
 import { MatterAuditPage } from "./pages/matters/MatterAuditPage";
 import { MatterBillingPage } from "./pages/matters/MatterBillingPage";
@@ -164,6 +165,10 @@ function ProtectedPage({ route }) {
   if (route.path === "/app/research-review") return <CaptureReviewPage source="research" />;
   if (route.path === "/app/recordings") return <RecordingLibraryPage />;
   if (route.path === "/app/recordings/:recordingId") return <RecordingDetailPage />;
+  if (route.path === "/app/assistant") return <AssistantCorePage />;
+  if (route.path === "/app/assistant/email") return <AssistantCorePage initialMode="email" />;
+  if (route.path === "/app/assistant/research") return <AssistantCorePage initialMode="research" />;
+  if (route.path === "/app/assistant/extension" || route.path === "/app/assistant/work-meter" || route.path === "/app/assistant/matter-summary") return <AssistantCorePage />;
   if (route.path === "/app/invoices") return <InvoiceListPage />;
   if (route.path === "/app/invoices/new") return <InvoiceBuilderPage />;
   if (route.path === "/app/invoices/:invoiceId") return <InvoiceDetailPage />;

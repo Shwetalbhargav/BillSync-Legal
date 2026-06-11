@@ -33,6 +33,11 @@ export const backendGapAdapters = {
     note: "Streaming RAG assistant is planned; current AI routes support email and billable drafting only.",
     send: unavailable("Assistant chat is not configured yet."),
   },
+  assistantResearchSources: {
+    routeNeeded: "POST /api/ai/research with source-backed citations",
+    note: "Current assistant can summarize and analyze text. Source-backed legal research with citations is planned.",
+    send: unavailable("Research sources are not configured yet."),
+  },
   extensionHealth: {
     routeNeeded: "GET /api/extension/health",
     note: "Extension health diagnostics are planned; current auth can issue extension tokens.",
