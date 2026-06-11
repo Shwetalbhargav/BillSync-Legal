@@ -43,6 +43,11 @@ export const backendGapAdapters = {
     note: "Calendar provider sync is planned; manual time capture can use existing time-entry resources.",
     load: unavailable("Calendar connection is not configured yet."),
   },
+  hearingWorkSessionCalendarEvent: {
+    routeNeeded: "POST /api/work-sessions/start with calendarEvent fields accepted by validation",
+    note: "Work sessions can store hearing calendar metadata, but start validation does not currently accept calendarEvent.",
+    load: unavailable("Hearing meter details are not configured yet."),
+  },
   recorderTranscription: {
     routeNeeded: "POST /api/recordings",
     note: "Meeting recording and transcription resources are planned.",

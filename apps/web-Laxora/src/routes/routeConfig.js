@@ -116,6 +116,7 @@ export const appRoutes = [
   { path: "/app/reports", title: "Reports", module: "Finance", moduleKey: "finance", roleGroup: "Admin, Partner", icon: FileText },
   { path: "/app/finance", title: "Finance Dashboard", module: "Finance", moduleKey: "finance", roleGroup: "Admin, Partner", icon: BarChart3 },
   { path: "/app/calendar", title: "Calendar and Hearings", module: "Calendar", moduleKey: "work", roleGroup: "All legal roles", icon: CalendarDays },
+  { path: "/app/hearings", title: "Hearing Dashboard", module: "Calendar", moduleKey: "work", roleGroup: "All legal roles", icon: CalendarDays },
   { path: "/app/hearings/manual-time", title: "Court Time Entry", module: "Calendar", moduleKey: "work", roleGroup: "All legal roles", icon: CalendarDays },
   { path: "/app/document-storage", title: "Document Storage", module: "Documents", moduleKey: "matters", roleGroup: "All legal roles", icon: DatabaseBackup },
   { path: "/app/recordings", title: "Recording Library", module: "Meetings", moduleKey: "work", roleGroup: "All legal roles", icon: FileText },

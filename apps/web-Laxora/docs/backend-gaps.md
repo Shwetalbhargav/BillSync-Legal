@@ -97,3 +97,19 @@ These are not blockers for `feat/frontend-bootstrap`; they are tracked so featur
 - Future work: add `POST /api/work-sessions/from-task/:taskId` or allow work-session create requests to store `taskId`.
 - Frontend adapter: `backendGapAdapters.taskWorkMeterContext`.
 
+## Calendar Provider Events
+
+- Desired frontend need: connected court calendar events, sync status, and provider reconnect guidance.
+- Current available backend routes: hearing activities, work sessions, and manual time entries.
+- Current frontend approach: show an honest calendar-not-connected state and allow manual hearing time capture.
+- Future work: add `GET /api/calendar/events` and `GET /api/calendar/sync-status`.
+- Frontend adapters: `backendGapAdapters.calendarProvider`, `backendGapAdapters.courtCalendarSync`.
+
+## Hearing Work Session Metadata
+
+- Desired frontend need: start a work meter session from a hearing while storing court, courtroom, bench, and scheduled-time details.
+- Current available backend routes: work sessions store calendar metadata, but start validation does not accept `calendarEvent` yet.
+- Current frontend approach: manual court time saves hearing metadata through activity capture and creates a draft time entry.
+- Future work: allow `calendarEvent` on work-session start validation.
+- Frontend adapter: `backendGapAdapters.hearingWorkSessionCalendarEvent`.
+
