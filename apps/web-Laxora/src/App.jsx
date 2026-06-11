@@ -41,9 +41,13 @@ import { MatterTimelinePage } from "./pages/matters/MatterTimelinePage";
 import { NotFoundPage } from "./pages/NotFoundPage";
 import { NotificationCenterPage } from "./pages/NotificationCenterPage";
 import { PasswordHelpPage } from "./pages/PasswordHelpPage";
+import { ClientPaymentPortalPage } from "./pages/payments/ClientPaymentPortalPage";
+import { PaymentDashboardPage } from "./pages/payments/PaymentDashboardPage";
+import { PaymentReconciliationPage } from "./pages/payments/PaymentReconciliationPage";
 import { PermissionDeniedPage } from "./pages/PermissionDeniedPage";
 import { PlaceholderPage } from "./pages/PlaceholderPage";
 import { ProfilePage } from "./pages/ProfilePage";
+import { ReceivablesAgingPage } from "./pages/payments/ReceivablesAgingPage";
 import { RecordingDetailPage } from "./pages/recordings/RecordingDetailPage";
 import { RecordingLibraryPage } from "./pages/recordings/RecordingLibraryPage";
 import { RegisterInvitePage } from "./pages/RegisterInvitePage";
@@ -143,6 +147,9 @@ function ProtectedPage({ route }) {
   if (route.path === "/app/invoices/new") return <InvoiceBuilderPage />;
   if (route.path === "/app/invoices/:invoiceId") return <InvoiceDetailPage />;
   if (route.path === "/app/invoices/:invoiceId/lines") return <InvoiceLinesPage />;
+  if (route.path === "/app/payments") return <PaymentDashboardPage />;
+  if (route.path === "/app/reconciliation") return <PaymentReconciliationPage />;
+  if (route.path === "/app/ar-aging") return <ReceivablesAgingPage />;
   if (route.path === "/app/submit-work") return <SubmitWorkPage />;
   if (route.path === "/app/profile") return <ProfilePage />;
   if (route.path === "/app/admin/users") return <UserManagementPage />;
@@ -153,6 +160,7 @@ function AppRoutes() {
   return (
     <Routes>
       <Route path="/fallback-gallery" element={<FallbackGalleryPage />} />
+      <Route path="/pay/:paymentCode" element={<ClientPaymentPortalPage />} />
       {fallbackRoutes.map((route) => (
         <Route key={route.path} path={route.path} element={<FallbackStatePage route={route} />} />
       ))}

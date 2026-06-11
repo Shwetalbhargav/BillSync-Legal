@@ -221,12 +221,22 @@ export function normalizeInvoiceLine(item = {}) {
 }
 
 export function normalizePayment(item = {}) {
+  const invoice = item.invoiceId || item.invoice || {};
   return {
     id: toId(item),
+    invoiceId: toId(invoice) || item.invoiceId || "",
+    invoiceNumber: invoice.invoiceNumber || invoice.number || item.invoiceNumber || "",
     client: item.clientName || item.client?.name || "",
-    status: item.status || "Recorded",
+    status: String(item.status || "recorded").toLowerCase(),
+    method: item.method || "",
+    transactionType: item.transactionType || "payment",
+    reference: item.reference || "",
+    notes: item.notes || "",
     amount: normalizeMoney(item.amount),
-    paidAt: item.paidAt || item.createdAt || "",
+    paidAt: item.receivedDate || item.paidAt || item.createdAt || "",
+    payerName: item.portal?.payerName || "",
+    payerEmail: item.portal?.payerEmail || "",
+    submittedByClient: Boolean(item.portal?.submittedByClient),
     raw: item,
   };
 }

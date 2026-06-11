@@ -22,6 +22,7 @@ export * from "./kpi.js";
 export * from "./matters.js";
 export * from "./normalizers.js";
 export * from "./payments.js";
+export * from "./paymentWorkspace.js";
 export * from "./profiles.js";
 export * from "./rateCards.js";
 export * from "./recordings.js";

@@ -242,3 +242,20 @@ The frontend connects list, detail, approval, and rate-card workflows to real re
 
 The frontend connects invoice list, builder, detail, send, void, and line workflows to real resources. Template and secure sharing flows remain honest not-configured states.
 
+## Payments Portal Reconciliation Branch Usage
+
+- `GET /api/payments`
+- `POST /api/payments`
+- `POST /api/payments/write-off`
+- `GET /api/payments/finance-summary`
+- `POST /api/payments/portal-link/:invoiceId`
+- `POST /api/payments/:id/reconcile`
+- `DELETE /api/payments/:id`
+- `GET /api/payments/portal/:paymentCode`
+- `POST /api/payments/portal/:paymentCode/pay`
+- `GET /api/ar/aging`
+- `GET /api/ar/aging/by-client`
+- `GET /api/invoices`
+
+The frontend connects payment recording, reconciliation, receivables aging, and client payment-page submission to available resources. External payment collection is represented as a not-connected state until gateway-session and webhook routes exist.
+

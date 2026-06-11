@@ -108,4 +108,9 @@ export const backendGapAdapters = {
     note: "Secure client share links are planned; current route supports send and document preview.",
     create: unavailable("Invoice sharing is not configured yet."),
   },
+  paymentGateway: {
+    routeNeeded: "POST /api/payments/gateway/session",
+    note: "External gateway collection is planned; current portal supports client payment submission for reconciliation.",
+    create: unavailable("Online payment collection is not configured yet."),
+  },
 };
