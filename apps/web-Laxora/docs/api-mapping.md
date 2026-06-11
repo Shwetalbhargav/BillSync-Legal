@@ -172,3 +172,11 @@ The frontend uses available hearing activity and time-entry resources for manual
 
 The frontend stop flow can save captured work as a draft time entry or submit it for review in one step.
 
+## Chrome Extension Setup Status Branch Usage
+
+- `POST /api/auth/extension-token`
+- `GET /api/email-entries?source=extension`
+- `GET /api/email-entries?source=gmail`
+
+The frontend uses the available extension authorization action as a workspace connection check and uses recent email-entry captures as the current capture signal. Dedicated extension health and browser handshake routes are tracked as backend gaps.
+
