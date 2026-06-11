@@ -346,3 +346,13 @@ The frontend connects the storage library, document viewer, metadata save form, 
 
 The frontend connects the assistant, email writer, and research-notes modes to available AI routes. Output is always editable before use. Streaming chat and source-backed legal research citations are represented as documented gaps.
 
+## AI Documents RAG Branch Usage
+
+- `GET /api/ai/matter-documents?caseId=:caseId`
+- `POST /api/ai/matter-documents`
+- `POST /api/ai/matter-chat`
+- `POST /api/ai/generate-document`
+- `GET /api/cases`
+
+The frontend connects document summary, document creation, and matter document Q&A to saved matter source notes. The Q&A screen requires source notes before answering and shows returned citations. Background indexing status remains a documented backend gap.
+

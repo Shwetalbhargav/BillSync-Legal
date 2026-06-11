@@ -20,6 +20,14 @@ These are not blockers for `feat/frontend-bootstrap`; they are tracked so featur
 - Future work: add streaming chat, source-backed legal research citations, and evidence logging.
 - Frontend adapters: `backendGapAdapters.globalAssistantChat` and `backendGapAdapters.assistantResearchSources`.
 
+## Matter Document Indexing
+
+- Desired frontend need: background document indexing, indexing status, source ingestion from uploaded files, and document-grounded chat readiness.
+- Current available backend AI routes: save matter source text, summarize saved notes, answer from saved matter notes, and generate drafts from saved matter notes.
+- Current frontend approach: require saved source notes before matter Q&A and never answer from unavailable documents.
+- Future work: add `POST /api/ai/matter-documents/index`, `GET /api/ai/matter-documents/index-status`, uploaded-file ingestion, and persistent chat history.
+- Frontend adapter: `backendGapAdapters.ragIndexing`.
+
 ## Extension Health
 
 - Desired frontend need: connection status, latest captured item, test event result, and troubleshooting reason.

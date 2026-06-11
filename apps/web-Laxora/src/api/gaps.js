@@ -38,6 +38,11 @@ export const backendGapAdapters = {
     note: "Current assistant can summarize and analyze text. Source-backed legal research with citations is planned.",
     send: unavailable("Research sources are not configured yet."),
   },
+  ragIndexing: {
+    routeNeeded: "POST /api/ai/matter-documents/index and GET /api/ai/matter-documents/index-status",
+    note: "Matter Q&A can use saved matter notes today. Full indexing status and background ingestion are planned.",
+    load: unavailable("Document indexing is not configured yet."),
+  },
   extensionHealth: {
     routeNeeded: "GET /api/extension/health",
     note: "Extension health diagnostics are planned; current auth can issue extension tokens.",
