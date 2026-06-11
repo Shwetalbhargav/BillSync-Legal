@@ -40,6 +40,23 @@
   .focus-ring {
     @apply outline-none focus-visible:ring-2 focus-visible:ring-primary/35 focus-visible:ring-offset-2;
   }
+
+  .animate-recorder-wave {
+    animation: recorder-wave 1.4s ease-in-out infinite;
+  }
+}
+
+@keyframes recorder-wave {
+  0%,
+  100% {
+    transform: scaleY(0.72);
+    opacity: 0.68;
+  }
+
+  50% {
+    transform: scaleY(1);
+    opacity: 1;
+  }
 }
 
 @media (max-width: 640px) {
