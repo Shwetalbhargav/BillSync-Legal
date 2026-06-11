@@ -140,3 +140,15 @@ The frontend service `src/api/matterTabs.js` composes these resources into UI-sa
 
 The frontend uses `/api/tasks` filters for status, assignee, and due-date windows. Task detail links to the work meter with task and matter context in the route until a persisted task-linked work session contract is available.
 
+## Calendar Hearings Branch Usage
+
+- `GET /api/activities?activityType=hearing`
+- `POST /api/activities`
+- `GET /api/work-sessions`
+- `GET /api/time-entries`
+- `POST /api/time-entries`
+- `GET /api/cases`
+- `GET /api/clients`
+
+The frontend uses available hearing activity and time-entry resources for manual court time capture. Calendar-provider sync is represented as a not-connected state until a provider event route is available.
+

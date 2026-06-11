@@ -184,9 +184,29 @@ export function normalizeTimeEntry(item = {}) {
     id: toId(item),
     title: safeText(item.description || item.narrative || item.notes, "Time entry"),
     status: item.status || "Draft",
-    minutes: Number(item.durationMinutes ?? item.minutes ?? 0),
+    minutes: Number(item.durationMinutes ?? item.billableMinutes ?? item.nonbillableMinutes ?? item.minutes ?? 0),
     amount: normalizeMoney(item.amount || item.total),
     occurredAt: item.workDate || item.date || item.createdAt || "",
+    raw: item,
+  };
+}
+
+export function normalizeWorkSession(item = {}) {
+  const matter = item.caseId || item.case || {};
+  const client = item.clientId || item.client || {};
+  return {
+    id: toId(item),
+    title: safeText(item.narrative || item.calendarEvent?.title || item.activityType, "Work session"),
+    activityType: item.activityType || "",
+    matter: matter.title || matter.name || "",
+    matterId: toId(matter) || item.caseId || "",
+    client: client.displayName || client.name || "",
+    clientId: toId(client) || item.clientId || "",
+    status: item.status || "running",
+    minutes: Number(item.durationMinutes || 0),
+    startedAt: item.startedAt || item.createdAt || "",
+    endedAt: item.endedAt || "",
+    calendarEvent: item.calendarEvent || null,
     raw: item,
   };
 }
