@@ -61,3 +61,11 @@ Errors are normalized into calm `userMessage` strings so UI screens do not show 
 
 The interface says `Matters`. The service module uses `/api/cases` internally.
 
+## Auth Users Permissions Branch Usage
+
+- `POST /api/auth/login`: sign-in form with name, mobile, password, role, and firm code.
+- `POST /api/auth/register`: invite acceptance form until invite-token routes exist.
+- `GET /api/auth/me`: session restore and profile refresh.
+- `POST /api/auth/logout`: header and profile sign-out.
+- `GET /api/users`: admin user management list.
+
