@@ -17,6 +17,7 @@ import { ClientDetailPage } from "./pages/clients/ClientDetailPage";
 import { ClientFormPage } from "./pages/clients/ClientFormPage";
 import { ClientListPage } from "./pages/clients/ClientListPage";
 import { CommunicationCenterPage } from "./pages/communications/CommunicationCenterPage";
+import { CourtSyncPage } from "./pages/court/CourtSyncPage";
 import { DashboardPage } from "./pages/DashboardPage";
 import { ExtensionSetupPage } from "./pages/extension/ExtensionSetupPage";
 import { ExtensionStatusPage } from "./pages/extension/ExtensionStatusPage";
@@ -156,6 +157,10 @@ function ProtectedPage({ route }) {
   if (route.path === "/app/my-work-today") return <MyWorkTodayPage />;
   if (route.path === "/app/calendar" || route.path === "/app/hearings") return <CalendarHearingsPage />;
   if (route.path === "/app/hearings/manual-time") return <ManualCourtTimeEntryPage />;
+  if (route.path === "/app/court-sync") return <CourtSyncPage />;
+  if (route.path === "/app/court-sync/matches") return <CourtSyncPage view="matches" />;
+  if (route.path === "/app/court-sync/verdicts/:verdictId") return <CourtSyncPage view="verdict" />;
+  if (route.path === "/app/court-sync/settings") return <CourtSyncPage view="settings" />;
   if (route.path === "/app/document-storage") return <StorageLibraryPage />;
   if (route.path === "/app/document-storage/upload") return <UploadDocumentPage />;
   if (route.path === "/app/document-storage/:documentId") return <DocumentViewerPage />;

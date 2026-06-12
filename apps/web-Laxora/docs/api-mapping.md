@@ -368,3 +368,22 @@ Frontend adapters added:
 
 The frontend renders the communication center, WhatsApp inbox, SMS center, message templates, setup checklist, and communication logs as provider-not-connected planning screens. Sending is disabled and no fake delivery success is shown.
 
+## Court Daily Sync Branch Usage
+
+Available backend resources used:
+
+- `GET /api/activities?activityType=hearing`
+- `GET /api/work-sessions?activityType=hearing`
+- `GET /api/time-entries`
+- `GET /api/cases`
+- `POST /api/activities`
+- `POST /api/time-entries`
+
+Frontend adapters added:
+
+- `backendGapAdapters.courtDailyFeed`
+- `backendGapAdapters.courtCaseMatch`
+- `backendGapAdapters.courtVerdicts`
+
+The frontend separates manually recorded hearing work from live court sync. Manual hearing capture continues through existing activity and time-entry routes, while court feed, matter matching, verdict detail, and sync settings show not-connected states until court feed resources exist.
+

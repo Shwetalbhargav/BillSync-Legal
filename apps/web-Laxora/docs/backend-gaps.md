@@ -219,3 +219,11 @@ These are not blockers for `feat/frontend-bootstrap`; they are tracked so featur
 - Future work: add `GET /api/communications/whatsapp/status`, `POST /api/communications/whatsapp/send`, `GET /api/communications/sms/status`, `POST /api/communications/sms/send`, and `GET /api/communications/logs`.
 - Frontend adapters: `backendGapAdapters.whatsappProvider`, `backendGapAdapters.smsProvider`, and `backendGapAdapters.communicationLogs`.
 
+## Court Daily Sync
+
+- Desired frontend need: court feed status, daily cause list updates, verdict/order detail, case-to-matter matching, manual review, and sync settings.
+- Current available backend routes: activities, work sessions, time entries, and cases can support manual hearing capture and matter context.
+- Current frontend approach: show live court sync as not connected, list manual hearing context separately, and keep matter-link review ready without linking unsupported feed items.
+- Future work: add `GET /api/court/daily-sync`, `POST /api/court/daily-sync/run`, `GET /api/court/matches`, `PATCH /api/court/matches/:matchId`, `GET /api/court/verdicts`, and `GET /api/court/verdicts/:verdictId`.
+- Frontend adapters: `backendGapAdapters.courtDailyFeed`, `backendGapAdapters.courtCaseMatch`, and `backendGapAdapters.courtVerdicts`.
+
