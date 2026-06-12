@@ -2,6 +2,7 @@ import { request } from "./client.js";
 
 export const zohoApi = {
   connect: () => request("/api/integrations/zoho/connect"),
+  connectUrl: () => request("/api/integrations/zoho/connect-url"),
   callback: (params) => request("/api/integrations/zoho/callback", { params }),
   status: () => request("/api/integrations/zoho/status"),
   modules: () => request("/api/integrations/zoho-sync/modules"),

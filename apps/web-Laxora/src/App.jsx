@@ -34,6 +34,7 @@ import { InvoiceBuilderPage } from "./pages/invoices/InvoiceBuilderPage";
 import { InvoiceDetailPage } from "./pages/invoices/InvoiceDetailPage";
 import { InvoiceLinesPage } from "./pages/invoices/InvoiceLinesPage";
 import { InvoiceListPage } from "./pages/invoices/InvoiceListPage";
+import { ZohoIntegrationPage } from "./pages/integrations/ZohoIntegrationPage";
 import { LoginPage } from "./pages/LoginPage";
 import { ManualCourtTimeEntryPage } from "./pages/calendar/ManualCourtTimeEntryPage";
 import { AssistantCorePage } from "./pages/assistant/AssistantCorePage";
@@ -126,6 +127,9 @@ function ProtectedPage({ route }) {
   if (route.path === "/app/extension/setup") return <ExtensionSetupPage />;
   if (route.path === "/app/extension/status") return <ExtensionStatusPage />;
   if (route.path === "/app/extension/troubleshooting") return <ExtensionTroubleshootingPage />;
+  if (route.path === "/app/integrations/zoho") return <ZohoIntegrationPage />;
+  if (route.path === "/app/integrations/zoho/workdrive") return <ZohoIntegrationPage view="workdrive" />;
+  if (route.path === "/app/integrations/zoho/logs") return <ZohoIntegrationPage view="logs" />;
   if (route.path === "/app/notifications") return <NotificationCenterPage />;
   if (route.path === "/app/search") return <GlobalSearchPage />;
   if (route.path === "/app/help") return <HelpCenterPage />;
