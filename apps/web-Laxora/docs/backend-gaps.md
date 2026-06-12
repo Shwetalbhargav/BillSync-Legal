@@ -235,3 +235,11 @@ These are not blockers for `feat/frontend-bootstrap`; they are tracked so featur
 - Future work: add a dedicated `GET /api/integrations/zoho/health` summary if the UI later needs a single readiness response across CRM, WorkDrive, scopes, and recent sync activity.
 - Frontend adapters: none required for this branch.
 
+## AWS And Google Storage Providers
+
+- Desired frontend need: Google Drive setup/status, AWS firm storage setup/status, direct file transfer, preview/download readiness, and provider health.
+- Current available backend routes: document storage records can save provider labels such as `google_drive` and `s3`.
+- Current frontend approach: show provider setup requirements and saved provider references while keeping direct file movement unavailable.
+- Future work: add `GET /api/integrations/google-drive/status`, `GET /api/integrations/google-drive/connect-url`, `POST /api/integrations/google-drive/link-folder`, `GET /api/integrations/aws-storage/status`, `PATCH /api/integrations/aws-storage/settings`, `POST /api/document-storage/uploads`, and `GET /api/document-storage/:documentId/download`.
+- Frontend adapters: `backendGapAdapters.googleStorageProvider` and `backendGapAdapters.awsStorageProvider`.
+
