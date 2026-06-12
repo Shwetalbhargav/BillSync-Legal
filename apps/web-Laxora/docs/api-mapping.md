@@ -406,3 +406,16 @@ Available backend resources used:
 
 The frontend connects Zoho status, connect link, module discovery, sync actions, WorkDrive folder linking, and Zoho-specific log review to existing routes. Provider failures are translated into calm user-facing guidance.
 
+## AWS Google Integrations Branch Usage
+
+Available backend resources used:
+
+- `GET /api/document-storage`
+
+Frontend adapters added:
+
+- `backendGapAdapters.googleStorageProvider`
+- `backendGapAdapters.awsStorageProvider`
+
+The frontend renders AWS and Google provider setup/status screens using existing document metadata for saved provider references. Direct provider status, connect, upload, preview, and signed download behavior are shown as not connected until provider resources exist.
+
