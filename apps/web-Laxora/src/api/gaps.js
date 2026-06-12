@@ -183,6 +183,30 @@ export const backendGapAdapters = {
     load: unavailable("TDS setup is not configured yet."),
     update: unavailable("TDS setup is not configured yet."),
   },
+  notificationDefaults: {
+    routeNeeded: "GET /api/settings/notification-defaults and PATCH /api/settings/notification-defaults",
+    note: "Firm-wide notification defaults, digest cadence, and alert preferences are planned.",
+    load: unavailable("Notification defaults are not configured yet."),
+    update: unavailable("Notification defaults are not configured yet."),
+  },
+  storageDefaults: {
+    routeNeeded: "GET /api/settings/storage-defaults and PATCH /api/settings/storage-defaults",
+    note: "Firm-wide storage defaults for matter folders, retention, and provider choice are planned.",
+    load: unavailable("Storage defaults are not configured yet."),
+    update: unavailable("Storage defaults are not configured yet."),
+  },
+  invoiceDefaults: {
+    routeNeeded: "GET /api/settings/invoice-defaults and PATCH /api/settings/invoice-defaults",
+    note: "Invoice numbering, default notes, sharing rules, and reminder cadence are planned.",
+    load: unavailable("Invoice defaults are not configured yet."),
+    update: unavailable("Invoice defaults are not configured yet."),
+  },
+  permissionMatrix: {
+    routeNeeded: "GET /api/settings/permission-matrix and PATCH /api/settings/permission-matrix",
+    note: "Role permissions are currently defined in the frontend route map. A managed permission matrix is planned.",
+    load: unavailable("Permission controls are not configured yet."),
+    update: unavailable("Permission controls are not configured yet."),
+  },
   attendanceOverview: {
     routeNeeded: "GET /api/hr/attendance",
     note: "Attendance summaries are planned; current HR screens derive workload from time entries and work sessions.",
