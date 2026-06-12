@@ -387,3 +387,22 @@ Frontend adapters added:
 
 The frontend separates manually recorded hearing work from live court sync. Manual hearing capture continues through existing activity and time-entry routes, while court feed, matter matching, verdict detail, and sync settings show not-connected states until court feed resources exist.
 
+## Zoho Integration Branch Usage
+
+Available backend resources used:
+
+- `GET /api/integrations/zoho/status`
+- `GET /api/integrations/zoho/connect-url`
+- `GET /api/integrations/zoho-sync/modules`
+- `GET /api/integration-logs`
+- `GET /api/cases`
+- `GET /api/clients`
+- `POST /api/integrations/zoho-sync/sync/clients`
+- `POST /api/integrations/zoho-sync/sync/cases`
+- `POST /api/integrations/zoho-sync/sync/invoices`
+- `POST /api/integrations/zoho-sync/workdrive/link`
+- `GET /api/integrations/zoho-sync/:moduleApiName/:recordId/attachments`
+- `POST /api/integrations/zoho-sync/:moduleApiName/:recordId/attachments`
+
+The frontend connects Zoho status, connect link, module discovery, sync actions, WorkDrive folder linking, and Zoho-specific log review to existing routes. Provider failures are translated into calm user-facing guidance.
+

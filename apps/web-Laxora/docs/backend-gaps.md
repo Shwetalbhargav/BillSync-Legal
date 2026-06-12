@@ -227,3 +227,11 @@ These are not blockers for `feat/frontend-bootstrap`; they are tracked so featur
 - Future work: add `GET /api/court/daily-sync`, `POST /api/court/daily-sync/run`, `GET /api/court/matches`, `PATCH /api/court/matches/:matchId`, `GET /api/court/verdicts`, and `GET /api/court/verdicts/:verdictId`.
 - Frontend adapters: `backendGapAdapters.courtDailyFeed`, `backendGapAdapters.courtCaseMatch`, and `backendGapAdapters.courtVerdicts`.
 
+## Zoho Integration Follow-Ups
+
+- Desired frontend need: connection health, module readiness, client/matter/invoice sync, WorkDrive folder link, attachment review, and Zoho sync logs.
+- Current available backend routes: Zoho auth/status/connect-url, module/field discovery, client/matter/invoice sync actions, WorkDrive link, attachment list/upload, related records, activity records, and integration logs.
+- Current frontend approach: connect all available Zoho routes and show friendly partial-refresh guidance when Zoho is not connected or when a sync action needs review.
+- Future work: add a dedicated `GET /api/integrations/zoho/health` summary if the UI later needs a single readiness response across CRM, WorkDrive, scopes, and recent sync activity.
+- Frontend adapters: none required for this branch.
+
