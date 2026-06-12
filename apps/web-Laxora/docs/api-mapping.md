@@ -419,3 +419,24 @@ Frontend adapters added:
 
 The frontend renders AWS and Google provider setup/status screens using existing document metadata for saved provider references. Direct provider status, connect, upload, preview, and signed download behavior are shown as not connected until provider resources exist.
 
+## Settings Admin Controls Branch Usage
+
+Available backend resources used:
+
+- `GET /api/firms/:firmId`
+- `GET /api/firms/:firmId/settings`
+- `PUT /api/firms/:firmId`
+- `PATCH /api/firms/:firmId/currency`
+- `PATCH /api/firms/:firmId/tax-settings`
+- `PATCH /api/firms/:firmId/billing-preferences`
+- `GET /api/users`
+
+Frontend adapters added:
+
+- `backendGapAdapters.notificationDefaults`
+- `backendGapAdapters.storageDefaults`
+- `backendGapAdapters.invoiceDefaults`
+- `backendGapAdapters.permissionMatrix`
+
+The frontend connects firm setup, currency, tax defaults, billing defaults, and team role review to available routes. Notification, storage, invoice template, and managed permission controls render as visibly not configured until those settings resources exist.
+

@@ -243,3 +243,11 @@ These are not blockers for `feat/frontend-bootstrap`; they are tracked so featur
 - Future work: add `GET /api/integrations/google-drive/status`, `GET /api/integrations/google-drive/connect-url`, `POST /api/integrations/google-drive/link-folder`, `GET /api/integrations/aws-storage/status`, `PATCH /api/integrations/aws-storage/settings`, `POST /api/document-storage/uploads`, and `GET /api/document-storage/:documentId/download`.
 - Frontend adapters: `backendGapAdapters.googleStorageProvider` and `backendGapAdapters.awsStorageProvider`.
 
+## Settings Admin Controls
+
+- Desired frontend need: firm setup, editable permissions matrix, invoice defaults, notification defaults, storage defaults, and tax defaults in one admin workspace.
+- Current available backend routes: firm CRUD, firm settings, currency update, tax settings update, billing preferences update, and users list.
+- Current frontend approach: save real firm settings where supported, show the permission matrix as read-only, and mark invoice, notification, and storage defaults as not configured.
+- Future work: add `GET /api/settings/permission-matrix`, `PATCH /api/settings/permission-matrix`, `GET /api/settings/invoice-defaults`, `PATCH /api/settings/invoice-defaults`, `GET /api/settings/notification-defaults`, `PATCH /api/settings/notification-defaults`, `GET /api/settings/storage-defaults`, and `PATCH /api/settings/storage-defaults`.
+- Frontend adapters: `backendGapAdapters.permissionMatrix`, `backendGapAdapters.invoiceDefaults`, `backendGapAdapters.notificationDefaults`, and `backendGapAdapters.storageDefaults`.
+
