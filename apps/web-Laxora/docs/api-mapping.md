@@ -440,3 +440,17 @@ Frontend adapters added:
 
 The frontend connects firm setup, currency, tax defaults, billing defaults, and team role review to available routes. Notification, storage, invoice template, and managed permission controls render as visibly not configured until those settings resources exist.
 
+## Responsive Accessibility Copy Polish Branch Usage
+
+No new backend resources were added for this branch.
+
+Frontend polish added:
+
+- Shared visible focus behavior for links, buttons, inputs, selects, and text areas.
+- Reduced-motion handling for loading, assistant, recorder, and transition animations.
+- Safer overflow behavior for cards, tables, navigation, and long lawyer-facing text.
+- Keyboard-scrollable table regions with accessible captions.
+- Mobile shell improvements for search, bottom navigation, and assistant placement.
+
+Backend gaps found: none for this branch.
+

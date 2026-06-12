@@ -16,16 +16,18 @@ const sizes = {
   icon: "h-10 w-10 p-0",
 };
 
-export function Button({ children, className, disabled, isLoading = false, size = "md", variant = "primary", ...props }) {
+export function Button({ children, className, disabled, isLoading = false, size = "md", type = "button", variant = "primary", ...props }) {
   return (
     <button
+      aria-busy={isLoading || undefined}
       className={clsx(
-        "focus-ring inline-flex items-center justify-center gap-2 rounded-lg font-semibold transition disabled:cursor-not-allowed disabled:opacity-55",
+        "focus-ring inline-flex min-w-0 items-center justify-center gap-2 rounded-lg font-semibold transition disabled:cursor-not-allowed disabled:opacity-55",
         variants[variant],
         sizes[size],
         className,
       )}
       disabled={disabled || isLoading}
+      type={type}
       {...props}
     >
       {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : null}

@@ -5,7 +5,7 @@ export default {
     extend: {
       colors: {
         background: "#F8F5EF",
-        app: "#F7F9FF",
+        app: "#F8F5EF",
         panel: "#FFFFFF",
         nav: "#0B1F3A",
         primary: "#123B63",
