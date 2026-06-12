@@ -197,12 +197,12 @@ export const validateListCasesQuery = validateQuery({
   caseTypeId: [objectId()],
   q: [string({ max: 160 })],
   page: [positiveIntQuery({ min: 1 })],
-  limit: [positiveIntQuery({ min: 1, max: 100 })],
+  limit: [positiveIntQuery({ min: 1, max: 200 })],
 });
 
 export const validateRelatedCaseQuery = validateQuery({
   page: [positiveIntQuery({ min: 1 })],
-  limit: [positiveIntQuery({ min: 1, max: 100 })],
+  limit: [positiveIntQuery({ min: 1, max: 200 })],
 });
 
 export const validateCaseRollupQuery = validateQuery({

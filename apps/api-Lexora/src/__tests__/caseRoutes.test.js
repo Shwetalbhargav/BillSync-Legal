@@ -303,6 +303,19 @@ test('GET /api/cases supports filtering and pagination', async () => {
   });
 });
 
+test('GET /api/cases accepts option-list requests up to 200 records', async () => {
+  const query = queryResult([{ _id: CASE_ID, title: 'Matter' }]);
+  mocks.caseFind.mockReturnValue(query);
+  mocks.caseCountDocuments.mockResolvedValue(1);
+
+  const response = await jsonRequest('/api/cases?limit=200');
+  const body = await response.json();
+
+  expect(response.status).toBe(200);
+  expect(query.limit).toHaveBeenCalledWith(200);
+  expect(body.meta.limit).toBe(200);
+});
+
 test('PUT /api/cases/:caseId rejects unknown payload fields', async () => {
   const response = await jsonRequest(`/api/cases/${CASE_ID}`, {
     method: 'PUT',

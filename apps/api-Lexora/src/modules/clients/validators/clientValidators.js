@@ -134,13 +134,13 @@ export const validateListClientsQuery = validateQuery({
   firmId: [objectId()],
   ownerUserId: [objectId()],
   page: [positiveIntQuery({ min: 1 })],
-  limit: [positiveIntQuery({ min: 1, max: 100 })],
+  limit: [positiveIntQuery({ min: 1, max: 200 })],
 });
 
 export const validateRelatedClientQuery = validateQuery({
   status: [string({ max: 40 })],
   page: [positiveIntQuery({ min: 1 })],
-  limit: [positiveIntQuery({ min: 1, max: 100 })],
+  limit: [positiveIntQuery({ min: 1, max: 200 })],
 });
 
 export const validateCreateClient = validateBody({

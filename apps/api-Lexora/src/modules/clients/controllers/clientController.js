@@ -11,7 +11,7 @@ import mongoose from 'mongoose';
 const toNumber = (v, d = 0) => (v === undefined || v === null || Number.isNaN(Number(v)) ? d : Number(v));
 const CLIENT_MUTABLE_FIELDS = ['displayName', 'email', 'phone', 'firmId', 'ownerUserId', 'paymentTerms', 'status'];
 const DEFAULT_LIMIT = 25;
-const MAX_LIMIT = 100;
+const MAX_LIMIT = 200;
 
 const hasOwn = (obj, key) => Object.prototype.hasOwnProperty.call(obj, key);
 

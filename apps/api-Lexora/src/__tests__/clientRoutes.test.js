@@ -318,3 +318,16 @@ test('GET /api/clients supports filtering and pagination', async () => {
     totalPages: 1,
   });
 });
+
+test('GET /api/clients accepts option-list requests up to 200 records', async () => {
+  const query = queryResult([{ _id: CLIENT_ID, displayName: 'Nimbus Retail' }]);
+  mocks.clientFind.mockReturnValue(query);
+  mocks.clientCountDocuments.mockResolvedValue(1);
+
+  const response = await jsonRequest('/api/clients?limit=200');
+  const body = await response.json();
+
+  expect(response.status).toBe(200);
+  expect(query.limit).toHaveBeenCalledWith(200);
+  expect(body.meta.limit).toBe(200);
+});
