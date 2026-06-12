@@ -105,6 +105,23 @@ export const backendGapAdapters = {
     note: "Court sync states need provider status and last-sync details.",
     load: unavailable("Court calendar sync is not configured yet."),
   },
+  courtDailyFeed: {
+    routeNeeded: "GET /api/court/daily-sync and POST /api/court/daily-sync/run",
+    note: "Daily court cause list, orders, and verdict feed sync are planned.",
+    load: unavailable("Court daily sync is not connected yet."),
+    run: unavailable("Court daily sync is not connected yet."),
+  },
+  courtCaseMatch: {
+    routeNeeded: "GET /api/court/matches and PATCH /api/court/matches/:matchId",
+    note: "Court feed to matter matching is planned; current frontend can show matter candidates only.",
+    load: unavailable("Court case matching is not connected yet."),
+    update: unavailable("Court case matching is not connected yet."),
+  },
+  courtVerdicts: {
+    routeNeeded: "GET /api/court/verdicts and GET /api/court/verdicts/:verdictId",
+    note: "Verdict/order feed details are planned.",
+    load: unavailable("Court verdicts are not connected yet."),
+  },
   matterAuditTrail: {
     routeNeeded: "GET /api/cases/:caseId/audit",
     note: "Matter audit screens currently compose activity, document, and integration records; a single chronological audit feed is still needed.",
