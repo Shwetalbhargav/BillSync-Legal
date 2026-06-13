@@ -1,15 +1,18 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { useLocation } from "react-router-dom";
 import { authApi } from "../api/auth.js";
 import { normalizeUser } from "../api/normalizers.js";
 import { defaultRole } from "../constants/roles.js";
 
 const AuthContext = createContext(null);
+const publicAuthPaths = new Set(["/login", "/register", "/forgot-password", "/reset-password"]);
 
 function friendlyAuthMessage(error) {
   return error?.userMessage || "We could not complete that request right now. Please check the details and try again.";
 }
 
 export function AuthProvider({ children }) {
+  const location = useLocation();
   const [user, setUser] = useState(null);
   const [status, setStatus] = useState("loading");
   const [lastMessage, setLastMessage] = useState("");
@@ -31,8 +34,13 @@ export function AuthProvider({ children }) {
   }, []);
 
   useEffect(() => {
+    if (publicAuthPaths.has(location.pathname)) {
+      setStatus("guest");
+      setUser(null);
+      return;
+    }
     refreshCurrentUser();
-  }, [refreshCurrentUser]);
+  }, [location.pathname, refreshCurrentUser]);
 
   const login = useCallback(async (credentials) => {
     setLastMessage("");
