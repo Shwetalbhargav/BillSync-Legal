@@ -2,6 +2,7 @@
 import mongoose from 'mongoose';
 import { TimeEntry } from '../models/TimeEntry.js';
 import { Activity } from '../../activities/models/Activity.js';
+import Billable from '../../billables/models/Billable.js';
 import { computeRatedAmount, resolveBillingRate } from '../../rates/services/rateResolver.js';
 
 const withSession = (query, session) =>
@@ -20,6 +21,34 @@ const buildAuditEntry = ({ action, actorId, changes }) => ({
 });
 
 const isReviewerRole = (role) => ['admin', 'partner'].includes(String(role || '').toLowerCase());
+
+const BILLABLE_CATEGORY_BY_CODE = {
+  EMAIL: 'Email drafting/review',
+  CALL: 'Client consultation (calls/meetings)',
+  MEETING: 'Client consultation (calls/meetings)',
+  DOC_REVIEW: 'Case preparation/documentation',
+  RESEARCH: 'Legal research',
+  NEGOTIATION: 'Negotiation/settlement discussions',
+  ADMIN: 'Miscellaneous administrative legal work',
+  OTHER: 'Miscellaneous administrative legal work',
+};
+
+const BILLABLE_CODE_BY_ACTIVITY_TYPE = {
+  email: 'EMAIL',
+  drafting: 'DOC_REVIEW',
+  review: 'DOC_REVIEW',
+  meeting: 'MEETING',
+  hearing: 'MEETING',
+  research: 'RESEARCH',
+  call: 'CALL',
+  other: 'OTHER',
+};
+
+const normalizeBillableActivityCode = ({ activityCode, activityType } = {}) => {
+  const rawCode = String(activityCode || '').trim().toUpperCase();
+  if (BILLABLE_CATEGORY_BY_CODE[rawCode]) return rawCode;
+  return BILLABLE_CODE_BY_ACTIVITY_TYPE[String(activityType || '').toLowerCase()] || 'OTHER';
+};
 
 const canOwnTimeEntry = (entry, req) =>
   req.user?.role === 'admin' || idString(entry?.userId) === req.user?.id;
@@ -336,6 +365,49 @@ async function transition(id, fromStatuses, toStatus, req, { reason } = {}) {
   return { entry };
 }
 
+async function ensureApprovedBillableForTimeEntry(entry, req) {
+  const billableMinutes = Number(entry?.billableMinutes || 0);
+  if (billableMinutes <= 0) return null;
+
+  if (entry.activityId) {
+    const existing = await Billable.findOne({ activityId: entry.activityId });
+    if (existing) return existing;
+  }
+
+  const activity = entry.activityId ? await Activity.findById(entry.activityId) : null;
+  const activityCode = normalizeBillableActivityCode({
+    activityCode: entry.activityCode || activity?.activityCode,
+    activityType: activity?.activityType,
+  });
+  const rate = Number(entry.rateApplied || 0);
+  const amount = entry.amount != null
+    ? Number(entry.amount)
+    : computeRatedAmount({ ratePerHour: rate, billableMinutes });
+
+  return Billable.create({
+    caseId: entry.caseId,
+    clientId: entry.clientId,
+    userId: entry.userId,
+    activityId: entry.activityId || undefined,
+    subject: activity?.activityType ? `Meter: ${activity.activityType}` : 'Meter work entry',
+    description: entry.narrative,
+    durationMinutes: billableMinutes,
+    rate,
+    amount,
+    date: entry.date || entry.reviewedAt || new Date(),
+    activityCode,
+    category: BILLABLE_CATEGORY_BY_CODE[activityCode],
+    status: 'approved',
+    approvedAt: new Date(),
+    approvedBy: req.user.id,
+  });
+}
+
+const responseWithPipeline = (entry, billable) => ({
+  ...(entry?.toObject ? entry.toObject() : entry),
+  ...(billable ? { billable } : {}),
+});
+
 // POST /api/time-entries/:id/submit
 export const submitTimeEntry = async (req, res) => {
   try {
@@ -353,7 +425,8 @@ export const approveTimeEntry = async (req, res) => {
   try {
     const result = await transition(req.params.id, ['submitted'], 'approved', req);
     if (result.error) return res.status(result.statusCode || 400).json({ error: result.error });
-    res.json(result.entry);
+    const billable = await ensureApprovedBillableForTimeEntry(result.entry, req);
+    res.json(responseWithPipeline(result.entry, billable));
   } catch (e) {
     console.error(e);
     res.status(500).json({ error: 'Failed to approve time entry' });

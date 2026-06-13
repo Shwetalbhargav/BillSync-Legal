@@ -19,6 +19,8 @@ const mocks = vi.hoisted(() => ({
   timeEntryFindOne: vi.fn(),
   timeEntryFindById: vi.fn(),
   timeEntryCreate: vi.fn(),
+  billableFindOne: vi.fn(),
+  billableCreate: vi.fn(),
 }));
 
 vi.mock('../modules/activities/models/Activity.js', () => {
@@ -70,6 +72,15 @@ vi.mock('../modules/timeEntries/models/TimeEntry.js', () => ({
     findById: mocks.timeEntryFindById,
     create: mocks.timeEntryCreate,
   },
+}));
+
+vi.mock('../modules/billables/models/Billable.js', () => ({
+  default: {
+    findOne: mocks.billableFindOne,
+    create: mocks.billableCreate,
+  },
+  billableStatusQuery: (status) => ({ $in: [String(status || 'pending').toLowerCase()] }),
+  normalizeBillableStatus: (status = 'pending') => String(status || 'pending').toLowerCase(),
 }));
 
 const { default: app } = await import('../app.js');
@@ -178,6 +189,8 @@ beforeEach(() => {
   mocks.timeEntryFindOne.mockResolvedValue(null);
   mocks.timeEntryFindById.mockResolvedValue(null);
   mocks.timeEntryCreate.mockImplementation(async ([payload]) => [{ _id: TIME_ENTRY_ID, ...payload }]);
+  mocks.billableFindOne.mockResolvedValue(null);
+  mocks.billableCreate.mockImplementation(async (payload) => ({ _id: '64b000000000000000000027', ...payload }));
 });
 
 test('POST /api/activities creates activity for the authenticated user by default', async () => {
@@ -905,7 +918,16 @@ test('POST /api/time-entries/:id/submit records submit metadata', async () => {
 test('POST /api/time-entries/:id/approve is reviewer-only and blocks self-approval', async () => {
   const entry = {
     _id: TIME_ENTRY_ID,
+    caseId: CASE_ID,
+    clientId: CLIENT_ID,
     userId: USER_ID,
+    narrative: 'Research memo',
+    activityCode: 'RESEARCH',
+    billableMinutes: 30,
+    nonbillableMinutes: 0,
+    rateApplied: 6000,
+    amount: 3000,
+    date: new Date('2026-06-12T00:00:00.000Z'),
     status: 'submitted',
     save: vi.fn(async function save() {
       return this;
@@ -930,6 +952,19 @@ test('POST /api/time-entries/:id/approve is reviewer-only and blocks self-approv
   expect(entry.status).toBe('approved');
   expect(entry.reviewedAt).toBeInstanceOf(Date);
   expect(entry.reviewedBy).toBe(OTHER_USER_ID);
+  expect(mocks.billableCreate).toHaveBeenCalledWith(expect.objectContaining({
+    caseId: CASE_ID,
+    clientId: CLIENT_ID,
+    userId: USER_ID,
+    description: 'Research memo',
+    durationMinutes: 30,
+    rate: 6000,
+    amount: 3000,
+    activityCode: 'RESEARCH',
+    category: 'Legal research',
+    status: 'approved',
+    approvedBy: OTHER_USER_ID,
+  }));
 });
 
 test('POST /api/time-entries/:id/reject requires and stores a reason', async () => {
