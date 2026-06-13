@@ -1,4 +1,5 @@
 import { backendGapAdapters } from "./gaps.js";
+import { attendanceApi } from "./attendance.js";
 import { peopleWorkspaceApi } from "./peopleWorkspace.js";
 
 function issueMessage(result, message) {
@@ -38,9 +39,11 @@ const setupSteps = [
 
 export const payrollWorkspaceApi = {
   async loadDashboard() {
-    const [peopleResult, payrollResult] = await Promise.allSettled([
+    const today = new Date().toISOString().slice(0, 10);
+    const [peopleResult, payrollResult, attendanceResult] = await Promise.allSettled([
       peopleWorkspaceApi.loadDashboard(),
       backendGapAdapters.payrollRuns.load(),
+      attendanceApi.list({ from: today, to: today }),
     ]);
     const people = settledValue(peopleResult, { people: [] }).people || [];
     return {
@@ -53,9 +56,11 @@ export const payrollWorkspaceApi = {
         role: person.role,
         status: "not-configured",
       })),
+      attendancePreview: settledValue(attendanceResult, { summary: null }).summary,
       issues: [
         issueMessage(peopleResult, "Team members could not be refreshed."),
         issueMessage(payrollResult, "Payroll is not turned on yet."),
+        issueMessage(attendanceResult, "Attendance and leave could not be refreshed."),
       ].filter(Boolean),
     };
   },

@@ -132,7 +132,7 @@ export const appRoutes = [
   { path: "/app/people", title: "Team Directory", module: "People", moduleKey: "people", roleGroup: "Admin, Partner", icon: Users },
   { path: "/app/people/:userId", title: "Employee Profile", module: "People", moduleKey: "people", roleGroup: "Admin, Partner", icon: UserRound },
   { path: "/app/workload", title: "Workload Overview", module: "People", moduleKey: "people", roleGroup: "Admin, Partner", icon: Gauge },
-  { path: "/app/attendance", title: "Attendance Overview", module: "People", moduleKey: "people", roleGroup: "Admin, Partner", icon: Clock3 },
+  { path: "/app/attendance", title: "Attendance and Leave", module: "People", moduleKey: "dashboard", roleGroup: "All roles", icon: Clock3 },
   { path: "/app/payroll", title: "Payroll Runs", module: "People", moduleKey: "people", roleGroup: "Admin, Partner", icon: WalletCards },
   { path: "/app/payroll/:runId", title: "Payroll Detail", module: "People", moduleKey: "people", roleGroup: "Admin, Partner", icon: FileText },
   { path: "/app/compensation", title: "Compensation Setup", module: "People", moduleKey: "people", roleGroup: "Admin, Partner", icon: CircleDollarSign },

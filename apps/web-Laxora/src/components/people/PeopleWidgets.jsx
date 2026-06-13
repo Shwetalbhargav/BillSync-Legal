@@ -137,13 +137,18 @@ export function WorkloadTable({ people }) {
 
 export function AttendanceNotConfigured() {
   return (
-    <section className="rounded-lg border border-warning/30 bg-warning/10 p-5">
-      <div className="flex gap-3">
-        <AlertCircle className="mt-0.5 h-5 w-5 shrink-0 text-warning" />
-        <div>
-          <h2 className="text-base font-bold text-warning">Attendance overview is not turned on yet</h2>
-          <p className="mt-1 text-sm leading-6 text-ink">Workload uses time entries and work sessions today. Attendance summaries need a dedicated HR record before the firm relies on them.</p>
+    <section className="rounded-lg border border-success/30 bg-success/10 p-5">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+        <div className="flex gap-3">
+          <Gauge className="mt-0.5 h-5 w-5 shrink-0 text-success" />
+          <div>
+            <h2 className="text-base font-bold text-success">Attendance and leave are ready</h2>
+            <p className="mt-1 text-sm leading-6 text-ink">Review daily presence, leave requests, and absence exceptions from the attendance page.</p>
+          </div>
         </div>
+        <Link to="/app/attendance" className="shrink-0">
+          <Button type="button" variant="secondary">Open attendance</Button>
+        </Link>
       </div>
     </section>
   );

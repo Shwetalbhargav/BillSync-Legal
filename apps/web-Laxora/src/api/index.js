@@ -1,6 +1,7 @@
 export * from "./activities.js";
 export * from "./activitySamples.js";
 export * from "./appUsageEvents.js";
+export * from "./attendance.js";
 export * from "./admin.js";
 export * from "./ai.js";
 export * from "./aiDocumentsWorkspace.js";

@@ -337,6 +337,68 @@ export function normalizeWorkSession(item = {}) {
   };
 }
 
+export function normalizeAttendanceSummary(item = {}) {
+  return {
+    total: Number(item.total || 0),
+    present: Number(item.present || 0),
+    absent: Number(item.absent || 0),
+    late: Number(item.late || 0),
+    leave: Number(item.leave || 0),
+    holiday: Number(item.holiday || 0),
+    raw: item,
+  };
+}
+
+export function normalizeAttendanceDay(item = {}) {
+  const user = item.userId || item.user || {};
+  return {
+    id: toId(item),
+    userId: toId(user) || item.userId || "",
+    userName: user.name || item.userName || "Team member",
+    role: user.role || "",
+    date: item.date || "",
+    status: String(item.status || "absent").toLowerCase(),
+    firstActivityAt: item.firstActivityAt || "",
+    lastActivityAt: item.lastActivityAt || "",
+    expectedStart: item.expectedStart || "09:30",
+    expectedEnd: item.expectedEnd || "18:00",
+    minutesWorked: Number(item.minutesWorked || 0),
+    lateMinutes: Number(item.lateMinutes || 0),
+    source: item.source || "",
+    raw: item,
+  };
+}
+
+export function normalizeLeaveRequest(item = {}) {
+  const user = item.userId || item.user || {};
+  return {
+    id: toId(item),
+    userId: toId(user) || item.userId || "",
+    userName: user.name || item.userName || "Team member",
+    role: user.role || "",
+    startDate: item.startDate || "",
+    endDate: item.endDate || "",
+    leaveType: item.leaveType || "vacation",
+    reason: item.reason || "",
+    status: String(item.status || "pending").toLowerCase(),
+    reviewNote: item.reviewNote || "",
+    affectsPayroll: item.affectsPayroll !== false,
+    createdAt: item.createdAt || "",
+    raw: item,
+  };
+}
+
+export function normalizeHoliday(item = {}) {
+  return {
+    id: toId(item),
+    date: item.date || "",
+    name: item.name || "Holiday",
+    region: item.region || "firm",
+    paid: item.paid !== false,
+    raw: item,
+  };
+}
+
 export function normalizeIdleSummary(item = {}) {
   const summary = item.summary || item;
   const intervals = asList(item.intervals).map((interval) => ({
