@@ -1,5 +1,6 @@
 import { backendGapAdapters } from "./gaps.js";
 import { activitySamplesApi } from "./activitySamples.js";
+import { appUsageEventsApi } from "./appUsageEvents.js";
 import { timeEntriesApi } from "./timeEntries.js";
 import { usersApi } from "./users.js";
 import { workSessionsApi } from "./workSessions.js";
@@ -100,25 +101,30 @@ function summarizePeople(users, entries, sessions) {
 
 export const peopleWorkspaceApi = {
   async loadDashboard(params = {}) {
-    const [usersResult, entriesResult, sessionsResult, attendanceResult, activityResult] = await Promise.allSettled([
+    const [usersResult, entriesResult, sessionsResult, attendanceResult, activityResult, appUsageResult] = await Promise.allSettled([
       usersApi.list({ limit: 200 }),
       timeEntriesApi.list(params),
       workSessionsApi.list(params),
       backendGapAdapters.attendanceOverview.load(),
       activitySamplesApi.summary(params),
+      appUsageEventsApi.summary(params),
     ]);
 
     const users = asList(settledValue(usersResult, [])).map(normalizeUser);
     const timeEntries = asList(settledValue(entriesResult, [])).map(normalizeTimeEntry);
     const activity = settledValue(activityResult, { sessions: [], summary: null });
+    const appUsage = settledValue(appUsageResult, { sessions: [], summary: null });
     const activityBySession = new Map((activity.sessions || []).map((session) => [session.workSessionId, session]));
+    const appUsageBySession = new Map((appUsage.sessions || []).map((session) => [session.workSessionId, session]));
     const workSessions = asList(settledValue(sessionsResult, [])).map((session) => {
       const normalized = normalizeWorkSession(session);
       const activitySummary = activityBySession.get(normalized.id) || null;
+      const appUsageSummary = appUsageBySession.get(normalized.id) || null;
       return {
         ...normalized,
         activitySummary,
         activityPercent: activitySummary?.activityPercent || 0,
+        appUsageSummary,
       };
     });
     const people = summarizePeople(users, timeEntries, workSessions);
@@ -131,12 +137,14 @@ export const peopleWorkspaceApi = {
       workSessions,
       activeSessions,
       activitySummary: activity.summary,
+      appUsageSummary: appUsage.summary,
       attendanceMessage: settledValue(attendanceResult, null),
       issues: [
         issueMessage(usersResult, "Team directory could not be refreshed."),
         issueMessage(entriesResult, "Workload details could not be refreshed."),
         issueMessage(sessionsResult, "Work sessions could not be refreshed."),
         issueMessage(activityResult, "Activity percentages could not be refreshed."),
+        issueMessage(appUsageResult, "App and website history could not be refreshed."),
         issueMessage(attendanceResult, "Attendance overview is not turned on yet."),
       ].filter(Boolean),
     };

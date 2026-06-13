@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { activitySamplesApi } from "../../api/activitySamples";
+import { appUsageEventsApi } from "../../api/appUsageEvents";
 import { workCaptureApi } from "../../api/workCapture";
 import { workSessionsApi } from "../../api/workSessions";
 import { normalizeTimeEntry, normalizeWorkSession } from "../../api/normalizers";
@@ -40,6 +41,7 @@ export function WorkMeterPage() {
     activeSeconds: 0,
     lastInteractionAt: Date.now(),
   });
+  const appUsageBucketRef = useRef({ startedAt: new Date() });
 
   async function load() {
     setStatus("loading");
@@ -94,6 +96,7 @@ export function WorkMeterPage() {
       activeSeconds: 0,
       lastInteractionAt: Date.now(),
     };
+    appUsageBucketRef.current = { startedAt: new Date() };
 
     const secondTimer = window.setInterval(() => {
       const lastInteractionAt = activityBucketRef.current.lastInteractionAt || 0;
@@ -132,11 +135,35 @@ export function WorkMeterPage() {
       }
     }
 
+    async function flushAppUsage() {
+      const bucket = appUsageBucketRef.current;
+      const endedAt = new Date();
+      const durationSeconds = Math.max(1, Math.round((endedAt.getTime() - new Date(bucket.startedAt).getTime()) / 1000));
+      appUsageBucketRef.current = { startedAt: endedAt };
+      try {
+        await appUsageEventsApi.createForSession(session.id, {
+          appName: "BillSync Legal",
+          url: `${window.location.origin}${window.location.pathname}`,
+          domain: window.location.hostname,
+          startedAt: new Date(bucket.startedAt).toISOString(),
+          endedAt: endedAt.toISOString(),
+          durationSeconds,
+          platform: "web",
+          sourceApp: "web_meter",
+        });
+      } catch {
+        setIssues((current) => [...new Set([...(current || []), "App and website history could not be refreshed yet."])]);
+      }
+    }
+
     const flushTimer = window.setInterval(flushBucket, 60000);
+    const appUsageTimer = window.setInterval(flushAppUsage, 60000);
     return () => {
       window.clearInterval(secondTimer);
       window.clearInterval(flushTimer);
+      window.clearInterval(appUsageTimer);
       flushBucket();
+      flushAppUsage();
     };
   }, [session?.id, session?.status]);
 

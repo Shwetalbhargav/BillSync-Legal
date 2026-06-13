@@ -5,6 +5,7 @@ import { Router } from 'express';
 import { aiRoutes } from '../modules/ai/index.js';
 import { activityRoutes } from '../modules/activities/index.js';
 import { activitySampleRoutes } from '../modules/activitySamples/index.js';
+import { appUsageEventRoutes } from '../modules/appUsageEvents/index.js';
 import { analyticsRoutes, revenueRoutes } from '../modules/analytics/index.js';
 import { authRoutes } from '../modules/auth/index.js';
 import { billableRoutes } from '../modules/billables/index.js';
@@ -39,6 +40,7 @@ const router = Router();
 // Resource-relative routers.
 router.use('/activities', activityRoutes);
 router.use('/activity-samples', activitySampleRoutes);
+router.use('/app-usage-events', appUsageEventRoutes);
 router.use('/analytics', analyticsRoutes);
 router.use('/ar', arRoutes);
 router.use('/billables', billableRoutes);

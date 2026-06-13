@@ -81,7 +81,7 @@ const normalizeWebMeter = (body = {}) => ({
   captureLevel: body.meterCaptureLevel || 'none',
   idleAfterSeconds: Number(body.idleAfterSeconds || 300),
   maxSessionMinutes: Number(body.maxSessionMinutes || DEFAULT_MAX_WORK_SESSION_MINUTES),
-  privacyNote: 'Tracks timer, pause/resume, keyboard and mouse counts only. No keystroke values, screenshots, URLs, titles, or page content are stored.',
+  privacyNote: 'Tracks timer, pause/resume, keyboard and mouse counts, app names, website domains, and timing only. No keystroke values, screenshots, page text, or document text are stored.',
   lastActiveAt: new Date(),
   inactiveSeconds: 0,
   activitySignals: ['started'],
@@ -92,7 +92,7 @@ const summarizeWebMeter = (workSession) => ({
   captureLevel: workSession.webMeter?.captureLevel || 'none',
   heartbeatCount: Number(workSession.heartbeatCount || 0),
   inactiveSeconds: Number(workSession.webMeter?.inactiveSeconds || 0),
-  privacyNote: workSession.webMeter?.privacyNote || 'Tracks timer, pause/resume, keyboard and mouse counts only. No keystroke values, screenshots, URLs, titles, or page content are stored.',
+  privacyNote: workSession.webMeter?.privacyNote || 'Tracks timer, pause/resume, keyboard and mouse counts, app names, website domains, and timing only. No keystroke values, screenshots, page text, or document text are stored.',
 });
 
 async function createTimeEntryForActivity(activity, req, session) {

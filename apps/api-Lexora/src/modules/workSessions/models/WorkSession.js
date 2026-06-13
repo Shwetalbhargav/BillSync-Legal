@@ -44,7 +44,7 @@ const WorkSessionSchema = new mongoose.Schema(
       captureLevel: { type: String, enum: ['none', 'active_window'], default: 'none' },
       idleAfterSeconds: { type: Number, default: 300, min: 60, max: 3600 },
       maxSessionMinutes: { type: Number, default: 180, min: 1, max: 480 },
-      privacyNote: { type: String, trim: true, maxlength: 500, default: 'Tracks timer, pause/resume, keyboard and mouse counts only. No keystroke values, screenshots, URLs, titles, or page content are stored.' },
+      privacyNote: { type: String, trim: true, maxlength: 500, default: 'Tracks timer, pause/resume, keyboard and mouse counts, app names, website domains, and timing only. No keystroke values, screenshots, page text, or document text are stored.' },
       lastActiveAt: { type: Date },
       inactiveSeconds: { type: Number, default: 0, min: 0 },
       activitySignals: [{ type: String, trim: true, maxlength: 80 }],

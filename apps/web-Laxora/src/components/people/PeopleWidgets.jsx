@@ -6,6 +6,13 @@ export function formatHours(minutes) {
   return `${(Number(minutes || 0) / 60).toLocaleString("en-IN", { maximumFractionDigits: 1 })}h`;
 }
 
+export function formatUsageSeconds(seconds) {
+  const total = Math.max(0, Number(seconds || 0));
+  const hours = Math.floor(total / 3600);
+  const mins = Math.floor((total % 3600) / 60);
+  return hours ? `${hours}h ${String(mins).padStart(2, "0")}m` : `${mins}m`;
+}
+
 export function formatMoney(value) {
   return `Rs ${Number(value || 0).toLocaleString("en-IN", { maximumFractionDigits: 2 })}`;
 }
@@ -176,6 +183,9 @@ export function WorkSessionList({ sessions }) {
           </div>
           <p className="mt-2 text-sm font-semibold text-ink">
             Activity: {session.activitySummary?.sampleCount ? `${Number(session.activityPercent || 0).toLocaleString("en-IN", { maximumFractionDigits: 1 })}%` : "Not enough samples"}
+          </p>
+          <p className="mt-1 text-sm font-semibold text-ink">
+            Apps and sites: {session.appUsageSummary?.eventCount ? formatUsageSeconds(session.appUsageSummary.durationSeconds) : "No app history"}
           </p>
           <p className="mt-2 text-sm text-muted">{formatDate(session.startedAt)} • {formatHours(session.durationMinutes)}</p>
         </div>

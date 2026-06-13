@@ -233,7 +233,7 @@ test('POST /api/work-sessions/start creates one active session with task context
     status: 'running',
     webMeter: expect.objectContaining({
       captureLevel: 'none',
-      privacyNote: expect.stringContaining('keyboard and mouse counts only'),
+      privacyNote: expect.stringContaining('app names, website domains'),
     }),
   }));
   expect(body.data.taskId).toBe(TASK_ID);

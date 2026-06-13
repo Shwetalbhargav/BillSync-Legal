@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { AlertTriangle, CheckCircle2, ClipboardList, FileText, Pause, Play, Save, Square, Timer } from "lucide-react";
+import { AlertTriangle, CheckCircle2, ClipboardList, FileText, Globe2, Pause, Play, Save, Square, Timer } from "lucide-react";
 import { Button, Card, CardBody, CardHeader, DataTable, StateCard, StatusBadge } from "../common";
 
 export function formatDuration(minutes = 0) {
@@ -7,6 +7,14 @@ export function formatDuration(minutes = 0) {
   const hours = Math.floor(total / 60);
   const mins = total % 60;
   return `${hours}h ${String(mins).padStart(2, "0")}m`;
+}
+
+export function formatSeconds(seconds = 0) {
+  const total = Math.max(0, Number(seconds || 0));
+  const hours = Math.floor(total / 3600);
+  const mins = Math.floor((total % 3600) / 60);
+  if (hours) return `${hours}h ${String(mins).padStart(2, "0")}m`;
+  return `${mins}m`;
 }
 
 export function formatElapsed(startedAt, fallbackMinutes = 0) {
@@ -71,7 +79,7 @@ export function WorkMeterPanel({
           <p className="text-sm font-semibold uppercase tracking-wide text-accent">Work Meter</p>
           <h1 className="mt-1 text-2xl font-bold text-primary md:text-3xl">{running ? "Work in progress" : "Ready to start"}</h1>
           <p className="mt-2 max-w-2xl text-sm leading-6 text-muted">Capture focused work with matter context and save it for review.</p>
-          <p className="mt-1 max-w-2xl text-xs font-semibold leading-5 text-muted">Activity uses keyboard and mouse counts only. It does not save keystrokes, screenshots, page text, or document text.</p>
+          <p className="mt-1 max-w-2xl text-xs font-semibold leading-5 text-muted">Activity uses keyboard and mouse counts, app names, website domains, and timing only. It does not save keystrokes, screenshots, page text, or document text.</p>
           <div className="mt-6 flex items-center gap-4">
             <div className="rounded-lg bg-blueSoft p-4 text-primary">
               <Timer className="h-8 w-8" />
@@ -235,6 +243,7 @@ export function WorkSessionTable({ sessions }) {
         { key: "status", label: "Status" },
         { key: "duration", label: "Duration" },
         { key: "activity", label: "Activity" },
+        { key: "apps", label: "Apps and sites" },
         { key: "started", label: "Started" },
       ]}
       rows={sessions.map((session) => ({
@@ -244,9 +253,85 @@ export function WorkSessionTable({ sessions }) {
         status: <StatusBadge>{session.status}</StatusBadge>,
         duration: formatDuration(session.minutes),
         activity: session.activitySummary?.sampleCount ? `${Number(session.activityPercent || 0).toLocaleString("en-IN", { maximumFractionDigits: 1 })}%` : "Not enough samples",
+        apps: session.appUsageSummary?.eventCount ? `${formatSeconds(session.appUsageSummary.durationSeconds)} recorded` : "No app history",
         started: formatDateTime(session.startedAt),
       }))}
     />
+  );
+}
+
+export function AppUsageTimeline({ sessions }) {
+  const rows = sessions.flatMap((session) =>
+    (session.appUsageTimeline || []).map((event) => ({
+      ...event,
+      sessionTitle: session.title,
+      matter: session.matter,
+    }))
+  );
+  if (!rows.length) {
+    return (
+      <section className="surface-card p-5">
+        <div className="flex items-start gap-3">
+          <Globe2 className="mt-0.5 h-5 w-5 shrink-0 text-accent" />
+          <div>
+            <h2 className="text-base font-bold text-primary">No app or website history yet</h2>
+            <p className="mt-1 text-sm leading-6 text-muted">App names and website domains will appear after an active meter sends usage records.</p>
+          </div>
+        </div>
+      </section>
+    );
+  }
+  const topApps = new Map();
+  const topDomains = new Map();
+  rows.forEach((event) => {
+    topApps.set(event.appName, (topApps.get(event.appName) || 0) + Number(event.durationSeconds || 0));
+    if (event.domain) topDomains.set(event.domain, (topDomains.get(event.domain) || 0) + Number(event.durationSeconds || 0));
+  });
+  const appRows = [...topApps.entries()].sort((a, b) => b[1] - a[1]).slice(0, 5);
+  const domainRows = [...topDomains.entries()].sort((a, b) => b[1] - a[1]).slice(0, 5);
+
+  return (
+    <section className="surface-card p-5">
+      <div className="flex min-w-0 flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+        <div>
+          <p className="text-sm font-semibold uppercase tracking-wide text-accent">App and website history</p>
+          <h2 className="mt-1 text-xl font-bold text-primary">Session timeline</h2>
+          <p className="mt-1 text-sm leading-6 text-muted">Shows app names, website domains, and time only.</p>
+        </div>
+        <Globe2 className="h-6 w-6 shrink-0 text-primary" />
+      </div>
+      <div className="mt-4 grid gap-4 lg:grid-cols-2">
+        <div className="rounded-lg border border-border p-4">
+          <h3 className="text-sm font-bold text-ink">Top apps</h3>
+          <div className="mt-3 space-y-2">
+            {appRows.map(([name, seconds]) => <p className="text-sm text-muted" key={name}>{name}: <span className="font-semibold text-ink">{formatSeconds(seconds)}</span></p>)}
+          </div>
+        </div>
+        <div className="rounded-lg border border-border p-4">
+          <h3 className="text-sm font-bold text-ink">Top websites</h3>
+          <div className="mt-3 space-y-2">
+            {domainRows.length ? domainRows.map(([name, seconds]) => <p className="break-words text-sm text-muted" key={name}>{name}: <span className="font-semibold text-ink">{formatSeconds(seconds)}</span></p>) : <p className="text-sm text-muted">No websites recorded.</p>}
+          </div>
+        </div>
+      </div>
+      <div className="mt-4">
+        <DataTable
+          columns={[
+            { key: "app", label: "App" },
+            { key: "site", label: "Website" },
+            { key: "duration", label: "Time" },
+            { key: "started", label: "Started" },
+          ]}
+          rows={rows.slice(0, 12).map((event) => ({
+            id: event.id,
+            app: event.appName,
+            site: event.domain || "No website",
+            duration: formatSeconds(event.durationSeconds),
+            started: formatDateTime(event.startedAt),
+          }))}
+        />
+      </div>
+    </section>
   );
 }
 

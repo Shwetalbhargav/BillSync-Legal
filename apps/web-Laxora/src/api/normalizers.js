@@ -325,9 +325,42 @@ export function normalizeWorkSession(item = {}) {
     minutes: Number(item.durationMinutes || 0),
     activityPercent: Number(item.activityPercent ?? item.activitySummary?.activityPercent ?? item.summary?.activityPercent ?? 0),
     activitySummary: item.activitySummary || item.summary || null,
+    appUsageSummary: item.appUsageSummary || null,
+    appUsageTimeline: item.appUsageTimeline || [],
     startedAt: item.startedAt || item.createdAt || "",
     endedAt: item.endedAt || "",
     calendarEvent: item.calendarEvent || null,
+    raw: item,
+  };
+}
+
+export function normalizeAppUsageTimeline(item = {}) {
+  const summary = item.summary || item;
+  const events = asList(item.events).map((event) => ({
+    id: toId(event),
+    appName: event.appName || "Unknown app",
+    domain: event.domain || "",
+    url: event.url || "",
+    title: event.title || "",
+    startedAt: event.startedAt || "",
+    endedAt: event.endedAt || "",
+    durationSeconds: Number(event.durationSeconds || 0),
+    platform: event.platform || "",
+    sourceApp: event.sourceApp || "",
+    raw: event,
+  }));
+  return {
+    eventCount: Number(summary.eventCount || 0),
+    durationSeconds: Number(summary.durationSeconds || 0),
+    apps: asList(summary.apps).map((row) => ({
+      name: row.name || row.appName || "Unknown app",
+      durationSeconds: Number(row.durationSeconds || 0),
+    })),
+    domains: asList(summary.domains).map((row) => ({
+      name: row.name || row.domain || "Website",
+      durationSeconds: Number(row.durationSeconds || 0),
+    })),
+    events,
     raw: item,
   };
 }
