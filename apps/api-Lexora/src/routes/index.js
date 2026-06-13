@@ -14,6 +14,7 @@ import { clientRoutes } from '../modules/clients/index.js';
 import { documentStorageRoutes } from '../modules/documentStorage/index.js';
 import { emailEntryRoutes } from '../modules/emailEntries/index.js';
 import { firmRoutes } from '../modules/firms/index.js';
+import { idleIntervalRoutes } from '../modules/idleIntervals/index.js';
 import {
   invoiceLineRoutes,
   invoiceRoutes,
@@ -50,6 +51,7 @@ router.use('/clients', clientRoutes);
 router.use('/document-storage', documentStorageRoutes);
 router.use('/email-entries', emailEntryRoutes);
 router.use('/firms', firmRoutes);
+router.use('/idle-intervals', idleIntervalRoutes);
 router.use('/integration-logs', integrationLogRoutes);
 router.use('/invoices', invoiceRoutes);
 router.use('/invoices/:invoiceId/lines', invoiceLineRoutes);

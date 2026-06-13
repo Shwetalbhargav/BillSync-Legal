@@ -187,6 +187,9 @@ export function WorkSessionList({ sessions }) {
           <p className="mt-1 text-sm font-semibold text-ink">
             Apps and sites: {session.appUsageSummary?.eventCount ? formatUsageSeconds(session.appUsageSummary.durationSeconds) : "No app history"}
           </p>
+          <p className="mt-1 text-sm font-semibold text-ink">
+            Idle: {session.idleSummary?.count ? `${formatUsageSeconds(session.idleSummary.totalSeconds)} marked, ${formatUsageSeconds(session.idleSummary.discardedSeconds)} removed` : "No idle markers"}
+          </p>
           <p className="mt-2 text-sm text-muted">{formatDate(session.startedAt)} • {formatHours(session.durationMinutes)}</p>
         </div>
       ))}

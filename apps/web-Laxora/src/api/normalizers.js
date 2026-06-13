@@ -327,9 +327,39 @@ export function normalizeWorkSession(item = {}) {
     activitySummary: item.activitySummary || item.summary || null,
     appUsageSummary: item.appUsageSummary || null,
     appUsageTimeline: item.appUsageTimeline || [],
+    idleSummary: item.idleSummary || null,
+    idleIntervals: item.idleIntervals || [],
+    payableMinutes: Number(item.payableDurationMinutes ?? item.payableMinutes ?? item.durationMinutes ?? 0),
     startedAt: item.startedAt || item.createdAt || "",
     endedAt: item.endedAt || "",
     calendarEvent: item.calendarEvent || null,
+    raw: item,
+  };
+}
+
+export function normalizeIdleSummary(item = {}) {
+  const summary = item.summary || item;
+  const intervals = asList(item.intervals).map((interval) => ({
+    id: toId(interval),
+    workSessionId: interval.workSessionId || "",
+    status: interval.status || "pending",
+    reason: interval.reason || "",
+    intervalStart: interval.intervalStart || "",
+    intervalEnd: interval.intervalEnd || "",
+    durationSeconds: Number(interval.durationSeconds || 0),
+    thresholdSeconds: Number(interval.thresholdSeconds || 0),
+    detectionSource: interval.detectionSource || "",
+    payableImpactSeconds: Number(interval.payableImpactSeconds || 0),
+    raw: interval,
+  }));
+  return {
+    count: Number(summary.count || intervals.length || 0),
+    totalSeconds: Number(summary.totalSeconds || intervals.reduce((sum, interval) => sum + interval.durationSeconds, 0)),
+    pendingSeconds: Number(summary.pendingSeconds || intervals.filter((interval) => interval.status === "pending").reduce((sum, interval) => sum + interval.durationSeconds, 0)),
+    discardedSeconds: Number(summary.discardedSeconds || intervals.filter((interval) => interval.status === "discarded").reduce((sum, interval) => sum + interval.durationSeconds, 0)),
+    keptSeconds: Number(summary.keptSeconds || intervals.filter((interval) => interval.status === "kept").reduce((sum, interval) => sum + interval.durationSeconds, 0)),
+    payableMinutes: Number(summary.payableMinutes || 0),
+    intervals,
     raw: item,
   };
 }

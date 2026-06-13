@@ -6,6 +6,7 @@ import { CaseAssignment } from '../../cases/models/CaseAssignment.js';
 import { TimeEntry } from '../../timeEntries/models/TimeEntry.js';
 import { Task } from '../../tasks/models/Task.js';
 import { computeRatedAmount, resolveBillingRate } from '../../rates/services/rateResolver.js';
+import { intervalsForSession, payableMinutesAfterIdle } from '../../idleIntervals/services/idleIntervalService.js';
 
 const DEFAULT_MAX_WORK_SESSION_MINUTES = 180;
 
@@ -95,9 +96,9 @@ const summarizeWebMeter = (workSession) => ({
   privacyNote: workSession.webMeter?.privacyNote || 'Tracks timer, pause/resume, keyboard and mouse counts, app names, website domains, and timing only. No keystroke values, screenshots, page text, or document text are stored.',
 });
 
-async function createTimeEntryForActivity(activity, req, session) {
-  const billableMinutes = activity.billable === false ? 0 : activity.roundedDurationMinutes;
-  const nonbillableMinutes = activity.billable === false ? activity.roundedDurationMinutes : 0;
+async function createTimeEntryForActivity(activity, req, session, durationMinutes = activity.roundedDurationMinutes) {
+  const billableMinutes = activity.billable === false ? 0 : durationMinutes;
+  const nonbillableMinutes = activity.billable === false ? durationMinutes : 0;
   const resolved = await resolveBillingRate({
     userId: activity.userId,
     caseId: activity.caseId,
@@ -350,7 +351,7 @@ export const WorkSessionController = {
       }
 
       const timing = calculateTiming(workSession, req.body?.endedAt ? new Date(req.body.endedAt) : new Date());
-      const maxSessionMinutes = Number(workSession.webMeter?.maxSessionMinutes || DEFAULT_MAX_WORK_SESSION_MINUTES);
+        const maxSessionMinutes = Number(workSession.webMeter?.maxSessionMinutes || DEFAULT_MAX_WORK_SESSION_MINUTES);
       if (timing.durationMinutes > maxSessionMinutes) {
         return res.status(400).json({
           ok: false,
@@ -362,6 +363,8 @@ export const WorkSessionController = {
       let timeEntry = null;
 
       await mongoSession.withTransaction(async () => {
+        const idleIntervals = await intervalsForSession(workSession._id);
+        const payableMinutes = payableMinutesAfterIdle(timing.durationMinutes, idleIntervals);
         const [createdActivity] = await Activity.create([{
           userId: workSession.userId,
           clientId: workSession.clientId,
@@ -377,8 +380,13 @@ export const WorkSessionController = {
           calendarEvent: workSession.calendarEvent,
           startedAt: workSession.startedAt,
           endedAt: timing.end,
-          durationMinutes: timing.durationMinutes,
-          roundedDurationMinutes: timing.durationMinutes,
+          durationMinutes: payableMinutes,
+          roundedDurationMinutes: payableMinutes,
+          idleSummary: {
+            totalSeconds: idleIntervals.reduce((sum, interval) => sum + Number(interval.durationSeconds || 0), 0),
+            discardedSeconds: idleIntervals.filter((interval) => interval.status === 'discarded').reduce((sum, interval) => sum + Number(interval.durationSeconds || 0), 0),
+            payableMinutes,
+          },
           workDate: workSession.startedAt,
           roundingPolicy: 'exact',
           source: 'meter',
@@ -396,13 +404,14 @@ export const WorkSessionController = {
 
         const shouldCreateTimeEntry = req.body?.createTimeEntry !== false;
         if (shouldCreateTimeEntry) {
-          timeEntry = await createTimeEntryForActivity(activity, req, mongoSession);
+          timeEntry = await createTimeEntryForActivity(activity, req, mongoSession, payableMinutes);
         }
 
         workSession.status = 'stopped';
         workSession.endedAt = timing.end;
         workSession.pausedMs = timing.pausedMs;
         workSession.durationMinutes = timing.durationMinutes;
+        workSession.payableDurationMinutes = payableMinutes;
         workSession.activityId = activity._id;
         workSession.stoppedBy = req.user.id;
         await workSession.save({ session: mongoSession });

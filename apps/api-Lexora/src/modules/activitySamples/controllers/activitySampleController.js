@@ -1,5 +1,6 @@
 import { ActivitySample } from '../models/ActivitySample.js';
 import { WorkSession } from '../../workSessions/models/WorkSession.js';
+import { createOrUpdateIdleInterval } from '../../idleIntervals/services/idleIntervalService.js';
 
 const FORBIDDEN_FIELDS = [
   'key',
@@ -150,6 +151,14 @@ export const ActivitySampleController = {
       };
       session.lastHeartbeatAt = payload.windowEnd;
       await session.save();
+      if (payload.inactiveSeconds >= Number(session.webMeter?.idleAfterSeconds || 300)) {
+        await createOrUpdateIdleInterval({
+          session,
+          intervalStart: new Date(payload.windowEnd.getTime() - payload.inactiveSeconds * 1000),
+          intervalEnd: payload.windowEnd,
+          detectionSource: 'activity_sample',
+        });
+      }
 
       res.status(201).json({ ok: true, data: sample });
     } catch (err) {

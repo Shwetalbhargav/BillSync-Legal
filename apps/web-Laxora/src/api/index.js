@@ -24,6 +24,7 @@ export * from "./gaps.js";
 export * from "./firms.js";
 export * from "./health.js";
 export * from "./integrations.js";
+export * from "./idleIntervals.js";
 export * from "./invoices.js";
 export * from "./invoiceWorkspace.js";
 export * from "./kpi.js";

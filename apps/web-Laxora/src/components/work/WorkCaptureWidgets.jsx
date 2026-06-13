@@ -233,6 +233,47 @@ export function SaveFailedState({ elapsedLabel, message, onRetry }) {
   );
 }
 
+export function IdleResolutionPrompt({ idle, isSaving, onDiscard, onKeep }) {
+  const pending = (idle?.intervals || []).filter((interval) => interval.status === "pending");
+  if (!pending.length) return null;
+  const seconds = pending.reduce((sum, interval) => sum + Number(interval.durationSeconds || 0), 0);
+  return (
+    <section className="rounded-lg border border-warning/30 bg-warning/10 p-5">
+      <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+        <div className="min-w-0">
+          <h2 className="text-base font-bold text-warning">Review time away</h2>
+          <p className="mt-1 text-sm leading-6 text-ink">
+            We noticed {formatSeconds(seconds)} without activity. Keep it if you were still working, or remove it from payable time.
+          </p>
+        </div>
+        <div className="flex shrink-0 flex-col gap-2 sm:flex-row">
+          <Button disabled={isSaving} onClick={() => onKeep(pending)} type="button" variant="secondary">Keep time</Button>
+          <Button disabled={isSaving} onClick={() => onDiscard(pending)} type="button" variant="danger">Remove from payable time</Button>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+export function IdleMarkers({ intervals }) {
+  if (!intervals?.length) return null;
+  return (
+    <div className="mt-3 rounded-lg border border-border bg-surface p-3">
+      <p className="text-xs font-semibold uppercase tracking-wide text-muted">Idle markers</p>
+      <div className="mt-2 space-y-2">
+        {intervals.slice(0, 4).map((interval) => (
+          <div className="flex flex-col gap-1 text-sm sm:flex-row sm:items-center sm:justify-between" key={interval.id}>
+            <span className="text-ink">{formatDateTime(interval.intervalStart)} - {formatSeconds(interval.durationSeconds)}</span>
+            <StatusBadge tone={interval.status === "discarded" ? "warning" : interval.status === "kept" ? "success" : "neutral"}>
+              {interval.status}
+            </StatusBadge>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export function WorkSessionTable({ sessions }) {
   if (!sessions.length) return <StateCard state="empty" title="No work sessions yet" message="Start the meter or add time manually to build your history." />;
   return (
@@ -244,6 +285,8 @@ export function WorkSessionTable({ sessions }) {
         { key: "duration", label: "Duration" },
         { key: "activity", label: "Activity" },
         { key: "apps", label: "Apps and sites" },
+        { key: "idle", label: "Idle" },
+        { key: "payable", label: "Payable" },
         { key: "started", label: "Started" },
       ]}
       rows={sessions.map((session) => ({
@@ -254,6 +297,8 @@ export function WorkSessionTable({ sessions }) {
         duration: formatDuration(session.minutes),
         activity: session.activitySummary?.sampleCount ? `${Number(session.activityPercent || 0).toLocaleString("en-IN", { maximumFractionDigits: 1 })}%` : "Not enough samples",
         apps: session.appUsageSummary?.eventCount ? `${formatSeconds(session.appUsageSummary.durationSeconds)} recorded` : "No app history",
+        idle: session.idleSummary?.count ? `${formatSeconds(session.idleSummary.totalSeconds)} (${formatSeconds(session.idleSummary.discardedSeconds)} removed)` : "No idle markers",
+        payable: formatDuration(session.payableMinutes || session.minutes),
         started: formatDateTime(session.startedAt),
       }))}
     />

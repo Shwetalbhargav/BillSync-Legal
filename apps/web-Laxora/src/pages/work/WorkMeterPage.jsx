@@ -1,12 +1,13 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { activitySamplesApi } from "../../api/activitySamples";
 import { appUsageEventsApi } from "../../api/appUsageEvents";
+import { idleIntervalsApi } from "../../api/idleIntervals";
 import { workCaptureApi } from "../../api/workCapture";
 import { workSessionsApi } from "../../api/workSessions";
 import { normalizeTimeEntry, normalizeWorkSession } from "../../api/normalizers";
 import { useAuth } from "../../auth/AuthProvider";
 import { Button, SkeletonBlock } from "../../components/common";
-import { MeterOptionState, WorkMeterPanel, SaveFailedState, formatElapsed } from "../../components/work/WorkCaptureWidgets";
+import { IdleResolutionPrompt, MeterOptionState, WorkMeterPanel, SaveFailedState, formatElapsed } from "../../components/work/WorkCaptureWidgets";
 
 const initialForm = {
   clientId: "",
@@ -33,7 +34,9 @@ export function WorkMeterPage() {
   const [saveFailed, setSaveFailed] = useState("");
   const [lastStopSubmit, setLastStopSubmit] = useState(false);
   const [lastSavedEntry, setLastSavedEntry] = useState(null);
+  const [pendingIdle, setPendingIdle] = useState(null);
   const [tick, setTick] = useState(0);
+  const hiddenAtRef = useRef(null);
   const activityBucketRef = useRef({
     windowStart: new Date(),
     keyboardCount: 0,
@@ -68,6 +71,33 @@ export function WorkMeterPage() {
     const timer = window.setInterval(() => setTick((value) => value + 1), 10000);
     return () => window.clearInterval(timer);
   }, []);
+
+  useEffect(() => {
+    if (!session?.id || session.status !== "running") return undefined;
+    async function checkReturnIdle() {
+      if (document.visibilityState === "hidden") {
+        hiddenAtRef.current = new Date();
+        return;
+      }
+      if (!hiddenAtRef.current) return;
+      const awaySeconds = Math.round((Date.now() - new Date(hiddenAtRef.current).getTime()) / 1000);
+      hiddenAtRef.current = null;
+      const thresholdSeconds = Number(session.raw?.webMeter?.idleAfterSeconds || 300);
+      if (awaySeconds < thresholdSeconds) return;
+      try {
+        const result = await idleIntervalsApi.detectForSession(session.id, {
+          observedAt: new Date().toISOString(),
+          source: "return_prompt",
+        });
+        if (result.intervals?.some((interval) => interval.status === "pending")) setPendingIdle(result);
+      } catch {
+        setIssues((current) => [...new Set([...(current || []), "Idle time could not be checked yet."])]);
+      }
+    }
+
+    document.addEventListener("visibilitychange", checkReturnIdle);
+    return () => document.removeEventListener("visibilitychange", checkReturnIdle);
+  }, [session]);
 
   useEffect(() => {
     function markKeyboardActivity() {
@@ -285,6 +315,24 @@ export function WorkMeterPage() {
     }
   }
 
+  async function resolveIdle(intervals, decision) {
+    if (!intervals?.length) return;
+    setStatus("saving");
+    try {
+      await Promise.all(intervals.map((interval) => idleIntervalsApi.resolve(interval.id, {
+        decision,
+        reason: decision === "discarded" ? "Removed after return review" : "Kept after return review",
+      })));
+      const refreshed = session?.id ? await idleIntervalsApi.listForSession(session.id) : null;
+      setPendingIdle(refreshed?.intervals?.some((interval) => interval.status === "pending") ? refreshed : null);
+      setStatus("ready");
+      setMessage(decision === "discarded" ? "Idle time was removed from payable time." : "Idle time was kept.");
+    } catch (error) {
+      setStatus("ready");
+      setMessage(error?.userMessage || "We could not update idle time right now.");
+    }
+  }
+
   async function discard() {
     if (!session?.id) return;
     setStatus("saving");
@@ -321,6 +369,12 @@ export function WorkMeterPage() {
         </section>
       ) : null}
       {saveFailed ? <SaveFailedState elapsedLabel={elapsedLabel} message={saveFailed} onRetry={() => stop(lastStopSubmit)} /> : null}
+      <IdleResolutionPrompt
+        idle={pendingIdle}
+        isSaving={status === "saving"}
+        onDiscard={(intervals) => resolveIdle(intervals, "discarded")}
+        onKeep={(intervals) => resolveIdle(intervals, "kept")}
+      />
       {!session ? (
         <MeterOptionState
           hasClients={clients.length > 0}

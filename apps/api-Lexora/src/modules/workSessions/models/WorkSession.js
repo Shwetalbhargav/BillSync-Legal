@@ -35,6 +35,7 @@ const WorkSessionSchema = new mongoose.Schema(
     lastHeartbeatAt: { type: Date },
     pausedMs: { type: Number, default: 0, min: 0 },
     durationMinutes: { type: Number, min: 0 },
+    payableDurationMinutes: { type: Number, min: 0 },
 
     heartbeatCount: { type: Number, default: 0, min: 0 },
     lastUrl: { type: String, trim: true, maxlength: 2048 },
