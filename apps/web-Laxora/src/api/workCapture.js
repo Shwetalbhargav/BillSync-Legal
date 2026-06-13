@@ -1,4 +1,7 @@
 import { activitiesApi } from "./activities.js";
+import { activitySamplesApi } from "./activitySamples.js";
+import { appUsageEventsApi } from "./appUsageEvents.js";
+import { idleIntervalsApi } from "./idleIntervals.js";
 import { clientsApi } from "./clients.js";
 import { mattersApi } from "./matters.js";
 import { tasksApi } from "./tasks.js";
@@ -46,12 +49,39 @@ export const workCaptureApi = {
       workSessionsApi.list(),
       timeEntriesApi.list({ limit: 100 }),
     ]);
+    const sessions = asList(settledValue(sessionsResult, [])).map(normalizeWorkSession);
+    const summaries = await Promise.allSettled(sessions.slice(0, 25).map((session) => activitySamplesApi.sessionSummary(session.id)));
+    const appTimelines = await Promise.allSettled(sessions.slice(0, 25).map((session) => appUsageEventsApi.sessionTimeline(session.id)));
+    const idleResults = await Promise.allSettled(sessions.slice(0, 25).map((session) => idleIntervalsApi.listForSession(session.id)));
+    const summaryBySession = new Map();
+    const appUsageBySession = new Map();
+    const idleBySession = new Map();
+    summaries.forEach((result, index) => {
+      if (result.status === "fulfilled") summaryBySession.set(sessions[index].id, result.value);
+    });
+    appTimelines.forEach((result, index) => {
+      if (result.status === "fulfilled") appUsageBySession.set(sessions[index].id, result.value);
+    });
+    idleResults.forEach((result, index) => {
+      if (result.status === "fulfilled") idleBySession.set(sessions[index].id, result.value);
+    });
     return {
-      sessions: asList(settledValue(sessionsResult, [])).map(normalizeWorkSession),
+      sessions: sessions.map((session) => ({
+        ...session,
+        activitySummary: summaryBySession.get(session.id) || null,
+        activityPercent: summaryBySession.get(session.id)?.activityPercent || 0,
+        appUsageSummary: appUsageBySession.get(session.id) || null,
+        appUsageTimeline: appUsageBySession.get(session.id)?.events || [],
+        idleSummary: idleBySession.get(session.id) || null,
+        idleIntervals: idleBySession.get(session.id)?.intervals || [],
+      })),
       timeEntries: asList(settledValue(timeResult, [])).map(normalizeTimeEntry),
       issues: [
         issueMessage(sessionsResult, "Work sessions could not be refreshed."),
         issueMessage(timeResult, "Time entries could not be refreshed."),
+        summaries.some((result) => result.status === "rejected") ? "Activity percentages could not be refreshed for every session." : "",
+        appTimelines.some((result) => result.status === "rejected") ? "App and website history could not be refreshed for every session." : "",
+        idleResults.some((result) => result.status === "rejected") ? "Idle time markers could not be refreshed for every session." : "",
       ].filter(Boolean),
     };
   },

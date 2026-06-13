@@ -17,6 +17,7 @@ const mocks = vi.hoisted(() => ({
   rateCardFindOne: vi.fn(),
   timeEntryCreate: vi.fn(),
   timeEntryFindOne: vi.fn(),
+  idleIntervalFind: vi.fn(),
   userFindById: vi.fn(),
   firmFindById: vi.fn(),
   associateProfileFindOne: vi.fn(),
@@ -62,6 +63,12 @@ vi.mock('../modules/timeEntries/models/TimeEntry.js', () => ({
   TimeEntry: {
     create: mocks.timeEntryCreate,
     findOne: mocks.timeEntryFindOne,
+  },
+}));
+
+vi.mock('../modules/idleIntervals/models/IdleInterval.js', () => ({
+  IdleInterval: {
+    find: mocks.idleIntervalFind,
   },
 }));
 
@@ -204,6 +211,7 @@ beforeEach(() => {
   mocks.rateCardFindOne.mockReturnValue(queryResult({ ratePerHour: 6000 }));
   mocks.timeEntryCreate.mockImplementation(async ([payload]) => [{ _id: TIME_ENTRY_ID, ...payload }]);
   mocks.timeEntryFindOne.mockResolvedValue({ _id: TIME_ENTRY_ID, activityId: ACTIVITY_ID, status: 'submitted' });
+  mocks.idleIntervalFind.mockReturnValue(queryResult([]));
   mocks.userFindById.mockReturnValue(queryResult({ _id: USER_ID, role: 'lawyer' }));
 });
 
@@ -233,10 +241,21 @@ test('POST /api/work-sessions/start creates one active session with task context
     status: 'running',
     webMeter: expect.objectContaining({
       captureLevel: 'none',
-      privacyNote: 'Tracks timer, pause/resume, and heartbeat count only.',
+      privacyNote: expect.stringContaining('app names, website domains'),
     }),
   }));
   expect(body.data.taskId).toBe(TASK_ID);
+});
+
+test('GET /api/work-sessions lets partners review session list', async () => {
+  mocks.workSessionFind.mockReturnValue(queryResult([sessionDoc()]));
+
+  const response = await jsonRequest('/api/work-sessions', {}, 'partner', OTHER_USER_ID);
+  const body = await response.json();
+
+  expect(response.status).toBe(200);
+  expect(mocks.workSessionFind).toHaveBeenCalledWith({});
+  expect(body.data).toHaveLength(1);
 });
 
 test('POST /api/work-sessions/start blocks duplicate active sessions with a stable code', async () => {
@@ -312,6 +331,31 @@ test('POST /api/work-sessions/:id/stop creates activity and submitted time entry
   expect(doc.status).toBe('stopped');
   expect(doc.activityId).toBe(ACTIVITY_ID);
   expect(body.timeEntry.status).toBe('submitted');
+});
+
+test('POST /api/work-sessions/:id/stop excludes discarded idle time from payable time', async () => {
+  const doc = sessionDoc({ startedAt: new Date(Date.now() - 30 * 60000) });
+  mocks.workSessionFindById.mockResolvedValue(doc);
+  mocks.idleIntervalFind.mockReturnValue(queryResult([
+    {
+      _id: '64b000000000000000000088',
+      workSessionId: SESSION_ID,
+      durationSeconds: 600,
+      status: 'discarded',
+    },
+  ]));
+
+  const response = await jsonRequest(`/api/work-sessions/${SESSION_ID}/stop`, {
+    method: 'POST',
+    body: JSON.stringify({ endedAt: new Date(Date.now()).toISOString() }),
+  });
+
+  expect(response.status).toBe(200);
+  const activityPayload = mocks.activityCreate.mock.calls[0][0][0];
+  const entryPayload = mocks.timeEntryCreate.mock.calls[0][0][0];
+  expect(activityPayload.roundedDurationMinutes).toBeLessThan(doc.durationMinutes);
+  expect(entryPayload.billableMinutes).toBe(activityPayload.roundedDurationMinutes);
+  expect(doc.payableDurationMinutes).toBe(activityPayload.roundedDurationMinutes);
 });
 
 test('POST /api/work-sessions/:id/stop returns the prior conversion when retried', async () => {

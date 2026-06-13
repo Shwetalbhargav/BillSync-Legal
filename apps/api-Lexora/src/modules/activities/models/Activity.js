@@ -14,6 +14,11 @@ const ActivitySchema = new mongoose.Schema(
     endedAt: { type: Date },
     durationMinutes: { type: Number, min: 0 },
     roundedDurationMinutes: { type: Number, min: 0 },
+    idleSummary: {
+      totalSeconds: { type: Number, default: 0, min: 0 },
+      discardedSeconds: { type: Number, default: 0, min: 0 },
+      payableMinutes: { type: Number, min: 0 },
+    },
     workDate: { type: Date, index: true },
     roundingPolicy: { type: String, enum: ['exact', 'six_minute', 'fifteen_minute'], default: 'exact' },
     billable: { type: Boolean, default: true, index: true },
@@ -37,6 +42,7 @@ const ActivitySchema = new mongoose.Schema(
       lastUrl: { type: String, trim: true, maxlength: 2048 },
       lastTitle: { type: String, trim: true, maxlength: 300 },
       privacyNote: { type: String, trim: true, maxlength: 500 },
+      idleSummary: { type: mongoose.Schema.Types.Mixed },
     },
     calendarEvent: {
       title: { type: String, trim: true, maxlength: 240 },

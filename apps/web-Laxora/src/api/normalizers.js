@@ -323,9 +323,239 @@ export function normalizeWorkSession(item = {}) {
     billable: item.billable !== false,
     status: item.status || "running",
     minutes: Number(item.durationMinutes || 0),
+    activityPercent: Number(item.activityPercent ?? item.activitySummary?.activityPercent ?? item.summary?.activityPercent ?? 0),
+    activitySummary: item.activitySummary || item.summary || null,
+    appUsageSummary: item.appUsageSummary || null,
+    appUsageTimeline: item.appUsageTimeline || [],
+    idleSummary: item.idleSummary || null,
+    idleIntervals: item.idleIntervals || [],
+    payableMinutes: Number(item.payableDurationMinutes ?? item.payableMinutes ?? item.durationMinutes ?? 0),
     startedAt: item.startedAt || item.createdAt || "",
     endedAt: item.endedAt || "",
     calendarEvent: item.calendarEvent || null,
+    raw: item,
+  };
+}
+
+export function normalizeWorkforceAnalytics(data = {}) {
+  const summary = data.summary || {};
+  const secondsToMinutes = (seconds) => Math.round(Number(seconds || 0) / 60);
+  return {
+    range: data.range || {},
+    summary: {
+      trackedMinutes: Number(summary.trackedMinutes || 0),
+      billableMinutes: Number(summary.billableMinutes || 0),
+      nonbillableMinutes: Number(summary.nonbillableMinutes || 0),
+      billablePercent: Number(summary.billablePercent || 0),
+      activityPercent: Number(summary.activityPercent || 0),
+      idlePercent: Number(summary.idlePercent || 0),
+      utilizationPercent: Number(summary.utilizationPercent || 0),
+      payrollReadyMinutes: Number(summary.payrollReadyMinutes || 0),
+      payrollReadyAmount: normalizeMoney(summary.payrollReadyAmount),
+      approvalSlaHours: Number(summary.approvalSlaHours || 0),
+      approvalStatus: summary.approvalStatus || {},
+      attendance: summary.attendance || {},
+      sessions: Number(summary.sessions || 0),
+      people: Number(summary.people || 0),
+    },
+    people: asList(data.people).map((person) => ({
+      id: person.id || person.userId || person.name,
+      name: person.name || "Team member",
+      trackedMinutes: Number(person.trackedMinutes || 0),
+      activityPercent: Number(person.activityPercent || 0),
+      idlePercent: Number(person.idlePercent || 0),
+      sessions: Number(person.sessions || 0),
+    })),
+    appUsage: asList(data.appUsage).map((item) => ({
+      id: item.name,
+      name: item.name || "App",
+      minutes: secondsToMinutes(item.seconds),
+    })),
+    domainUsage: asList(data.domainUsage).map((item) => ({
+      id: item.name,
+      name: item.name || "Domain",
+      minutes: secondsToMinutes(item.seconds),
+    })),
+    rows: asList(data.rows).map((row) => ({
+      id: row.id,
+      userId: row.userId || "",
+      userName: row.userName || "Team member",
+      clientId: row.clientId || "",
+      clientName: row.clientName || "Client not set",
+      matterId: row.matterId || "",
+      matterName: row.matterName || "Matter not set",
+      taskId: row.taskId || "",
+      taskName: row.taskName || "",
+      date: row.date || "",
+      activityType: row.activityType || "work",
+      trackedMinutes: Number(row.trackedMinutes || 0),
+      activityPercent: Number(row.activityPercent || 0),
+      idlePercent: Number(row.idlePercent || 0),
+      idleSeconds: Number(row.idleSeconds || 0),
+      discardedIdleSeconds: Number(row.discardedIdleSeconds || 0),
+      topApp: row.topApp || "",
+      topDomain: row.topDomain || "",
+      approvalStatus: row.approvalStatus || "not submitted",
+      attendanceStatus: row.attendanceStatus || "not recorded",
+      payrollReady: Boolean(row.payrollReady),
+      billableReady: Boolean(row.billableReady),
+      raw: row,
+    })),
+    filters: {
+      users: asList(data.filters?.users),
+      clients: asList(data.filters?.clients),
+      matters: asList(data.filters?.matters),
+      tasks: asList(data.filters?.tasks),
+      teamEnabled: Boolean(data.filters?.teamEnabled),
+    },
+    gaps: asList(data.gaps),
+    privacy: data.privacy || {},
+  };
+}
+
+export function normalizeAttendanceSummary(item = {}) {
+  return {
+    total: Number(item.total || 0),
+    present: Number(item.present || 0),
+    absent: Number(item.absent || 0),
+    late: Number(item.late || 0),
+    leave: Number(item.leave || 0),
+    holiday: Number(item.holiday || 0),
+    raw: item,
+  };
+}
+
+export function normalizeAttendanceDay(item = {}) {
+  const user = item.userId || item.user || {};
+  return {
+    id: toId(item),
+    userId: toId(user) || item.userId || "",
+    userName: user.name || item.userName || "Team member",
+    role: user.role || "",
+    date: item.date || "",
+    status: String(item.status || "absent").toLowerCase(),
+    firstActivityAt: item.firstActivityAt || "",
+    lastActivityAt: item.lastActivityAt || "",
+    expectedStart: item.expectedStart || "09:30",
+    expectedEnd: item.expectedEnd || "18:00",
+    minutesWorked: Number(item.minutesWorked || 0),
+    lateMinutes: Number(item.lateMinutes || 0),
+    source: item.source || "",
+    raw: item,
+  };
+}
+
+export function normalizeLeaveRequest(item = {}) {
+  const user = item.userId || item.user || {};
+  return {
+    id: toId(item),
+    userId: toId(user) || item.userId || "",
+    userName: user.name || item.userName || "Team member",
+    role: user.role || "",
+    startDate: item.startDate || "",
+    endDate: item.endDate || "",
+    leaveType: item.leaveType || "vacation",
+    reason: item.reason || "",
+    status: String(item.status || "pending").toLowerCase(),
+    reviewNote: item.reviewNote || "",
+    affectsPayroll: item.affectsPayroll !== false,
+    createdAt: item.createdAt || "",
+    raw: item,
+  };
+}
+
+export function normalizeHoliday(item = {}) {
+  return {
+    id: toId(item),
+    date: item.date || "",
+    name: item.name || "Holiday",
+    region: item.region || "firm",
+    paid: item.paid !== false,
+    raw: item,
+  };
+}
+
+export function normalizeIdleSummary(item = {}) {
+  const summary = item.summary || item;
+  const intervals = asList(item.intervals).map((interval) => ({
+    id: toId(interval),
+    workSessionId: interval.workSessionId || "",
+    status: interval.status || "pending",
+    reason: interval.reason || "",
+    intervalStart: interval.intervalStart || "",
+    intervalEnd: interval.intervalEnd || "",
+    durationSeconds: Number(interval.durationSeconds || 0),
+    thresholdSeconds: Number(interval.thresholdSeconds || 0),
+    detectionSource: interval.detectionSource || "",
+    payableImpactSeconds: Number(interval.payableImpactSeconds || 0),
+    raw: interval,
+  }));
+  return {
+    count: Number(summary.count || intervals.length || 0),
+    totalSeconds: Number(summary.totalSeconds || intervals.reduce((sum, interval) => sum + interval.durationSeconds, 0)),
+    pendingSeconds: Number(summary.pendingSeconds || intervals.filter((interval) => interval.status === "pending").reduce((sum, interval) => sum + interval.durationSeconds, 0)),
+    discardedSeconds: Number(summary.discardedSeconds || intervals.filter((interval) => interval.status === "discarded").reduce((sum, interval) => sum + interval.durationSeconds, 0)),
+    keptSeconds: Number(summary.keptSeconds || intervals.filter((interval) => interval.status === "kept").reduce((sum, interval) => sum + interval.durationSeconds, 0)),
+    payableMinutes: Number(summary.payableMinutes || 0),
+    intervals,
+    raw: item,
+  };
+}
+
+export function normalizeAppUsageTimeline(item = {}) {
+  const summary = item.summary || item;
+  const events = asList(item.events).map((event) => ({
+    id: toId(event),
+    appName: event.appName || "Unknown app",
+    domain: event.domain || "",
+    url: event.url || "",
+    title: event.title || "",
+    startedAt: event.startedAt || "",
+    endedAt: event.endedAt || "",
+    durationSeconds: Number(event.durationSeconds || 0),
+    platform: event.platform || "",
+    sourceApp: event.sourceApp || "",
+    raw: event,
+  }));
+  return {
+    eventCount: Number(summary.eventCount || 0),
+    durationSeconds: Number(summary.durationSeconds || 0),
+    apps: asList(summary.apps).map((row) => ({
+      name: row.name || row.appName || "Unknown app",
+      durationSeconds: Number(row.durationSeconds || 0),
+    })),
+    domains: asList(summary.domains).map((row) => ({
+      name: row.name || row.domain || "Website",
+      durationSeconds: Number(row.durationSeconds || 0),
+    })),
+    events,
+    raw: item,
+  };
+}
+
+export function normalizeActivitySummary(item = {}) {
+  const summary = item.summary || item;
+  return {
+    sampleCount: Number(summary.sampleCount || 0),
+    sampleSeconds: Number(summary.sampleSeconds || 0),
+    activeSeconds: Number(summary.activeSeconds || 0),
+    inactiveSeconds: Number(summary.inactiveSeconds || 0),
+    keyboardCount: Number(summary.keyboardCount || 0),
+    mouseCount: Number(summary.mouseCount || 0),
+    activityPercent: Number(summary.activityPercent || 0),
+    samples: asList(item.samples).map((sample) => ({
+      id: toId(sample),
+      windowStart: sample.windowStart || "",
+      windowEnd: sample.windowEnd || "",
+      activeSeconds: Number(sample.activeSeconds || 0),
+      inactiveSeconds: Number(sample.inactiveSeconds || 0),
+      keyboardCount: Number(sample.keyboardCount || 0),
+      mouseCount: Number(sample.mouseCount || 0),
+      activityPercent: Number(sample.activityPercent || 0),
+      sourceDevice: sample.sourceDevice || "",
+      sourceApp: sample.sourceApp || "",
+      raw: sample,
+    })),
     raw: item,
   };
 }

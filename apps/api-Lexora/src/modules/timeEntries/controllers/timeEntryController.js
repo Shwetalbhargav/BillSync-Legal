@@ -2,7 +2,9 @@
 import mongoose from 'mongoose';
 import { TimeEntry } from '../models/TimeEntry.js';
 import { Activity } from '../../activities/models/Activity.js';
+import { ActivitySample } from '../../activitySamples/models/ActivitySample.js';
 import Billable from '../../billables/models/Billable.js';
+import { WorkSession } from '../../workSessions/models/WorkSession.js';
 import { computeRatedAmount, resolveBillingRate } from '../../rates/services/rateResolver.js';
 
 const withSession = (query, session) =>
@@ -50,6 +52,59 @@ const normalizeBillableActivityCode = ({ activityCode, activityType } = {}) => {
   return BILLABLE_CODE_BY_ACTIVITY_TYPE[String(activityType || '').toLowerCase()] || 'OTHER';
 };
 
+const buildActivitySummary = (samples = []) => {
+  const summary = samples.reduce(
+    (total, sample) => ({
+      sampleCount: total.sampleCount + 1,
+      sampleSeconds: total.sampleSeconds + Number(sample.sampleSeconds || 0),
+      activeSeconds: total.activeSeconds + Number(sample.activeSeconds || 0),
+      inactiveSeconds: total.inactiveSeconds + Number(sample.inactiveSeconds || 0),
+      keyboardCount: total.keyboardCount + Number(sample.keyboardCount || 0),
+      mouseCount: total.mouseCount + Number(sample.mouseCount || 0),
+    }),
+    { sampleCount: 0, sampleSeconds: 0, activeSeconds: 0, inactiveSeconds: 0, keyboardCount: 0, mouseCount: 0 }
+  );
+  summary.activityPercent = summary.sampleSeconds
+    ? Math.round((summary.activeSeconds / summary.sampleSeconds) * 100)
+    : 0;
+  return summary;
+};
+
+const enrichTimeEntriesForReview = async (rows) => {
+  const plainRows = rows.map((row) => (row?.toObject ? row.toObject() : row));
+  const activityIds = plainRows.map((row) => idString(row.activityId)).filter(Boolean);
+  if (!activityIds.length) return plainRows;
+
+  const sessions = await WorkSession.find({ activityId: { $in: activityIds } })
+    .select('_id activityId payableDurationMinutes idleSummary')
+    .lean();
+  const sessionsByActivity = new Map(sessions.map((session) => [idString(session.activityId), session]));
+  const sessionIds = sessions.map((session) => session._id);
+
+  const samples = sessionIds.length
+    ? await ActivitySample.find({ workSessionId: { $in: sessionIds } }).lean()
+    : [];
+  const samplesBySession = samples.reduce((groups, sample) => {
+    const key = idString(sample.workSessionId);
+    groups.set(key, [...(groups.get(key) || []), sample]);
+    return groups;
+  }, new Map());
+
+  return plainRows.map((row) => {
+    const activityId = idString(row.activityId);
+    const session = sessionsByActivity.get(activityId);
+    const activitySummary = session ? buildActivitySummary(samplesBySession.get(idString(session._id)) || []) : buildActivitySummary();
+    const activity = row.activityId && typeof row.activityId === 'object' ? row.activityId : {};
+    return {
+      ...row,
+      workSessionId: session?._id,
+      activitySummary,
+      idleSummary: activity.idleSummary || activity.webMeter?.idleSummary || session?.idleSummary || row.idleSummary,
+      payableDurationMinutes: session?.payableDurationMinutes,
+    };
+  });
+};
+
 const canOwnTimeEntry = (entry, req) =>
   req.user?.role === 'admin' || idString(entry?.userId) === req.user?.id;
 
@@ -93,7 +148,7 @@ export const createTimeEntry = async (req, res) => {
   try {
     const {
       caseId, clientId, userId,
-      activityId, activityCode, narrative,
+      activityId, activityCode, narrative, taskId,
       billableMinutes = 0, nonbillableMinutes = 0,
       rateApplied, amount, date
     } = req.body;
@@ -123,6 +178,7 @@ export const createTimeEntry = async (req, res) => {
     const entry = await TimeEntry.create({
       caseId, clientId, userId,
       activityId: activityId || undefined,
+      taskId: taskId || undefined,
       activityCode: finalActivityCode || undefined,
       narrative,
       billableMinutes,
@@ -201,10 +257,12 @@ export const createFromActivity = async (req, res) => {
         clientId: act.clientId,
         userId: act.userId,
         activityId: act._id,
+        taskId: act.taskId || undefined,
         activityCode: act.activityCode,
         narrative: act.narrative || act.activityType,
         billableMinutes,
         nonbillableMinutes,
+        idleSummary: act.idleSummary || undefined,
         rateApplied: rate == null ? undefined : Number(rate),
         amount: computeRatedAmount({ ratePerHour: rate, billableMinutes }),
         date: act.endedAt || act.startedAt || new Date(),
@@ -277,8 +335,14 @@ export const listTimeEntries = async (req, res) => {
     }
     if (q) filter.narrative = { $regex: q, $options: 'i' };
 
-    const rows = await TimeEntry.find(filter).sort({ date: -1, createdAt: -1 });
-    res.json(rows);
+    const rows = await TimeEntry.find(filter)
+      .populate('userId', 'name email role')
+      .populate('clientId', 'displayName name')
+      .populate('caseId', 'title name')
+      .populate('taskId', 'title status')
+      .populate('activityId', 'activityType workTool idleSummary webMeter durationMinutes roundedDurationMinutes')
+      .sort({ date: -1, createdAt: -1 });
+    res.json(await enrichTimeEntriesForReview(rows));
   } catch (e) {
     console.error(e);
     res.status(500).json({ error: 'Failed to list time entries' });
@@ -345,7 +409,7 @@ async function transition(id, fromStatuses, toStatus, req, { reason } = {}) {
     if (!isReviewerRole(req.user?.role)) {
       return { error: 'Only reviewers can approve or reject time entries', statusCode: 403 };
     }
-    if (idString(entry.userId) === req.user?.id) {
+    if (String(req.user?.role || '').toLowerCase() !== 'admin' && idString(entry.userId) === req.user?.id) {
       return { error: 'Reviewers cannot approve or reject their own time entries', statusCode: 403 };
     }
     entry.reviewedAt = new Date();

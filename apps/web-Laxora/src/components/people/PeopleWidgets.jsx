@@ -6,6 +6,13 @@ export function formatHours(minutes) {
   return `${(Number(minutes || 0) / 60).toLocaleString("en-IN", { maximumFractionDigits: 1 })}h`;
 }
 
+export function formatUsageSeconds(seconds) {
+  const total = Math.max(0, Number(seconds || 0));
+  const hours = Math.floor(total / 3600);
+  const mins = Math.floor((total % 3600) / 60);
+  return hours ? `${hours}h ${String(mins).padStart(2, "0")}m` : `${mins}m`;
+}
+
 export function formatMoney(value) {
   return `Rs ${Number(value || 0).toLocaleString("en-IN", { maximumFractionDigits: 2 })}`;
 }
@@ -130,13 +137,18 @@ export function WorkloadTable({ people }) {
 
 export function AttendanceNotConfigured() {
   return (
-    <section className="rounded-lg border border-warning/30 bg-warning/10 p-5">
-      <div className="flex gap-3">
-        <AlertCircle className="mt-0.5 h-5 w-5 shrink-0 text-warning" />
-        <div>
-          <h2 className="text-base font-bold text-warning">Attendance overview is not turned on yet</h2>
-          <p className="mt-1 text-sm leading-6 text-ink">Workload uses time entries and work sessions today. Attendance summaries need a dedicated HR record before the firm relies on them.</p>
+    <section className="rounded-lg border border-success/30 bg-success/10 p-5">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+        <div className="flex gap-3">
+          <Gauge className="mt-0.5 h-5 w-5 shrink-0 text-success" />
+          <div>
+            <h2 className="text-base font-bold text-success">Attendance and leave are ready</h2>
+            <p className="mt-1 text-sm leading-6 text-ink">Review daily presence, leave requests, and absence exceptions from the attendance page.</p>
+          </div>
         </div>
+        <Link to="/app/attendance" className="shrink-0">
+          <Button type="button" variant="secondary">Open attendance</Button>
+        </Link>
       </div>
     </section>
   );
@@ -174,6 +186,15 @@ export function WorkSessionList({ sessions }) {
             </div>
             <StatusBadge tone={session.status === "running" ? "success" : session.status === "paused" ? "warning" : "neutral"}>{session.status}</StatusBadge>
           </div>
+          <p className="mt-2 text-sm font-semibold text-ink">
+            Activity: {session.activitySummary?.sampleCount ? `${Number(session.activityPercent || 0).toLocaleString("en-IN", { maximumFractionDigits: 1 })}%` : "Not enough samples"}
+          </p>
+          <p className="mt-1 text-sm font-semibold text-ink">
+            Apps and sites: {session.appUsageSummary?.eventCount ? formatUsageSeconds(session.appUsageSummary.durationSeconds) : "No app history"}
+          </p>
+          <p className="mt-1 text-sm font-semibold text-ink">
+            Idle: {session.idleSummary?.count ? `${formatUsageSeconds(session.idleSummary.totalSeconds)} marked, ${formatUsageSeconds(session.idleSummary.discardedSeconds)} removed` : "No idle markers"}
+          </p>
           <p className="mt-2 text-sm text-muted">{formatDate(session.startedAt)} • {formatHours(session.durationMinutes)}</p>
         </div>
       ))}

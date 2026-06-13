@@ -15,7 +15,7 @@ export const authenticate = (req, res, next) => {
     const decoded = verifyAuthToken(token);
 
     // Attach minimal identity to the request
-    req.user = { id: decoded.id, role: decoded.role, email: decoded.email };
+    req.user = { id: decoded.id, role: String(decoded.role || '').toLowerCase(), email: decoded.email };
     next();
   } catch (err) {
     clearAuthCookie(res);
@@ -33,7 +33,9 @@ export const authorize =
     if (!req.user) {
       return res.status(401).json({ error: "Not authenticated" });
     }
-    if (allowedRoles.length && !allowedRoles.includes(req.user.role)) {
+    const normalizedRole = String(req.user.role || '').toLowerCase();
+    const normalizedAllowedRoles = allowedRoles.map((role) => String(role || '').toLowerCase());
+    if (normalizedAllowedRoles.length && !normalizedAllowedRoles.includes(normalizedRole)) {
       return res.status(403).json({ error: "Forbidden: insufficient role" });
     }
     next();

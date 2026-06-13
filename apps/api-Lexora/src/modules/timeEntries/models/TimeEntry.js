@@ -15,6 +15,11 @@ const TimeEntrySchema = new mongoose.Schema(
 
     billableMinutes: { type: Number, min: 0, default: 0 },
     nonbillableMinutes: { type: Number, min: 0, default: 0 },
+    idleSummary: {
+      totalSeconds: { type: Number, default: 0, min: 0 },
+      discardedSeconds: { type: Number, default: 0, min: 0 },
+      payableMinutes: { type: Number, min: 0 },
+    },
 
     rateApplied: { type: Number, min: 0 },
     amount: { type: Number, min: 0 },

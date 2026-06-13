@@ -4,6 +4,9 @@ import { Router } from 'express';
 
 import { aiRoutes } from '../modules/ai/index.js';
 import { activityRoutes } from '../modules/activities/index.js';
+import { activitySampleRoutes } from '../modules/activitySamples/index.js';
+import { appUsageEventRoutes } from '../modules/appUsageEvents/index.js';
+import { attendanceRoutes } from '../modules/attendance/index.js';
 import { analyticsRoutes, revenueRoutes } from '../modules/analytics/index.js';
 import { authRoutes } from '../modules/auth/index.js';
 import { billableRoutes } from '../modules/billables/index.js';
@@ -12,6 +15,7 @@ import { clientRoutes } from '../modules/clients/index.js';
 import { documentStorageRoutes } from '../modules/documentStorage/index.js';
 import { emailEntryRoutes } from '../modules/emailEntries/index.js';
 import { firmRoutes } from '../modules/firms/index.js';
+import { idleIntervalRoutes } from '../modules/idleIntervals/index.js';
 import {
   invoiceLineRoutes,
   invoiceRoutes,
@@ -37,6 +41,9 @@ const router = Router();
 
 // Resource-relative routers.
 router.use('/activities', activityRoutes);
+router.use('/activity-samples', activitySampleRoutes);
+router.use('/app-usage-events', appUsageEventRoutes);
+router.use('/attendance', attendanceRoutes);
 router.use('/analytics', analyticsRoutes);
 router.use('/ar', arRoutes);
 router.use('/billables', billableRoutes);
@@ -46,6 +53,7 @@ router.use('/clients', clientRoutes);
 router.use('/document-storage', documentStorageRoutes);
 router.use('/email-entries', emailEntryRoutes);
 router.use('/firms', firmRoutes);
+router.use('/idle-intervals', idleIntervalRoutes);
 router.use('/integration-logs', integrationLogRoutes);
 router.use('/invoices', invoiceRoutes);
 router.use('/invoices/:invoiceId/lines', invoiceLineRoutes);
