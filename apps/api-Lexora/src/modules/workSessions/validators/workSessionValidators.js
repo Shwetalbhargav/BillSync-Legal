@@ -10,6 +10,7 @@ export const validateWorkSessionId = validateParams({
 export const validateStartWorkSession = validateBody({
   clientId: [required, objectId()],
   caseId: [required, objectId()],
+  taskId: [objectId()],
   activityType: [required, oneOf(activityTypes)],
   activityCode: [string({ max: 80 })],
   workTool: [oneOf(workTools)],

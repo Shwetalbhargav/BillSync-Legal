@@ -7,6 +7,7 @@ const ActivitySchema = new mongoose.Schema(
     caseId: { type: mongoose.Schema.Types.ObjectId, ref: 'Case', required: true, index: true },
     clientId: { type: mongoose.Schema.Types.ObjectId, ref: 'Client', required: true, index: true },
     userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true, index: true },
+    taskId: { type: mongoose.Schema.Types.ObjectId, ref: 'Task', index: true },
 
     activityType: { type: String, enum: ['email', 'drafting', 'review', 'meeting', 'hearing', 'research', 'call', 'other'], required: true },
     startedAt: { type: Date },

@@ -1,12 +1,14 @@
 import { activitiesApi } from "./activities.js";
 import { clientsApi } from "./clients.js";
 import { mattersApi } from "./matters.js";
+import { tasksApi } from "./tasks.js";
 import { timeEntriesApi } from "./timeEntries.js";
 import { workSessionsApi } from "./workSessions.js";
-import { asList, normalizeActivity, normalizeClient, normalizeMatter, normalizeTimeEntry, normalizeWorkSession } from "./normalizers.js";
+import { asList, normalizeActivity, normalizeClient, normalizeMatter, normalizeTask, normalizeTimeEntry, normalizeWorkSession } from "./normalizers.js";
 
 function unwrap(response) {
-  return response?.data || response;
+  if (response && Object.prototype.hasOwnProperty.call(response, "data")) return response.data;
+  return response;
 }
 
 function settledValue(result, fallback) {
@@ -19,19 +21,22 @@ function issueMessage(result, message) {
 
 export const workCaptureApi = {
   async loadMeterOptions() {
-    const [currentResult, mattersResult, clientsResult] = await Promise.allSettled([
+    const [currentResult, mattersResult, clientsResult, tasksResult] = await Promise.allSettled([
       workSessionsApi.current(),
       mattersApi.list({ limit: 200 }),
       clientsApi.list({ limit: 200 }),
+      tasksApi.list({ limit: 200 }),
     ]);
     return {
       current: unwrap(settledValue(currentResult, null)) ? normalizeWorkSession(unwrap(settledValue(currentResult, null))) : null,
       matters: asList(settledValue(mattersResult, [])).map(normalizeMatter),
       clients: asList(settledValue(clientsResult, [])).map(normalizeClient),
+      tasks: asList(settledValue(tasksResult, [])).map(normalizeTask),
       issues: [
         issueMessage(currentResult, "Current work could not be refreshed."),
         issueMessage(mattersResult, "Matters could not be refreshed."),
         issueMessage(clientsResult, "Clients could not be refreshed."),
+        issueMessage(tasksResult, "Tasks could not be refreshed."),
       ].filter(Boolean),
     };
   },

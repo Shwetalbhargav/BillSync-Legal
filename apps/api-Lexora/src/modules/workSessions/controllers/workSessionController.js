@@ -4,6 +4,7 @@ import { Activity } from '../../activities/models/Activity.js';
 import { Case } from '../../cases/models/Case.js';
 import { CaseAssignment } from '../../cases/models/CaseAssignment.js';
 import { TimeEntry } from '../../timeEntries/models/TimeEntry.js';
+import { Task } from '../../tasks/models/Task.js';
 import { computeRatedAmount, resolveBillingRate } from '../../rates/services/rateResolver.js';
 
 const DEFAULT_MAX_WORK_SESSION_MINUTES = 180;
@@ -18,7 +19,7 @@ const canAccessSession = (session, req) =>
 
 const assertSessionAccess = (session, req, res) => {
   if (canAccessSession(session, req)) return true;
-  res.status(403).json({ ok: false, message: 'You can only access your own work sessions' });
+  res.status(403).json({ ok: false, code: 'WORK_SESSION_FORBIDDEN', message: 'You can only access your own work sessions' });
   return false;
 };
 
@@ -28,6 +29,14 @@ const caseHasAssignedUser = (caseDoc, userId) => {
   return ['leadPartnerId', 'managingLawyerId', 'primaryLawyerId']
     .some((field) => idString(caseDoc?.[field]) === String(userId));
 };
+
+const taskBelongsToSelection = (task, body) =>
+  idString(task.caseId) === String(body.caseId) && idString(task.clientId) === String(body.clientId);
+
+const canUseTask = (task, req) =>
+  req.user?.role === 'admin' ||
+  idString(task.assignedTo) === req.user?.id ||
+  idString(task.createdBy) === req.user?.id;
 
 const calculateTiming = (sessionDoc, endedAt = new Date()) => {
   const end = endedAt instanceof Date ? endedAt : new Date(endedAt);
@@ -69,10 +78,10 @@ const normalizeCalendarEvent = (calendarEvent, activityType) => {
 
 const normalizeWebMeter = (body = {}) => ({
   mode: 'manual_web_activity',
-  captureLevel: body.meterCaptureLevel || 'active_window',
+  captureLevel: body.meterCaptureLevel || 'none',
   idleAfterSeconds: Number(body.idleAfterSeconds || 300),
   maxSessionMinutes: Number(body.maxSessionMinutes || DEFAULT_MAX_WORK_SESSION_MINUTES),
-  privacyNote: 'Tracks timer, pause/resume, heartbeat count, and optional active page title/URL only.',
+  privacyNote: 'Tracks timer, pause/resume, and heartbeat count only.',
   lastActiveAt: new Date(),
   inactiveSeconds: 0,
   activitySignals: ['started'],
@@ -80,12 +89,10 @@ const normalizeWebMeter = (body = {}) => ({
 
 const summarizeWebMeter = (workSession) => ({
   mode: workSession.webMeter?.mode || 'manual_web_activity',
-  captureLevel: workSession.webMeter?.captureLevel || 'active_window',
+  captureLevel: workSession.webMeter?.captureLevel || 'none',
   heartbeatCount: Number(workSession.heartbeatCount || 0),
   inactiveSeconds: Number(workSession.webMeter?.inactiveSeconds || 0),
-  lastUrl: workSession.lastUrl,
-  lastTitle: workSession.lastTitle,
-  privacyNote: workSession.webMeter?.privacyNote || 'Tracks timer, pause/resume, heartbeat count, and optional active page title/URL only.',
+  privacyNote: workSession.webMeter?.privacyNote || 'Tracks timer, pause/resume, and heartbeat count only.',
 });
 
 async function createTimeEntryForActivity(activity, req, session) {
@@ -104,6 +111,7 @@ async function createTimeEntryForActivity(activity, req, session) {
     clientId: activity.clientId,
     userId: activity.userId,
     activityId: activity._id,
+    taskId: activity.taskId,
     activityCode: activity.activityCode,
     narrative: activity.narrative || activity.activityType,
     billableMinutes,
@@ -111,11 +119,11 @@ async function createTimeEntryForActivity(activity, req, session) {
     rateApplied: resolved.ratePerHour == null ? undefined : Number(resolved.ratePerHour),
     amount: computeRatedAmount({ ratePerHour: resolved.ratePerHour, billableMinutes }),
     date: activity.endedAt || activity.startedAt || new Date(),
-    status: req.body?.submitTimeEntry ? 'submitted' : 'draft',
-    ...(req.body?.submitTimeEntry ? {
+    status: req.body?.submitTimeEntry === false ? 'draft' : 'submitted',
+    ...(req.body?.submitTimeEntry === false ? {} : {
       submittedAt: new Date(),
       submittedBy: req.user.id,
-    } : {}),
+    }),
   }], { session });
 
   await Activity.updateOne(
@@ -150,18 +158,37 @@ export const WorkSessionController = {
 
       const existing = await WorkSession.findOne({ userId, status: { $in: ['running', 'paused'] } });
       if (existing) {
-        return res.status(409).json({ ok: false, message: 'A work session is already running', data: existing });
+        return res.status(409).json({
+          ok: false,
+          code: 'ACTIVE_WORK_SESSION_EXISTS',
+          message: 'A work session is already running',
+          data: existing,
+        });
       }
 
       const caseDoc = await Case.findById(req.body.caseId);
-      if (!caseDoc) return res.status(400).json({ ok: false, message: 'caseId does not reference an existing case' });
+      if (!caseDoc) return res.status(400).json({ ok: false, code: 'WORK_SESSION_INVALID_CASE', message: 'caseId does not reference an existing case' });
       if (String(caseDoc.clientId) !== String(req.body.clientId)) {
-        return res.status(400).json({ ok: false, message: 'clientId must match the selected matter client' });
+        return res.status(400).json({ ok: false, code: 'WORK_SESSION_CLIENT_MISMATCH', message: 'clientId must match the selected matter client' });
       }
       if (req.user?.role !== 'admin' && !caseHasAssignedUser(caseDoc, userId)) {
         const assignment = await CaseAssignment.findOne({ caseId: req.body.caseId, userId, status: 'active' });
         if (!assignment) {
-          return res.status(403).json({ ok: false, message: 'You can only start work on assigned matters' });
+          return res.status(403).json({ ok: false, code: 'WORK_SESSION_MATTER_FORBIDDEN', message: 'You can only start work on assigned matters' });
+        }
+      }
+
+      let taskDoc = null;
+      if (req.body.taskId) {
+        taskDoc = await Task.findById(req.body.taskId);
+        if (!taskDoc) {
+          return res.status(400).json({ ok: false, code: 'WORK_SESSION_INVALID_TASK', message: 'taskId does not reference an existing task' });
+        }
+        if (!taskBelongsToSelection(taskDoc, req.body)) {
+          return res.status(400).json({ ok: false, code: 'WORK_SESSION_TASK_MISMATCH', message: 'taskId must match the selected client and matter' });
+        }
+        if (!canUseTask(taskDoc, req)) {
+          return res.status(403).json({ ok: false, code: 'WORK_SESSION_TASK_FORBIDDEN', message: 'You can only track work against tasks assigned to you or created by you' });
         }
       }
 
@@ -169,6 +196,7 @@ export const WorkSessionController = {
         userId,
         clientId: req.body.clientId,
         caseId: req.body.caseId,
+        taskId: taskDoc?._id,
         activityType: req.body.activityType,
         activityCode: req.body.activityCode,
         workTool: req.body.workTool,
@@ -186,7 +214,7 @@ export const WorkSessionController = {
       res.status(201).json({ ok: true, data: doc });
     } catch (err) {
       if (err?.code === 11000) {
-        return res.status(409).json({ ok: false, message: 'A work session is already running' });
+        return res.status(409).json({ ok: false, code: 'ACTIVE_WORK_SESSION_EXISTS', message: 'A work session is already running' });
       }
       res.status(500).json({ ok: false, message: err.message });
     }
@@ -197,7 +225,8 @@ export const WorkSessionController = {
       const userId = req.user?.id;
       const session = await WorkSession.findOne({ userId, status: { $in: ['running', 'paused'] } })
         .populate('clientId', 'displayName name')
-        .populate('caseId', 'title name');
+        .populate('caseId', 'title name')
+        .populate('taskId', 'title status');
       res.json({ ok: true, data: session });
     } catch (err) {
       res.status(500).json({ ok: false, message: err.message });
@@ -219,6 +248,7 @@ export const WorkSessionController = {
       const rows = await WorkSession.find(q)
         .populate('clientId', 'displayName name')
         .populate('caseId', 'title name')
+        .populate('taskId', 'title status')
         .populate('activityId', 'status conversionStatus durationMinutes')
         .sort({ createdAt: -1 })
         .limit(100);
@@ -232,15 +262,13 @@ export const WorkSessionController = {
   async heartbeat(req, res) {
     try {
       const session = await WorkSession.findById(req.params.id);
-      if (!session) return res.status(404).json({ ok: false, message: 'Work session not found' });
+      if (!session) return res.status(404).json({ ok: false, code: 'WORK_SESSION_NOT_FOUND', message: 'Work session not found' });
       if (!assertSessionAccess(session, req, res)) return;
       if (!['running', 'paused'].includes(session.status)) {
-        return res.status(409).json({ ok: false, message: `Cannot heartbeat a ${session.status} session` });
+        return res.status(409).json({ ok: false, code: 'WORK_SESSION_NOT_ACTIVE', message: `Cannot heartbeat a ${session.status} session` });
       }
 
       session.lastHeartbeatAt = req.body?.at ? new Date(req.body.at) : new Date();
-      if (req.body?.url) session.lastUrl = req.body.url;
-      if (req.body?.title) session.lastTitle = req.body.title;
       session.webMeter = {
         ...(session.webMeter?.toObject?.() || session.webMeter || {}),
         lastActiveAt: req.body?.active === false ? session.webMeter?.lastActiveAt : new Date(),
@@ -264,10 +292,13 @@ export const WorkSessionController = {
   async pause(req, res) {
     try {
       const session = await WorkSession.findById(req.params.id);
-      if (!session) return res.status(404).json({ ok: false, message: 'Work session not found' });
+      if (!session) return res.status(404).json({ ok: false, code: 'WORK_SESSION_NOT_FOUND', message: 'Work session not found' });
       if (!assertSessionAccess(session, req, res)) return;
+      if (session.status === 'paused') {
+        return res.json({ ok: true, idempotent: true, data: session });
+      }
       if (session.status !== 'running') {
-        return res.status(409).json({ ok: false, message: 'Only running sessions can be paused' });
+        return res.status(409).json({ ok: false, code: 'WORK_SESSION_NOT_RUNNING', message: 'Only running sessions can be paused' });
       }
       session.status = 'paused';
       session.pausedAt = new Date();
@@ -281,10 +312,13 @@ export const WorkSessionController = {
   async resume(req, res) {
     try {
       const session = await WorkSession.findById(req.params.id);
-      if (!session) return res.status(404).json({ ok: false, message: 'Work session not found' });
+      if (!session) return res.status(404).json({ ok: false, code: 'WORK_SESSION_NOT_FOUND', message: 'Work session not found' });
       if (!assertSessionAccess(session, req, res)) return;
+      if (session.status === 'running') {
+        return res.json({ ok: true, idempotent: true, data: session });
+      }
       if (session.status !== 'paused') {
-        return res.status(409).json({ ok: false, message: 'Only paused sessions can be resumed' });
+        return res.status(409).json({ ok: false, code: 'WORK_SESSION_NOT_PAUSED', message: 'Only paused sessions can be resumed' });
       }
       const now = new Date();
       session.pausedMs = Number(session.pausedMs || 0) + Math.max(now.getTime() - new Date(session.pausedAt).getTime(), 0);
@@ -302,10 +336,17 @@ export const WorkSessionController = {
     let mongoSession;
     try {
       const workSession = await WorkSession.findById(req.params.id);
-      if (!workSession) return res.status(404).json({ ok: false, message: 'Work session not found' });
+      if (!workSession) return res.status(404).json({ ok: false, code: 'WORK_SESSION_NOT_FOUND', message: 'Work session not found' });
       if (!assertSessionAccess(workSession, req, res)) return;
+      if (workSession.status === 'stopped') {
+        const [activity, timeEntry] = await Promise.all([
+          workSession.activityId ? Activity.findById(workSession.activityId) : null,
+          workSession.activityId ? TimeEntry.findOne({ activityId: workSession.activityId }) : null,
+        ]);
+        return res.json({ ok: true, idempotent: true, data: workSession, activity, timeEntry });
+      }
       if (!['running', 'paused'].includes(workSession.status)) {
-        return res.status(409).json({ ok: false, message: `Cannot stop a ${workSession.status} session` });
+        return res.status(409).json({ ok: false, code: 'WORK_SESSION_NOT_ACTIVE', message: `Cannot stop a ${workSession.status} session` });
       }
 
       const timing = calculateTiming(workSession, req.body?.endedAt ? new Date(req.body.endedAt) : new Date());
@@ -325,6 +366,7 @@ export const WorkSessionController = {
           userId: workSession.userId,
           clientId: workSession.clientId,
           caseId: workSession.caseId,
+          taskId: workSession.taskId,
           activityType: workSession.activityType,
           activityCode: workSession.activityCode,
           workTool: workSession.workTool,
@@ -352,7 +394,8 @@ export const WorkSessionController = {
         }], { session: mongoSession });
         activity = createdActivity;
 
-        if (req.body?.createTimeEntry) {
+        const shouldCreateTimeEntry = req.body?.createTimeEntry !== false;
+        if (shouldCreateTimeEntry) {
           timeEntry = await createTimeEntryForActivity(activity, req, mongoSession);
         }
 
@@ -376,10 +419,13 @@ export const WorkSessionController = {
   async discard(req, res) {
     try {
       const session = await WorkSession.findById(req.params.id);
-      if (!session) return res.status(404).json({ ok: false, message: 'Work session not found' });
+      if (!session) return res.status(404).json({ ok: false, code: 'WORK_SESSION_NOT_FOUND', message: 'Work session not found' });
       if (!assertSessionAccess(session, req, res)) return;
+      if (session.status === 'discarded') {
+        return res.json({ ok: true, idempotent: true, data: session });
+      }
       if (!['running', 'paused'].includes(session.status)) {
-        return res.status(409).json({ ok: false, message: `Cannot discard a ${session.status} session` });
+        return res.status(409).json({ ok: false, code: 'WORK_SESSION_NOT_ACTIVE', message: `Cannot discard a ${session.status} session` });
       }
       session.status = 'discarded';
       session.endedAt = new Date();

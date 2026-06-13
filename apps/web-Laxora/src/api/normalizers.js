@@ -307,6 +307,7 @@ export function normalizeTimeEntry(item = {}) {
 export function normalizeWorkSession(item = {}) {
   const matter = item.caseId || item.case || {};
   const client = item.clientId || item.client || {};
+  const task = item.taskId || item.task || {};
   return {
     id: toId(item),
     title: safeText(item.narrative || item.calendarEvent?.title || item.activityType, "Work session"),
@@ -315,6 +316,11 @@ export function normalizeWorkSession(item = {}) {
     matterId: toId(matter) || item.caseId || "",
     client: client.displayName || client.name || "",
     clientId: toId(client) || item.clientId || "",
+    task: task.title || item.taskTitle || "",
+    taskId: toId(task) || item.taskId || "",
+    workTool: item.workTool || "",
+    activityCode: item.activityCode || "",
+    billable: item.billable !== false,
     status: item.status || "running",
     minutes: Number(item.durationMinutes || 0),
     startedAt: item.startedAt || item.createdAt || "",

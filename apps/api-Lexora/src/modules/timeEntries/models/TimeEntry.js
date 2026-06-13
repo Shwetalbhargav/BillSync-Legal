@@ -8,6 +8,7 @@ const TimeEntrySchema = new mongoose.Schema(
     clientId: { type: mongoose.Schema.Types.ObjectId, ref: 'Client', required: true, index: true },
     userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true, index: true },
     activityId: { type: mongoose.Schema.Types.ObjectId, ref: 'Activity' },
+    taskId: { type: mongoose.Schema.Types.ObjectId, ref: 'Task', index: true },
 
     activityCode: { type: String },
     narrative: { type: String, required: true },
