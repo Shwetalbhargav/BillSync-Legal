@@ -117,6 +117,7 @@ async function createTimeEntryForActivity(activity, req, session, durationMinute
     narrative: activity.narrative || activity.activityType,
     billableMinutes,
     nonbillableMinutes,
+    idleSummary: activity.idleSummary || undefined,
     rateApplied: resolved.ratePerHour == null ? undefined : Number(resolved.ratePerHour),
     amount: computeRatedAmount({ ratePerHour: resolved.ratePerHour, billableMinutes }),
     date: activity.endedAt || activity.startedAt || new Date(),
