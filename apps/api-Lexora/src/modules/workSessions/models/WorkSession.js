@@ -5,6 +5,7 @@ const WorkSessionSchema = new mongoose.Schema(
     userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true, index: true },
     clientId: { type: mongoose.Schema.Types.ObjectId, ref: 'Client', required: true, index: true },
     caseId: { type: mongoose.Schema.Types.ObjectId, ref: 'Case', required: true, index: true },
+    taskId: { type: mongoose.Schema.Types.ObjectId, ref: 'Task', index: true },
     activityId: { type: mongoose.Schema.Types.ObjectId, ref: 'Activity' },
 
     activityType: {
@@ -43,12 +44,7 @@ const WorkSessionSchema = new mongoose.Schema(
       captureLevel: { type: String, enum: ['none', 'active_window'], default: 'active_window' },
       idleAfterSeconds: { type: Number, default: 300, min: 60, max: 3600 },
       maxSessionMinutes: { type: Number, default: 180, min: 1, max: 480 },
-      privacyNote: {
-        type: String,
-        trim: true,
-        maxlength: 500,
-        default: 'Tracks timer, pause/resume, heartbeat count, and optional active page title/URL only.',
-      },
+      privacyNote: { type: String, trim: true, maxlength: 500, default: 'Tracks timer, pause/resume, and heartbeat count only.' },
       lastActiveAt: { type: Date },
       inactiveSeconds: { type: Number, default: 0, min: 0 },
       activitySignals: [{ type: String, trim: true, maxlength: 80 }],

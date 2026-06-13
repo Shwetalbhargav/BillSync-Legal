@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { AlertTriangle, CheckCircle2, Clock3, Pause, Play, Save, Square, Timer } from "lucide-react";
+import { AlertTriangle, CheckCircle2, ClipboardList, FileText, Pause, Play, Save, Square, Timer } from "lucide-react";
 import { Button, Card, CardBody, CardHeader, DataTable, StateCard, StatusBadge } from "../common";
 
 export function formatDuration(minutes = 0) {
@@ -23,7 +23,46 @@ export function formatDateTime(value) {
     : date.toLocaleString("en-IN", { day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" });
 }
 
-export function WorkMeterPanel({ elapsedLabel, form, isSaving, matters, onChange, onDiscard, onPauseResume, onStart, onStop, session }) {
+const workTypeOptions = [
+  ["drafting", "Drafting"],
+  ["review", "Review"],
+  ["research", "Research"],
+  ["meeting", "Meeting"],
+  ["call", "Call"],
+  ["hearing", "Hearing"],
+  ["email", "Email"],
+  ["other", "Other"],
+];
+
+const workToolOptions = [
+  ["manual", "Manual"],
+  ["microsoft_word", "Word"],
+  ["google_docs", "Google Docs"],
+  ["pdf_reader", "PDF review"],
+  ["google_chrome", "Browser"],
+  ["gmail", "Email"],
+  ["phone", "Phone"],
+  ["video_meeting", "Video meeting"],
+  ["court", "Court"],
+  ["billbot_ai", "BillBot AI"],
+  ["other", "Other"],
+];
+
+export function WorkMeterPanel({
+  clients,
+  elapsedLabel,
+  form,
+  isSaving,
+  matters,
+  onChange,
+  onDiscard,
+  onPauseResume,
+  onStart,
+  onStop,
+  session,
+  tasks,
+  validation,
+}) {
   const running = Boolean(session);
   return (
     <section className="surface-card p-6">
@@ -45,6 +84,14 @@ export function WorkMeterPanel({ elapsedLabel, form, isSaving, matters, onChange
         <div className="w-full max-w-xl space-y-4">
           {!running ? (
             <>
+              {validation ? <div className="rounded-lg border border-warning/30 bg-warning/10 p-3 text-sm font-semibold text-warning">{validation}</div> : null}
+              <label className="block text-sm font-semibold text-ink">
+                Client
+                <select className="focus-ring mt-1 w-full rounded-lg border border-border px-3 py-3" onChange={(event) => onChange("clientId", event.target.value)} value={form.clientId}>
+                  <option value="">Select client</option>
+                  {clients.map((client) => <option key={client.id} value={client.id}>{client.name}</option>)}
+                </select>
+              </label>
               <label className="block text-sm font-semibold text-ink">
                 Matter
                 <select className="focus-ring mt-1 w-full rounded-lg border border-border px-3 py-3" onChange={(event) => onChange("caseId", event.target.value)} value={form.caseId}>
@@ -53,16 +100,27 @@ export function WorkMeterPanel({ elapsedLabel, form, isSaving, matters, onChange
                 </select>
               </label>
               <label className="block text-sm font-semibold text-ink">
+                Task
+                <select className="focus-ring mt-1 w-full rounded-lg border border-border px-3 py-3" onChange={(event) => onChange("taskId", event.target.value)} value={form.taskId}>
+                  <option value="">No linked task</option>
+                  {tasks.map((task) => <option key={task.id} value={task.id}>{task.title}</option>)}
+                </select>
+              </label>
+              <label className="block text-sm font-semibold text-ink">
                 Work type
                 <select className="focus-ring mt-1 w-full rounded-lg border border-border px-3 py-3" onChange={(event) => onChange("activityType", event.target.value)} value={form.activityType}>
-                  <option value="drafting">Drafting</option>
-                  <option value="review">Review</option>
-                  <option value="research">Research</option>
-                  <option value="meeting">Meeting</option>
-                  <option value="call">Call</option>
-                  <option value="hearing">Hearing</option>
-                  <option value="other">Other</option>
+                  {workTypeOptions.map(([value, label]) => <option key={value} value={value}>{label}</option>)}
                 </select>
+              </label>
+              <label className="block text-sm font-semibold text-ink">
+                Work tool
+                <select className="focus-ring mt-1 w-full rounded-lg border border-border px-3 py-3" onChange={(event) => onChange("workTool", event.target.value)} value={form.workTool}>
+                  {workToolOptions.map(([value, label]) => <option key={value} value={value}>{label}</option>)}
+                </select>
+              </label>
+              <label className="flex items-center gap-3 rounded-lg border border-border px-3 py-3 text-sm font-semibold text-ink">
+                <input checked={form.billable} className="h-4 w-4 rounded border-border" onChange={(event) => onChange("billable", event.target.checked)} type="checkbox" />
+                Billable work
               </label>
               <label className="block text-sm font-semibold text-ink">
                 Notes
@@ -74,25 +132,80 @@ export function WorkMeterPanel({ elapsedLabel, form, isSaving, matters, onChange
               </Button>
             </>
           ) : (
-            <div className="grid gap-3 sm:grid-cols-3">
-              <Button disabled={isSaving} onClick={onPauseResume} type="button" variant="secondary">
-                {session.status === "paused" ? <Play className="h-4 w-4" /> : <Pause className="h-4 w-4" />}
-                {session.status === "paused" ? "Resume" : "Pause"}
-              </Button>
-              <Button disabled={isSaving} isLoading={isSaving} onClick={() => onStop(false)} type="button">
-                <Save className="h-4 w-4" />
-                Save draft
-              </Button>
-              <Button disabled={isSaving} onClick={onDiscard} type="button" variant="danger">
-                <Square className="h-4 w-4" />
-                Discard
-              </Button>
+            <div className="space-y-4">
+              <div className="rounded-lg border border-border p-4">
+                <div className="grid gap-3 text-sm text-ink sm:grid-cols-2">
+                  <p><span className="font-bold text-primary">Client:</span> {session.client || "Not set"}</p>
+                  <p><span className="font-bold text-primary">Matter:</span> {session.matter || "Not set"}</p>
+                  <p><span className="font-bold text-primary">Task:</span> {session.task || "No linked task"}</p>
+                  <p><span className="font-bold text-primary">Work:</span> {session.activityType || "Work"}{session.workTool ? ` with ${session.workTool.replaceAll("_", " ")}` : ""}</p>
+                </div>
+              </div>
+              <div className="grid gap-3 sm:grid-cols-3">
+                <Button disabled={isSaving} onClick={onPauseResume} type="button" variant="secondary">
+                  {session.status === "paused" ? <Play className="h-4 w-4" /> : <Pause className="h-4 w-4" />}
+                  {session.status === "paused" ? "Resume" : "Pause"}
+                </Button>
+                <Button disabled={isSaving} isLoading={isSaving} onClick={() => onStop(false)} type="button">
+                  <Save className="h-4 w-4" />
+                  Save draft
+                </Button>
+                <Button disabled={isSaving} onClick={onDiscard} type="button" variant="danger">
+                  <Square className="h-4 w-4" />
+                  Discard
+                </Button>
+              </div>
             </div>
           )}
         </div>
       </div>
     </section>
   );
+}
+
+export function MeterOptionState({ hasClients, hasMatters, hasTasks, issues, onRetry }) {
+  if (issues?.length) {
+    return (
+      <section className="rounded-lg border border-warning/30 bg-warning/10 p-4">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+          <div className="min-w-0">
+            <h2 className="text-sm font-bold text-warning">Some choices need a refresh</h2>
+            <p className="mt-1 text-sm text-ink">{issues.join(" ")}</p>
+          </div>
+          <Button onClick={onRetry} size="sm" type="button" variant="secondary">Refresh</Button>
+        </div>
+      </section>
+    );
+  }
+  if (!hasClients || !hasMatters) {
+    return (
+      <section className="surface-card p-6">
+        <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex min-w-0 items-start gap-4">
+            <div className="rounded-lg bg-blueSoft p-3 text-primary">
+              <FileText className="h-5 w-5" />
+            </div>
+            <div className="min-w-0">
+              <h2 className="text-base font-semibold text-ink">No work context yet</h2>
+              <p className="mt-1 text-sm leading-6 text-muted">Add or assign a client and matter before starting the meter.</p>
+            </div>
+          </div>
+          <Button onClick={onRetry} type="button" variant="secondary">Refresh</Button>
+        </div>
+      </section>
+    );
+  }
+  if (!hasTasks) {
+    return (
+      <section className="rounded-lg border border-border bg-surface p-4">
+        <div className="flex items-start gap-3">
+          <ClipboardList className="mt-0.5 h-5 w-5 text-accent" />
+          <p className="text-sm leading-6 text-muted">No open tasks were found. You can still start the meter without linking a task.</p>
+        </div>
+      </section>
+    );
+  }
+  return null;
 }
 
 export function SaveFailedState({ elapsedLabel, message, onRetry }) {
