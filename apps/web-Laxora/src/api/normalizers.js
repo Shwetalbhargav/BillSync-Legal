@@ -323,9 +323,38 @@ export function normalizeWorkSession(item = {}) {
     billable: item.billable !== false,
     status: item.status || "running",
     minutes: Number(item.durationMinutes || 0),
+    activityPercent: Number(item.activityPercent ?? item.activitySummary?.activityPercent ?? item.summary?.activityPercent ?? 0),
+    activitySummary: item.activitySummary || item.summary || null,
     startedAt: item.startedAt || item.createdAt || "",
     endedAt: item.endedAt || "",
     calendarEvent: item.calendarEvent || null,
+    raw: item,
+  };
+}
+
+export function normalizeActivitySummary(item = {}) {
+  const summary = item.summary || item;
+  return {
+    sampleCount: Number(summary.sampleCount || 0),
+    sampleSeconds: Number(summary.sampleSeconds || 0),
+    activeSeconds: Number(summary.activeSeconds || 0),
+    inactiveSeconds: Number(summary.inactiveSeconds || 0),
+    keyboardCount: Number(summary.keyboardCount || 0),
+    mouseCount: Number(summary.mouseCount || 0),
+    activityPercent: Number(summary.activityPercent || 0),
+    samples: asList(item.samples).map((sample) => ({
+      id: toId(sample),
+      windowStart: sample.windowStart || "",
+      windowEnd: sample.windowEnd || "",
+      activeSeconds: Number(sample.activeSeconds || 0),
+      inactiveSeconds: Number(sample.inactiveSeconds || 0),
+      keyboardCount: Number(sample.keyboardCount || 0),
+      mouseCount: Number(sample.mouseCount || 0),
+      activityPercent: Number(sample.activityPercent || 0),
+      sourceDevice: sample.sourceDevice || "",
+      sourceApp: sample.sourceApp || "",
+      raw: sample,
+    })),
     raw: item,
   };
 }

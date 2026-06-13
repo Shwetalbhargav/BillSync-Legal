@@ -11,7 +11,7 @@ const stateIcons = {
   success: CheckCircle2,
 };
 
-export function StateCard({ state = "empty", title, message, actionLabel = "Try again" }) {
+export function StateCard({ state = "empty", title, message, actionLabel = "Try again", onAction }) {
   const Icon = stateIcons[state] || AlertCircle;
   const spin = state === "loading";
   return (
@@ -24,7 +24,7 @@ export function StateCard({ state = "empty", title, message, actionLabel = "Try 
           <h3 className="text-base font-semibold text-ink">{title}</h3>
           <p className="mt-1 text-sm leading-6 text-muted">{message}</p>
           {["error", "offline", "retry"].includes(state) ? (
-            <Button className="mt-4" variant="secondary">
+            <Button className="mt-4" onClick={onAction} variant="secondary">
               {actionLabel}
             </Button>
           ) : null}

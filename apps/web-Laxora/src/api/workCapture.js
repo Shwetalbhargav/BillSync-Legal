@@ -1,4 +1,5 @@
 import { activitiesApi } from "./activities.js";
+import { activitySamplesApi } from "./activitySamples.js";
 import { clientsApi } from "./clients.js";
 import { mattersApi } from "./matters.js";
 import { tasksApi } from "./tasks.js";
@@ -46,12 +47,23 @@ export const workCaptureApi = {
       workSessionsApi.list(),
       timeEntriesApi.list({ limit: 100 }),
     ]);
+    const sessions = asList(settledValue(sessionsResult, [])).map(normalizeWorkSession);
+    const summaries = await Promise.allSettled(sessions.slice(0, 25).map((session) => activitySamplesApi.sessionSummary(session.id)));
+    const summaryBySession = new Map();
+    summaries.forEach((result, index) => {
+      if (result.status === "fulfilled") summaryBySession.set(sessions[index].id, result.value);
+    });
     return {
-      sessions: asList(settledValue(sessionsResult, [])).map(normalizeWorkSession),
+      sessions: sessions.map((session) => ({
+        ...session,
+        activitySummary: summaryBySession.get(session.id) || null,
+        activityPercent: summaryBySession.get(session.id)?.activityPercent || 0,
+      })),
       timeEntries: asList(settledValue(timeResult, [])).map(normalizeTimeEntry),
       issues: [
         issueMessage(sessionsResult, "Work sessions could not be refreshed."),
         issueMessage(timeResult, "Time entries could not be refreshed."),
+        summaries.some((result) => result.status === "rejected") ? "Activity percentages could not be refreshed for every session." : "",
       ].filter(Boolean),
     };
   },

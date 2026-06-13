@@ -1,4 +1,5 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { activitySamplesApi } from "../../api/activitySamples";
 import { workCaptureApi } from "../../api/workCapture";
 import { workSessionsApi } from "../../api/workSessions";
 import { normalizeTimeEntry, normalizeWorkSession } from "../../api/normalizers";
@@ -32,6 +33,13 @@ export function WorkMeterPage() {
   const [lastStopSubmit, setLastStopSubmit] = useState(false);
   const [lastSavedEntry, setLastSavedEntry] = useState(null);
   const [tick, setTick] = useState(0);
+  const activityBucketRef = useRef({
+    windowStart: new Date(),
+    keyboardCount: 0,
+    mouseCount: 0,
+    activeSeconds: 0,
+    lastInteractionAt: Date.now(),
+  });
 
   async function load() {
     setStatus("loading");
@@ -58,6 +66,79 @@ export function WorkMeterPage() {
     const timer = window.setInterval(() => setTick((value) => value + 1), 10000);
     return () => window.clearInterval(timer);
   }, []);
+
+  useEffect(() => {
+    function markKeyboardActivity() {
+      activityBucketRef.current.keyboardCount += 1;
+      activityBucketRef.current.lastInteractionAt = Date.now();
+    }
+    function markMouseActivity() {
+      activityBucketRef.current.mouseCount += 1;
+      activityBucketRef.current.lastInteractionAt = Date.now();
+    }
+
+    window.addEventListener("keydown", markKeyboardActivity);
+    window.addEventListener("pointerdown", markMouseActivity);
+    return () => {
+      window.removeEventListener("keydown", markKeyboardActivity);
+      window.removeEventListener("pointerdown", markMouseActivity);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!session?.id || session.status !== "running") return undefined;
+    activityBucketRef.current = {
+      windowStart: new Date(),
+      keyboardCount: 0,
+      mouseCount: 0,
+      activeSeconds: 0,
+      lastInteractionAt: Date.now(),
+    };
+
+    const secondTimer = window.setInterval(() => {
+      const lastInteractionAt = activityBucketRef.current.lastInteractionAt || 0;
+      if (document.visibilityState === "visible" && Date.now() - lastInteractionAt <= 60000) {
+        activityBucketRef.current.activeSeconds += 1;
+      }
+    }, 1000);
+
+    async function flushBucket() {
+      const bucket = activityBucketRef.current;
+      const windowEnd = new Date();
+      const sampleSeconds = Math.max(1, Math.round((windowEnd.getTime() - new Date(bucket.windowStart).getTime()) / 1000));
+      const activeSeconds = Math.min(bucket.activeSeconds, sampleSeconds);
+      const body = {
+        windowStart: new Date(bucket.windowStart).toISOString(),
+        windowEnd: windowEnd.toISOString(),
+        sampleSeconds,
+        activeSeconds,
+        inactiveSeconds: Math.max(sampleSeconds - activeSeconds, 0),
+        keyboardCount: bucket.keyboardCount,
+        mouseCount: bucket.mouseCount,
+        sourceDevice: "web",
+        sourceApp: "web_meter",
+      };
+      activityBucketRef.current = {
+        windowStart: windowEnd,
+        keyboardCount: 0,
+        mouseCount: 0,
+        activeSeconds: 0,
+        lastInteractionAt: bucket.lastInteractionAt,
+      };
+      try {
+        await activitySamplesApi.createForSession(session.id, body);
+      } catch {
+        setIssues((current) => [...new Set([...(current || []), "Activity percentage could not be refreshed yet."])]);
+      }
+    }
+
+    const flushTimer = window.setInterval(flushBucket, 60000);
+    return () => {
+      window.clearInterval(secondTimer);
+      window.clearInterval(flushTimer);
+      flushBucket();
+    };
+  }, [session?.id, session?.status]);
 
   const filteredMatters = useMemo(
     () => matters.filter((matter) => !form.clientId || matter.clientId === form.clientId),

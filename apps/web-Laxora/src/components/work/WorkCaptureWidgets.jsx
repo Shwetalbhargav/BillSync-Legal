@@ -71,6 +71,7 @@ export function WorkMeterPanel({
           <p className="text-sm font-semibold uppercase tracking-wide text-accent">Work Meter</p>
           <h1 className="mt-1 text-2xl font-bold text-primary md:text-3xl">{running ? "Work in progress" : "Ready to start"}</h1>
           <p className="mt-2 max-w-2xl text-sm leading-6 text-muted">Capture focused work with matter context and save it for review.</p>
+          <p className="mt-1 max-w-2xl text-xs font-semibold leading-5 text-muted">Activity uses keyboard and mouse counts only. It does not save keystrokes, screenshots, page text, or document text.</p>
           <div className="mt-6 flex items-center gap-4">
             <div className="rounded-lg bg-blueSoft p-4 text-primary">
               <Timer className="h-8 w-8" />
@@ -233,6 +234,7 @@ export function WorkSessionTable({ sessions }) {
         { key: "matter", label: "Matter" },
         { key: "status", label: "Status" },
         { key: "duration", label: "Duration" },
+        { key: "activity", label: "Activity" },
         { key: "started", label: "Started" },
       ]}
       rows={sessions.map((session) => ({
@@ -241,6 +243,7 @@ export function WorkSessionTable({ sessions }) {
         matter: session.matter || "Not set",
         status: <StatusBadge>{session.status}</StatusBadge>,
         duration: formatDuration(session.minutes),
+        activity: session.activitySummary?.sampleCount ? `${Number(session.activityPercent || 0).toLocaleString("en-IN", { maximumFractionDigits: 1 })}%` : "Not enough samples",
         started: formatDateTime(session.startedAt),
       }))}
     />

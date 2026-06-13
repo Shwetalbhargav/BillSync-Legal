@@ -233,10 +233,21 @@ test('POST /api/work-sessions/start creates one active session with task context
     status: 'running',
     webMeter: expect.objectContaining({
       captureLevel: 'none',
-      privacyNote: 'Tracks timer, pause/resume, and heartbeat count only.',
+      privacyNote: expect.stringContaining('keyboard and mouse counts only'),
     }),
   }));
   expect(body.data.taskId).toBe(TASK_ID);
+});
+
+test('GET /api/work-sessions lets partners review session list', async () => {
+  mocks.workSessionFind.mockReturnValue(queryResult([sessionDoc()]));
+
+  const response = await jsonRequest('/api/work-sessions', {}, 'partner', OTHER_USER_ID);
+  const body = await response.json();
+
+  expect(response.status).toBe(200);
+  expect(mocks.workSessionFind).toHaveBeenCalledWith({});
+  expect(body.data).toHaveLength(1);
 });
 
 test('POST /api/work-sessions/start blocks duplicate active sessions with a stable code', async () => {

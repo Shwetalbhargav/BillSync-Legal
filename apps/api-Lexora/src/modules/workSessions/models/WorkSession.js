@@ -41,10 +41,10 @@ const WorkSessionSchema = new mongoose.Schema(
     lastTitle: { type: String, trim: true, maxlength: 300 },
     webMeter: {
       mode: { type: String, enum: ['manual_web_activity'], default: 'manual_web_activity' },
-      captureLevel: { type: String, enum: ['none', 'active_window'], default: 'active_window' },
+      captureLevel: { type: String, enum: ['none', 'active_window'], default: 'none' },
       idleAfterSeconds: { type: Number, default: 300, min: 60, max: 3600 },
       maxSessionMinutes: { type: Number, default: 180, min: 1, max: 480 },
-      privacyNote: { type: String, trim: true, maxlength: 500, default: 'Tracks timer, pause/resume, and heartbeat count only.' },
+      privacyNote: { type: String, trim: true, maxlength: 500, default: 'Tracks timer, pause/resume, keyboard and mouse counts only. No keystroke values, screenshots, URLs, titles, or page content are stored.' },
       lastActiveAt: { type: Date },
       inactiveSeconds: { type: Number, default: 0, min: 0 },
       activitySignals: [{ type: String, trim: true, maxlength: 80 }],

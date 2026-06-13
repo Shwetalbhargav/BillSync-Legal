@@ -174,6 +174,9 @@ export function WorkSessionList({ sessions }) {
             </div>
             <StatusBadge tone={session.status === "running" ? "success" : session.status === "paused" ? "warning" : "neutral"}>{session.status}</StatusBadge>
           </div>
+          <p className="mt-2 text-sm font-semibold text-ink">
+            Activity: {session.activitySummary?.sampleCount ? `${Number(session.activityPercent || 0).toLocaleString("en-IN", { maximumFractionDigits: 1 })}%` : "Not enough samples"}
+          </p>
           <p className="mt-2 text-sm text-muted">{formatDate(session.startedAt)} • {formatHours(session.durationMinutes)}</p>
         </div>
       ))}

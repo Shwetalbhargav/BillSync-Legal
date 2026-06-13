@@ -21,7 +21,7 @@ export function WorkloadOverviewPage() {
   }, []);
 
   if (state.status === "loading") return <SkeletonBlock />;
-  if (state.status === "error") return <StateCard state="error" title="Workload needs attention" message={state.message} actionLabel="Retry" />;
+  if (state.status === "error") return <StateCard state="error" title="Workload needs attention" message={state.message} actionLabel="Retry" onAction={load} />;
 
   return (
     <div className="space-y-6">
