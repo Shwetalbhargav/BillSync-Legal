@@ -337,6 +337,82 @@ export function normalizeWorkSession(item = {}) {
   };
 }
 
+export function normalizeWorkforceAnalytics(data = {}) {
+  const summary = data.summary || {};
+  const secondsToMinutes = (seconds) => Math.round(Number(seconds || 0) / 60);
+  return {
+    range: data.range || {},
+    summary: {
+      trackedMinutes: Number(summary.trackedMinutes || 0),
+      billableMinutes: Number(summary.billableMinutes || 0),
+      nonbillableMinutes: Number(summary.nonbillableMinutes || 0),
+      billablePercent: Number(summary.billablePercent || 0),
+      activityPercent: Number(summary.activityPercent || 0),
+      idlePercent: Number(summary.idlePercent || 0),
+      utilizationPercent: Number(summary.utilizationPercent || 0),
+      payrollReadyMinutes: Number(summary.payrollReadyMinutes || 0),
+      payrollReadyAmount: normalizeMoney(summary.payrollReadyAmount),
+      approvalSlaHours: Number(summary.approvalSlaHours || 0),
+      approvalStatus: summary.approvalStatus || {},
+      attendance: summary.attendance || {},
+      sessions: Number(summary.sessions || 0),
+      people: Number(summary.people || 0),
+    },
+    people: asList(data.people).map((person) => ({
+      id: person.id || person.userId || person.name,
+      name: person.name || "Team member",
+      trackedMinutes: Number(person.trackedMinutes || 0),
+      activityPercent: Number(person.activityPercent || 0),
+      idlePercent: Number(person.idlePercent || 0),
+      sessions: Number(person.sessions || 0),
+    })),
+    appUsage: asList(data.appUsage).map((item) => ({
+      id: item.name,
+      name: item.name || "App",
+      minutes: secondsToMinutes(item.seconds),
+    })),
+    domainUsage: asList(data.domainUsage).map((item) => ({
+      id: item.name,
+      name: item.name || "Domain",
+      minutes: secondsToMinutes(item.seconds),
+    })),
+    rows: asList(data.rows).map((row) => ({
+      id: row.id,
+      userId: row.userId || "",
+      userName: row.userName || "Team member",
+      clientId: row.clientId || "",
+      clientName: row.clientName || "Client not set",
+      matterId: row.matterId || "",
+      matterName: row.matterName || "Matter not set",
+      taskId: row.taskId || "",
+      taskName: row.taskName || "",
+      date: row.date || "",
+      activityType: row.activityType || "work",
+      trackedMinutes: Number(row.trackedMinutes || 0),
+      activityPercent: Number(row.activityPercent || 0),
+      idlePercent: Number(row.idlePercent || 0),
+      idleSeconds: Number(row.idleSeconds || 0),
+      discardedIdleSeconds: Number(row.discardedIdleSeconds || 0),
+      topApp: row.topApp || "",
+      topDomain: row.topDomain || "",
+      approvalStatus: row.approvalStatus || "not submitted",
+      attendanceStatus: row.attendanceStatus || "not recorded",
+      payrollReady: Boolean(row.payrollReady),
+      billableReady: Boolean(row.billableReady),
+      raw: row,
+    })),
+    filters: {
+      users: asList(data.filters?.users),
+      clients: asList(data.filters?.clients),
+      matters: asList(data.filters?.matters),
+      tasks: asList(data.filters?.tasks),
+      teamEnabled: Boolean(data.filters?.teamEnabled),
+    },
+    gaps: asList(data.gaps),
+    privacy: data.privacy || {},
+  };
+}
+
 export function normalizeAttendanceSummary(item = {}) {
   return {
     total: Number(item.total || 0),

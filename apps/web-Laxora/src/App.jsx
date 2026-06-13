@@ -64,6 +64,7 @@ import { AttendancePage } from "./pages/people/AttendancePage";
 import { HrDashboardPage } from "./pages/people/HrDashboardPage";
 import { TeamDirectoryPage } from "./pages/people/TeamDirectoryPage";
 import { WorkloadOverviewPage } from "./pages/people/WorkloadOverviewPage";
+import { WorkforceAnalyticsPage } from "./pages/people/WorkforceAnalyticsPage";
 import { PermissionDeniedPage } from "./pages/PermissionDeniedPage";
 import { PlaceholderPage } from "./pages/PlaceholderPage";
 import { ProfilePage } from "./pages/ProfilePage";
@@ -213,6 +214,7 @@ function ProtectedPage({ route }) {
   if (route.path === "/app/people/:userId") return <EmployeeProfilePage />;
   if (route.path === "/app/workload") return <WorkloadOverviewPage />;
   if (route.path === "/app/attendance") return <AttendancePage />;
+  if (route.path === "/app/workforce-analytics") return <WorkforceAnalyticsPage />;
   if (route.path === "/app/payroll") return <PayrollRunsPage />;
   if (route.path === "/app/payroll/:runId") return <PayrollDetailPage />;
   if (route.path === "/app/compensation") return <CompensationPage />;

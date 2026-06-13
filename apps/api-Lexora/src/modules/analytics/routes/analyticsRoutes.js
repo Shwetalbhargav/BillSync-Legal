@@ -10,11 +10,14 @@ import {
   getBilledStatsByClient,
   getBilledStatsByUser,
 } from '../controllers/analyticsController.js';
+import { getWorkforceAnalyticsDashboard } from '../controllers/workforceAnalyticsController.js';
+import { validateWorkforceAnalyticsQuery } from '../validators/workforceAnalyticsValidators.js';
 
 const router = express.Router();
 
 router.use(authenticate);
 
+router.get('/workforce', validateWorkforceAnalyticsQuery, getWorkforceAnalyticsDashboard);
 router.get('/billables', getBillableStats);
 router.get('/invoices', getInvoiceStats);
 router.get('/unbilled', getUnbilledBillables);

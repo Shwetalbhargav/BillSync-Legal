@@ -31,6 +31,17 @@ export function HrDashboardPage() {
       <PeopleSummary people={state.people} activeSessions={state.activeSessions} />
       <AttendanceNotConfigured />
       <section className="surface-card p-5">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h2 className="text-xl font-bold text-primary">Workforce analytics</h2>
+            <p className="mt-1 text-sm leading-6 text-muted">Review tracked time, activity, attendance, approval progress, and payroll readiness.</p>
+          </div>
+          <Link to="/app/workforce-analytics">
+            <Button type="button" variant="secondary">Open analytics</Button>
+          </Link>
+        </div>
+      </section>
+      <section className="surface-card p-5">
         <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <h2 className="text-xl font-bold text-primary">Team directory</h2>

@@ -48,6 +48,7 @@ export * from "./taxWorkspace.js";
 export * from "./timeEntries.js";
 export * from "./users.js";
 export * from "./workSessions.js";
+export * from "./workforceAnalytics.js";
 export * from "./zoho.js";
 export * from "./zohoWorkspace.js";
 export * from "./zohoStorage.js";
