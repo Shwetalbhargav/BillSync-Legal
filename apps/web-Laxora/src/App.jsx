@@ -10,7 +10,6 @@ import { BillableDetailPage } from "./pages/billing/BillableDetailPage";
 import { BillablesPage } from "./pages/billing/BillablesPage";
 import { CalendarHearingsPage } from "./pages/calendar/CalendarHearingsPage";
 import { CaptureReviewPage } from "./pages/capture/CaptureReviewPage";
-import { ComponentGalleryPage } from "./pages/ComponentGalleryPage";
 import { ClientBillingPage } from "./pages/clients/ClientBillingPage";
 import { ClientContactsPage } from "./pages/clients/ClientContactsPage";
 import { ClientDetailPage } from "./pages/clients/ClientDetailPage";
@@ -90,6 +89,7 @@ import { UserManagementPage } from "./pages/UserManagementPage";
 import { CapturedWorkReviewPage } from "./pages/work/CapturedWorkReviewPage";
 import { ManualTimeEntryPage } from "./pages/work/ManualTimeEntryPage";
 import { SubmitWorkPage } from "./pages/work/SubmitWorkPage";
+import { TimeApprovalPage } from "./pages/work/TimeApprovalPage";
 import { WorkMeterPage } from "./pages/work/WorkMeterPage";
 import { WorkSessionHistoryPage } from "./pages/work/WorkSessionHistoryPage";
 
@@ -125,7 +125,6 @@ function ProtectedPage({ route }) {
     return <PermissionDeniedPage />;
   }
 
-  if (route.path === "/app/design-system") return <ComponentGalleryPage />;
   if (route.path === "/app/dashboard") return <DashboardPage />;
   if (route.path === "/app/setup-status") return <SetupStatusPage />;
   if (route.path === "/app/extension/setup") return <ExtensionSetupPage />;
@@ -180,6 +179,7 @@ function ProtectedPage({ route }) {
   if (route.path === "/app/work-sessions") return <WorkSessionHistoryPage />;
   if (route.path === "/app/time-entry/new") return <ManualTimeEntryPage />;
   if (route.path === "/app/time-entries") return <WorkSessionHistoryPage />;
+  if (route.path === "/app/time-approval") return <TimeApprovalPage />;
   if (route.path === "/app/captured-work" || route.path === "/app/activities") return <CapturedWorkReviewPage />;
   if (route.path === "/app/gmail-review") return <CaptureReviewPage source="gmail" />;
   if (route.path === "/app/research-review") return <CaptureReviewPage source="research" />;

@@ -13,14 +13,16 @@ export function formatSeconds(seconds = 0) {
   const total = Math.max(0, Number(seconds || 0));
   const hours = Math.floor(total / 3600);
   const mins = Math.floor((total % 3600) / 60);
+  const secs = Math.floor(total % 60);
   if (hours) return `${hours}h ${String(mins).padStart(2, "0")}m`;
-  return `${mins}m`;
+  return `${mins}m ${String(secs).padStart(2, "0")}s`;
 }
 
 export function formatElapsed(startedAt, fallbackMinutes = 0) {
   if (!startedAt) return formatDuration(fallbackMinutes);
-  const elapsed = Math.max(0, Math.floor((Date.now() - new Date(startedAt).getTime()) / 60000));
-  return formatDuration(Math.max(elapsed, fallbackMinutes));
+  const elapsedSeconds = Math.max(0, Math.floor((Date.now() - new Date(startedAt).getTime()) / 1000));
+  const fallbackSeconds = Math.max(0, Number(fallbackMinutes || 0) * 60);
+  return formatSeconds(Math.max(elapsedSeconds, fallbackSeconds));
 }
 
 export function formatDateTime(value) {

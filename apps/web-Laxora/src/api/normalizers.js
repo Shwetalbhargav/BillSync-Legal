@@ -34,7 +34,7 @@ export function normalizeUser(user = {}) {
     name: safeText(user.name, "Team member"),
     email: user.email || "",
     mobile: user.mobile || "",
-    role: user.role || "lawyer",
+    role: String(user.role || "lawyer").toLowerCase(),
     firmId: user.firmId || user.firm?._id || "",
     raw: user,
   };
@@ -289,16 +289,40 @@ export function normalizeEmailEntry(item = {}) {
 export function normalizeTimeEntry(item = {}) {
   const matter = item.caseId || item.case || {};
   const client = item.clientId || item.client || {};
+  const user = item.userId || item.user || {};
+  const task = item.taskId || item.task || {};
+  const activity = item.activityId || item.activity || {};
+  const activitySummary = item.activitySummary || item.activitySampleSummary || {};
+  const idleSummary = item.idleSummary || activity.idleSummary || activity.webMeter?.idleSummary || {};
+  const billableMinutes = Number(item.billableMinutes ?? item.durationMinutes ?? item.minutes ?? 0);
+  const nonbillableMinutes = Number(item.nonbillableMinutes ?? 0);
   return {
     id: toId(item),
     title: safeText(item.description || item.narrative || item.notes, "Time entry"),
     status: item.status || "Draft",
-    minutes: Number(item.durationMinutes ?? item.billableMinutes ?? item.nonbillableMinutes ?? item.minutes ?? 0),
+    minutes: billableMinutes + nonbillableMinutes,
+    billableMinutes,
+    nonbillableMinutes,
     amount: normalizeMoney(item.amount || item.total),
+    rateApplied: normalizeMoney(item.rateApplied || item.rate),
+    activityCode: item.activityCode || activity.activityCode || "",
+    workType: activity.activityType || item.activityType || item.workType || item.activityCode || "work",
+    workTool: activity.workTool || item.workTool || "manual",
     matter: matter.title || matter.name || item.caseName || "",
     matterId: toId(matter) || item.caseId || "",
     client: client.displayName || client.name || item.clientName || "",
     clientId: toId(client) || item.clientId || "",
+    user: user.name || item.userName || "Team member",
+    userId: toId(user) || item.userId || "",
+    task: task.title || item.taskTitle || "",
+    taskId: toId(task) || item.taskId || "",
+    keyboardCount: Number(activitySummary.keyboardCount || 0),
+    mouseCount: Number(activitySummary.mouseCount || 0),
+    activityPercent: Number(activitySummary.activityPercent || 0),
+    idleSeconds: Number(idleSummary.discardedSeconds ?? idleSummary.totalSeconds ?? activity.webMeter?.inactiveSeconds ?? 0),
+    submittedAt: item.submittedAt || "",
+    reviewedAt: item.reviewedAt || "",
+    rejectionReason: item.rejectionReason || "",
     occurredAt: item.workDate || item.date || item.createdAt || "",
     raw: item,
   };

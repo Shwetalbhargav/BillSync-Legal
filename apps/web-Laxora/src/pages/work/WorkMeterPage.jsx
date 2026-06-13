@@ -68,7 +68,7 @@ export function WorkMeterPage() {
   }, []);
 
   useEffect(() => {
-    const timer = window.setInterval(() => setTick((value) => value + 1), 10000);
+    const timer = window.setInterval(() => setTick((value) => value + 1), 1000);
     return () => window.clearInterval(timer);
   }, []);
 
