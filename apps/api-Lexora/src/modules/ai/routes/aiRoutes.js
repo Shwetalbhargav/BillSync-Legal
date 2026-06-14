@@ -136,12 +136,12 @@ function buildEmailDraft(prompt = '') {
     return {
       subject: 'Invoice Follow-Up',
       lines: [
-        'Hi,',
+        'Dear Sir/Madam,',
         '',
-        'I am writing to follow up regarding the invoice and to check if anything further is needed from my side.',
-        'Please let me know if you need any clarification or supporting details.',
+        'We write to follow up regarding the pending invoice and to confirm whether any further clarification or supporting documentation is required from our end.',
+        'Kindly let us know if you require any additional details so that the matter may be addressed promptly.',
         '',
-        'Best regards,',
+        'Yours sincerely,',
         'Your Name'
       ]
     };
@@ -152,13 +152,13 @@ function buildEmailDraft(prompt = '') {
   return {
     subject,
     lines: [
-      'Hi,',
+      'Dear Sir/Madam,',
       '',
-      `${message.charAt(0).toUpperCase()}${message.slice(1)}.`,
+      `We write in relation to ${message.charAt(0).toLowerCase()}${message.slice(1)}.`,
       '',
-      'Please let me know if you have any questions.',
+      'Kindly let us know if any further information, clarification, or documentation is required from our end.',
       '',
-      'Best regards,',
+      'Yours sincerely,',
       'Your Name'
     ]
   };
