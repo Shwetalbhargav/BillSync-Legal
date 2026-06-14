@@ -1,39 +1,85 @@
-import { Bell, LogOut, Search, UserRound } from "lucide-react";
+import { Bell, ChevronDown, LogOut, Menu, Search, Settings } from "lucide-react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Button } from "../common/Button";
-import { StatusBadge } from "../common/StatusBadge";
 
-export function Header({ role, user, onLogout }) {
+export function Header({ isSidebarCollapsed, user, onLogout, onToggleSidebar }) {
+  const [isAccountOpen, setIsAccountOpen] = useState(false);
+  const displayName = user?.name || "My profile";
+  const initials = displayName
+    .split(" ")
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0])
+    .join("")
+    .toUpperCase();
+  const avatarUrl = user?.avatarUrl || user?.raw?.avatarUrl || user?.raw?.profilePhotoUrl || user?.raw?.photoUrl || user?.raw?.picture || user?.raw?.imageUrl || "";
+
+  async function handleLogout() {
+    setIsAccountOpen(false);
+    await onLogout();
+  }
+
   return (
     <header className="sticky top-0 z-30 flex min-h-16 min-w-0 items-center justify-between gap-3 border-b border-border bg-panel/95 px-4 backdrop-blur lg:px-8">
-      <div className="relative hidden w-full max-w-md sm:block">
-        <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" />
-        <input
-          className="focus-ring w-full rounded-lg border border-border bg-blueSoft py-2 pl-10 pr-3 text-sm"
-          aria-label="Search matters, clients, or tasks"
-          placeholder="Search matters, clients, or tasks"
-        />
+      <div className="flex min-w-0 flex-1 items-center gap-3">
+        <button
+          aria-label={isSidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+          className="focus-ring hidden min-h-11 min-w-11 items-center justify-center rounded-lg p-2 text-muted hover:bg-blueSoft hover:text-primary lg:flex"
+          onClick={onToggleSidebar}
+          type="button"
+        >
+          <Menu className="h-5 w-5" />
+        </button>
+        <div className="relative hidden w-full max-w-md sm:block">
+          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" />
+          <input
+            className="focus-ring w-full rounded-lg border border-border bg-blueSoft py-2 pl-10 pr-3 text-sm"
+            aria-label="Search matters, clients, or tasks"
+            placeholder="Search matters, clients, or tasks"
+          />
+        </div>
       </div>
       <div className="flex flex-1 items-center justify-between gap-3 sm:flex-none sm:justify-end">
         <Link className="focus-ring flex min-h-11 min-w-11 items-center justify-center rounded-lg p-2 text-muted hover:bg-blueSoft hover:text-primary sm:hidden" to="/app/search" aria-label="Search workspace">
           <Search className="h-5 w-5" />
         </Link>
-        <Link className="focus-ring hidden min-w-0 items-center gap-2 rounded-lg px-2 py-1.5 hover:bg-blueSoft md:flex" to="/app/profile">
-          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-blueSoft text-primary">
-            <UserRound className="h-4 w-4" />
-          </span>
-          <span className="min-w-0">
-            <span className="block max-w-40 truncate text-sm font-semibold text-ink">{user?.name || "My profile"}</span>
-            <StatusBadge>{role}</StatusBadge>
-          </span>
-        </Link>
         <button className="focus-ring min-h-11 min-w-11 rounded-lg p-2 text-muted hover:bg-blueSoft hover:text-primary" type="button" aria-label="Notifications">
           <Bell className="h-5 w-5" />
         </button>
-        <Button onClick={onLogout} size="sm" type="button" variant="ghost">
-          <LogOut className="h-4 w-4" />
-          <span className="hidden sm:inline">Sign out</span>
-        </Button>
+        <div className="relative">
+          <button
+            aria-expanded={isAccountOpen}
+            aria-haspopup="menu"
+            aria-label="Open account menu"
+            className="focus-ring flex min-h-11 items-center gap-2 rounded-full p-1 text-muted hover:bg-blueSoft hover:text-primary"
+            onClick={() => setIsAccountOpen((current) => !current)}
+            type="button"
+          >
+            <span className="flex h-10 w-10 shrink-0 overflow-hidden rounded-full border border-border bg-blueSoft text-sm font-bold text-primary">
+              {avatarUrl ? (
+                <img alt={displayName} className="h-full w-full object-cover" src={avatarUrl} />
+              ) : (
+                <span className="flex h-full w-full items-center justify-center">{initials || "U"}</span>
+              )}
+            </span>
+            <ChevronDown className="hidden h-4 w-4 sm:block" />
+          </button>
+          {isAccountOpen ? (
+            <div className="absolute right-0 mt-2 w-56 rounded-lg border border-border bg-panel p-2 shadow-soft" role="menu">
+              <button className="flex w-full min-w-0 items-center rounded-lg px-3 py-2 text-left text-sm font-semibold text-ink" role="menuitem" type="button">
+                <span className="truncate">{displayName}</span>
+              </button>
+              <Link className="focus-ring flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold text-muted hover:bg-blueSoft hover:text-primary" onClick={() => setIsAccountOpen(false)} role="menuitem" to="/app/profile">
+                <Settings className="h-4 w-4" />
+                Profile setting
+              </Link>
+              <button className="focus-ring flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm font-semibold text-muted hover:bg-blueSoft hover:text-primary" onClick={handleLogout} role="menuitem" type="button">
+                <LogOut className="h-4 w-4" />
+                Logout
+              </button>
+            </div>
+          ) : null}
+        </div>
       </div>
     </header>
   );

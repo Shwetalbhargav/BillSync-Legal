@@ -8,7 +8,7 @@ Date baseline: `May 22, 2026`
 - Run `npm run package` and confirm `dist/billsync-capture-<version>.zip` is created.
 - Confirm the ZIP contains no tests, logs, local storage dumps, or source-control metadata.
 - Confirm `manifest.json` version matches the release tag/checklist.
-- Confirm production backend defaults to `https://legalbillind-backend.onrender.com`.
+- Confirm production backend defaults to `https://billsync-legal.onrender.com`.
 
 ## Install and settings
 

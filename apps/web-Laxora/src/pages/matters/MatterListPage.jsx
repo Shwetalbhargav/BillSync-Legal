@@ -3,14 +3,17 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { mattersApi } from "../../api/matters";
 import { asList, normalizeMatter } from "../../api/normalizers";
-import { Button, SkeletonBlock, StateCard } from "../../components/common";
+import { Button, Card, CardBody, CardHeader, SkeletonBlock, StateCard, StatusBadge } from "../../components/common";
 import { MatterCard } from "../../components/matters/MatterWidgets";
+
+const matterStatuses = ["open", "pending", "closed", "archived"];
 
 export function MatterListPage() {
   const [query, setQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
   const [status, setStatus] = useState("loading");
   const [matters, setMatters] = useState([]);
+  const [isMatterCardOpen, setIsMatterCardOpen] = useState(true);
   const [message, setMessage] = useState("");
 
   async function load(params = { q: query, status: statusFilter }) {
@@ -37,6 +40,11 @@ export function MatterListPage() {
     load();
   }
 
+  function handleStatusChange(value) {
+    setStatusFilter(value);
+    load({ q: query, status: value });
+  }
+
   return (
     <div className="space-y-6">
       <section className="surface-card p-6">
@@ -56,12 +64,11 @@ export function MatterListPage() {
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" />
             <input className="focus-ring w-full rounded-lg border border-border py-3 pl-10 pr-3" onChange={(event) => setQuery(event.target.value)} placeholder="Search matters" value={query} />
           </label>
-          <select className="focus-ring rounded-lg border border-border px-3 py-3" onChange={(event) => setStatusFilter(event.target.value)} value={statusFilter}>
+          <select className="focus-ring rounded-lg border border-border px-3 py-3" onChange={(event) => handleStatusChange(event.target.value)} value={statusFilter}>
             <option value="">All statuses</option>
-            <option value="open">Open</option>
-            <option value="pending">Pending</option>
-            <option value="closed">Closed</option>
-            <option value="archived">Archived</option>
+            {matterStatuses.map((matterStatus) => (
+              <option key={matterStatus} value={matterStatus}>{matterStatus}</option>
+            ))}
           </select>
           <Button isLoading={status === "loading"} type="submit">Search</Button>
         </form>
@@ -71,9 +78,29 @@ export function MatterListPage() {
       {status === "error" ? <StateCard state="error" title="Matter list needs attention" message={message} actionLabel="Retry" /> : null}
       {status === "empty" ? <StateCard state="empty" title="No matters found" message="Create a matter or try a broader search term." /> : null}
       {status === "ready" ? (
-        <div className="grid gap-4 xl:grid-cols-2">
-          {matters.map((matter) => <MatterCard matter={matter} key={matter.id} />)}
-        </div>
+        <Card>
+          <CardHeader
+            title="All matters"
+            description="Showing the current filtered matter set. Scroll inside this card to review the rest."
+            action={
+              <div className="flex items-center gap-2">
+                <StatusBadge>{matters.length}</StatusBadge>
+                <Button onClick={() => setIsMatterCardOpen((current) => !current)} size="sm" type="button" variant="secondary">
+                  {isMatterCardOpen ? "Collapse" : "Expand"}
+                </Button>
+              </div>
+            }
+          />
+          {isMatterCardOpen ? (
+            <CardBody>
+              <div className="max-h-[720px] overflow-y-auto pr-2">
+                <div className="grid gap-4 xl:grid-cols-2">
+                  {matters.map((matter) => <MatterCard matter={matter} key={matter.id} />)}
+                </div>
+              </div>
+            </CardBody>
+          ) : null}
+        </Card>
       ) : null}
     </div>
   );

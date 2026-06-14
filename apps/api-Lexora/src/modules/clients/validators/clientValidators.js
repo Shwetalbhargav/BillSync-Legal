@@ -22,12 +22,16 @@ export const PAYMENT_TERMS = [
 
 const CLIENT_WRITE_FIELDS = new Set([
   'displayName',
+  'name',
   'email',
   'phone',
+  'contactInfo',
   'firmId',
   'ownerUserId',
   'paymentTerms',
   'status',
+  'contacts',
+  'integrations',
 ]);
 
 const ASSIGN_OWNER_FIELDS = new Set(['ownerUserId', 'paymentTerms']);
@@ -58,6 +62,23 @@ const nullableObjectId = () => (value, field, payload) => {
   if (value === null) return null;
   if (typeof value === 'string' && value.trim() === '') return null;
   return mongoose.Types.ObjectId.isValid(value) ? null : `${field} must be a valid ObjectId`;
+};
+
+const contactsArray = () => (value, field, payload) => {
+  if (!hasOwn(payload, field)) return null;
+  if (!Array.isArray(value)) return `${field} must be an array`;
+  for (const [index, contact] of value.entries()) {
+    if (!isPlainObject(contact)) return `${field}.${index} must be an object`;
+    const allowed = new Set(['name', 'email', 'phone', 'role', 'integrations']);
+    const unknown = Object.keys(contact).filter((key) => !allowed.has(key));
+    if (unknown.length) return `${field}.${index}.${unknown[0]} is not allowed`;
+  }
+  return null;
+};
+
+const plainObjectWhenPresent = () => (value, field, payload) => {
+  if (!hasOwn(payload, field)) return null;
+  return isPlainObject(value) ? null : `${field} must be an object`;
 };
 
 const positiveIntQuery = ({ min = 1, max } = {}) => (value, field) => {
@@ -108,7 +129,7 @@ export const requireClientBodyFields = (allowedFields = CLIENT_WRITE_FIELDS) => 
 export const normalizeClientPayload = (req, _res, next) => {
   const body = req.body || {};
 
-  for (const field of ['displayName', 'email', 'phone', 'firmId', 'ownerUserId', 'paymentTerms', 'status']) {
+  for (const field of ['displayName', 'name', 'email', 'phone', 'contactInfo', 'firmId', 'ownerUserId', 'paymentTerms', 'status']) {
     if (typeof body[field] === 'string') body[field] = body[field].trim();
   }
 
@@ -117,7 +138,7 @@ export const normalizeClientPayload = (req, _res, next) => {
   if (body.status) body.status = body.status.toLowerCase();
   if (body.ownerUserId === '') body.ownerUserId = null;
 
-  for (const field of ['email', 'phone', 'firmId', 'paymentTerms', 'status']) {
+  for (const field of ['name', 'email', 'phone', 'contactInfo', 'firmId', 'paymentTerms', 'status']) {
     if (body[field] === '') delete body[field];
   }
 
@@ -145,22 +166,30 @@ export const validateRelatedClientQuery = validateQuery({
 
 export const validateCreateClient = validateBody({
   displayName: [required, string({ min: 1, max: 160 })],
+  name: [string({ max: 160 })],
   email: [string({ max: 254 }), email()],
   phone: [string({ max: 40 })],
+  contactInfo: [string({ max: 500 })],
   firmId: [objectId()],
   ownerUserId: [nullableObjectId()],
   paymentTerms: [string({ max: 40 }), oneOf(PAYMENT_TERMS)],
   status: [oneOf(CLIENT_STATUSES)],
+  contacts: [contactsArray()],
+  integrations: [plainObjectWhenPresent()],
 });
 
 export const validateUpdateClient = validateBody({
   displayName: [stringWhenPresent({ min: 1, max: 160 })],
+  name: [string({ max: 160 })],
   email: [string({ max: 254 }), email()],
   phone: [string({ max: 40 })],
+  contactInfo: [string({ max: 500 })],
   firmId: [objectId()],
   ownerUserId: [nullableObjectId()],
   paymentTerms: [string({ max: 40 }), oneOf(PAYMENT_TERMS)],
   status: [oneOf(CLIENT_STATUSES)],
+  contacts: [contactsArray()],
+  integrations: [plainObjectWhenPresent()],
 });
 
 export const validateAssignOwner = validateBody({

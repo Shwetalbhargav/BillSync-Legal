@@ -1,4 +1,4 @@
-import { Lock, Phone, UserRound } from "lucide-react";
+import { Eye, EyeOff } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { firmsApi } from "../api/firms";
@@ -32,6 +32,7 @@ export function LoginPage() {
   const [firms, setFirms] = useState([]);
   const [firmStatus, setFirmStatus] = useState("loading");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -96,8 +97,8 @@ export function LoginPage() {
   return (
     <section className="surface-card p-6">
       <header className="mb-6">
-        <h2 className="text-xl font-semibold text-ink">Welcome back</h2>
-        <p className="mt-1 text-sm text-muted">Enter your firm details to open your workspace.</p>
+        <h2 className="text-xl font-semibold text-ink">Welcome !!</h2>
+        <p className="mt-1 text-sm text-muted">Enter your details to open your workspace.</p>
       </header>
 
       {error ? (
@@ -110,9 +111,8 @@ export function LoginPage() {
         <label className="block text-sm font-semibold text-ink">
           Name
           <span className="relative mt-1 block">
-            <UserRound className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" />
             <input
-              className="focus-ring w-full rounded-lg border border-border py-3 pl-10 pr-3"
+              className="focus-ring w-full rounded-lg border border-border px-3 py-3"
               onChange={(event) => updateField("name", event.target.value)}
               placeholder="Your full name"
               value={form.name}
@@ -122,9 +122,8 @@ export function LoginPage() {
         <label className="block text-sm font-semibold text-ink">
           Mobile
           <span className="relative mt-1 block">
-            <Phone className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" />
             <input
-              className="focus-ring w-full rounded-lg border border-border py-3 pl-10 pr-3"
+              className="focus-ring w-full rounded-lg border border-border px-3 py-3"
               inputMode="numeric"
               onChange={(event) => updateField("mobile", event.target.value)}
               placeholder="Registered mobile number"
@@ -135,14 +134,21 @@ export function LoginPage() {
         <label className="block text-sm font-semibold text-ink">
           Password
           <span className="relative mt-1 block">
-            <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" />
             <input
-              className="focus-ring w-full rounded-lg border border-border py-3 pl-10 pr-3"
+              className="focus-ring w-full rounded-lg border border-border py-3 pl-3 pr-12"
               onChange={(event) => updateField("password", event.target.value)}
               placeholder="Password"
-              type="password"
+              type={isPasswordVisible ? "text" : "password"}
               value={form.password}
             />
+            <button
+              aria-label={isPasswordVisible ? "Hide password" : "Show password"}
+              className="focus-ring absolute right-2 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-lg text-muted hover:bg-blueSoft hover:text-primary"
+              onClick={() => setIsPasswordVisible((current) => !current)}
+              type="button"
+            >
+              {isPasswordVisible ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
+            </button>
           </span>
         </label>
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">

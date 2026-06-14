@@ -7,7 +7,7 @@ import { workSessionsApi } from "../../api/workSessions";
 import { normalizeTimeEntry, normalizeWorkSession } from "../../api/normalizers";
 import { useAuth } from "../../auth/AuthProvider";
 import { Button, SkeletonBlock } from "../../components/common";
-import { IdleResolutionPrompt, MeterOptionState, WorkMeterPanel, SaveFailedState, formatElapsed } from "../../components/work/WorkCaptureWidgets";
+import { IdleResolutionPrompt, MeterOptionState, WorkMeterPanel, SaveFailedState, formatDuration, formatElapsed } from "../../components/work/WorkCaptureWidgets";
 
 const initialForm = {
   clientId: "",
@@ -19,6 +19,61 @@ const initialForm = {
   narrative: "",
   billable: true,
 };
+
+const privilegedMeterRoles = new Set(["admin", "partner"]);
+
+const toolTargets = {
+  microsoft_word: { url: "ms-word:", external: true },
+  google_docs: { url: "https://docs.google.com/document/u/0/", external: true },
+  pdf_reader: { url: "https://drive.google.com/drive/my-drive", external: true },
+  google_chrome: { url: "https://www.google.com/", external: true },
+  gmail: { url: "https://mail.google.com/mail/u/0/#inbox?lb_meter=1&lb_compose=1&lb_prompt=BillSync%20Work%20Meter", external: true },
+  google_meet: { url: "https://meet.google.com/", external: true },
+  zoom: { url: "https://zoom.us/start/videomeeting", external: true },
+  microsoft_teams: { url: "https://teams.microsoft.com/v2/", external: true },
+  whatsapp: { url: "https://web.whatsapp.com/", external: true },
+  billbot_ai: { url: "/app/assistant", external: false },
+};
+
+function valueMatchesUser(value, userId) {
+  if (!value || !userId) return false;
+  if (typeof value === "string") return value === userId;
+  if (typeof value === "object") return value._id === userId || value.id === userId || value.userId === userId;
+  return false;
+}
+
+function itemBelongsToUser(item, userId) {
+  if (!userId) return true;
+  const raw = item.raw || item;
+  const directFields = [
+    item.ownerId,
+    item.userId,
+    item.assigneeId,
+    raw.ownerUserId,
+    raw.primaryLawyerId,
+    raw.assignedTo,
+    raw.userId,
+    raw.createdBy,
+  ];
+  if (directFields.some((value) => valueMatchesUser(value, userId))) return true;
+  return [raw.assignedUsers, raw.team, raw.assignments, raw.lawyers, raw.members].some((group) =>
+    Array.isArray(group) && group.some((value) => valueMatchesUser(value?.userId || value?.user || value, userId)),
+  );
+}
+
+function createToolLauncher(workTool) {
+  const target = toolTargets[workTool];
+  if (!target?.url) return null;
+  const toolUrl = target.url.startsWith("/") ? `${window.location.origin}${target.url}` : target.url;
+  const toolWindow = window.open("about:blank", "_blank");
+  return () => {
+    if (toolWindow) {
+      toolWindow.location.href = toolUrl;
+      return;
+    }
+    window.open(toolUrl, "_blank");
+  };
+}
 
 export function WorkMeterPage() {
   const { user } = useAuth();
@@ -37,6 +92,8 @@ export function WorkMeterPage() {
   const [pendingIdle, setPendingIdle] = useState(null);
   const [tick, setTick] = useState(0);
   const hiddenAtRef = useRef(null);
+  const flushActivityRef = useRef(async () => {});
+  const flushAppUsageRef = useRef(async () => {});
   const activityBucketRef = useRef({
     windowStart: new Date(),
     keyboardCount: 0,
@@ -68,7 +125,7 @@ export function WorkMeterPage() {
   }, []);
 
   useEffect(() => {
-    const timer = window.setInterval(() => setTick((value) => value + 1), 10000);
+    const timer = window.setInterval(() => setTick((value) => value + 1), 1000);
     return () => window.clearInterval(timer);
   }, []);
 
@@ -139,6 +196,7 @@ export function WorkMeterPage() {
       const bucket = activityBucketRef.current;
       const windowEnd = new Date();
       const sampleSeconds = Math.max(1, Math.round((windowEnd.getTime() - new Date(bucket.windowStart).getTime()) / 1000));
+      if (sampleSeconds < 2 && !bucket.keyboardCount && !bucket.mouseCount && !bucket.activeSeconds) return;
       const activeSeconds = Math.min(bucket.activeSeconds, sampleSeconds);
       const body = {
         windowStart: new Date(bucket.windowStart).toISOString(),
@@ -169,6 +227,7 @@ export function WorkMeterPage() {
       const bucket = appUsageBucketRef.current;
       const endedAt = new Date();
       const durationSeconds = Math.max(1, Math.round((endedAt.getTime() - new Date(bucket.startedAt).getTime()) / 1000));
+      if (durationSeconds < 2) return;
       appUsageBucketRef.current = { startedAt: endedAt };
       try {
         await appUsageEventsApi.createForSession(session.id, {
@@ -186,26 +245,44 @@ export function WorkMeterPage() {
       }
     }
 
+    flushActivityRef.current = flushBucket;
+    flushAppUsageRef.current = flushAppUsage;
     const flushTimer = window.setInterval(flushBucket, 60000);
     const appUsageTimer = window.setInterval(flushAppUsage, 60000);
     return () => {
       window.clearInterval(secondTimer);
       window.clearInterval(flushTimer);
       window.clearInterval(appUsageTimer);
+      flushActivityRef.current = async () => {};
+      flushAppUsageRef.current = async () => {};
       flushBucket();
       flushAppUsage();
     };
   }, [session?.id, session?.status]);
 
+  const canSeeAllMeterOptions = privilegedMeterRoles.has(String(user?.role || "").toLowerCase());
+  const userScopedMatters = useMemo(
+    () => canSeeAllMeterOptions ? matters : matters.filter((matter) => itemBelongsToUser(matter, user?.id)),
+    [canSeeAllMeterOptions, matters, user?.id],
+  );
+  const userScopedTasks = useMemo(
+    () => canSeeAllMeterOptions ? tasks : tasks.filter((task) => itemBelongsToUser(task, user?.id)),
+    [canSeeAllMeterOptions, tasks, user?.id],
+  );
+  const userScopedClients = useMemo(() => {
+    if (canSeeAllMeterOptions) return clients;
+    const matterClientIds = new Set(userScopedMatters.map((matter) => matter.clientId).filter(Boolean));
+    return clients.filter((client) => itemBelongsToUser(client, user?.id) || matterClientIds.has(client.id));
+  }, [canSeeAllMeterOptions, clients, user?.id, userScopedMatters]);
   const filteredMatters = useMemo(
-    () => matters.filter((matter) => !form.clientId || matter.clientId === form.clientId),
-    [form.clientId, matters],
+    () => userScopedMatters.filter((matter) => !form.clientId || matter.clientId === form.clientId),
+    [form.clientId, userScopedMatters],
   );
   const filteredTasks = useMemo(
-    () => tasks.filter((task) => (!form.clientId || task.clientId === form.clientId) && (!form.caseId || task.matterId === form.caseId) && !["done", "cancelled"].includes(String(task.status).toLowerCase())),
-    [form.caseId, form.clientId, tasks],
+    () => userScopedTasks.filter((task) => (!form.clientId || task.clientId === form.clientId) && (!form.caseId || task.matterId === form.caseId) && !["done", "cancelled"].includes(String(task.status).toLowerCase())),
+    [form.caseId, form.clientId, userScopedTasks],
   );
-  const elapsedLabel = useMemo(() => formatElapsed(session?.startedAt, session?.minutes), [session?.startedAt, session?.minutes, tick]);
+  const elapsedLabel = useMemo(() => formatElapsed(session?.startedAt, session?.minutes, session?.status), [session?.startedAt, session?.minutes, session?.status, tick]);
 
   function updateField(field, value) {
     setMessage("");
@@ -233,6 +310,7 @@ export function WorkMeterPage() {
       return;
     }
     setStatus("saving");
+    const launchSelectedTool = createToolLauncher(form.workTool);
     try {
       const response = await workSessionsApi.start({
         caseId: form.caseId,
@@ -259,6 +337,7 @@ export function WorkMeterPage() {
       setLastSavedEntry(null);
       setStatus("ready");
       setForm(initialForm);
+      if (launchSelectedTool) launchSelectedTool();
     } catch (error) {
       setStatus("ready");
       if (error?.status === 409) {
@@ -289,6 +368,10 @@ export function WorkMeterPage() {
     setSaveFailed("");
     setLastStopSubmit(submitTimeEntry);
     try {
+      await Promise.allSettled([
+        flushActivityRef.current(),
+        flushAppUsageRef.current(),
+      ]);
       const response = await workSessionsApi.stop(session.id, {
         endedAt: new Date().toISOString(),
         finalNarrative: session.title || "Focused legal work",
@@ -364,7 +447,7 @@ export function WorkMeterPage() {
         <section className="rounded-lg border border-success/25 bg-success/10 p-4">
           <h2 className="text-sm font-bold text-success">{lastSavedEntry.status === "submitted" ? "Submitted work entry" : "Saved draft entry"}</h2>
           <p className="mt-1 break-words text-sm leading-6 text-ink">
-            {lastSavedEntry.title} - {lastSavedEntry.matter || "Matter not set"} - {lastSavedEntry.minutes} minutes
+            {lastSavedEntry.title} - {lastSavedEntry.matter || "Matter not set"} - {formatDuration(lastSavedEntry.minutes)}
           </p>
         </section>
       ) : null}
@@ -377,7 +460,7 @@ export function WorkMeterPage() {
       />
       {!session ? (
         <MeterOptionState
-          hasClients={clients.length > 0}
+          hasClients={userScopedClients.length > 0}
           hasMatters={filteredMatters.length > 0}
           hasTasks={filteredTasks.length > 0}
           issues={issues}
@@ -385,7 +468,7 @@ export function WorkMeterPage() {
         />
       ) : null}
       <WorkMeterPanel
-        clients={clients}
+        clients={userScopedClients}
         elapsedLabel={elapsedLabel}
         form={form}
         isSaving={status === "saving"}

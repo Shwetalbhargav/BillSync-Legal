@@ -1,4 +1,4 @@
-const DEFAULT_BACKEND = 'https://billsync-legal.onrender.com';
+const DEFAULT_BACKEND = 'https://legalbillind-backend.onrender.com';
 const DEFAULT_FRONTEND_APP = 'https://bill-bot-legal.vercel.app';
 const EXTENSION_STORAGE_KEYS = [
   'backendBaseUrl',
@@ -21,13 +21,7 @@ function nowIso() {
 }
 
 function normalizeBackendBaseUrl(value) {
-  const raw = String(value || DEFAULT_BACKEND).trim();
-  try {
-    const url = new URL(raw);
-    return url.origin.replace(/\/+$/, '');
-  } catch {
-    return raw.split(/[?#]/)[0].replace(/\/+$/, '') || DEFAULT_BACKEND;
-  }
+  return String(value || DEFAULT_BACKEND).trim().replace(/\/+$/, '');
 }
 
 function normalizeAppUrl(value) {

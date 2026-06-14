@@ -281,6 +281,20 @@ function getBillSyncComposeIntent() {
   }
 }
 
+function hasBillSyncGmailMeterIntent() {
+  try {
+    const u = new URL(window.location.href);
+    const hashQuery = u.hash.includes('?') ? u.hash.slice(u.hash.indexOf('?') + 1) : '';
+    const hashParams = new URLSearchParams(hashQuery);
+    return u.searchParams.get('lb_meter') === '1' ||
+      hashParams.get('lb_meter') === '1' ||
+      u.searchParams.get('lb_compose') === '1' ||
+      hashParams.get('lb_compose') === '1';
+  } catch {
+    return false;
+  }
+}
+
 function setNativeValue(el, value) {
   if (!el) return false;
   const prototype = el instanceof HTMLTextAreaElement
@@ -349,13 +363,13 @@ function fillComposeBody(composeRoot, body) {
 
 async function openBillSyncComposeIntent() {
   const intent = getBillSyncComposeIntent();
-  if (!intent) return;
-  const storageKey = `lb-compose-intent:${intent.key}`;
+  if (!intent && !hasBillSyncGmailMeterIntent()) return;
+  const storageKey = `lb-compose-intent:${intent?.key || window.location.href}`;
   if (sessionStorage.getItem(storageKey)) return;
   sessionStorage.setItem(storageKey, '1');
 
-  LB_PROMPT_FROM_URL = intent.prompt || LB_PROMPT_FROM_URL;
-  window.lb_ai_prompt = intent.prompt || window.lb_ai_prompt || '';
+  LB_PROMPT_FROM_URL = intent?.prompt || LB_PROMPT_FROM_URL;
+  window.lb_ai_prompt = intent?.prompt || window.lb_ai_prompt || '';
 
   if (!getComposeRoots().length) {
     findNativeGmailComposeButton()?.click();
@@ -363,11 +377,12 @@ async function openBillSyncComposeIntent() {
 
   const composeRoot = await waitForComposeRoot();
   if (!composeRoot) return;
-  fillComposeRecipient(composeRoot, intent.to);
-  fillComposeSubject(composeRoot, intent.subject);
-  fillComposeBody(composeRoot, intent.body);
+  fillComposeRecipient(composeRoot, intent?.to);
+  fillComposeSubject(composeRoot, intent?.subject);
+  fillComposeBody(composeRoot, intent?.body);
   activeComposeRoot = composeRoot;
   refreshTimerUI();
+  logExtensionEvent('gmail_meter_connected', { from: 'work_meter' });
 }
 
 

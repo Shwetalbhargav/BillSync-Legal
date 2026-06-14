@@ -77,7 +77,7 @@ If you open `options.html` directly as a `file://` page, it will fall back to pr
 
 Production backend:
 
-- `https://legalbillind-backend.onrender.com`
+- `https://billsync-legal.onrender.com`
 
 Dev backend:
 

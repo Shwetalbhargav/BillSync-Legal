@@ -1,12 +1,12 @@
 export const permissions = {
   admin: ["all"],
-  partner: ["dashboard", "clients", "matters", "tasks", "work", "billing", "finance", "people", "settings", "assistant", "extension", "support"],
+  partner: ["dashboard", "clients", "matters", "tasks", "work", "approval", "billing", "finance", "people", "settings", "assistant", "extension", "support"],
   lawyer: ["dashboard", "clients", "matters", "tasks", "work", "billing", "assistant", "extension", "support"],
   associate: ["dashboard", "matters", "tasks", "work", "billing", "assistant", "extension", "support"],
   intern: ["dashboard", "matters", "tasks", "work", "assistant", "extension", "support"],
 };
 
 export function canAccess(role, moduleKey) {
-  const grants = permissions[role] || [];
+  const grants = permissions[String(role || "").toLowerCase()] || [];
   return grants.includes("all") || grants.includes(moduleKey);
 }

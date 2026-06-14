@@ -21,13 +21,7 @@ function nowIso() {
 }
 
 function normalizeBackendBaseUrl(value) {
-  const raw = String(value || DEFAULT_BACKEND).trim();
-  try {
-    const url = new URL(raw);
-    return url.origin.replace(/\/+$/, '');
-  } catch {
-    return raw.split(/[?#]/)[0].replace(/\/+$/, '') || DEFAULT_BACKEND;
-  }
+  return String(value || DEFAULT_BACKEND).trim().replace(/\/+$/, '');
 }
 
 function normalizeAppUrl(value) {

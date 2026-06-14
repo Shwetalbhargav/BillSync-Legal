@@ -1,26 +1,48 @@
 import { Link } from "react-router-dom";
-import { AlertTriangle, CheckCircle2, ClipboardList, FileText, Globe2, Pause, Play, Save, Square, Timer } from "lucide-react";
+import {
+  AlertTriangle,
+  Bot,
+  CheckCircle2,
+  Chrome,
+  ClipboardList,
+  FileText,
+  FileType,
+  Globe2,
+  Mail,
+  MessageCircle,
+  MonitorPlay,
+  MousePointerClick,
+  Pause,
+  Play,
+  Save,
+  Square,
+  Timer,
+  Type,
+  Video,
+} from "lucide-react";
 import { Button, Card, CardBody, CardHeader, DataTable, StateCard, StatusBadge } from "../common";
 
 export function formatDuration(minutes = 0) {
   const total = Math.max(0, Number(minutes || 0));
   const hours = Math.floor(total / 60);
   const mins = total % 60;
-  return `${hours}h ${String(mins).padStart(2, "0")}m`;
+  return `${hours}h ${String(mins).padStart(2, "0")}m 00s`;
 }
 
 export function formatSeconds(seconds = 0) {
-  const total = Math.max(0, Number(seconds || 0));
+  const total = Math.max(0, Math.floor(Number(seconds || 0)));
   const hours = Math.floor(total / 3600);
   const mins = Math.floor((total % 3600) / 60);
-  if (hours) return `${hours}h ${String(mins).padStart(2, "0")}m`;
-  return `${mins}m`;
+  const secs = Math.floor(total % 60);
+  return `${hours}h ${String(mins).padStart(2, "0")}m ${String(secs).padStart(2, "0")}s`;
 }
 
-export function formatElapsed(startedAt, fallbackMinutes = 0) {
+export function formatElapsed(startedAt, fallbackMinutes = 0, status = "") {
+  if (String(status).toLowerCase() === "paused") return formatDuration(fallbackMinutes);
   if (!startedAt) return formatDuration(fallbackMinutes);
-  const elapsed = Math.max(0, Math.floor((Date.now() - new Date(startedAt).getTime()) / 60000));
-  return formatDuration(Math.max(elapsed, fallbackMinutes));
+  const elapsedSeconds = Math.max(0, Math.floor((Date.now() - new Date(startedAt).getTime()) / 1000));
+  const fallbackSeconds = Math.max(0, Number(fallbackMinutes || 0) * 60);
+  return formatSeconds(Math.max(elapsedSeconds, fallbackSeconds));
 }
 
 export function formatDateTime(value) {
@@ -44,17 +66,54 @@ const workTypeOptions = [
 
 const workToolOptions = [
   ["manual", "Manual"],
-  ["microsoft_word", "Word"],
+  ["microsoft_word", "Microsoft Word"],
   ["google_docs", "Google Docs"],
   ["pdf_reader", "PDF review"],
-  ["google_chrome", "Browser"],
-  ["gmail", "Email"],
-  ["phone", "Phone"],
-  ["video_meeting", "Video meeting"],
-  ["court", "Court"],
+  ["google_chrome", "Chrome"],
+  ["gmail", "Gmail"],
+  ["google_meet", "Google Meet"],
+  ["zoom", "Zoom"],
+  ["microsoft_teams", "Microsoft Teams"],
+  ["whatsapp", "WhatsApp Web"],
   ["billbot_ai", "BillBot AI"],
   ["other", "Other"],
 ];
+
+const toolMeta = {
+  manual: { icon: Timer, detail: "Track work inside Lexora." },
+  microsoft_word: { icon: FileText, detail: "Opens Word if the device has the app protocol." },
+  google_docs: { icon: FileText, detail: "Opens Google Docs in a new tab." },
+  pdf_reader: { icon: FileType, detail: "Opens Drive for PDF review." },
+  google_chrome: { icon: Chrome, detail: "Opens Chrome/web research." },
+  gmail: { icon: Mail, detail: "Opens Gmail." },
+  google_meet: { icon: Video, detail: "Opens Google Meet." },
+  zoom: { icon: Video, detail: "Opens Zoom web launcher." },
+  microsoft_teams: { icon: MonitorPlay, detail: "Opens Microsoft Teams." },
+  whatsapp: { icon: MessageCircle, detail: "Opens WhatsApp Web." },
+  billbot_ai: { icon: Bot, detail: "Opens the Assistant workspace." },
+  other: { icon: Globe2, detail: "Track work in another tool." },
+};
+
+const toolLinks = {
+  microsoft_word: "ms-word:",
+  google_docs: "https://docs.google.com/document/u/0/",
+  pdf_reader: "https://drive.google.com/drive/my-drive",
+  google_chrome: "https://www.google.com/",
+  gmail: "https://mail.google.com/mail/u/0/#inbox?lb_meter=1&lb_compose=1&lb_prompt=BillSync%20Work%20Meter",
+  google_meet: "https://meet.google.com/",
+  zoom: "https://zoom.us/start/videomeeting",
+  microsoft_teams: "https://teams.microsoft.com/v2/",
+  whatsapp: "https://web.whatsapp.com/",
+  billbot_ai: "/app/assistant",
+};
+
+function optionLabel(options, value, fallback = "Not set") {
+  return options.find(([optionValue]) => optionValue === value)?.[1] || fallback;
+}
+
+function selectedName(items, id, labelKey) {
+  return items.find((item) => item.id === id)?.[labelKey] || "";
+}
 
 export function WorkMeterPanel({
   clients,
@@ -72,103 +131,163 @@ export function WorkMeterPanel({
   validation,
 }) {
   const running = Boolean(session);
+  const selectedTool = toolMeta[form.workTool] || toolMeta.manual;
+  const SelectedToolIcon = selectedTool.icon;
+  const selectedToolLink = toolLinks[form.workTool] || "";
+  const selectedClientName = selectedName(clients, form.clientId, "name");
+  const selectedMatterName = selectedName(matters, form.caseId, "title");
+  const selectedTaskName = selectedName(tasks, form.taskId, "title");
   return (
-    <section className="surface-card p-6">
-      <div className="flex min-w-0 flex-col gap-6 xl:flex-row xl:items-start xl:justify-between">
-        <div className="min-w-0">
-          <p className="text-sm font-semibold uppercase tracking-wide text-accent">Work Meter</p>
-          <h1 className="mt-1 text-2xl font-bold text-primary md:text-3xl">{running ? "Work in progress" : "Ready to start"}</h1>
-          <p className="mt-2 max-w-2xl text-sm leading-6 text-muted">Capture focused work with matter context and save it for review.</p>
-          <p className="mt-1 max-w-2xl text-xs font-semibold leading-5 text-muted">Activity uses keyboard and mouse counts, app names, website domains, and timing only. It does not save keystrokes, screenshots, page text, or document text.</p>
-          <div className="mt-6 flex items-center gap-4">
-            <div className="rounded-lg bg-blueSoft p-4 text-primary">
-              <Timer className="h-8 w-8" />
-            </div>
-            <div>
-              <p className="text-4xl font-bold text-primary">{elapsedLabel}</p>
-              <p className="mt-1 text-sm font-semibold text-muted">{running ? session.status : "No active meter"}</p>
-            </div>
-          </div>
-        </div>
-        <div className="w-full max-w-xl space-y-4">
-          {!running ? (
-            <>
-              {validation ? <div className="rounded-lg border border-warning/30 bg-warning/10 p-3 text-sm font-semibold text-warning">{validation}</div> : null}
-              <label className="block text-sm font-semibold text-ink">
-                Client
-                <select className="focus-ring mt-1 w-full rounded-lg border border-border px-3 py-3" onChange={(event) => onChange("clientId", event.target.value)} value={form.clientId}>
-                  <option value="">Select client</option>
-                  {clients.map((client) => <option key={client.id} value={client.id}>{client.name}</option>)}
-                </select>
-              </label>
-              <label className="block text-sm font-semibold text-ink">
-                Matter
-                <select className="focus-ring mt-1 w-full rounded-lg border border-border px-3 py-3" onChange={(event) => onChange("caseId", event.target.value)} value={form.caseId}>
-                  <option value="">Select matter</option>
-                  {matters.map((matter) => <option key={matter.id} value={matter.id}>{matter.title}</option>)}
-                </select>
-              </label>
-              <label className="block text-sm font-semibold text-ink">
-                Task
-                <select className="focus-ring mt-1 w-full rounded-lg border border-border px-3 py-3" onChange={(event) => onChange("taskId", event.target.value)} value={form.taskId}>
-                  <option value="">No linked task</option>
-                  {tasks.map((task) => <option key={task.id} value={task.id}>{task.title}</option>)}
-                </select>
-              </label>
-              <label className="block text-sm font-semibold text-ink">
-                Work type
-                <select className="focus-ring mt-1 w-full rounded-lg border border-border px-3 py-3" onChange={(event) => onChange("activityType", event.target.value)} value={form.activityType}>
-                  {workTypeOptions.map(([value, label]) => <option key={value} value={value}>{label}</option>)}
-                </select>
-              </label>
-              <label className="block text-sm font-semibold text-ink">
-                Work tool
-                <select className="focus-ring mt-1 w-full rounded-lg border border-border px-3 py-3" onChange={(event) => onChange("workTool", event.target.value)} value={form.workTool}>
-                  {workToolOptions.map(([value, label]) => <option key={value} value={value}>{label}</option>)}
-                </select>
-              </label>
-              <label className="flex items-center gap-3 rounded-lg border border-border px-3 py-3 text-sm font-semibold text-ink">
-                <input checked={form.billable} className="h-4 w-4 rounded border-border" onChange={(event) => onChange("billable", event.target.checked)} type="checkbox" />
-                Billable work
-              </label>
-              <label className="block text-sm font-semibold text-ink">
-                Notes
-                <textarea className="focus-ring mt-1 min-h-24 w-full rounded-lg border border-border px-3 py-3" onChange={(event) => onChange("narrative", event.target.value)} placeholder="Short note for review" value={form.narrative} />
-              </label>
-              <Button className="w-full" disabled={isSaving} isLoading={isSaving} onClick={onStart} type="button">
-                <Play className="h-4 w-4" />
-                Start meter
-              </Button>
-            </>
-          ) : (
-            <div className="space-y-4">
-              <div className="rounded-lg border border-border p-4">
-                <div className="grid gap-3 text-sm text-ink sm:grid-cols-2">
-                  <p><span className="font-bold text-primary">Client:</span> {session.client || "Not set"}</p>
-                  <p><span className="font-bold text-primary">Matter:</span> {session.matter || "Not set"}</p>
-                  <p><span className="font-bold text-primary">Task:</span> {session.task || "No linked task"}</p>
-                  <p><span className="font-bold text-primary">Work:</span> {session.activityType || "Work"}{session.workTool ? ` with ${session.workTool.replaceAll("_", " ")}` : ""}</p>
+    <>
+      <section className="surface-card overflow-hidden">
+        <div className="grid gap-0 xl:grid-cols-[0.9fr_1.1fr]">
+          <div className="min-w-0 border-b border-border bg-gradient-to-br from-blueSoft via-white to-white p-6 xl:border-b-0 xl:border-r">
+            <p className="text-sm font-semibold uppercase tracking-wide text-accent">Work Meter</p>
+            <h1 className="mt-1 text-2xl font-bold text-primary md:text-3xl">{running ? "Work in progress" : "Ready to start"}</h1>
+            <p className="mt-2 max-w-2xl text-sm leading-6 text-muted">Capture focused work with matter context and save it for review.</p>
+            <div className="mt-6 rounded-lg border border-border bg-white p-5 shadow-soft">
+              <div className="flex items-center gap-4">
+                <div className="rounded-lg bg-blueSoft p-4 text-primary">
+                  <Timer className="h-8 w-8" />
+                </div>
+                <div className="min-w-0">
+                  <p className="safe-text text-4xl font-bold text-primary">{elapsedLabel}</p>
+                  <p className="mt-1 text-sm font-semibold text-muted">{running ? session.status : "No active meter"}</p>
                 </div>
               </div>
-              <div className="grid gap-3 sm:grid-cols-3">
-                <Button disabled={isSaving} onClick={onPauseResume} type="button" variant="secondary">
-                  {session.status === "paused" ? <Play className="h-4 w-4" /> : <Pause className="h-4 w-4" />}
-                  {session.status === "paused" ? "Resume" : "Pause"}
-                </Button>
-                <Button disabled={isSaving} isLoading={isSaving} onClick={() => onStop(false)} type="button">
-                  <Save className="h-4 w-4" />
-                  Save draft
-                </Button>
-                <Button disabled={isSaving} onClick={onDiscard} type="button" variant="danger">
-                  <Square className="h-4 w-4" />
-                  Discard
-                </Button>
+              <div className="mt-5 grid gap-3 sm:grid-cols-3">
+                <div className="rounded-lg bg-surface p-3">
+                  <Type className="h-4 w-4 text-accent" />
+                  <p className="mt-2 text-xs font-bold uppercase tracking-wide text-muted">Keyboard</p>
+                  <p className="mt-1 text-sm font-semibold text-primary">Count only</p>
+                </div>
+                <div className="rounded-lg bg-surface p-3">
+                  <MousePointerClick className="h-4 w-4 text-accent" />
+                  <p className="mt-2 text-xs font-bold uppercase tracking-wide text-muted">Mouse</p>
+                  <p className="mt-1 text-sm font-semibold text-primary">Count only</p>
+                </div>
+                <div className="rounded-lg bg-surface p-3">
+                  <Globe2 className="h-4 w-4 text-accent" />
+                  <p className="mt-2 text-xs font-bold uppercase tracking-wide text-muted">Apps</p>
+                  <p className="mt-1 text-sm font-semibold text-primary">Name and time</p>
+                </div>
               </div>
             </div>
-          )}
+            <p className="mt-4 max-w-2xl text-xs font-semibold leading-5 text-muted">No keystrokes, screenshots, page text, or document text are saved.</p>
+          </div>
+          <div className="min-w-0 p-6">
+            {!running ? (
+              <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_280px]">
+                <div className="space-y-4">
+                  {validation ? <div className="rounded-lg border border-warning/30 bg-warning/10 p-3 text-sm font-semibold text-warning">{validation}</div> : null}
+                  <div className="grid gap-4 md:grid-cols-2">
+                    <label className="block text-sm font-semibold text-ink">
+                      Client
+                      <select className="focus-ring mt-1 w-full rounded-lg border border-border px-3 py-3" onChange={(event) => onChange("clientId", event.target.value)} value={form.clientId}>
+                        <option value="">Select client</option>
+                        {clients.map((client) => <option key={client.id} value={client.id}>{client.name}</option>)}
+                      </select>
+                    </label>
+                    <label className="block text-sm font-semibold text-ink">
+                      Matter
+                      <select className="focus-ring mt-1 w-full rounded-lg border border-border px-3 py-3" onChange={(event) => onChange("caseId", event.target.value)} value={form.caseId}>
+                        <option value="">Select matter</option>
+                        {matters.map((matter) => <option key={matter.id} value={matter.id}>{matter.title}</option>)}
+                      </select>
+                    </label>
+                    <label className="block text-sm font-semibold text-ink">
+                      Task
+                      <select className="focus-ring mt-1 w-full rounded-lg border border-border px-3 py-3" onChange={(event) => onChange("taskId", event.target.value)} value={form.taskId}>
+                        <option value="">No linked task</option>
+                        {tasks.map((task) => <option key={task.id} value={task.id}>{task.title}</option>)}
+                      </select>
+                    </label>
+                    <label className="block text-sm font-semibold text-ink">
+                      Work type
+                      <select className="focus-ring mt-1 w-full rounded-lg border border-border px-3 py-3" onChange={(event) => onChange("activityType", event.target.value)} value={form.activityType}>
+                        {workTypeOptions.map(([value, label]) => <option key={value} value={value}>{label}</option>)}
+                      </select>
+                    </label>
+                  </div>
+                  <div className="grid gap-4 md:grid-cols-[minmax(0,1fr)_180px]">
+                    <label className="block text-sm font-semibold text-ink">
+                      Work tool
+                      <select className="focus-ring mt-1 w-full rounded-lg border border-border px-3 py-3" onChange={(event) => onChange("workTool", event.target.value)} value={form.workTool}>
+                        {workToolOptions.map(([value, label]) => <option key={value} value={value}>{label}</option>)}
+                      </select>
+                    </label>
+                    <label className="mt-6 flex items-center gap-3 rounded-lg border border-border px-3 py-3 text-sm font-semibold text-ink md:mt-7">
+                      <input checked={form.billable} className="h-4 w-4 rounded border-border" onChange={(event) => onChange("billable", event.target.checked)} type="checkbox" />
+                      Billable work
+                    </label>
+                  </div>
+                  <label className="block text-sm font-semibold text-ink">
+                    Notes
+                    <textarea className="focus-ring mt-1 min-h-24 w-full rounded-lg border border-border px-3 py-3" onChange={(event) => onChange("narrative", event.target.value)} placeholder="Short note for review" value={form.narrative} />
+                  </label>
+                </div>
+                <aside className="rounded-lg border border-border bg-surface p-4">
+                  <div className="flex items-center gap-3">
+                    <span className="inline-flex h-11 w-11 items-center justify-center rounded-lg bg-primary text-white">
+                      <SelectedToolIcon className="h-5 w-5" />
+                    </span>
+                    <div className="min-w-0">
+                      <p className="safe-text text-sm font-bold text-primary">{optionLabel(workToolOptions, form.workTool, "Manual")}</p>
+                      <p className="mt-1 text-xs font-semibold leading-5 text-muted">{selectedTool.detail}</p>
+                    </div>
+                  </div>
+                  {selectedToolLink ? (
+                    selectedToolLink.startsWith("/") ? (
+                      <Link className="focus-ring mt-4 inline-flex w-full items-center justify-center rounded-lg border border-border bg-white px-3 py-2 text-sm font-semibold text-primary hover:bg-blueSoft" to={selectedToolLink}>
+                        Open tool
+                      </Link>
+                    ) : (
+                      <a className="focus-ring mt-4 inline-flex w-full items-center justify-center rounded-lg border border-border bg-white px-3 py-2 text-sm font-semibold text-primary hover:bg-blueSoft" href={selectedToolLink} rel="noreferrer" target="_blank">
+                        Open tool
+                      </a>
+                    )
+                  ) : null}
+                  <div className="mt-4 space-y-3 text-sm">
+                    <p className="rounded-lg bg-white p-3"><span className="font-bold text-primary">Client:</span> {selectedClientName || "Select client"}</p>
+                    <p className="rounded-lg bg-white p-3"><span className="font-bold text-primary">Matter:</span> {selectedMatterName || "Select matter"}</p>
+                    <p className="rounded-lg bg-white p-3"><span className="font-bold text-primary">Task:</span> {selectedTaskName || "No linked task"}</p>
+                  </div>
+                  <Button className="mt-4 w-full" disabled={isSaving} isLoading={isSaving} onClick={onStart} type="button">
+                    <Play className="h-4 w-4" />
+                    Start meter and open tool
+                  </Button>
+                </aside>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                <div className="rounded-lg border border-border p-4">
+                  <div className="grid gap-3 text-sm text-ink sm:grid-cols-2">
+                    <p><span className="font-bold text-primary">Client:</span> {session.client || "Not set"}</p>
+                    <p><span className="font-bold text-primary">Matter:</span> {session.matter || "Not set"}</p>
+                    <p><span className="font-bold text-primary">Task:</span> {session.task || "No linked task"}</p>
+                    <p><span className="font-bold text-primary">Work:</span> {session.activityType || "Work"}{session.workTool ? ` with ${session.workTool.replaceAll("_", " ")}` : ""}</p>
+                  </div>
+                </div>
+                <div className="grid gap-3 sm:grid-cols-3">
+                  <Button disabled={isSaving} onClick={onPauseResume} type="button" variant="secondary">
+                    {session.status === "paused" ? <Play className="h-4 w-4" /> : <Pause className="h-4 w-4" />}
+                    {session.status === "paused" ? "Resume" : "Pause"}
+                  </Button>
+                  <Button disabled={isSaving} isLoading={isSaving} onClick={() => onStop(false)} type="button">
+                    <Save className="h-4 w-4" />
+                    Save draft
+                  </Button>
+                  <Button disabled={isSaving} onClick={onDiscard} type="button" variant="danger">
+                    <Square className="h-4 w-4" />
+                    Discard
+                  </Button>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </>
   );
 }
 

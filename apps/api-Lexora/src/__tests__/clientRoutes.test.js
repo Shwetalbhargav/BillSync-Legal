@@ -145,13 +145,13 @@ test('POST /api/clients rejects unknown client payload fields', async () => {
     method: 'POST',
     body: JSON.stringify({
       displayName: 'Nimbus Retail',
-      contacts: [],
+      legacyCode: 'NR-001',
     }),
   });
   const body = await response.json();
 
   expect(response.status).toBe(400);
-  expect(body.errors).toContainEqual({ field: 'contacts', message: 'contacts is not allowed' });
+  expect(body.errors).toContainEqual({ field: 'legacyCode', message: 'legacyCode is not allowed' });
   expect(mocks.clientCreate).not.toHaveBeenCalled();
 });
 
@@ -162,12 +162,16 @@ test('POST /api/clients normalizes accepted payload fields and validates referen
     method: 'POST',
     body: JSON.stringify({
       displayName: '  Nimbus Retail  ',
+      name: '  Nimbus Retail Legacy  ',
       email: 'CLIENT@EXAMPLE.COM ',
       phone: ' +91 99999 ',
+      contactInfo: '  Billing contact prefers email  ',
       firmId: FIRM_ID,
       ownerUserId: USER_ID,
       paymentTerms: 'net30',
       status: 'Prospect',
+      contacts: [{ name: 'Priya Accounts', email: 'accounts@nimbus.example', phone: '+91 77777', role: 'Finance' }],
+      integrations: { zoho: { crmModule: 'Accounts', crmRecordId: 'zcrm-1' } },
     }),
   });
   const body = await response.json();
@@ -177,12 +181,16 @@ test('POST /api/clients normalizes accepted payload fields and validates referen
   expect(mocks.userExists).toHaveBeenCalledWith({ _id: USER_ID });
   expect(mocks.clientCreate).toHaveBeenCalledWith({
     displayName: 'Nimbus Retail',
+    name: 'Nimbus Retail Legacy',
     email: 'client@example.com',
     phone: '+91 99999',
+    contactInfo: 'Billing contact prefers email',
     firmId: FIRM_ID,
     ownerUserId: USER_ID,
     paymentTerms: 'NET30',
     status: 'prospect',
+    contacts: [{ name: 'Priya Accounts', email: 'accounts@nimbus.example', phone: '+91 77777', role: 'Finance' }],
+    integrations: { zoho: { crmModule: 'Accounts', crmRecordId: 'zcrm-1' } },
   });
   expect(body.data.displayName).toBe('Nimbus Retail');
 });

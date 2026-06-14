@@ -22,6 +22,8 @@ function issueMessage(result, message) {
   return result.status === "rejected" ? message : "";
 }
 
+const monitoringDetailsEnabled = String(import.meta.env?.VITE_ENABLE_MONITORING_DETAILS || "").toLowerCase() === "true";
+
 export const workCaptureApi = {
   async loadMeterOptions() {
     const [currentResult, mattersResult, clientsResult, tasksResult] = await Promise.allSettled([
@@ -51,8 +53,12 @@ export const workCaptureApi = {
     ]);
     const sessions = asList(settledValue(sessionsResult, [])).map(normalizeWorkSession);
     const summaries = await Promise.allSettled(sessions.slice(0, 25).map((session) => activitySamplesApi.sessionSummary(session.id)));
-    const appTimelines = await Promise.allSettled(sessions.slice(0, 25).map((session) => appUsageEventsApi.sessionTimeline(session.id)));
-    const idleResults = await Promise.allSettled(sessions.slice(0, 25).map((session) => idleIntervalsApi.listForSession(session.id)));
+    const appTimelines = monitoringDetailsEnabled
+      ? await Promise.allSettled(sessions.slice(0, 25).map((session) => appUsageEventsApi.sessionTimeline(session.id)))
+      : [];
+    const idleResults = monitoringDetailsEnabled
+      ? await Promise.allSettled(sessions.slice(0, 25).map((session) => idleIntervalsApi.listForSession(session.id)))
+      : [];
     const summaryBySession = new Map();
     const appUsageBySession = new Map();
     const idleBySession = new Map();
@@ -70,18 +76,18 @@ export const workCaptureApi = {
         ...session,
         activitySummary: summaryBySession.get(session.id) || null,
         activityPercent: summaryBySession.get(session.id)?.activityPercent || 0,
-        appUsageSummary: appUsageBySession.get(session.id) || null,
-        appUsageTimeline: appUsageBySession.get(session.id)?.events || [],
-        idleSummary: idleBySession.get(session.id) || null,
-        idleIntervals: idleBySession.get(session.id)?.intervals || [],
+        appUsageSummary: appUsageBySession.get(session.id) || session.appUsageSummary || null,
+        appUsageTimeline: appUsageBySession.get(session.id)?.events || session.appUsageTimeline || [],
+        idleSummary: idleBySession.get(session.id) || session.idleSummary || null,
+        idleIntervals: idleBySession.get(session.id)?.intervals || session.idleIntervals || [],
       })),
       timeEntries: asList(settledValue(timeResult, [])).map(normalizeTimeEntry),
       issues: [
         issueMessage(sessionsResult, "Work sessions could not be refreshed."),
         issueMessage(timeResult, "Time entries could not be refreshed."),
         summaries.some((result) => result.status === "rejected") ? "Activity percentages could not be refreshed for every session." : "",
-        appTimelines.some((result) => result.status === "rejected") ? "App and website history could not be refreshed for every session." : "",
-        idleResults.some((result) => result.status === "rejected") ? "Idle time markers could not be refreshed for every session." : "",
+        monitoringDetailsEnabled && appTimelines.some((result) => result.status === "rejected") ? "App and website history could not be refreshed for every session." : "",
+        monitoringDetailsEnabled && idleResults.some((result) => result.status === "rejected") ? "Idle time markers could not be refreshed for every session." : "",
       ].filter(Boolean),
     };
   },

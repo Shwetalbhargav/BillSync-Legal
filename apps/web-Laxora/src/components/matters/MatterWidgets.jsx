@@ -12,7 +12,9 @@ const statusTone = {
 function dateText(value) {
   if (!value) return "Not set";
   const date = new Date(value);
-  return Number.isNaN(date.getTime()) ? "Not set" : date.toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" });
+  return Number.isNaN(date.getTime())
+    ? "Not set"
+    : date.toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" });
 }
 
 export function MatterCard({ matter }) {
@@ -73,10 +75,16 @@ export function AssignmentList({ assignments }) {
             </div>
             <div className="min-w-0">
               <div className="flex flex-wrap items-center gap-2">
-                <h3 className="text-sm font-bold text-ink">{assignment.userName}</h3>
+                {assignment.userId ? (
+                  <Link className="focus-ring rounded text-sm font-bold text-ink hover:text-primary hover:underline" to={`/app/people/${assignment.userId}`}>
+                    {assignment.userName}
+                  </Link>
+                ) : (
+                  <h3 className="text-sm font-bold text-ink">{assignment.userName}</h3>
+                )}
                 <StatusBadge tone={assignment.status === "active" ? "success" : "neutral"}>{assignment.status}</StatusBadge>
               </div>
-              <p className="mt-1 text-xs font-semibold text-muted">{assignment.role} {assignment.userRole ? `· ${assignment.userRole}` : ""}</p>
+              <p className="mt-1 text-xs font-semibold text-muted">{assignment.role} {assignment.userRole ? `- ${assignment.userRole}` : ""}</p>
               <p className="mt-2 break-words text-sm text-muted">{assignment.email || assignment.matterTitle}</p>
             </div>
           </div>

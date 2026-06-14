@@ -4,16 +4,16 @@ import { Scale } from "lucide-react";
 import { canAccess } from "../../constants/permissions";
 import { navigationItems } from "../../routes/routeConfig";
 
-export function Sidebar({ role }) {
+export function Sidebar({ collapsed = false, role }) {
   const items = navigationItems.filter((item) => canAccess(role, item.moduleKey));
 
   return (
-    <aside className="fixed inset-y-0 left-0 z-40 hidden w-64 flex-col bg-nav px-3 py-6 text-white lg:flex">
-      <div className="mb-8 flex items-center gap-3 px-3">
+    <aside className={clsx("fixed inset-y-0 left-0 z-40 hidden flex-col bg-nav px-3 py-6 text-white transition-all duration-200 lg:flex", collapsed ? "w-20" : "w-64")}>
+      <div className={clsx("mb-8 flex items-center gap-3 px-3", collapsed && "justify-center px-0")}>
         <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary text-accent">
           <Scale className="h-5 w-5" />
         </div>
-        <div>
+        <div className={collapsed ? "sr-only" : ""}>
           <p className="font-bold leading-5">BillSync Legal</p>
           <p className="text-xs text-[#B5C7EA]">Law Firm Management</p>
         </div>
@@ -26,15 +26,17 @@ export function Sidebar({ role }) {
             <NavLink
               key={item.path}
               to={item.path}
+              title={collapsed ? item.label : undefined}
               className={({ isActive }) =>
                 clsx(
                   "focus-ring flex min-w-0 items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold transition",
+                  collapsed && "justify-center px-2",
                   isActive ? "bg-white/10 text-white ring-1 ring-accent/50" : "text-[#B5C7EA] hover:bg-white/10 hover:text-white",
                 )
               }
             >
               <Icon className="h-4 w-4 shrink-0" />
-              <span className="truncate">{item.label}</span>
+              <span className={collapsed ? "sr-only" : "truncate"}>{item.label}</span>
             </NavLink>
           );
         })}

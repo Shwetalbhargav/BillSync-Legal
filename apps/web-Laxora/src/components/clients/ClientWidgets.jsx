@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Mail, Phone, ReceiptText, UserRound } from "lucide-react";
+import { Mail, Phone, ReceiptText, Trash2, UserRound } from "lucide-react";
 import { Card, CardBody, CardHeader, StatusBadge } from "../common";
 
 const statusTone = {
@@ -8,7 +8,7 @@ const statusTone = {
   prospect: "accent",
 };
 
-export function ClientCard({ client }) {
+export function ClientCard({ client, onDelete }) {
   return (
     <Card className="p-5">
       <div className="flex min-w-0 flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
@@ -26,11 +26,26 @@ export function ClientCard({ client }) {
               <Phone className="h-4 w-4 shrink-0" />
               <span className="truncate">{client.phone || "Phone not added yet"}</span>
             </span>
+            <span className="inline-flex min-w-0 items-center gap-2">
+              <UserRound className="h-4 w-4 shrink-0" />
+              <span className="truncate">{client.ownerName || "No appointed user"}</span>
+            </span>
           </div>
         </div>
-        <Link className="focus-ring rounded-lg border border-border px-3 py-2 text-center text-sm font-semibold text-primary hover:bg-blueSoft" to={`/app/clients/${client.id}`}>
-          Open client
-        </Link>
+        <div className="flex shrink-0 flex-col gap-2">
+          <Link className="focus-ring rounded-lg border border-border px-3 py-2 text-center text-sm font-semibold text-primary hover:bg-blueSoft" to={`/app/clients/${client.id}`}>
+            Open client
+          </Link>
+          <Link className="focus-ring rounded-lg border border-border px-3 py-2 text-center text-sm font-semibold text-primary hover:bg-blueSoft" to={`/app/clients/${client.id}/edit`}>
+            Edit
+          </Link>
+          {onDelete ? (
+            <button className="focus-ring inline-flex items-center justify-center gap-2 rounded-lg border border-danger/30 px-3 py-2 text-sm font-semibold text-danger hover:bg-danger/10" onClick={() => onDelete(client)} type="button">
+              <Trash2 className="h-4 w-4" />
+              Delete
+            </button>
+          ) : null}
+        </div>
       </div>
     </Card>
   );

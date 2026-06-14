@@ -9,7 +9,7 @@ import User from '../../users/models/User.js';
 import mongoose from 'mongoose';
 
 const toNumber = (v, d = 0) => (v === undefined || v === null || Number.isNaN(Number(v)) ? d : Number(v));
-const CLIENT_MUTABLE_FIELDS = ['displayName', 'email', 'phone', 'firmId', 'ownerUserId', 'paymentTerms', 'status'];
+const CLIENT_MUTABLE_FIELDS = ['displayName', 'name', 'email', 'phone', 'contactInfo', 'firmId', 'ownerUserId', 'paymentTerms', 'status', 'contacts', 'integrations'];
 const DEFAULT_LIMIT = 25;
 const MAX_LIMIT = 200;
 
@@ -119,7 +119,7 @@ export const getAllClients = async (req, res) => {
 
     const [clients, total] = await Promise.all([
       Client.find(filter)
-      .select('displayName email phone paymentTerms ownerUserId createdAt')
+      .select('displayName name email phone contactInfo paymentTerms status ownerUserId contacts integrations createdAt updatedAt')
       .populate('ownerUserId', 'name email')
       .sort({ createdAt: -1 })
       .skip(skip)
