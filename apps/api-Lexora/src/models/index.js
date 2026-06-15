@@ -19,3 +19,6 @@ export { default as AssociateProfile } from '../modules/users/models/AssociatePr
 export { default as InternProfile } from '../modules/users/models/InternProfile.js';
 export { default as Billable } from '../modules/billables/models/Billable.js';
 export { default as IntegrationLog } from '../modules/integrations/models/IntegrationLog.js';
+export { default as LegalDocument } from '../modules/courtSync/models/LegalDocument.js';
+export { default as ScrapeJob } from '../modules/courtSync/models/ScrapeJob.js';
+export { default as SourceConfig } from '../modules/courtSync/models/SourceConfig.js';
