@@ -1,6 +1,6 @@
 import { boolean, number, objectId, oneOf, required, string, validateBody } from '../../../middleware/validate.js';
 
-const assistModes = ['draft_email', 'summarize_text', 'analyze_text', 'billable_narrative'];
+const assistModes = ['draft_email', 'summarize_text', 'analyze_text', 'billable_narrative', 'app_guide'];
 const documentTypes = ['note', 'brief', 'draft', 'order', 'evidence', 'correspondence', 'research', 'other'];
 
 export const validateGenerateEmail = validateBody({

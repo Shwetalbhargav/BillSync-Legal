@@ -2,6 +2,7 @@ import express from 'express';
 import { authenticate } from '../../../middleware/auth.js';
 import { Case } from '../../cases/models/Case.js';
 import { generateBillableSummary } from '../services/gptService.js';
+import { buildAppGuideAnswer } from '../services/appGuideService.js';
 import { MatterDocument } from '../models/MatterDocument.js';
 import {
   buildGeneratedDocument,
@@ -283,6 +284,15 @@ router.post('/assist', validateAssist, async (req, res) => {
           title: 'Billable Narrative',
           text: narrative,
         },
+        context,
+      });
+    }
+
+    if (mode === 'app_guide') {
+      return res.json({
+        success: true,
+        mode,
+        result: buildAppGuideAnswer({ input: cleanInput, context }),
         context,
       });
     }
