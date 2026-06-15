@@ -292,7 +292,7 @@ router.post('/assist', validateAssist, async (req, res) => {
       return res.json({
         success: true,
         mode,
-        result: buildAppGuideAnswer({ input: cleanInput, context }),
+        result: await buildAppGuideAnswer({ input: cleanInput, context, requestUser: req.user }),
         context,
       });
     }

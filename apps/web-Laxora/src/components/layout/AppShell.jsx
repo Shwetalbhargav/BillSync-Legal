@@ -1,5 +1,6 @@
 import { Outlet } from "react-router-dom";
 import { useState } from "react";
+import { GlobalAssistantDrawer } from "../assistant/GlobalAssistantDrawer";
 import { GlobalAssistantButton } from "../assistant/GlobalAssistantButton";
 import { BottomNav } from "./BottomNav";
 import { Header } from "./Header";
@@ -8,6 +9,7 @@ import { Sidebar } from "./Sidebar";
 
 export function AppShell({ role, user, onLogout }) {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [isAssistantOpen, setIsAssistantOpen] = useState(false);
 
   return (
     <div className="min-h-screen min-w-0 bg-app">
@@ -21,7 +23,8 @@ export function AppShell({ role, user, onLogout }) {
           <Outlet />
         </PageContainer>
       </div>
-      <GlobalAssistantButton />
+      <GlobalAssistantButton onClick={() => setIsAssistantOpen(true)} />
+      <GlobalAssistantDrawer isOpen={isAssistantOpen} onClose={() => setIsAssistantOpen(false)} />
       <BottomNav role={role} />
     </div>
   );

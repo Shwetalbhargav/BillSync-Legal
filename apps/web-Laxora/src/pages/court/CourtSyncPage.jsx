@@ -2,15 +2,10 @@ import { useEffect, useMemo, useState } from "react";
 import { courtSyncApi } from "../../api";
 import { SkeletonBlock, StateCard } from "../../components/common";
 import {
-  CourtDailyFeedPanel,
-  CourtIssues,
   CourtMatchPanel,
-  CourtProviderState,
-  CourtReadinessGrid,
   CourtSettingsShell,
-  CourtSyncHero,
-  CourtSyncSummary,
-  ManualHearingSeparation,
+  CourtNewsroomFeed,
+  CourtNewsroomHero,
   VerdictDetailShell,
 } from "../../components/court/CourtSyncWidgets";
 
@@ -29,6 +24,7 @@ const initialState = {
   readiness: [],
   issues: [],
   message: "",
+  isRefreshing: false,
 };
 
 export function CourtSyncPage({ view = "dashboard" }) {
@@ -49,7 +45,7 @@ export function CourtSyncPage({ view = "dashboard" }) {
   }
 
   async function runSync() {
-    setState((current) => ({ ...current, status: "loading", message: "Refreshing court feed..." }));
+    setState((current) => ({ ...current, isRefreshing: true, message: "" }));
     try {
       await courtSyncApi.runDailySync();
       const data = await courtSyncApi.loadWorkspace();
@@ -58,6 +54,7 @@ export function CourtSyncPage({ view = "dashboard" }) {
       setState((current) => ({
         ...current,
         status: "ready",
+        isRefreshing: false,
         message: error?.userMessage || "Court sync could not run right now.",
         issues: [...(current.issues || []), error?.userMessage || "Court sync could not run right now."],
       }));
@@ -72,7 +69,7 @@ export function CourtSyncPage({ view = "dashboard" }) {
     if (view === "matches") return "Court case match";
     if (view === "verdict") return "Verdict detail";
     if (view === "settings") return "Court sync settings";
-    return "Court daily sync";
+    return "The Gavel Gathering";
   }, [view]);
 
   if (state.status === "loading") return <SkeletonBlock />;
@@ -80,10 +77,7 @@ export function CourtSyncPage({ view = "dashboard" }) {
 
   return (
       <div className="space-y-6">
-      <CourtSyncHero title={title} />
-      <CourtProviderState sources={state.sources} jobs={state.jobs} courtItems={state.courtItems} onRunSync={runSync} />
-      <CourtIssues issues={state.issues} />
-      <CourtReadinessGrid readiness={state.readiness} />
+      <CourtNewsroomHero title={title} itemCount={state.courtItems.length} isRefreshing={state.isRefreshing} onRefresh={runSync} />
 
       {view === "matches" ? (
         <CourtMatchPanel matters={state.matters} />
@@ -92,13 +86,7 @@ export function CourtSyncPage({ view = "dashboard" }) {
       ) : view === "settings" ? (
         <CourtSettingsShell setupSteps={state.setupSteps} />
       ) : (
-        <>
-          <CourtSyncSummary courtItems={state.courtItems} hearings={state.hearings} hearingTimeEntries={state.hearingTimeEntries} matters={state.matters} />
-          <div className="grid gap-4 xl:grid-cols-[1.2fr_1fr]">
-            <CourtDailyFeedPanel courtItems={state.courtItems} />
-            <ManualHearingSeparation hearings={state.hearings} />
-          </div>
-        </>
+        <CourtNewsroomFeed courtItems={state.courtItems} />
       )}
     </div>
   );

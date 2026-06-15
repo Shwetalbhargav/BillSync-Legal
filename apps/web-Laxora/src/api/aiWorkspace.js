@@ -39,7 +39,7 @@ export const aiWorkspaceApi = {
   },
 
   async assist(input, context = {}) {
-    return unwrapResult(await aiApi.assist({ mode: "summarize_text", input, context }), "Assistant summary");
+    return unwrapResult(await aiApi.assist({ mode: "app_guide", input, context }), "Assistant guide");
   },
 
   async analyze(input, context = {}) {

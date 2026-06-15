@@ -1,3 +1,10 @@
+import User from '../../users/models/User.js';
+import PartnerProfile from '../../users/models/PartnerProfile.js';
+import LawyerProfile from '../../users/models/LawyerProfile.js';
+import AssociateProfile from '../../users/models/AssociateProfile.js';
+import InternProfile from '../../users/models/InternProfile.js';
+import Firm from '../../firms/models/Firm.js';
+
 const STOP_WORDS = new Set([
   'the', 'and', 'for', 'that', 'with', 'this', 'from', 'have', 'will', 'what', 'when',
   'where', 'which', 'there', 'their', 'about', 'into', 'your', 'how', 'does', 'work',
@@ -14,7 +21,19 @@ const APP_GUIDE_ENTRIES = [
       'The Chrome extension helps users capture work from Gmail and browser research so it can be reviewed inside BillSync.',
       'Start at Extension Setup to load the unpacked extension and check the workspace connection. The app uses the extension token check plus recent captured Gmail or extension entries as the current readiness signal.',
       'After capture, go to Gmail Capture Review or Research Capture Review, map the item to a client and matter, generate a narrative if needed, then convert it into a time entry or captured work item.',
-      'If it does not work, open Extension Troubleshooting and check the extension icon, backend URL, signed-in session, and whether new captured items appear in the review queue.',
+      'If it does not work, open Extension Troubleshooting and check the extension icon, connection settings, signed-in session, and whether new captured items appear in the review queue.',
+    ],
+  },
+  {
+    id: 'people-firm',
+    title: 'Firm and professional profiles',
+    routes: ['/app/people', '/app/profile', '/app/settings', '/app/dashboard'],
+    keywords: ['firm', 'team', 'people', 'user', 'users', 'partner', 'partners', 'parnter', 'lawyer', 'lawyers', 'associate', 'intern', 'profile', 'professional', 'career', 'experience'],
+    answer: [
+      'BillSync can help explain the firm, team roles, and saved professional profiles in plain language.',
+      'For partners and lawyers, it can use saved details such as title, specializations, years of experience, landmark matters, achievements, publications, and standard billing rate.',
+      'For interns, it can use saved details such as law school, graduation year, mentor, and internship focus.',
+      'Use this for professional introductions, internal context, staffing awareness, and understanding who is best placed for a matter.',
     ],
   },
   {
@@ -109,17 +128,202 @@ function selectEntries(input, context) {
   return matches.length ? matches : [APP_GUIDE_ENTRIES.find((entry) => entry.id === 'daily-work')];
 }
 
-function formatRoutes(routes) {
-  return routes.slice(0, 4).map((route) => `- ${route}`).join('\n');
+const SCREEN_NAMES = {
+  '/app/extension/setup': 'Extension Setup',
+  '/app/extension/status': 'Extension Status',
+  '/app/extension/troubleshooting': 'Extension Troubleshooting',
+  '/app/gmail-review': 'Gmail Capture Review',
+  '/app/research-review': 'Research Capture Review',
+  '/app/tasks': 'My Tasks',
+  '/app/my-work-today': 'My Work Today',
+  '/app/work-meter': 'Work Meter',
+  '/app/captured-work': 'Captured Work',
+  '/app/submit-work': 'Submit Work',
+  '/app/clients': 'Clients',
+  '/app/matters': 'Matters',
+  '/app/matters/new': 'New Matter',
+  '/app/document-storage': 'Document Storage',
+  '/app/assistant': 'Assistant',
+  '/app/assistant/documents': 'Document Summary',
+  '/app/assistant/documents/qa': 'Matter Q&A',
+  '/app/assistant/documents/create': 'Document Creation',
+  '/app/billables': 'Billables',
+  '/app/billables/approval': 'Billable Approval',
+  '/app/invoices': 'Invoices',
+  '/app/payments': 'Payments',
+  '/app/finance': 'Finance',
+  '/app/settings': 'Settings',
+  '/app/admin/users': 'User Management',
+  '/app/integrations/zoho': 'Zoho Integration',
+  '/app/integrations/cloud-storage': 'Cloud Storage',
+  '/app/people': 'People Directory',
+  '/app/profile': 'My Profile',
+  '/app/dashboard': 'Dashboard',
+};
+
+function formatScreens(routes) {
+  return routes.slice(0, 4).map((route) => `- ${SCREEN_NAMES[route] || route.replace('/app/', '').replace(/-/g, ' ')}`).join('\n');
 }
 
-export function buildAppGuideAnswer({ input, context = {} }) {
+const roleLabels = {
+  admin: 'Admin',
+  partner: 'Partner',
+  lawyer: 'Lawyer',
+  associate: 'Associate',
+  intern: 'Intern',
+};
+
+function hasPeopleIntent(input = '') {
+  return /\b(firm|team|people|user|users|partner|partners|parnter|lawyer|lawyers|associate|intern|profile|professional|profeesinonal|career|experience|achievement|publication|speciali[sz]ation)\b/i.test(input);
+}
+
+function compactList(items = [], getText) {
+  return items.map(getText).filter(Boolean).slice(0, 4);
+}
+
+function profileUser(profile) {
+  return profile?.userId && typeof profile.userId === 'object' ? profile.userId : {};
+}
+
+function profileName(profile) {
+  return profileUser(profile).name || 'Team member';
+}
+
+function profileLine(profile, fallbackRole) {
+  const user = profileUser(profile);
+  const parts = [
+    profileName(profile),
+    profile.title || roleLabels[user.role] || fallbackRole,
+    Array.isArray(profile.specialization) && profile.specialization.length ? `focuses on ${profile.specialization.join(', ')}` : '',
+    profile.experienceYears ? `${profile.experienceYears} years of experience` : '',
+  ].filter(Boolean);
+  return parts.join(' - ');
+}
+
+function profileDetails(profile) {
+  const lines = [];
+  const landmarkCases = compactList(profile.landmarkCases, (item) => item.caseTitle ? `${item.caseTitle}${item.year ? ` (${item.year})` : ''}` : '');
+  const achievements = compactList(profile.achievements, (item) => item.title ? `${item.title}${item.year ? ` (${item.year})` : ''}` : '');
+  const publications = compactList(profile.publications, (item) => item.title ? `${item.title}${item.year ? ` (${item.year})` : ''}` : '');
+  if (landmarkCases.length) lines.push(`Landmark work: ${landmarkCases.join('; ')}.`);
+  if (achievements.length) lines.push(`Achievements: ${achievements.join('; ')}.`);
+  if (publications.length) lines.push(`Publications: ${publications.join('; ')}.`);
+  return lines;
+}
+
+function firmAddress(address = {}) {
+  return [address.line1, address.line2, address.city, address.state, address.postalCode, address.country]
+    .filter(Boolean)
+    .join(', ');
+}
+
+async function loadPeopleSnapshot(requestUser = {}) {
+  const currentUser = requestUser.id
+    ? await User.findById(requestUser.id).select('name email role firmId qualifications address').lean()
+    : null;
+  const firmId = currentUser?.firmId;
+  const [firm, roleCounts, partners, lawyers, associates, interns] = await Promise.all([
+    firmId ? Firm.findById(firmId).lean() : Firm.findOne().lean(),
+    User.aggregate([{ $group: { _id: '$role', count: { $sum: 1 } } }]),
+    PartnerProfile.find().populate('userId', 'name email role qualifications').limit(8).lean(),
+    LawyerProfile.find().populate('userId', 'name email role qualifications').limit(8).lean(),
+    AssociateProfile.find().populate('userId', 'name email role qualifications').limit(8).lean(),
+    InternProfile.find().populate('userId mentor', 'name email role').limit(8).lean(),
+  ]);
+
+  return {
+    currentUser,
+    firm,
+    roleCounts: Object.fromEntries(roleCounts.map((item) => [item._id || 'unknown', item.count])),
+    partners,
+    lawyers,
+    associates,
+    interns,
+  };
+}
+
+function buildPeopleAnswerFromSnapshot(snapshot = {}, input = '') {
+  const firm = snapshot.firm;
+  const roleCounts = snapshot.roleCounts || {};
+  const query = String(input).toLowerCase();
+  const wantsPartner = query.includes('partner') || query.includes('parnter');
+  const wantsLawyer = query.includes('lawyer');
+  const wantsIntern = query.includes('intern');
+  const wantsFirm = query.includes('firm') || query.includes('company') || query.includes('office');
+  const primaryProfiles = wantsPartner
+    ? snapshot.partners || []
+    : wantsLawyer
+      ? snapshot.lawyers || []
+      : wantsIntern
+        ? snapshot.interns || []
+        : [...(snapshot.partners || []), ...(snapshot.lawyers || []), ...(snapshot.associates || []), ...(snapshot.interns || [])];
+
+  const lines = [];
+  if (firm && (wantsFirm || !primaryProfiles.length)) {
+    lines.push(`${firm.name || 'The firm'} is the firm saved in this workspace.`);
+    const address = firmAddress(firm.address);
+    if (address) lines.push(`Office details saved here: ${address}.`);
+    if (firm.currency) lines.push(`The firm uses ${firm.currency} for billing and finance views.`);
+    const counts = Object.entries(roleCounts)
+      .filter(([, count]) => count)
+      .map(([role, count]) => `${count} ${roleLabels[role] || role}${count === 1 ? '' : 's'}`);
+    if (counts.length) lines.push(`Saved team shape: ${counts.join(', ')}.`);
+  }
+
+  if (primaryProfiles.length) {
+    const heading = wantsPartner ? 'Partner professional profile details:' : wantsLawyer ? 'Lawyer professional profile details:' : wantsIntern ? 'Intern profile details:' : 'Professional profile details:';
+    lines.push(heading);
+    primaryProfiles.slice(0, 5).forEach((profile) => {
+      lines.push(`- ${profileLine(profile, wantsIntern ? 'Intern' : 'Professional')}`);
+      lines.push(...profileDetails(profile).map((detail) => `  ${detail}`));
+      if (profile.lawSchool || profile.internshipFocus) {
+        const internDetails = [
+          profile.lawSchool,
+          profile.graduationYear ? `Class of ${profile.graduationYear}` : '',
+          profile.internshipFocus ? `focus: ${profile.internshipFocus}` : '',
+        ].filter(Boolean);
+        lines.push(`  ${internDetails.join(', ')}.`);
+      }
+    });
+  }
+
+  if (!lines.length) {
+    lines.push('I could not find saved firm or professional profile details yet. Once profiles are filled in, I can explain partner experience, lawyer focus areas, achievements, publications, internship focus, and firm context in plain language.');
+  }
+
+  lines.push('I will keep this professional: firm context, role, experience, focus areas, achievements, publications, and work-related background.');
+
+  return {
+    title: wantsPartner ? 'Partner professional profile' : wantsFirm ? 'Firm overview' : 'Team professional profiles',
+    text: lines.join('\n'),
+    citations: [{ source: 'BillSync saved firm and profile details', title: 'Professional profile data' }],
+  };
+}
+
+async function buildPeopleAnswer({ input, requestUser, snapshot }) {
+  try {
+    const resolvedSnapshot = snapshot || await loadPeopleSnapshot(requestUser);
+    return buildPeopleAnswerFromSnapshot(resolvedSnapshot, input);
+  } catch (_err) {
+    return {
+      title: 'Firm and professional profiles',
+      text: 'I can help explain firm and team profile details in plain language, but I could not read the saved profile information right now. Try again after the profile or firm data has loaded.',
+      citations: [],
+    };
+  }
+}
+
+export async function buildAppGuideAnswer({ input, context = {}, requestUser = {}, snapshot = null }) {
+  if (hasPeopleIntent(input)) {
+    return buildPeopleAnswer({ input, requestUser, snapshot });
+  }
+
   const matches = selectEntries(input, context);
   const primary = matches[0];
   const secondary = matches[1];
-  const currentPath = context.currentPath ? `\n\nCurrent screen: ${context.currentPath}` : '';
+  const currentPath = context.currentPath ? `\n\nYou are currently on: ${SCREEN_NAMES[context.currentPath] || 'this screen'}` : '';
   const secondaryText = secondary
-    ? `\n\nRelated area: ${secondary.title}\n${secondary.answer.slice(0, 2).join('\n')}\nRoutes:\n${formatRoutes(secondary.routes)}`
+    ? `\n\nRelated area: ${secondary.title}\n${secondary.answer.slice(0, 2).join('\n')}\nUseful screens:\n${formatScreens(secondary.routes)}`
     : '';
 
   return {
@@ -127,8 +331,8 @@ export function buildAppGuideAnswer({ input, context = {} }) {
     text: [
       primary.answer.join('\n'),
       '',
-      'Open these screens:',
-      formatRoutes(primary.routes),
+      'Useful screens:',
+      formatScreens(primary.routes),
       currentPath,
       secondaryText,
     ].filter(Boolean).join('\n'),
