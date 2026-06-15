@@ -1,0 +1,11 @@
+
+> billsync-legal-frontend@0.1.0 dev
+> vite --host 127.0.0.1 --port 5173 --host 127.0.0.1
+
+
+  [32m[1mVITE[22m v7.3.5[39m  [2mready in [0m[1m377[22m[2m[0m ms[22m
+
+  [32m➜[39m  [1mLocal[22m:   [36mhttp://127.0.0.1:[1m5173[22m/[39m
+[2m[32m  ➜[39m[22m[2m  press [22m[1mh + enter[22m[2m to show help[22m
+[2m5:22:28 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/index.css, /src/pages/payments/ClientPaymentPortalPage.jsx, /src/pages/finance/AuditLogsPage.jsx, /src/pages/people/TeamDirectoryPage.jsx, /src/pages/integrations/CloudIntegrationsPage.jsx, /src/pages/people/HrDashboardPage.jsx, /src/pages/storage/StorageLibraryPage.jsx, /src/pages/finance/FinanceDashboardPage.jsx, /src/pages/assistant/AiMatterQuestionPage.jsx, /src/pages/payments/PaymentDashboardPage.jsx, /src/pages/tax/TdsDashboardPage.jsx, /src/pages/settings/SettingsAdminPage.jsx, /src/pages/payroll/PayrollDetailPage.jsx, /src/pages/payments/ReceivablesAgingPage.jsx, /src/pages/assistant/AssistantCorePage.jsx, /src/pages/assistant/AiDocumentCreatePage.jsx, /src/pages/finance/KpiSnapshotsPage.jsx, /src/pages/storage/StorageSettingsPage.jsx, /src/pages/people/WorkforceAnalyticsPage.jsx, /src/pages/tax/GstDashboardPage.jsx, /src/pages/payments/PaymentReconciliationPage.jsx, /src/pages/storage/UploadDocumentPage.jsx, /src/pages/people/WorkloadOverviewPage.jsx, /src/pages/people/EmployeeProfilePage.jsx, /src/pages/storage/DocumentViewerPage.jsx, /src/pages/integrations/ZohoIntegrationPage.jsx, /src/pages/communications/CommunicationCenterPage.jsx, /src/pages/assistant/AiDocumentSummaryPage.jsx, /src/pages/payroll/PayrollRunsPage.jsx, /src/pages/court/CourtSyncPage.jsx, /src/pages/people/AttendancePage.jsx, /src/pages/finance/ReportsPage.jsx, /src/pages/payroll/CompensationPage.jsx[22m
+[2m5:22:28 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/index.css, /src/components/court/CourtSyncWidgets.jsx[22m

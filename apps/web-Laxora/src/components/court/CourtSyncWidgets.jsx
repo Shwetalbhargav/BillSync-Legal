@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { AlertCircle, CalendarClock, CheckCircle2, Gavel, Link2, RefreshCw, Settings, WifiOff } from "lucide-react";
+import { AlertCircle, CalendarClock, CheckCircle2, ExternalLink, Gavel, Link2, RefreshCw, Settings, Wifi } from "lucide-react";
 import { Button, Card, CardBody, CardHeader, DataTable, StateCard, StatusBadge } from "../common";
 import { formatDateTime } from "../calendar/CalendarWidgets";
 
@@ -27,20 +27,38 @@ export function CourtSyncHero({ title = "Court daily sync" }) {
   );
 }
 
-export function CourtProviderState() {
+function formatDate(value) {
+  if (!value) return "New";
+  return new Intl.DateTimeFormat("en-IN", { day: "2-digit", month: "short", year: "numeric" }).format(new Date(value));
+}
+
+export function CourtProviderState({ sources = [], jobs = [], courtItems = [], onRunSync }) {
+  const enabledSources = sources.filter((source) => source.enabled);
+  const latestJob = jobs[0];
+  const isConnected = enabledSources.length > 0;
+
   return (
-    <section className="rounded-lg border border-warning/30 bg-warning/10 p-5">
-      <div className="flex gap-3">
-        <WifiOff className="mt-0.5 h-5 w-5 shrink-0 text-warning" />
-        <div>
-          <div className="flex flex-wrap items-center gap-2">
-            <h2 className="text-base font-bold text-warning">Court feed is not connected yet</h2>
-            <StatusBadge tone="warning">Manual hearing capture stays available</StatusBadge>
+    <section className="rounded-lg border border-success/30 bg-success/10 p-5">
+      <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+        <div className="flex gap-3">
+          <Wifi className="mt-0.5 h-5 w-5 shrink-0 text-success" />
+          <div>
+            <div className="flex flex-wrap items-center gap-2">
+              <h2 className="text-base font-bold text-success">{isConnected ? "Court feed is connected" : "Court feed sources are ready"}</h2>
+              <StatusBadge tone="success">{enabledSources.length} official sources</StatusBadge>
+            </div>
+            <p className="mt-2 text-sm leading-6 text-ink">
+              {courtItems.length
+                ? "Court orders, notices, gazettes, and law updates are flowing into this feed from public official sources."
+                : "Run sync to pull the latest public court and law PDFs into this dedicated legal news feed."}
+            </p>
+            {latestJob ? <p className="mt-1 text-xs font-semibold text-muted">Last job: {latestJob.status} for {latestJob.sourceName}</p> : null}
           </div>
-          <p className="mt-2 text-sm leading-6 text-ink">
-            Court orders, daily cause lists, and verdict updates will appear after your firm turns on court sync.
-          </p>
         </div>
+        <Button type="button" onClick={onRunSync}>
+          <RefreshCw className="h-4 w-4" />
+          Run sync
+        </Button>
       </div>
     </section>
   );
@@ -53,7 +71,7 @@ export function CourtIssues({ issues = [] }) {
       <div className="flex gap-3">
         <AlertCircle className="mt-0.5 h-5 w-5 shrink-0 text-warning" />
         <div>
-          <h2 className="text-sm font-bold text-warning">Court sync needs setup.</h2>
+          <h2 className="text-sm font-bold text-warning">Court sync needs attention.</h2>
           <ul className="mt-2 space-y-1 text-sm leading-6 text-ink">
             {issues.map((issue) => <li key={issue}>{issue}</li>)}
           </ul>
@@ -73,7 +91,7 @@ export function CourtReadinessGrid({ readiness = [] }) {
               <p className="text-xs font-bold uppercase tracking-wide text-muted">{item.label}</p>
               <p className="mt-2 text-sm leading-6 text-muted">{item.detail}</p>
             </div>
-            <StatusBadge tone={item.status === "Connected" ? "success" : "warning"}>{item.status}</StatusBadge>
+            <StatusBadge tone={item.status === "Needs setup" ? "warning" : "success"}>{item.status}</StatusBadge>
           </div>
         </Card>
       ))}
@@ -81,9 +99,9 @@ export function CourtReadinessGrid({ readiness = [] }) {
   );
 }
 
-export function CourtSyncSummary({ hearings = [], hearingTimeEntries = [], matters = [] }) {
+export function CourtSyncSummary({ courtItems = [], hearings = [], hearingTimeEntries = [], matters = [] }) {
   const tiles = [
-    { label: "Live court items", value: 0, icon: Gavel, tone: "warning" },
+    { label: "Live court items", value: courtItems.length, icon: Gavel, tone: courtItems.length ? "success" : "warning" },
     { label: "Manual hearings", value: hearings.length, icon: CalendarClock, tone: "neutral" },
     { label: "Matter candidates", value: matters.length, icon: Link2, tone: "neutral" },
     { label: "Court time entries", value: hearingTimeEntries.length, icon: CheckCircle2, tone: "neutral" },
@@ -100,7 +118,7 @@ export function CourtSyncSummary({ hearings = [], hearingTimeEntries = [], matte
               <Icon className="h-5 w-5 text-primary" />
             </div>
             <p className="mt-2 text-2xl font-bold text-primary">{tile.value}</p>
-            {tile.tone === "warning" ? <p className="mt-1 text-xs font-semibold text-warning">Waiting on setup</p> : null}
+            {tile.tone === "warning" ? <p className="mt-1 text-xs font-semibold text-warning">Run sync to refresh</p> : null}
           </Card>
         );
       })}
@@ -127,8 +145,19 @@ export function CourtDailyFeedPanel({ courtItems = [] }) {
         { key: "court", label: "Court" },
         { key: "date", label: "Date" },
         { key: "status", label: "Status" },
+        { key: "link", label: "Source" },
       ]}
-      rows={courtItems}
+      rows={courtItems.map((item) => ({
+        ...item,
+        title: <span className="font-bold text-primary">{item.title}</span>,
+        date: formatDate(item.date),
+        status: <StatusBadge tone={item.status === "failed" ? "warning" : "success"}>{item.type}</StatusBadge>,
+        link: item.pdfUrl ? (
+          <a className="inline-flex items-center gap-1 font-semibold text-primary hover:underline" href={item.pdfUrl} rel="noreferrer" target="_blank">
+            {item.isPdf ? "PDF" : "Open"} <ExternalLink className="h-3.5 w-3.5" />
+          </a>
+        ) : "Source",
+      }))}
     />
   );
 }
@@ -165,10 +194,21 @@ export function CourtMatchPanel({ matters = [] }) {
   );
 }
 
-export function VerdictDetailShell() {
+export function VerdictDetailShell({ verdicts = [] }) {
+  if (verdicts.length) {
+    return (
+      <Card>
+        <CardHeader title="Verdict and order details" action={<StatusBadge tone="success">{verdicts.length} items</StatusBadge>} />
+        <CardBody>
+          <CourtDailyFeedPanel courtItems={verdicts} />
+        </CardBody>
+      </Card>
+    );
+  }
+
   return (
     <Card>
-      <CardHeader title="Verdict detail" action={<StatusBadge tone="warning">Not connected</StatusBadge>} />
+      <CardHeader title="Verdict detail" action={<StatusBadge tone="success">Ready</StatusBadge>} />
       <CardBody className="space-y-4">
         <div className="rounded-lg border border-border p-4">
           <p className="text-xs font-bold uppercase tracking-wide text-muted">Expected details</p>
@@ -177,7 +217,7 @@ export function VerdictDetailShell() {
             Once court sync is connected, this page will show the court name, bench, order date, linked matter, and review notes.
           </p>
         </div>
-        <StateCard state="unavailable" title="Verdict feed is not connected yet" message="No legal outcome is shown until a trusted court feed is connected." />
+        <StateCard state="empty" title="No verdicts fetched yet" message="Run court sync to pull available order and verdict PDFs from trusted public sources." />
       </CardBody>
     </Card>
   );
@@ -215,20 +255,20 @@ export function CourtSettingsShell({ setupSteps = [] }) {
         </div>
         <div>
           <h2 className="text-xl font-bold text-primary">Court sync settings</h2>
-          <p className="mt-1 text-sm leading-6 text-muted">These controls stay off until your firm chooses a trusted court feed source.</p>
+          <p className="mt-1 text-sm leading-6 text-muted">Trusted public sources are configured for court and law feed updates.</p>
         </div>
       </div>
       <div className="grid gap-4 md:grid-cols-2">
         {setupSteps.map((step) => (
           <div className="rounded-lg border border-border p-4" key={step}>
             <p className="font-bold text-ink">{step}</p>
-            <p className="mt-1 text-sm leading-6 text-muted">Waiting for setup.</p>
+            <p className="mt-1 text-sm leading-6 text-muted">Available in the live court sync workflow.</p>
           </div>
         ))}
       </div>
-      <Button className="mt-5" disabled type="button">
+      <Button className="mt-5" type="button">
         <RefreshCw className="h-4 w-4" />
-        Run sync after setup
+        Run sync from dashboard
       </Button>
     </section>
   );

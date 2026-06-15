@@ -22,6 +22,9 @@ const initialState = {
   courtItems: [],
   matches: [],
   verdicts: [],
+  sources: [],
+  jobs: [],
+  stats: {},
   setupSteps: [],
   readiness: [],
   issues: [],
@@ -45,6 +48,22 @@ export function CourtSyncPage({ view = "dashboard" }) {
     }
   }
 
+  async function runSync() {
+    setState((current) => ({ ...current, status: "loading", message: "Refreshing court feed..." }));
+    try {
+      await courtSyncApi.runDailySync();
+      const data = await courtSyncApi.loadWorkspace();
+      setState({ ...initialState, ...data, status: "ready" });
+    } catch (error) {
+      setState((current) => ({
+        ...current,
+        status: "ready",
+        message: error?.userMessage || "Court sync could not run right now.",
+        issues: [...(current.issues || []), error?.userMessage || "Court sync could not run right now."],
+      }));
+    }
+  }
+
   useEffect(() => {
     load();
   }, []);
@@ -60,21 +79,21 @@ export function CourtSyncPage({ view = "dashboard" }) {
   if (state.status === "error") return <StateCard state="error" title="Court sync needs attention" message={state.message} actionLabel="Retry" />;
 
   return (
-    <div className="space-y-6">
+      <div className="space-y-6">
       <CourtSyncHero title={title} />
-      <CourtProviderState />
+      <CourtProviderState sources={state.sources} jobs={state.jobs} courtItems={state.courtItems} onRunSync={runSync} />
       <CourtIssues issues={state.issues} />
       <CourtReadinessGrid readiness={state.readiness} />
 
       {view === "matches" ? (
         <CourtMatchPanel matters={state.matters} />
       ) : view === "verdict" ? (
-        <VerdictDetailShell />
+        <VerdictDetailShell verdicts={state.verdicts} />
       ) : view === "settings" ? (
         <CourtSettingsShell setupSteps={state.setupSteps} />
       ) : (
         <>
-          <CourtSyncSummary hearings={state.hearings} hearingTimeEntries={state.hearingTimeEntries} matters={state.matters} />
+          <CourtSyncSummary courtItems={state.courtItems} hearings={state.hearings} hearingTimeEntries={state.hearingTimeEntries} matters={state.matters} />
           <div className="grid gap-4 xl:grid-cols-[1.2fr_1fr]">
             <CourtDailyFeedPanel courtItems={state.courtItems} />
             <ManualHearingSeparation hearings={state.hearings} />
