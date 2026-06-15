@@ -322,9 +322,9 @@ export function PaymentFailedState({ onRetry }) {
   );
 }
 
-export function PublicPaymentForm({ form, invoice, onChange, onSubmit, saving, submitted }) {
+export function PublicPaymentForm({ form, invoice, onChange, onMockPay, onSubmit, saving, submitted }) {
   if (submitted) {
-    return <StateCard state="success" title="Payment details submitted" message="The firm will confirm receipt and update the invoice after reconciliation." />;
+    return <StateCard state="success" title="Payment completed" message="The payment was submitted. In mock gateway mode, the invoice is marked through the testing flow." />;
   }
   return (
     <section className="surface-card p-6">
@@ -364,7 +364,17 @@ export function PublicPaymentForm({ form, invoice, onChange, onSubmit, saving, s
         ) : null}
       </div>
       <UpiPaymentPanel form={form} invoice={invoice} onChange={onChange} />
-      <Button className="mt-4 w-full sm:w-auto" disabled={saving} isLoading={saving} onClick={onSubmit} type="button">Submit payment details</Button>
+      <div className="mt-4 flex flex-col gap-2 sm:flex-row">
+        {invoice.mockGatewayEnabled ? (
+          <Button className="w-full sm:w-auto" disabled={saving} isLoading={saving} onClick={onMockPay} type="button" variant="success">Mock successful UPI payment</Button>
+        ) : null}
+        <Button className="w-full sm:w-auto" disabled={saving} isLoading={saving} onClick={onSubmit} type="button" variant={invoice.mockGatewayEnabled ? "secondary" : "primary"}>Submit payment details</Button>
+      </div>
+      {invoice.mockGatewayEnabled ? (
+        <p className="mt-3 rounded-lg border border-warning/30 bg-warning/10 p-3 text-xs font-semibold leading-5 text-warning">
+          Test mode: mock payment creates a cleared UPI receipt without contacting a real gateway.
+        </p>
+      ) : null}
     </section>
   );
 }

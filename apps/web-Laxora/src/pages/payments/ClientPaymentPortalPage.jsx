@@ -24,6 +24,7 @@ function normalizePortalInvoice(invoice = {}) {
     total: Number(invoice.total || invoice.amount || 0),
     upiId: invoice.paymentConfig?.upiId || invoice.upiId || "",
     upiName: invoice.paymentConfig?.upiName || invoice.upiName || "BillSync Legal",
+    mockGatewayEnabled: Boolean(invoice.paymentConfig?.mockGatewayEnabled),
   };
 }
 
@@ -83,6 +84,29 @@ export function ClientPaymentPortalPage() {
     }
   }
 
+  async function completeMockPayment() {
+    if (!Number(form.amount)) {
+      setNotice({ tone: "warning", title: "Amount needs attention", message: "Enter the amount before running the mock payment." });
+      return;
+    }
+    setSaving(true);
+    setNotice(null);
+    try {
+      await paymentsApi.mockUpiSuccess(paymentCode, {
+        amount: Number(form.amount),
+        payerName: form.payerName || undefined,
+        payerEmail: form.payerEmail || undefined,
+        upiId: form.upiId || undefined,
+      });
+      setSubmitted(true);
+      setNotice({ tone: "success", title: "Mock payment successful", message: "The invoice payment was marked as cleared for testing." });
+    } catch (error) {
+      setNotice({ tone: "warning", title: "Mock payment failed", message: error?.userMessage || "Please try again." });
+    } finally {
+      setSaving(false);
+    }
+  }
+
   if (state.status === "loading") {
     return (
       <main className="min-h-screen bg-app p-4 md:p-8">
@@ -103,7 +127,7 @@ export function ClientPaymentPortalPage() {
     <main className="min-h-screen bg-app p-4 md:p-8">
       <div className="mx-auto max-w-4xl space-y-4">
         {notice ? <Toast tone={notice.tone} title={notice.title} message={notice.message} /> : null}
-        <PublicPaymentForm form={form} invoice={state.invoice} onChange={updateForm} onSubmit={submitPayment} saving={saving} submitted={submitted} />
+        <PublicPaymentForm form={form} invoice={state.invoice} onChange={updateForm} onMockPay={completeMockPayment} onSubmit={submitPayment} saving={saving} submitted={submitted} />
       </div>
     </main>
   );

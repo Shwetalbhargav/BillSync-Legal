@@ -7,5 +7,6 @@ export const paymentsApi = {
   createPortalLink: (invoiceId) => request(`/api/payments/portal-link/${invoiceId}`, { method: "POST" }),
   portalInvoice: (paymentCode) => request(`/api/payments/portal/${paymentCode}`),
   submitPortalPayment: (paymentCode, body) => request(`/api/payments/portal/${paymentCode}/pay`, { method: "POST", body }),
+  mockUpiSuccess: (paymentCode, body) => request(`/api/payments/portal/${paymentCode}/mock-upi-success`, { method: "POST", body }),
   reconcile: (id, body) => request(`/api/payments/${id}/reconcile`, { method: "POST", body }),
 };

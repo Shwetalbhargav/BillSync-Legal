@@ -14,6 +14,7 @@ function paymentPortalConfig() {
   return {
     upiId: String(process.env.PAYMENT_UPI_ID || '').trim(),
     upiName: String(process.env.PAYMENT_UPI_NAME || process.env.FIRM_NAME || 'BillSync Legal').trim(),
+    mockGatewayEnabled: String(process.env.PAYMENT_MOCK_GATEWAY_ENABLED || 'true').toLowerCase() !== 'false',
   };
 }
 
@@ -283,24 +284,28 @@ export const createPortalLink = async (req, res) => {
   }
 };
 
-async function loadPortalInvoice(token) {
+async function loadPortalInvoice(token, session = null) {
   const tokenHash = hashToken(token);
   return Invoice.findOne({
     'paymentPortal.enabled': true,
     'paymentPortal.tokenHash': tokenHash,
     'paymentPortal.expiresAt': { $gt: new Date() },
-  }).populate('clientId', 'displayName name email').populate('caseId', 'title name');
+  }).session(session).populate('clientId', 'displayName name email').populate('caseId', 'title name');
+}
+
+async function clearedAmountForInvoice(invoiceId, session = null) {
+  const rows = await Payment.aggregate([
+    { $match: { invoiceId: new mongoose.Types.ObjectId(invoiceId), status: 'cleared', transactionType: { $in: ['payment', 'write_off'] } } },
+    { $group: { _id: '$invoiceId', paid: { $sum: '$amount' } } },
+  ]).session(session);
+  return rows[0]?.paid || 0;
 }
 
 export const getPortalInvoice = async (req, res) => {
   try {
     const invoice = await loadPortalInvoice(req.params.token);
     if (!invoice) return res.status(404).json({ ok: false, message: 'Payment link is invalid or expired' });
-    const paid = await Payment.aggregate([
-      { $match: { invoiceId: invoice._id, status: 'cleared', transactionType: { $in: ['payment', 'write_off'] } } },
-      { $group: { _id: null, total: { $sum: '$amount' } } },
-    ]);
-    const paidAmount = paid[0]?.total || 0;
+    const paidAmount = await clearedAmountForInvoice(invoice._id);
     res.json({
       ok: true,
       data: {
@@ -360,6 +365,78 @@ export const submitPortalPayment = async (req, res) => {
   } catch (e) {
     await session.abortTransaction();
     res.status(500).json({ ok: false, message: 'Failed to submit portal payment' });
+  } finally {
+    session.endSession();
+  }
+};
+
+export const mockCompletePortalPayment = async (req, res) => {
+  const config = paymentPortalConfig();
+  if (!config.mockGatewayEnabled) {
+    return res.status(404).json({ ok: false, message: 'Mock payment gateway is disabled' });
+  }
+
+  const session = await mongoose.startSession();
+  session.startTransaction();
+  try {
+    const invoice = await loadPortalInvoice(req.params.token, session);
+    if (!invoice) {
+      await session.abortTransaction();
+      return res.status(404).json({ ok: false, message: 'Payment link is invalid or expired' });
+    }
+    if (invoice.status === 'void') {
+      await session.abortTransaction();
+      return res.status(400).json({ ok: false, message: 'Cannot pay a void invoice' });
+    }
+
+    const paidAmount = await clearedAmountForInvoice(invoice._id, session);
+    const outstanding = Math.max(Number(invoice.total || 0) - paidAmount, 0);
+    const amount = Math.min(Number(req.body?.amount || outstanding), outstanding);
+    if (!amount) {
+      await session.abortTransaction();
+      return res.status(400).json({ ok: false, message: 'This invoice has no outstanding amount' });
+    }
+
+    const reference = `MOCK-UPI-${Date.now()}`;
+    const [payment] = await Payment.create([{
+      invoiceId: invoice._id,
+      amount,
+      method: 'upi',
+      receivedDate: new Date(),
+      reference,
+      status: 'cleared',
+      notes: 'Mock UPI gateway payment for testing',
+      transactionType: 'payment',
+      portal: {
+        submittedByClient: true,
+        payerName: req.body?.payerName,
+        payerEmail: req.body?.payerEmail,
+        upiId: req.body?.upiId || 'mockpayer@upi',
+        submittedAt: new Date(),
+      },
+      auditTrail: [{
+        action: 'mock_gateway_success',
+        at: new Date(),
+        changes: { amount, method: 'upi', reference },
+        note: 'Test-only mock gateway completion',
+      }],
+    }], { session });
+
+    const result = await recomputeInvoiceStatus(invoice._id, session);
+    await session.commitTransaction();
+    res.status(201).json({
+      ok: true,
+      data: {
+        paymentId: payment._id,
+        status: payment.status,
+        reference,
+        paidAmount: result?.paidAmount,
+        invoiceStatus: result?.newStatus,
+      },
+    });
+  } catch (e) {
+    await session.abortTransaction();
+    res.status(500).json({ ok: false, message: 'Failed to complete mock payment' });
   } finally {
     session.endSession();
   }

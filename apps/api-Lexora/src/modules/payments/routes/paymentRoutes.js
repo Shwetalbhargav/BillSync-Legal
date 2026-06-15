@@ -13,6 +13,7 @@ import {
   createWriteOff,
   financeSummary,
   getPortalInvoice,
+  mockCompletePortalPayment,
   reconcilePayment,
   submitPortalPayment,
   deletePayment,
@@ -22,6 +23,7 @@ const router = Router();
 
 router.get('/portal/:token', getPortalInvoice);
 router.post('/portal/:token/pay', validatePortalPayment, submitPortalPayment);
+router.post('/portal/:token/mock-upi-success', mockCompletePortalPayment);
 
 router.use(authenticate);
 

@@ -60,6 +60,7 @@ export const navigationItems = [
   { label: "Communications", path: "/app/communications", icon: MessageCircle, moduleKey: "clients" },
   { label: "Billing", path: "/app/billables", icon: CircleDollarSign, moduleKey: "billing" },
   { label: "Invoices", path: "/app/invoices", icon: ReceiptText, moduleKey: "billing" },
+  { label: "Payments", path: "/app/payments", icon: CreditCard, moduleKey: "finance" },
   { label: "Finance", path: "/app/finance", icon: BarChart3, moduleKey: "finance" },
   { label: "People", path: "/app/hr", icon: Users, moduleKey: "people" },
   { label: "Assistant", path: "/app/assistant", icon: Bot, moduleKey: "assistant" },
