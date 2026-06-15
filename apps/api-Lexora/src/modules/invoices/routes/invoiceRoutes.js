@@ -10,6 +10,7 @@ import {
   getInvoiceById,
   generateFromApprovedTime,
   generateFromApprovedBillables,
+  autoGenerateFromApprovedBillables,
   sendInvoice,
   downloadInvoicePdf,
   previewInvoiceHtml,
@@ -24,6 +25,7 @@ router.use(authenticate);
 
 router.get('/', getAllInvoices);
 router.post('/from-time', validateGenerateFromTime, generateFromApprovedTime);
+router.post('/from-billables/auto', authorize('admin'), autoGenerateFromApprovedBillables);
 router.post('/from-billables', authorize('admin'), validateGenerateFromBillables, generateFromApprovedBillables);
 router.get('/__analytics/pending-by-client', getPendingSummaryByClient);
 router.get('/__pipeline', getPipeline);

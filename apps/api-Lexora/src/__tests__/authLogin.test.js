@@ -87,6 +87,61 @@ test('POST /api/auth/login returns the user and auth cookie for valid credential
   });
 });
 
+test('POST /api/auth/desktop-login returns a bearer token accepted by authenticated APIs', async () => {
+  const passwordHash = await bcrypt.hash('correct-password', 10);
+  const user = {
+    _id: '507f1f77bcf86cd799439011',
+    name: 'Asha Partner',
+    email: 'asha@example.com',
+    mobile: '9876543210',
+    role: 'partner',
+    firmId: FIRM_ID,
+    photoUrl: '/images/default-user.jpg',
+    passwordHash,
+  };
+
+  findOne.mockResolvedValue(user);
+  findById.mockResolvedValue(user);
+
+  const loginResponse = await fetch(`${baseUrl}/api/auth/desktop-login`, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({
+      name: 'Asha Partner',
+      mobile: '9876543210',
+      password: 'correct-password',
+      role: 'partner',
+      firmId: FIRM_ID,
+    }),
+  });
+  const loginBody = await loginResponse.json();
+
+  expect(loginResponse.status).toBe(200);
+  expect(loginResponse.headers.get('set-cookie')).toBeNull();
+  expect(loginBody).toMatchObject({
+    success: true,
+    tokenType: 'Bearer',
+    desktop: { purpose: 'desktop_agent' },
+    user: {
+      id: user._id,
+      name: user.name,
+      role: user.role,
+      firmId: FIRM_ID,
+    },
+  });
+  expect(loginBody.token).toEqual(expect.any(String));
+
+  const meResponse = await fetch(`${baseUrl}/api/auth/me`, {
+    headers: {
+      authorization: `Bearer ${loginBody.token}`,
+    },
+  });
+  const meBody = await meResponse.json();
+
+  expect(meResponse.status).toBe(200);
+  expect(meBody.user.id).toBe(user._id);
+});
+
 test('POST /api/auth/login rejects requests missing a required field', async () => {
   const response = await fetch(`${baseUrl}/api/auth/login`, {
     method: 'POST',

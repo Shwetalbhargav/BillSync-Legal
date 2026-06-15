@@ -17,6 +17,7 @@ router.use(authenticate);
 router.post('/start', validateStartWorkSession, WorkSessionController.start);
 router.get('/current', WorkSessionController.current);
 router.get('/', WorkSessionController.list);
+router.get('/:id', validateWorkSessionId, WorkSessionController.getById);
 router.post('/:id/heartbeat', validateWorkSessionId, validateHeartbeatWorkSession, WorkSessionController.heartbeat);
 router.post('/:id/pause', validateWorkSessionId, validatePauseWorkSession, WorkSessionController.pause);
 router.post('/:id/resume', validateWorkSessionId, WorkSessionController.resume);

@@ -28,6 +28,7 @@ const PaymentSchema = new mongoose.Schema(
       submittedByClient: { type: Boolean, default: false },
       payerName: { type: String, trim: true, maxlength: 160 },
       payerEmail: { type: String, trim: true, lowercase: true, maxlength: 254 },
+      upiId: { type: String, trim: true, lowercase: true, maxlength: 160 },
       submittedAt: { type: Date },
     },
     auditTrail: { type: [PaymentAuditSchema], default: [] },

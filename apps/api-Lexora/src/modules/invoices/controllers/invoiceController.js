@@ -29,20 +29,32 @@ export const getInvoiceById = async (req, res) => {
 
 /**
  * GET /api/invoices
- * Filters: clientId, caseId, status, userId, from, to
+ * Filters: clientId, caseId, status, paymentDue, userId, from, to, dueFrom, dueTo
  */
 export const getAllInvoices = async (req, res) => {
   try {
-    const { clientId, caseId, status, userId, from, to } = req.query;
+    const { clientId, caseId, status, paymentDue, userId, from, to, dueFrom, dueTo } = req.query;
     const filter = {};
     if (clientId) filter.clientId = clientId;
     if (caseId) filter.caseId = caseId;
     if (userId) filter.createdBy = userId;
     if (status) filter.status = status;
+    if (paymentDue === 'due') filter.status = { $in: ['sent', 'partial', 'overdue'] };
+    if (paymentDue === 'overdue') {
+      filter.status = { $nin: ['paid', 'void'] };
+      filter.dueDate = { ...(filter.dueDate || {}), $lt: new Date() };
+    }
+    if (paymentDue === 'paid') filter.status = 'paid';
+    if (paymentDue === 'not_due') filter.status = { $in: ['draft', 'sent'] };
     if (from || to) {
       filter.issueDate = {};
       if (from) filter.issueDate.$gte = new Date(from);
       if (to) filter.issueDate.$lte = new Date(to);
+    }
+    if (dueFrom || dueTo) {
+      filter.dueDate = { ...(filter.dueDate || {}) };
+      if (dueFrom) filter.dueDate.$gte = new Date(dueFrom);
+      if (dueTo) filter.dueDate.$lte = new Date(dueTo);
     }
 
     const invoices = await Invoice.find(filter)
@@ -258,6 +270,89 @@ export const generateFromApprovedBillables = async (req, res) => {
     await session.abortTransaction();
     console.error(error);
     res.status(500).json({ error: 'Failed to generate invoice from billables' });
+  } finally {
+    session.endSession();
+  }
+};
+
+/**
+ * POST /api/invoices/from-billables/auto
+ * Groups all approved, unbilled billables by client and creates one draft invoice per client.
+ * GST is applied by recalcInvoiceTotals from firm tax settings.
+ */
+export const autoGenerateFromApprovedBillables = async (req, res) => {
+  const session = await mongoose.startSession();
+  session.startTransaction();
+  try {
+    const { clientId, currency = 'INR', dueDate, periodStart, periodEnd, createdBy } = req.body || {};
+    const billableFilter = {
+      status: 'approved',
+      $or: [{ invoiceId: { $exists: false } }, { invoiceId: null }],
+    };
+    if (clientId) billableFilter.clientId = clientId;
+
+    const billables = await Billable.find(billableFilter).sort({ clientId: 1, date: 1 }).session(session);
+    if (!billables.length) {
+      await session.commitTransaction();
+      return res.json({ invoices: [], groupedBillables: 0, message: 'No approved unbilled billables found.' });
+    }
+
+    const byClient = billables.reduce((groups, billable) => {
+      const key = String(billable.clientId);
+      groups.set(key, [...(groups.get(key) || []), billable]);
+      return groups;
+    }, new Map());
+
+    const createdInvoices = [];
+    for (const [groupClientId, groupBillables] of byClient.entries()) {
+      const uniqueCaseIds = [...new Set(groupBillables.map((billable) => String(billable.caseId)).filter(Boolean))];
+      const invoiceCaseId = uniqueCaseIds.length === 1 ? uniqueCaseIds[0] : undefined;
+
+      const [invoice] = await Invoice.create([{
+        clientId: groupClientId,
+        caseId: invoiceCaseId,
+        periodStart: periodStart || undefined,
+        periodEnd: periodEnd || undefined,
+        issueDate: new Date(),
+        dueDate: dueDate || undefined,
+        currency,
+        subtotal: 0,
+        tax: 0,
+        total: 0,
+        status: 'draft',
+        createdBy: createdBy || req.user?.id,
+      }], { session });
+
+      const lines = groupBillables.map((billable) => ({
+        invoiceId: invoice._id,
+        billableId: billable._id,
+        description: billable.description || billable.category || 'Professional services',
+        qtyHours: Number(((Number(billable.durationMinutes || 0)) / 60).toFixed(4)),
+        rate: Number(billable.rate || 0),
+        amount: Number((billable.amount != null ? billable.amount : Number(billable.rate || 0) * (Number(billable.durationMinutes || 0) / 60)).toFixed(2)),
+      }));
+
+      await InvoiceLine.insertMany(lines, { session });
+      const totals = await recalcInvoiceTotals(invoice._id, { session });
+      await Billable.updateMany(
+        { _id: { $in: groupBillables.map((billable) => billable._id) } },
+        { $set: { status: 'billed', invoiceId: invoice._id, pushedAt: new Date() } },
+        { session }
+      );
+
+      createdInvoices.push({
+        ...invoice.toObject(),
+        ...totals,
+        billableCount: groupBillables.length,
+      });
+    }
+
+    await session.commitTransaction();
+    res.status(201).json({ invoices: createdInvoices, groupedBillables: billables.length });
+  } catch (error) {
+    await session.abortTransaction();
+    console.error(error);
+    res.status(500).json({ error: 'Failed to auto-generate invoices from billables' });
   } finally {
     session.endSession();
   }

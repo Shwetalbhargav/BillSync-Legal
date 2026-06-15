@@ -46,11 +46,15 @@ export function getExtensionJwtAudience() {
   return process.env.EXTENSION_JWT_AUDIENCE || 'billbot-extension';
 }
 
+export function getDesktopJwtAudience() {
+  return process.env.DESKTOP_JWT_AUDIENCE || 'billbot-desktop';
+}
+
 export function getJwtVerifyOptions() {
   return {
     algorithms: [JWT_ALGORITHM],
     issuer: getJwtIssuer(),
-    audience: [getJwtAudience(), getExtensionJwtAudience()],
+    audience: [getJwtAudience(), getExtensionJwtAudience(), getDesktopJwtAudience()],
     clockTolerance: Number(process.env.JWT_CLOCK_TOLERANCE_SECONDS || 5),
   };
 }
@@ -82,6 +86,14 @@ export function signExtensionToken(user) {
     audience: getExtensionJwtAudience(),
     expiresIn: getExtensionJwtExpiresIn(),
     purpose: 'chrome_extension_capture',
+  });
+}
+
+export function signDesktopToken(user) {
+  return signAuthToken(user, {
+    audience: getDesktopJwtAudience(),
+    expiresIn: getJwtExpiresIn(),
+    purpose: 'desktop_agent',
   });
 }
 

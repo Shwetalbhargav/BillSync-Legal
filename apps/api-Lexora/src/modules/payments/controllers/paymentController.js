@@ -10,6 +10,13 @@ function hashToken(token) {
   return crypto.createHash('sha256').update(String(token)).digest('hex');
 }
 
+function paymentPortalConfig() {
+  return {
+    upiId: String(process.env.PAYMENT_UPI_ID || '').trim(),
+    upiName: String(process.env.PAYMENT_UPI_NAME || process.env.FIRM_NAME || 'BillSync Legal').trim(),
+  };
+}
+
 function buildAudit(action, req, changes, note) {
   return {
     action,
@@ -309,6 +316,7 @@ export const getPortalInvoice = async (req, res) => {
         outstanding: Math.max(Number(invoice.total || 0) - paidAmount, 0),
         dueDate: invoice.dueDate,
         status: invoice.status,
+        paymentConfig: paymentPortalConfig(),
       },
     });
   } catch (e) {
@@ -325,6 +333,10 @@ export const submitPortalPayment = async (req, res) => {
       await session.abortTransaction();
       return res.status(404).json({ ok: false, message: 'Payment link is invalid or expired' });
     }
+    if (req.body.method === 'upi' && !String(req.body.reference || '').trim()) {
+      await session.abortTransaction();
+      return res.status(400).json({ ok: false, message: 'UPI reference or UTR is required' });
+    }
     const [payment] = await Payment.create([{
       invoiceId: invoice._id,
       amount: req.body.amount,
@@ -338,6 +350,7 @@ export const submitPortalPayment = async (req, res) => {
         submittedByClient: true,
         payerName: req.body.payerName,
         payerEmail: req.body.payerEmail,
+        upiId: req.body.upiId,
         submittedAt: new Date(),
       },
       auditTrail: [{ action: 'portal_submitted', at: new Date(), changes: { amount: req.body.amount, method: req.body.method } }],

@@ -58,6 +58,10 @@ function titleCase(value = '') {
 
 function sanitizePrompt(prompt = '') {
   return String(prompt)
+    .replace(/draft the email in polished professional legal language\.?/gi, '')
+    .replace(/use a clear subject line.*?avoid casual wording\.?/gi, '')
+    .replace(/do not provide legal advice.*?facts are missing\.?/gi, '')
+    .replace(/user request:\s*/gi, '')
     .replace(/^write\s+(an?|the)\s+/i, '')
     .replace(/^draft\s+(an?|the)\s+/i, '')
     .replace(/^compose\s+(an?|the)\s+/i, '')
@@ -65,9 +69,63 @@ function sanitizePrompt(prompt = '') {
     .trim();
 }
 
+function cleanDocumentName(value = '') {
+  return String(value)
+    .replace(/^ask\s+for\s+/i, '')
+    .replace(/^request\s+/i, '')
+    .replace(/^documents?\s*[-:–—]*\s*/i, '')
+    .replace(/^[-:–—]+\s*/, '')
+    .replace(/\bmarraige\b/gi, 'marriage')
+    .replace(/\b(detail|details|paper|papers)\b$/i, (match) => match.toLowerCase() === 'paper' ? 'papers' : match)
+    .replace(/\s+/g, ' ')
+    .trim()
+    .replace(/^./, (char) => char.toUpperCase());
+}
+
+function extractDocumentList(prompt = '') {
+  const normalized = String(prompt)
+    .replace(/\band\b/gi, ',')
+    .replace(/[;\n]+/g, ',');
+  return normalized
+    .split(',')
+    .map(cleanDocumentName)
+    .filter((item) => item && !/^ask for documents?$/i.test(item));
+}
+
 function buildEmailDraft(prompt = '') {
   const cleaned = sanitizePrompt(prompt);
   const lower = cleaned.toLowerCase();
+
+  if (
+    lower.includes('document') ||
+    lower.includes('certificate') ||
+    lower.includes('property') ||
+    lower.includes('tax return') ||
+    lower.includes('account')
+  ) {
+    const documents = extractDocumentList(cleaned);
+    const documentLines = documents.length
+      ? documents.map((item, index) => `${index + 1}. ${item}`)
+      : ['1. Copies of all relevant documents and supporting records'];
+
+    return {
+      subject: 'Request for Documents and Supporting Records',
+      lines: [
+        'Dear Sir/Madam,',
+        '',
+        'We are presently reviewing the matter and would be grateful if you could provide the following documents for our perusal:',
+        '',
+        ...documentLines,
+        '',
+        'Kindly share clear scanned copies of the above documents at your earliest convenience. If any document is not available, please let us know so that we may advise on the appropriate alternative record or clarification required.',
+        '',
+        'Please note that the documents will be reviewed only for the purpose of assessing the matter and preparing the necessary legal response or next steps.',
+        '',
+        'Yours faithfully,',
+        'Your Name'
+      ]
+    };
+  }
 
   if (lower.includes('birthday')) {
     return {

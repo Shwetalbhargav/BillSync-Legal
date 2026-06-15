@@ -7,6 +7,7 @@ import {
   getExtensionJwtExpiresIn,
   setAuthCookie,
   signAuthToken,
+  signDesktopToken,
   signExtensionToken,
 } from "../services/authTokenService.js";
 
@@ -88,6 +89,41 @@ export const loginUser = async (req, res) => {
 export const logoutUser = (_req, res) => {
   clearAuthCookie(res);
   res.json({ success: true });
+};
+
+export const loginDesktopUser = async (req, res) => {
+  const { name, mobile, password, role, firmId } = req.body;
+
+  try {
+    if (!name || !mobile || !password || !role || !firmId) {
+      return res.status(400).json({ error: "Name, mobile, password, role and firm are required" });
+    }
+
+    const normalizedMobile = normalizeMobile(mobile);
+    const normalizedRole = String(role || "").toLowerCase();
+    const user = await User.findOne({ mobile: normalizedMobile, role: normalizedRole, firmId });
+    if (!user || normalizeName(user.name) !== normalizeName(name)) {
+      return res.status(400).json({ error: "Invalid credentials" });
+    }
+
+    const isMatch = await bcrypt.compare(password, user.passwordHash);
+    if (!isMatch) return res.status(400).json({ error: "Invalid credentials" });
+
+    const token = signDesktopToken(user);
+
+    res.json({
+      success: true,
+      token,
+      tokenType: "Bearer",
+      user: toSafeUser(user),
+      desktop: {
+        purpose: "desktop_agent",
+      },
+    });
+  } catch (err) {
+    console.error("Desktop login error:", err);
+    res.status(500).json({ error: "Server error" });
+  }
 };
 
 // Stable "who am I" endpoint for frontend refresh/session bootstrap.

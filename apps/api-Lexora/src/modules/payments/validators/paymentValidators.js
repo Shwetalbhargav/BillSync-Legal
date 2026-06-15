@@ -28,6 +28,7 @@ export const validatePortalPayment = validateBody({
   method: [required, oneOf(['card', 'upi', 'bank_transfer', 'wallet', 'other'])],
   payerName: [string({ max: 160 })],
   payerEmail: [string({ max: 254 })],
+  upiId: [string({ max: 160 })],
   reference: [string({ max: 160 })],
   notes: [string({ max: 1000 })],
 });

@@ -1,6 +1,8 @@
 import mongoose from 'mongoose';
 import { WorkSession } from '../models/WorkSession.js';
 import { Activity } from '../../activities/models/Activity.js';
+import { ActivitySample } from '../../activitySamples/models/ActivitySample.js';
+import { AppUsageEvent } from '../../appUsageEvents/models/AppUsageEvent.js';
 import { Case } from '../../cases/models/Case.js';
 import { CaseAssignment } from '../../cases/models/CaseAssignment.js';
 import { TimeEntry } from '../../timeEntries/models/TimeEntry.js';
@@ -16,7 +18,7 @@ const idString = (value) => {
 };
 
 const canAccessSession = (session, req) =>
-  req.user?.role === 'admin' || idString(session?.userId) === req.user?.id;
+  ['admin', 'partner'].includes(String(req.user?.role || '').toLowerCase()) || idString(session?.userId) === req.user?.id;
 
 const assertSessionAccess = (session, req, res) => {
   if (canAccessSession(session, req)) return true;
@@ -251,11 +253,73 @@ export const WorkSessionController = {
         .populate('clientId', 'displayName name')
         .populate('caseId', 'title name')
         .populate('taskId', 'title status')
+        .populate('userId', 'name email role')
+        .populate('stoppedBy', 'name email role')
         .populate('activityId', 'status conversionStatus durationMinutes')
         .sort({ createdAt: -1 })
         .limit(100);
 
       res.json({ ok: true, data: rows });
+    } catch (err) {
+      res.status(500).json({ ok: false, message: err.message });
+    }
+  },
+
+  async getById(req, res) {
+    try {
+      const session = await WorkSession.findById(req.params.id)
+        .populate('clientId', 'displayName name')
+        .populate('caseId', 'title name')
+        .populate('taskId', 'title status')
+        .populate('userId', 'name email role')
+        .populate('createdBy', 'name email role')
+        .populate('stoppedBy', 'name email role')
+        .populate('activityId');
+      if (!session) return res.status(404).json({ ok: false, code: 'WORK_SESSION_NOT_FOUND', message: 'Work session not found' });
+      if (!assertSessionAccess(session, req, res)) return;
+
+      const [timeEntry, samples, appEvents, idleIntervals] = await Promise.all([
+        session.activityId
+          ? TimeEntry.findOne({ activityId: session.activityId._id || session.activityId })
+            .populate('submittedBy', 'name email role')
+            .populate('reviewedBy', 'name email role')
+            .populate('userId', 'name email role')
+          : null,
+        ActivitySample.find({ workSessionId: session._id }).sort({ windowStart: 1 }),
+        AppUsageEvent.find({ workSessionId: session._id }).sort({ startedAt: 1 }),
+        intervalsForSession(session._id),
+      ]);
+
+      const activitySummary = samples.reduce((summary, sample) => {
+        summary.sampleCount += 1;
+        summary.sampleSeconds += Number(sample.sampleSeconds || 0);
+        summary.activeSeconds += Number(sample.activeSeconds || 0);
+        summary.inactiveSeconds += Number(sample.inactiveSeconds || 0);
+        summary.keyboardCount += Number(sample.keyboardCount || 0);
+        summary.mouseCount += Number(sample.mouseCount || 0);
+        return summary;
+      }, { sampleCount: 0, sampleSeconds: 0, activeSeconds: 0, inactiveSeconds: 0, keyboardCount: 0, mouseCount: 0 });
+      activitySummary.activityPercent = activitySummary.sampleSeconds
+        ? Math.round((activitySummary.activeSeconds / activitySummary.sampleSeconds) * 10000) / 100
+        : 0;
+
+      const appUsageSummary = appEvents.reduce((summary, event) => {
+        summary.eventCount += 1;
+        summary.durationSeconds += Number(event.durationSeconds || 0);
+        return summary;
+      }, { eventCount: 0, durationSeconds: 0 });
+
+      res.json({
+        ok: true,
+        data: {
+          ...session.toObject(),
+          timeEntry,
+          activitySummary,
+          appUsageSummary,
+          appUsageTimeline: appEvents,
+          idleIntervals,
+        },
+      });
     } catch (err) {
       res.status(500).json({ ok: false, message: err.message });
     }
