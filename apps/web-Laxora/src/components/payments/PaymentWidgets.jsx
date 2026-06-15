@@ -1,4 +1,4 @@
-import { AlertCircle, CheckCircle2, CreditCard, Landmark, Link2, RefreshCw, WalletCards } from "lucide-react";
+import { AlertCircle, CheckCircle2, Copy, CreditCard, Landmark, Link2, RefreshCw, Smartphone, WalletCards } from "lucide-react";
 import { Button, Card, CardBody, CardHeader, DataTable, StateCard, StatusBadge } from "../common";
 
 export const paymentMethods = [
@@ -232,9 +232,76 @@ export function GatewayNotConnected() {
       <div className="flex gap-3">
         <RefreshCw className="mt-0.5 h-5 w-5 shrink-0 text-warning" />
         <div>
-          <h2 className="text-sm font-bold text-warning">Online collection is not connected yet</h2>
-          <p className="mt-1 text-sm leading-6 text-ink">Use the payment page to collect client-submitted details, then reconcile after the firm confirms receipt.</p>
+          <h2 className="text-sm font-bold text-warning">Gateway verification is not connected yet</h2>
+          <p className="mt-1 text-sm leading-6 text-ink">UPI can open the client's payment app for testing. The firm still confirms and clears the receipt after the UTR is submitted.</p>
         </div>
+      </div>
+    </section>
+  );
+}
+
+function buildUpiUri({ amount, invoice, payerName }) {
+  if (!invoice?.upiId) return "";
+  const params = new URLSearchParams({
+    pa: invoice.upiId,
+    pn: invoice.upiName || "BillSync Legal",
+    am: String(Number(amount || invoice.outstanding || invoice.total || 0).toFixed(2)),
+    cu: "INR",
+    tn: `${invoice.invoiceNumber || "Invoice"}${payerName ? ` - ${payerName}` : ""}`.slice(0, 80),
+  });
+  return `upi://pay?${params.toString()}`;
+}
+
+export function UpiPaymentPanel({ form, invoice, onChange }) {
+  if (form.method !== "upi") return null;
+  const upiUri = buildUpiUri({ amount: form.amount, invoice, payerName: form.payerName });
+  const canPay = Boolean(upiUri);
+
+  async function copyUpiLink() {
+    if (!upiUri || typeof navigator === "undefined" || !navigator.clipboard) return;
+    await navigator.clipboard.writeText(upiUri);
+  }
+
+  return (
+    <section className="mt-5 rounded-lg border border-border bg-panel p-4">
+      <div className="flex min-w-0 flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+        <div className="min-w-0">
+          <div className="flex items-center gap-2">
+            <Smartphone className="h-5 w-5 text-primary" />
+            <h2 className="text-base font-bold text-primary">Pay using UPI</h2>
+          </div>
+          <p className="mt-1 text-sm leading-6 text-muted">Open a UPI app, complete the payment, then enter the UTR/reference below.</p>
+          <div className="mt-3 rounded-lg bg-surface p-3 text-sm">
+            <p><span className="font-bold text-primary">Payee:</span> {invoice.upiName || "BillSync Legal"}</p>
+            <p className="break-all"><span className="font-bold text-primary">UPI ID:</span> {invoice.upiId || "Not configured"}</p>
+            <p><span className="font-bold text-primary">Amount:</span> {formatMoney(form.amount || invoice.outstanding)}</p>
+          </div>
+        </div>
+        <div className="flex shrink-0 flex-col gap-2">
+          {canPay ? (
+            <a className="focus-ring inline-flex items-center justify-center rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white hover:bg-primary/90" href={upiUri}>
+              Open UPI app
+            </a>
+          ) : (
+            <StatusBadge tone="warning">UPI not configured</StatusBadge>
+          )}
+          {canPay ? (
+            <Button onClick={copyUpiLink} size="sm" type="button" variant="secondary">
+              <Copy className="h-4 w-4" />
+              Copy UPI link
+            </Button>
+          ) : null}
+        </div>
+      </div>
+      <div className="mt-4 grid gap-3 md:grid-cols-2">
+        <label className="block text-sm font-semibold text-ink">
+          Your UPI ID
+          <input className="focus-ring mt-1 w-full rounded-lg border border-border bg-white px-3 py-3" onChange={(event) => onChange("upiId", event.target.value)} placeholder="name@bank" value={form.upiId} />
+        </label>
+        <label className="block text-sm font-semibold text-ink">
+          UPI reference / UTR
+          <input className="focus-ring mt-1 w-full rounded-lg border border-border bg-white px-3 py-3" onChange={(event) => onChange("reference", event.target.value)} placeholder="Transaction reference" value={form.reference} />
+        </label>
       </div>
     </section>
   );
@@ -289,11 +356,14 @@ export function PublicPaymentForm({ form, invoice, onChange, onSubmit, saving, s
           Payer email
           <input className="focus-ring mt-1 w-full rounded-lg border border-border bg-panel px-3 py-3" onChange={(event) => onChange("payerEmail", event.target.value)} value={form.payerEmail} />
         </label>
-        <label className="block text-sm font-semibold text-ink md:col-span-2">
+        {form.method !== "upi" ? (
+          <label className="block text-sm font-semibold text-ink md:col-span-2">
           Reference
-          <input className="focus-ring mt-1 w-full rounded-lg border border-border bg-panel px-3 py-3" onChange={(event) => onChange("reference", event.target.value)} value={form.reference} />
-        </label>
+            <input className="focus-ring mt-1 w-full rounded-lg border border-border bg-panel px-3 py-3" onChange={(event) => onChange("reference", event.target.value)} value={form.reference} />
+          </label>
+        ) : null}
       </div>
+      <UpiPaymentPanel form={form} invoice={invoice} onChange={onChange} />
       <Button className="mt-4 w-full sm:w-auto" disabled={saving} isLoading={saving} onClick={onSubmit} type="button">Submit payment details</Button>
     </section>
   );

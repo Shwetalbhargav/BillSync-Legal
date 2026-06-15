@@ -4,7 +4,7 @@ import { ArrowLeft, ExternalLink } from "lucide-react";
 import { invoicesApi } from "../../api/invoices";
 import { invoiceWorkspaceApi } from "../../api/invoiceWorkspace";
 import { Button, DataTable, SkeletonBlock, StateCard, StatusBadge } from "../../components/common";
-import { InvoiceDetailPanel, InvoiceLinesTable, SectionIssues, ShareShell, formatDate } from "../../components/invoices/InvoiceWidgets";
+import { InvoiceChargeBreakup, InvoiceDetailPanel, InvoiceLinesTable, SectionIssues, ShareShell, formatDate } from "../../components/invoices/InvoiceWidgets";
 
 export function InvoiceDetailPage() {
   const { invoiceId } = useParams();
@@ -101,6 +101,7 @@ export function InvoiceDetailPage() {
           <Link className="focus-ring inline-flex items-center justify-center rounded-lg border border-border bg-panel px-4 py-2 text-sm font-semibold text-primary hover:bg-blueSoft" to={`/app/invoices/${invoiceId}/lines`}>Edit lines</Link>
         </div>
       </section>
+      <InvoiceChargeBreakup invoice={state.invoice} />
       <InvoiceLinesTable lines={state.invoice.lines} />
       <ShareShell />
       <InvoiceActivity logs={state.logs} />

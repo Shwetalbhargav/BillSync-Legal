@@ -340,6 +340,11 @@ export function normalizeWorkSession(item = {}) {
   const matter = item.caseId || item.case || {};
   const client = item.clientId || item.client || {};
   const task = item.taskId || item.task || {};
+  const worker = item.userId || item.user || {};
+  const stoppedBy = item.stoppedBy || {};
+  const timeEntry = item.timeEntry || {};
+  const approvedBy = timeEntry.reviewedBy || item.reviewedBy || {};
+  const submittedBy = timeEntry.submittedBy || item.submittedBy || {};
   return {
     id: toId(item),
     title: safeText(item.narrative || item.calendarEvent?.title || item.activityType, "Work session"),
@@ -348,6 +353,11 @@ export function normalizeWorkSession(item = {}) {
     matterId: toId(matter) || item.caseId || "",
     client: client.displayName || client.name || "",
     clientId: toId(client) || item.clientId || "",
+    user: worker.name || item.userName || "",
+    userId: toId(worker) || item.userId || "",
+    completedBy: stoppedBy.name || worker.name || item.completedByName || "",
+    approvedBy: approvedBy.name || item.approvedByName || "",
+    submittedBy: submittedBy.name || item.submittedByName || "",
     task: task.title || item.taskTitle || "",
     taskId: toId(task) || item.taskId || "",
     workTool: item.workTool || "",
@@ -362,6 +372,12 @@ export function normalizeWorkSession(item = {}) {
     idleSummary: item.idleSummary || null,
     idleIntervals: item.idleIntervals || [],
     payableMinutes: Number(item.payableDurationMinutes ?? item.payableMinutes ?? item.durationMinutes ?? 0),
+    rateApplied: normalizeMoney(timeEntry.rateApplied ?? item.rateApplied),
+    amount: normalizeMoney(timeEntry.amount ?? item.amount),
+    timeEntryStatus: timeEntry.status || item.timeEntryStatus || "",
+    timeEntryId: toId(timeEntry) || item.timeEntryId || "",
+    submittedAt: timeEntry.submittedAt || item.submittedAt || "",
+    reviewedAt: timeEntry.reviewedAt || item.reviewedAt || "",
     startedAt: item.startedAt || item.createdAt || "",
     endedAt: item.endedAt || "",
     calendarEvent: item.calendarEvent || null,

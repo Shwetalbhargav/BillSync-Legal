@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { timeEntriesApi } from "../../api/timeEntries";
 import { workCaptureApi } from "../../api/workCapture";
 import { SkeletonBlock, StateCard } from "../../components/common";
-import { AppUsageTimeline, WorkSessionTable, TimeEntryList } from "../../components/work/WorkCaptureWidgets";
+import { AppUsageTimeline, WorkSessionCards, TimeEntryList } from "../../components/work/WorkCaptureWidgets";
 
 export function WorkSessionHistoryPage() {
   const [state, setState] = useState({ status: "loading", sessions: [], timeEntries: [], issues: [], message: "" });
@@ -45,7 +45,7 @@ export function WorkSessionHistoryPage() {
           {state.issues.join(" ")}
         </section>
       ) : null}
-      <WorkSessionTable sessions={state.sessions} />
+      <WorkSessionCards sessions={state.sessions} />
       <AppUsageTimeline sessions={state.sessions} />
       <TimeEntryList entries={state.timeEntries.filter((entry) => entry.status === "draft")} onSubmit={submitEntry} />
     </div>

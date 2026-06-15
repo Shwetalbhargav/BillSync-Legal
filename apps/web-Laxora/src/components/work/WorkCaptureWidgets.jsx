@@ -11,13 +11,11 @@ import {
   Mail,
   MessageCircle,
   MonitorPlay,
-  MousePointerClick,
   Pause,
   Play,
   Save,
   Square,
   Timer,
-  Type,
   Video,
 } from "lucide-react";
 import { Button, Card, CardBody, CardHeader, DataTable, StateCard, StatusBadge } from "../common";
@@ -79,11 +77,36 @@ const workToolOptions = [
   ["other", "Other"],
 ];
 
+const workTypeToolMap = {
+  drafting: ["microsoft_word", "google_docs"],
+  review: ["pdf_reader", "microsoft_word", "google_docs"],
+  research: ["google_chrome", "billbot_ai"],
+  meeting: ["google_meet", "zoom", "microsoft_teams"],
+  call: ["whatsapp", "microsoft_teams", "zoom"],
+  hearing: ["google_meet", "microsoft_teams", "manual"],
+  email: ["gmail"],
+  other: ["manual", "google_chrome", "billbot_ai"],
+};
+
+export function getDefaultWorkToolForType(activityType) {
+  return workTypeToolMap[activityType]?.[0] || "manual";
+}
+
+export function getWorkToolForType(activityType, workTool) {
+  const allowedTools = workTypeToolMap[activityType] || workTypeToolMap.other;
+  return allowedTools.includes(workTool) ? workTool : allowedTools[0];
+}
+
+function getWorkToolOptionsForType(activityType) {
+  const allowedTools = workTypeToolMap[activityType] || workTypeToolMap.other;
+  return workToolOptions.filter(([value]) => allowedTools.includes(value));
+}
+
 const toolMeta = {
   manual: { icon: Timer, detail: "Track work inside Lexora." },
-  microsoft_word: { icon: FileText, detail: "Opens Word if the device has the app protocol." },
+  microsoft_word: { icon: FileText, detail: "Opens Word for a new document." },
   google_docs: { icon: FileText, detail: "Opens Google Docs in a new tab." },
-  pdf_reader: { icon: FileType, detail: "Opens Drive for PDF review." },
+  pdf_reader: { icon: FileType, detail: "Opens a sample PDF for review." },
   google_chrome: { icon: Chrome, detail: "Opens Chrome/web research." },
   gmail: { icon: Mail, detail: "Opens Gmail." },
   google_meet: { icon: Video, detail: "Opens Google Meet." },
@@ -94,10 +117,13 @@ const toolMeta = {
   other: { icon: Globe2, detail: "Track work in another tool." },
 };
 
+const blankWordTemplatePath = "/files/blank.dotx";
+const samplePdfPath = "/files/sample.pdf";
+
 const toolLinks = {
-  microsoft_word: "ms-word:",
+  microsoft_word: blankWordTemplatePath,
   google_docs: "https://docs.google.com/document/u/0/",
-  pdf_reader: "https://drive.google.com/drive/my-drive",
+  pdf_reader: samplePdfPath,
   google_chrome: "https://www.google.com/",
   gmail: "https://mail.google.com/mail/u/0/#inbox?lb_meter=1&lb_compose=1&lb_prompt=BillSync%20Work%20Meter",
   google_meet: "https://meet.google.com/",
@@ -115,11 +141,23 @@ function selectedName(items, id, labelKey) {
   return items.find((item) => item.id === id)?.[labelKey] || "";
 }
 
+function toAbsoluteUrl(url) {
+  if (!url) return "";
+  if (url.startsWith("/") && typeof window !== "undefined") return `${window.location.origin}${url}`;
+  return url;
+}
+
+function getToolLink(workTool) {
+  if (workTool === "microsoft_word") return `ms-word:nft|u|${toAbsoluteUrl(blankWordTemplatePath)}`;
+  return toAbsoluteUrl(toolLinks[workTool] || "");
+}
+
 export function WorkMeterPanel({
   clients,
   elapsedLabel,
   form,
   isSaving,
+  liveActivity,
   matters,
   onChange,
   onDiscard,
@@ -131,12 +169,15 @@ export function WorkMeterPanel({
   validation,
 }) {
   const running = Boolean(session);
-  const selectedTool = toolMeta[form.workTool] || toolMeta.manual;
+  const contextualWorkToolOptions = getWorkToolOptionsForType(form.activityType);
+  const effectiveWorkTool = getWorkToolForType(form.activityType, form.workTool);
+  const selectedTool = toolMeta[effectiveWorkTool] || toolMeta.manual;
   const SelectedToolIcon = selectedTool.icon;
-  const selectedToolLink = toolLinks[form.workTool] || "";
+  const selectedToolLink = getToolLink(effectiveWorkTool);
   const selectedClientName = selectedName(clients, form.clientId, "name");
   const selectedMatterName = selectedName(matters, form.caseId, "title");
   const selectedTaskName = selectedName(tasks, form.taskId, "title");
+  const activeSeconds = Number(liveActivity?.activeSeconds || 0);
   return (
     <>
       <section className="surface-card overflow-hidden">
@@ -155,21 +196,11 @@ export function WorkMeterPanel({
                   <p className="mt-1 text-sm font-semibold text-muted">{running ? session.status : "No active meter"}</p>
                 </div>
               </div>
-              <div className="mt-5 grid gap-3 sm:grid-cols-3">
-                <div className="rounded-lg bg-surface p-3">
-                  <Type className="h-4 w-4 text-accent" />
-                  <p className="mt-2 text-xs font-bold uppercase tracking-wide text-muted">Keyboard</p>
-                  <p className="mt-1 text-sm font-semibold text-primary">Count only</p>
-                </div>
-                <div className="rounded-lg bg-surface p-3">
-                  <MousePointerClick className="h-4 w-4 text-accent" />
-                  <p className="mt-2 text-xs font-bold uppercase tracking-wide text-muted">Mouse</p>
-                  <p className="mt-1 text-sm font-semibold text-primary">Count only</p>
-                </div>
+              <div className="mt-5 grid gap-3">
                 <div className="rounded-lg bg-surface p-3">
                   <Globe2 className="h-4 w-4 text-accent" />
-                  <p className="mt-2 text-xs font-bold uppercase tracking-wide text-muted">Apps</p>
-                  <p className="mt-1 text-sm font-semibold text-primary">Name and time</p>
+                  <p className="mt-2 text-xs font-bold uppercase tracking-wide text-muted">Active/tool</p>
+                  <p className="mt-1 text-sm font-semibold text-primary">{running ? formatSeconds(activeSeconds) : "Name and time"}</p>
                 </div>
               </div>
             </div>
@@ -212,8 +243,8 @@ export function WorkMeterPanel({
                   <div className="grid gap-4 md:grid-cols-[minmax(0,1fr)_180px]">
                     <label className="block text-sm font-semibold text-ink">
                       Work tool
-                      <select className="focus-ring mt-1 w-full rounded-lg border border-border px-3 py-3" onChange={(event) => onChange("workTool", event.target.value)} value={form.workTool}>
-                        {workToolOptions.map(([value, label]) => <option key={value} value={value}>{label}</option>)}
+                      <select className="focus-ring mt-1 w-full rounded-lg border border-border px-3 py-3" onChange={(event) => onChange("workTool", event.target.value)} value={effectiveWorkTool}>
+                        {contextualWorkToolOptions.map(([value, label]) => <option key={value} value={value}>{label}</option>)}
                       </select>
                     </label>
                     <label className="mt-6 flex items-center gap-3 rounded-lg border border-border px-3 py-3 text-sm font-semibold text-ink md:mt-7">
@@ -232,7 +263,7 @@ export function WorkMeterPanel({
                       <SelectedToolIcon className="h-5 w-5" />
                     </span>
                     <div className="min-w-0">
-                      <p className="safe-text text-sm font-bold text-primary">{optionLabel(workToolOptions, form.workTool, "Manual")}</p>
+                      <p className="safe-text text-sm font-bold text-primary">{optionLabel(workToolOptions, effectiveWorkTool, "Manual")}</p>
                       <p className="mt-1 text-xs font-semibold leading-5 text-muted">{selectedTool.detail}</p>
                     </div>
                   </div>
@@ -421,6 +452,110 @@ export function WorkSessionTable({ sessions }) {
         started: formatDateTime(session.startedAt),
       }))}
     />
+  );
+}
+
+export function WorkSessionCards({ sessions }) {
+  if (!sessions.length) return <StateCard state="empty" title="No work sessions yet" message="Start the meter or add time manually to build your history." />;
+  return (
+    <div className="grid gap-4 xl:grid-cols-2">
+      {sessions.map((session) => (
+        <Link className="focus-ring block rounded-lg border border-border bg-panel p-5 shadow-soft transition hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-md" key={session.id} to={`/app/work-sessions/${session.id}`}>
+          <div className="flex min-w-0 items-start justify-between gap-3">
+            <div className="min-w-0">
+              <p className="break-words text-base font-bold text-primary">{session.title}</p>
+              <p className="mt-1 text-sm font-semibold text-muted">{session.matter || "Matter not set"}</p>
+            </div>
+            <StatusBadge tone={session.status === "stopped" ? "success" : session.status === "discarded" ? "danger" : "warning"}>{session.status}</StatusBadge>
+          </div>
+          <div className="mt-4 grid gap-3 sm:grid-cols-3">
+            <div className="rounded-lg bg-surface p-3">
+              <p className="text-xs font-bold uppercase tracking-wide text-muted">Date</p>
+              <p className="mt-1 text-sm font-semibold text-ink">{formatDateTime(session.startedAt)}</p>
+            </div>
+            <div className="rounded-lg bg-surface p-3">
+              <p className="text-xs font-bold uppercase tracking-wide text-muted">Payable</p>
+              <p className="mt-1 text-sm font-semibold text-ink">{formatDuration(session.payableMinutes)}</p>
+            </div>
+            <div className="rounded-lg bg-surface p-3">
+              <p className="text-xs font-bold uppercase tracking-wide text-muted">Client</p>
+              <p className="mt-1 break-words text-sm font-semibold text-ink">{session.client || "Client not set"}</p>
+            </div>
+          </div>
+        </Link>
+      ))}
+    </div>
+  );
+}
+
+export function WorkSessionDetailPanel({ session }) {
+  const activitySeconds = Number(session.activitySummary?.activeSeconds || 0);
+  const appSeconds = Number(session.appUsageSummary?.durationSeconds || 0);
+  return (
+    <div className="space-y-6">
+      <section className="surface-card p-6">
+        <div className="flex min-w-0 flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+          <div className="min-w-0">
+            <p className="text-sm font-semibold uppercase tracking-wide text-accent">Work session detail</p>
+            <h1 className="mt-1 break-words text-2xl font-bold text-primary md:text-3xl">{session.title}</h1>
+            <p className="mt-2 text-sm font-semibold text-muted">{session.client || "Client not set"} - {session.matter || "Matter not set"}</p>
+          </div>
+          <StatusBadge tone={session.status === "stopped" ? "success" : session.status === "discarded" ? "danger" : "warning"}>{session.status}</StatusBadge>
+        </div>
+        <div className="mt-6 grid gap-3 md:grid-cols-4">
+          <MetricBox label="Duration" value={formatDuration(session.minutes)} />
+          <MetricBox label="Payable" value={formatDuration(session.payableMinutes)} tone="success" />
+          <MetricBox label="Rate" value={session.rateApplied ? `Rs ${Number(session.rateApplied).toLocaleString("en-IN")}/hr` : "Not rated"} />
+          <MetricBox label="Amount charged" value={`Rs ${Number(session.amount || 0).toLocaleString("en-IN", { maximumFractionDigits: 2 })}`} tone="success" />
+        </div>
+      </section>
+
+      <section className="surface-card p-5">
+        <h2 className="text-base font-bold text-primary">People and approval</h2>
+        <div className="mt-4 grid gap-3 md:grid-cols-3">
+          <DetailTile label="Completed by" value={session.completedBy || session.user || "Not available"} />
+          <DetailTile label="Submitted by" value={session.submittedBy || "Not submitted"} />
+          <DetailTile label="Approved by" value={session.approvedBy || "Not approved"} />
+          <DetailTile label="Time entry status" value={session.timeEntryStatus || "No time entry"} />
+          <DetailTile label="Submitted at" value={formatDateTime(session.submittedAt)} />
+          <DetailTile label="Reviewed at" value={formatDateTime(session.reviewedAt)} />
+        </div>
+      </section>
+
+      <section className="surface-card p-5">
+        <h2 className="text-base font-bold text-primary">Activity details</h2>
+        <div className="mt-4 grid gap-3 md:grid-cols-3">
+          <DetailTile label="Work type" value={session.activityType || "Work"} />
+          <DetailTile label="Work tool" value={session.workTool ? session.workTool.replaceAll("_", " ") : "Not set"} />
+          <DetailTile label="Activity code" value={session.activityCode || "Not set"} />
+          <DetailTile label="Started" value={formatDateTime(session.startedAt)} />
+          <DetailTile label="Ended" value={formatDateTime(session.endedAt)} />
+          <DetailTile label="Active duration" value={activitySeconds ? formatSeconds(activitySeconds) : "No samples"} />
+          <DetailTile label="App/tool time" value={appSeconds ? formatSeconds(appSeconds) : "No app usage"} />
+          <DetailTile label="Billable" value={session.billable ? "Yes" : "No"} />
+          <DetailTile label="Task" value={session.task || "No linked task"} />
+        </div>
+      </section>
+    </div>
+  );
+}
+
+function MetricBox({ label, tone = "neutral", value }) {
+  const toneClass = tone === "success" ? "text-success" : "text-primary";
+  return (
+    <div className="rounded-lg border border-border bg-panel p-4">
+      <p className="text-xs font-bold uppercase tracking-wide text-muted">{label}</p>
+      <p className={`mt-2 break-words text-lg font-bold ${toneClass}`}>{value}</p>
+    </div>
+  );
+}
+
+function DetailTile({ label, value }) {
+  return (
+    <div className="rounded-lg border border-border bg-surface p-3">
+      <p className="text-xs font-bold uppercase tracking-wide text-muted">{label}</p>
+      <p className="mt-1 break-words text-sm font-semibold text-ink">{value || "Not set"}</p>
+    </div>
   );
 }
 

@@ -4,6 +4,7 @@ export const invoicesApi = {
   ...makeResource("/api/invoices"),
   fromTime: (body) => request("/api/invoices/from-time", { method: "POST", body }),
   fromBillables: (body) => request("/api/invoices/from-billables", { method: "POST", body }),
+  autoFromBillables: (body) => request("/api/invoices/from-billables/auto", { method: "POST", body }),
   pendingByClient: (params) => request("/api/invoices/__analytics/pending-by-client", { params }),
   pipeline: (params) => request("/api/invoices/__pipeline", { params }),
   document: (id) => request(`/api/invoices/${id}/document`),

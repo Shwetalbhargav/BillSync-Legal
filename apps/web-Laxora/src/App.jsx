@@ -91,6 +91,7 @@ import { ManualTimeEntryPage } from "./pages/work/ManualTimeEntryPage";
 import { SubmitWorkPage } from "./pages/work/SubmitWorkPage";
 import { TimeApprovalPage } from "./pages/work/TimeApprovalPage";
 import { WorkMeterPage } from "./pages/work/WorkMeterPage";
+import { WorkSessionDetailPage } from "./pages/work/WorkSessionDetailPage";
 import { WorkSessionHistoryPage } from "./pages/work/WorkSessionHistoryPage";
 
 function ProtectedShell() {
@@ -177,6 +178,7 @@ function ProtectedPage({ route }) {
   if (route.path === "/app/storage-settings") return <StorageSettingsPage />;
   if (route.path === "/app/work-meter") return <WorkMeterPage />;
   if (route.path === "/app/work-sessions") return <WorkSessionHistoryPage />;
+  if (route.path === "/app/work-sessions/:sessionId") return <WorkSessionDetailPage />;
   if (route.path === "/app/time-entry/new") return <ManualTimeEntryPage />;
   if (route.path === "/app/time-entries") return <WorkSessionHistoryPage />;
   if (route.path === "/app/time-approval") return <TimeApprovalPage />;

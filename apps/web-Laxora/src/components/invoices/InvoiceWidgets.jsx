@@ -12,6 +12,14 @@ export const invoiceStatuses = [
   { label: "Void", value: "void" },
 ];
 
+export const paymentDueFilters = [
+  { label: "All dues", value: "" },
+  { label: "Payment due", value: "due" },
+  { label: "Overdue", value: "overdue" },
+  { label: "Paid", value: "paid" },
+  { label: "Not due", value: "not_due" },
+];
+
 export function formatMoney(value) {
   return `Rs ${Number(value || 0).toLocaleString("en-IN", { maximumFractionDigits: 2 })}`;
 }
@@ -30,7 +38,7 @@ export function statusTone(status = "") {
   return "neutral";
 }
 
-export function InvoiceHero({ count, total, draftCount }) {
+export function InvoiceHero({ count, total, draftCount, dueCount = 0, dueTotal = 0 }) {
   return (
     <section className="surface-card p-6">
       <div className="flex min-w-0 flex-col gap-5 xl:flex-row xl:items-center xl:justify-between">
@@ -39,11 +47,13 @@ export function InvoiceHero({ count, total, draftCount }) {
           <h1 className="mt-1 text-2xl font-bold text-primary md:text-3xl">Invoice workflows</h1>
           <p className="mt-2 max-w-2xl text-sm leading-6 text-muted">Build invoices from approved work, review totals, and send only when delivery details are ready.</p>
         </div>
-        <div className="grid gap-3 sm:grid-cols-3 xl:min-w-[520px]">
+        <div className="grid gap-3 sm:grid-cols-2 xl:min-w-[680px] xl:grid-cols-4">
           <MetricTile icon={ReceiptText} label="Invoices" value={count} />
           <MetricTile icon={Clock3} label="Drafts" value={draftCount} tone="warning" />
+          <MetricTile icon={AlertCircle} label="Payment due" value={dueCount} tone="warning" />
           <MetricTile icon={FileText} label="Invoice value" value={formatMoney(total)} tone="success" />
         </div>
+        {dueTotal > 0 ? <p className="text-xs font-semibold text-muted xl:text-right">Due balance: {formatMoney(dueTotal)}</p> : null}
       </div>
     </section>
   );
@@ -82,12 +92,22 @@ export function SectionIssues({ issues }) {
 export function InvoiceFilters({ clients, filters, matters, onChange, onReset }) {
   return (
     <section className="surface-card p-5">
-      <div className="grid gap-3 md:grid-cols-4">
+      <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-5">
         <label className="block text-sm font-semibold text-ink">
           Status
           <select className="focus-ring mt-1 w-full rounded-lg border border-border bg-panel px-3 py-3" onChange={(event) => onChange("status", event.target.value)} value={filters.status}>
             {invoiceStatuses.map((status) => <option key={status.label} value={status.value}>{status.label}</option>)}
           </select>
+        </label>
+        <label className="block text-sm font-semibold text-ink">
+          Payment dues
+          <select className="focus-ring mt-1 w-full rounded-lg border border-border bg-panel px-3 py-3" onChange={(event) => onChange("paymentDue", event.target.value)} value={filters.paymentDue}>
+            {paymentDueFilters.map((filter) => <option key={filter.label} value={filter.value}>{filter.label}</option>)}
+          </select>
+        </label>
+        <label className="block text-sm font-semibold text-ink">
+          Client name
+          <input className="focus-ring mt-1 w-full rounded-lg border border-border bg-panel px-3 py-3" onChange={(event) => onChange("clientName", event.target.value)} placeholder="Search client" value={filters.clientName} />
         </label>
         <label className="block text-sm font-semibold text-ink">
           Client
@@ -103,11 +123,68 @@ export function InvoiceFilters({ clients, filters, matters, onChange, onReset })
             {matters.map((matter) => <option key={matter.id} value={matter.id}>{matter.title}</option>)}
           </select>
         </label>
-        <div className="flex items-end">
+        <label className="block text-sm font-semibold text-ink">
+          Monthly
+          <input className="focus-ring mt-1 w-full rounded-lg border border-border bg-panel px-3 py-3" onChange={(event) => onChange("month", event.target.value)} type="month" value={filters.month} />
+        </label>
+        <label className="block text-sm font-semibold text-ink">
+          Issued from
+          <input className="focus-ring mt-1 w-full rounded-lg border border-border bg-panel px-3 py-3" onChange={(event) => onChange("issuedFrom", event.target.value)} type="date" value={filters.issuedFrom} />
+        </label>
+        <label className="block text-sm font-semibold text-ink">
+          Issued to
+          <input className="focus-ring mt-1 w-full rounded-lg border border-border bg-panel px-3 py-3" onChange={(event) => onChange("issuedTo", event.target.value)} type="date" value={filters.issuedTo} />
+        </label>
+        <label className="block text-sm font-semibold text-ink">
+          Due from
+          <input className="focus-ring mt-1 w-full rounded-lg border border-border bg-panel px-3 py-3" onChange={(event) => onChange("dueFrom", event.target.value)} type="date" value={filters.dueFrom} />
+        </label>
+        <label className="block text-sm font-semibold text-ink">
+          Due to
+          <input className="focus-ring mt-1 w-full rounded-lg border border-border bg-panel px-3 py-3" onChange={(event) => onChange("dueTo", event.target.value)} type="date" value={filters.dueTo} />
+        </label>
+        <div className="flex items-end xl:col-start-5">
           <Button className="w-full" onClick={onReset} type="button" variant="secondary">Reset</Button>
         </div>
       </div>
     </section>
+  );
+}
+
+export function ClientWiseInvoiceDashboard({ invoices }) {
+  if (!invoices.length) {
+    return <StateCard state="empty" title="No invoices found" message="Adjust the filters or create invoices from approved billables." />;
+  }
+
+  const groups = [...invoices.reduce((map, invoice) => {
+    const key = invoice.client || "Client not set";
+    const current = map.get(key) || { client: key, invoices: [], total: 0, dueTotal: 0 };
+    const isDue = ["sent", "partial", "overdue"].includes(invoice.status);
+    current.invoices.push(invoice);
+    current.total += Number(invoice.total || 0);
+    current.dueTotal += isDue ? Number(invoice.total || 0) : 0;
+    map.set(key, current);
+    return map;
+  }, new Map()).values()].sort((a, b) => b.total - a.total);
+
+  return (
+    <div className="space-y-4">
+      {groups.map((group) => (
+        <section className="surface-card p-5" key={group.client}>
+          <div className="mb-4 flex min-w-0 flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+            <div className="min-w-0">
+              <h2 className="break-words text-base font-bold text-primary">{group.client}</h2>
+              <p className="mt-1 text-sm font-semibold text-muted">{group.invoices.length} invoice{group.invoices.length === 1 ? "" : "s"}</p>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <StatusBadge tone="success">{formatMoney(group.total)}</StatusBadge>
+              {group.dueTotal > 0 ? <StatusBadge tone="warning">Due {formatMoney(group.dueTotal)}</StatusBadge> : null}
+            </div>
+          </div>
+          <InvoiceTable invoices={group.invoices} />
+        </section>
+      ))}
+    </div>
   );
 }
 
@@ -295,6 +372,77 @@ export function InvoiceDetailPanel({ invoice, onSend, onVoid, saving }) {
         <Button disabled={saving || invoice.status === "void"} onClick={onVoid} type="button" variant="danger">Void invoice</Button>
       </div>
     </section>
+  );
+}
+
+export function InvoiceChargeBreakup({ invoice }) {
+  const lines = invoice.lines || [];
+  const taxName = invoice.raw?.taxName || invoice.raw?.taxDetails?.taxName || "GST";
+  const taxRatePct = Number(invoice.raw?.taxRatePct ?? invoice.raw?.taxDetails?.taxRatePct ?? 0);
+  const taxInclusive = Boolean(invoice.raw?.taxInclusive ?? invoice.raw?.taxDetails?.inclusive);
+
+  return (
+    <section className="surface-card p-5">
+      <div className="flex min-w-0 flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+        <div className="min-w-0">
+          <p className="text-sm font-semibold uppercase tracking-wide text-accent">Charge breakup</p>
+          <h2 className="mt-1 text-xl font-bold text-primary">All charges</h2>
+          <p className="mt-1 text-sm leading-6 text-muted">Service lines, taxable amount, tax, and invoice total.</p>
+        </div>
+        <StatusBadge tone={taxInclusive ? "warning" : "neutral"}>{taxInclusive ? "Tax inclusive" : "Tax extra"}</StatusBadge>
+      </div>
+
+      {lines.length ? (
+        <div className="mt-5 overflow-x-auto">
+          <table className="w-full min-w-[760px] border-separate border-spacing-0 text-left text-sm">
+            <thead>
+              <tr className="text-xs font-bold uppercase tracking-wide text-muted">
+                <th className="border-b border-border px-3 py-2">Charge</th>
+                <th className="border-b border-border px-3 py-2 text-right">Hours</th>
+                <th className="border-b border-border px-3 py-2 text-right">Rate</th>
+                <th className="border-b border-border px-3 py-2">Tax category</th>
+                <th className="border-b border-border px-3 py-2 text-right">Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              {lines.map((line) => (
+                <tr key={line.id}>
+                  <td className="border-b border-border px-3 py-3">
+                    <p className="break-words font-semibold text-ink">{line.description}</p>
+                  </td>
+                  <td className="border-b border-border px-3 py-3 text-right font-semibold text-ink">{Number(line.qtyHours || 0).toFixed(2)}</td>
+                  <td className="border-b border-border px-3 py-3 text-right text-muted">{formatMoney(line.rate)}</td>
+                  <td className="border-b border-border px-3 py-3 text-muted">{line.taxCategory || taxName}</td>
+                  <td className="border-b border-border px-3 py-3 text-right font-bold text-primary">{formatMoney(line.amount)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      ) : (
+        <StateCard state="empty" title="No charge lines yet" message="Add invoice lines before sending the invoice." />
+      )}
+
+      <div className="mt-5 flex justify-end">
+        <div className="w-full max-w-md rounded-lg border border-border bg-panel p-4">
+          <BreakupRow label="Professional charges" value={formatMoney(invoice.subtotal)} />
+          <BreakupRow label={`${taxName} (${taxRatePct.toLocaleString("en-IN", { maximumFractionDigits: 2 })}%)`} value={formatMoney(invoice.tax)} />
+          {taxInclusive ? <BreakupRow label="Tax treatment" value="Included in line amounts" /> : null}
+          <div className="mt-3 border-t border-border pt-3">
+            <BreakupRow strong label="Invoice total" value={formatMoney(invoice.total)} />
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function BreakupRow({ label, strong = false, value }) {
+  return (
+    <div className="flex items-start justify-between gap-4 py-1">
+      <span className={strong ? "font-bold text-primary" : "font-semibold text-muted"}>{label}</span>
+      <span className={strong ? "text-right text-lg font-bold text-primary" : "text-right font-bold text-ink"}>{value}</span>
+    </div>
   );
 }
 

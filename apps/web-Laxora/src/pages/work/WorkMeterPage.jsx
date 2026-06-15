@@ -7,7 +7,16 @@ import { workSessionsApi } from "../../api/workSessions";
 import { normalizeTimeEntry, normalizeWorkSession } from "../../api/normalizers";
 import { useAuth } from "../../auth/AuthProvider";
 import { Button, SkeletonBlock } from "../../components/common";
-import { IdleResolutionPrompt, MeterOptionState, WorkMeterPanel, SaveFailedState, formatDuration, formatElapsed } from "../../components/work/WorkCaptureWidgets";
+import {
+  IdleResolutionPrompt,
+  MeterOptionState,
+  WorkMeterPanel,
+  SaveFailedState,
+  formatDuration,
+  formatElapsed,
+  getDefaultWorkToolForType,
+  getWorkToolForType,
+} from "../../components/work/WorkCaptureWidgets";
 
 const initialForm = {
   clientId: "",
@@ -15,17 +24,31 @@ const initialForm = {
   taskId: "",
   activityType: "drafting",
   activityCode: "",
-  workTool: "manual",
+  workTool: getDefaultWorkToolForType("drafting"),
   narrative: "",
   billable: true,
 };
 
 const privilegedMeterRoles = new Set(["admin", "partner"]);
+const internalMeterTools = new Set(["manual", "billbot_ai", "other"]);
+
+const blankWordTemplatePath = "/files/blank.dotx";
+const samplePdfPath = "/files/sample.pdf";
 
 const toolTargets = {
-  microsoft_word: { url: "ms-word:", external: true },
+  microsoft_word: {
+    type: "protocol",
+    protocol: "ms-word:nft|u|{fileUrl}",
+    filePath: blankWordTemplatePath,
+    fallback: "https://www.office.com/launch/word",
+  },
   google_docs: { url: "https://docs.google.com/document/u/0/", external: true },
-  pdf_reader: { url: "https://drive.google.com/drive/my-drive", external: true },
+  pdf_reader: {
+    type: "protocol",
+    protocol: "billpdf://open?url={encodedFileUrl}",
+    filePath: samplePdfPath,
+    fallback: samplePdfPath,
+  },
   google_chrome: { url: "https://www.google.com/", external: true },
   gmail: { url: "https://mail.google.com/mail/u/0/#inbox?lb_meter=1&lb_compose=1&lb_prompt=BillSync%20Work%20Meter", external: true },
   google_meet: { url: "https://meet.google.com/", external: true },
@@ -34,6 +57,25 @@ const toolTargets = {
   whatsapp: { url: "https://web.whatsapp.com/", external: true },
   billbot_ai: { url: "/app/assistant", external: false },
 };
+
+const toolNames = {
+  microsoft_word: "Microsoft Word",
+  google_docs: "Google Docs",
+  pdf_reader: "PDF reader",
+  google_chrome: "Google Chrome",
+  gmail: "Gmail",
+  google_meet: "Google Meet",
+  zoom: "Zoom",
+  microsoft_teams: "Microsoft Teams",
+  whatsapp: "WhatsApp",
+  billbot_ai: "BillBot AI",
+  manual: "Lexora manual work",
+  other: "Other tool",
+};
+
+function isExternalMeterTool(workTool) {
+  return Boolean(workTool && !internalMeterTools.has(workTool));
+}
 
 function valueMatchesUser(value, userId) {
   if (!value || !userId) return false;
@@ -61,17 +103,87 @@ function itemBelongsToUser(item, userId) {
   );
 }
 
-function createToolLauncher(workTool) {
-  const target = toolTargets[workTool];
-  if (!target?.url) return null;
-  const toolUrl = target.url.startsWith("/") ? `${window.location.origin}${target.url}` : target.url;
-  const toolWindow = window.open("about:blank", "_blank");
-  return () => {
-    if (toolWindow) {
-      toolWindow.location.href = toolUrl;
+function withWorkSessionParam(url, sessionId) {
+  if (!sessionId || !url || /^[a-z][a-z0-9+.-]*:/i.test(url) && !url.startsWith("http")) return url;
+  try {
+    const parsed = new URL(url, window.location.origin);
+    const hashIndex = parsed.hash.indexOf("?");
+    if (hashIndex >= 0) {
+      const hashPath = parsed.hash.slice(0, hashIndex);
+      const hashParams = new URLSearchParams(parsed.hash.slice(hashIndex + 1));
+      hashParams.set("lb_work_session_id", sessionId);
+      parsed.hash = `${hashPath}?${hashParams.toString()}`;
+    } else {
+      parsed.searchParams.set("lb_work_session_id", sessionId);
+    }
+    return parsed.toString();
+  } catch {
+    return url;
+  }
+}
+
+function toAbsoluteUrl(url) {
+  if (!url) return "";
+  return url.startsWith("/") ? `${window.location.origin}${url}` : url;
+}
+
+function buildProtocolUrl(target) {
+  const fileUrl = toAbsoluteUrl(target.filePath || target.fileUrl || "");
+  return target.protocol
+    ?.replace("{fileUrl}", fileUrl)
+    .replace("{encodedFileUrl}", encodeURIComponent(fileUrl));
+}
+
+function launchWithProtocolFallback(protocolUrl, fallbackUrl, toolWindow) {
+  let didLeavePage = false;
+  const markLeft = () => {
+    didLeavePage = true;
+  };
+  const cleanup = () => {
+    window.removeEventListener("blur", markLeft);
+    window.removeEventListener("pagehide", markLeft);
+    document.removeEventListener("visibilitychange", markLeft);
+  };
+
+  window.addEventListener("blur", markLeft, { once: true });
+  window.addEventListener("pagehide", markLeft, { once: true });
+  document.addEventListener("visibilitychange", markLeft, { once: true });
+
+  if (toolWindow) {
+    toolWindow.location.href = protocolUrl;
+  } else {
+    window.location.href = protocolUrl;
+  }
+
+  window.setTimeout(() => {
+    cleanup();
+    if (didLeavePage || !fallbackUrl) return;
+    if (toolWindow && !toolWindow.closed) {
+      toolWindow.location.href = fallbackUrl;
       return;
     }
-    window.open(toolUrl, "_blank");
+    window.open(fallbackUrl, "_blank", "noopener,noreferrer");
+  }, 1200);
+}
+
+function createToolLauncher(workTool) {
+  const target = toolTargets[workTool];
+  if (!target?.url && !target?.protocol) return null;
+  const toolWindow = window.open("about:blank", "_blank");
+  return (sessionId) => {
+    if (target.type === "protocol") {
+      const protocolUrl = buildProtocolUrl(target);
+      const fallbackUrl = withWorkSessionParam(toAbsoluteUrl(target.fallback || target.filePath), sessionId);
+      launchWithProtocolFallback(protocolUrl, fallbackUrl, toolWindow);
+      return;
+    }
+    const toolUrl = toAbsoluteUrl(target.url);
+    const launchUrl = withWorkSessionParam(toolUrl, sessionId);
+    if (toolWindow) {
+      toolWindow.location.href = launchUrl;
+      return;
+    }
+    window.open(launchUrl, "_blank");
   };
 }
 
@@ -91,7 +203,11 @@ export function WorkMeterPage() {
   const [lastSavedEntry, setLastSavedEntry] = useState(null);
   const [pendingIdle, setPendingIdle] = useState(null);
   const [tick, setTick] = useState(0);
+  const [liveActivity, setLiveActivity] = useState({ keyboardCount: 0, mouseCount: 0, activeSeconds: 0 });
   const hiddenAtRef = useRef(null);
+  const sessionRef = useRef(null);
+  const lastMouseMoveCountAtRef = useRef(0);
+  const lastActivityTickAtRef = useRef(Date.now());
   const flushActivityRef = useRef(async () => {});
   const flushAppUsageRef = useRef(async () => {});
   const activityBucketRef = useRef({
@@ -125,6 +241,10 @@ export function WorkMeterPage() {
   }, []);
 
   useEffect(() => {
+    sessionRef.current = session;
+  }, [session]);
+
+  useEffect(() => {
     const timer = window.setInterval(() => setTick((value) => value + 1), 1000);
     return () => window.clearInterval(timer);
   }, []);
@@ -139,6 +259,7 @@ export function WorkMeterPage() {
       if (!hiddenAtRef.current) return;
       const awaySeconds = Math.round((Date.now() - new Date(hiddenAtRef.current).getTime()) / 1000);
       hiddenAtRef.current = null;
+      if (isExternalMeterTool(session.workTool)) return;
       const thresholdSeconds = Number(session.raw?.webMeter?.idleAfterSeconds || 300);
       if (awaySeconds < thresholdSeconds) return;
       try {
@@ -158,19 +279,41 @@ export function WorkMeterPage() {
 
   useEffect(() => {
     function markKeyboardActivity() {
+      if (sessionRef.current?.status !== "running") return;
       activityBucketRef.current.keyboardCount += 1;
       activityBucketRef.current.lastInteractionAt = Date.now();
+      setLiveActivity({
+        keyboardCount: activityBucketRef.current.keyboardCount,
+        mouseCount: activityBucketRef.current.mouseCount,
+        activeSeconds: activityBucketRef.current.activeSeconds,
+      });
     }
     function markMouseActivity() {
+      if (sessionRef.current?.status !== "running") return;
       activityBucketRef.current.mouseCount += 1;
       activityBucketRef.current.lastInteractionAt = Date.now();
+      setLiveActivity({
+        keyboardCount: activityBucketRef.current.keyboardCount,
+        mouseCount: activityBucketRef.current.mouseCount,
+        activeSeconds: activityBucketRef.current.activeSeconds,
+      });
+    }
+    function markMouseMoveActivity() {
+      const now = Date.now();
+      if (now - lastMouseMoveCountAtRef.current < 750) return;
+      lastMouseMoveCountAtRef.current = now;
+      markMouseActivity();
     }
 
     window.addEventListener("keydown", markKeyboardActivity);
     window.addEventListener("pointerdown", markMouseActivity);
+    window.addEventListener("pointermove", markMouseMoveActivity);
+    window.addEventListener("wheel", markMouseActivity, { passive: true });
     return () => {
       window.removeEventListener("keydown", markKeyboardActivity);
       window.removeEventListener("pointerdown", markMouseActivity);
+      window.removeEventListener("pointermove", markMouseMoveActivity);
+      window.removeEventListener("wheel", markMouseActivity);
     };
   }, []);
 
@@ -183,12 +326,24 @@ export function WorkMeterPage() {
       activeSeconds: 0,
       lastInteractionAt: Date.now(),
     };
+    lastActivityTickAtRef.current = Date.now();
+    setLiveActivity({ keyboardCount: 0, mouseCount: 0, activeSeconds: 0 });
     appUsageBucketRef.current = { startedAt: new Date() };
 
     const secondTimer = window.setInterval(() => {
+      const now = Date.now();
+      const elapsedSeconds = Math.max(1, Math.round((now - lastActivityTickAtRef.current) / 1000));
+      lastActivityTickAtRef.current = now;
       const lastInteractionAt = activityBucketRef.current.lastInteractionAt || 0;
-      if (document.visibilityState === "visible" && Date.now() - lastInteractionAt <= 60000) {
-        activityBucketRef.current.activeSeconds += 1;
+      const isFocusedOnLexora = document.visibilityState === "visible" && now - lastInteractionAt <= 60000;
+      const isFocusedOnLaunchedTool = document.visibilityState === "hidden" && isExternalMeterTool(session.workTool);
+      if (isFocusedOnLexora || isFocusedOnLaunchedTool) {
+        activityBucketRef.current.activeSeconds += elapsedSeconds;
+        setLiveActivity({
+          keyboardCount: activityBucketRef.current.keyboardCount,
+          mouseCount: activityBucketRef.current.mouseCount,
+          activeSeconds: activityBucketRef.current.activeSeconds,
+        });
       }
     }, 1000);
 
@@ -216,6 +371,7 @@ export function WorkMeterPage() {
         activeSeconds: 0,
         lastInteractionAt: bucket.lastInteractionAt,
       };
+      setLiveActivity({ keyboardCount: 0, mouseCount: 0, activeSeconds: 0 });
       try {
         await activitySamplesApi.createForSession(session.id, body);
       } catch {
@@ -231,9 +387,15 @@ export function WorkMeterPage() {
       appUsageBucketRef.current = { startedAt: endedAt };
       try {
         await appUsageEventsApi.createForSession(session.id, {
-          appName: "BillSync Legal",
-          url: `${window.location.origin}${window.location.pathname}`,
-          domain: window.location.hostname,
+          appName: document.visibilityState === "hidden" && isExternalMeterTool(session.workTool)
+            ? toolNames[session.workTool] || session.workTool.replaceAll("_", " ")
+            : "BillSync Legal",
+          url: document.visibilityState === "hidden" && isExternalMeterTool(session.workTool)
+            ? toolTargets[session.workTool]?.url || toolTargets[session.workTool]?.filePath || ""
+            : `${window.location.origin}${window.location.pathname}`,
+          domain: document.visibilityState === "hidden" && isExternalMeterTool(session.workTool)
+            ? ""
+            : window.location.hostname,
           startedAt: new Date(bucket.startedAt).toISOString(),
           endedAt: endedAt.toISOString(),
           durationSeconds,
@@ -247,7 +409,7 @@ export function WorkMeterPage() {
 
     flushActivityRef.current = flushBucket;
     flushAppUsageRef.current = flushAppUsage;
-    const flushTimer = window.setInterval(flushBucket, 60000);
+    const flushTimer = window.setInterval(flushBucket, 15000);
     const appUsageTimer = window.setInterval(flushAppUsage, 60000);
     return () => {
       window.clearInterval(secondTimer);
@@ -296,6 +458,9 @@ export function WorkMeterPage() {
         const matter = matters.find((item) => item.id === value);
         return { ...current, caseId: value, clientId: matter?.clientId || current.clientId || "", taskId: "" };
       }
+      if (field === "activityType") {
+        return { ...current, activityType: value, workTool: getDefaultWorkToolForType(value) };
+      }
       return { ...current, [field]: value };
     });
   }
@@ -309,8 +474,9 @@ export function WorkMeterPage() {
       setValidation("Choose a task for this matter or leave task blank.");
       return;
     }
+    const matchedWorkTool = getWorkToolForType(form.activityType, form.workTool);
     setStatus("saving");
-    const launchSelectedTool = createToolLauncher(form.workTool);
+    const launchSelectedTool = createToolLauncher(matchedWorkTool);
     try {
       const response = await workSessionsApi.start({
         caseId: form.caseId,
@@ -318,7 +484,7 @@ export function WorkMeterPage() {
         taskId: form.taskId || undefined,
         activityType: form.activityType,
         activityCode: form.activityCode.trim() || undefined,
-        workTool: form.workTool,
+        workTool: matchedWorkTool,
         narrative: form.narrative.trim() || "Focused legal work",
         billable: form.billable,
         timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
@@ -333,11 +499,12 @@ export function WorkMeterPage() {
         client: startedSession.client || selectedClient?.name || "",
         matter: startedSession.matter || selectedMatter?.title || "",
         task: startedSession.task || selectedTask?.title || "",
+        workTool: startedSession.workTool || matchedWorkTool,
       });
       setLastSavedEntry(null);
       setStatus("ready");
       setForm(initialForm);
-      if (launchSelectedTool) launchSelectedTool();
+      if (launchSelectedTool) launchSelectedTool(startedSession.id);
     } catch (error) {
       setStatus("ready");
       if (error?.status === 409) {
@@ -482,6 +649,7 @@ export function WorkMeterPage() {
         tasks={filteredTasks}
         user={user}
         validation={validation}
+        liveActivity={liveActivity}
       />
       {session ? (
         <div className="flex justify-end">

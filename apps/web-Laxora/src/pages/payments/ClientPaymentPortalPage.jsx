@@ -9,6 +9,7 @@ const initialForm = {
   method: "upi",
   payerName: "",
   payerEmail: "",
+  upiId: "",
   reference: "",
   notes: "",
 };
@@ -21,6 +22,8 @@ function normalizePortalInvoice(invoice = {}) {
     outstanding: Number(invoice.outstanding || invoice.balanceDue || invoice.total || 0),
     paidAmount: Number(invoice.paidAmount || invoice.paid || 0),
     total: Number(invoice.total || invoice.amount || 0),
+    upiId: invoice.paymentConfig?.upiId || invoice.upiId || "",
+    upiName: invoice.paymentConfig?.upiName || invoice.upiName || "BillSync Legal",
   };
 }
 
@@ -56,6 +59,10 @@ export function ClientPaymentPortalPage() {
       setNotice({ tone: "warning", title: "Amount needs attention", message: "Enter the amount you have paid before submitting." });
       return;
     }
+    if (form.method === "upi" && !form.reference.trim()) {
+      setNotice({ tone: "warning", title: "UPI reference required", message: "Enter the UPI transaction reference or UTR after completing payment." });
+      return;
+    }
     setSaving(true);
     setNotice(null);
     try {
@@ -64,6 +71,7 @@ export function ClientPaymentPortalPage() {
         method: form.method,
         payerName: form.payerName || undefined,
         payerEmail: form.payerEmail || undefined,
+        upiId: form.upiId || undefined,
         reference: form.reference || undefined,
         notes: form.notes || undefined,
       });
