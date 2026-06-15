@@ -7,6 +7,7 @@ const mocks = vi.hoisted(() => ({
   timeEntryFindById: vi.fn(),
   workSessionFind: vi.fn(),
   activitySampleFind: vi.fn(),
+  appUsageEventFind: vi.fn(),
 }));
 
 vi.mock('../modules/timeEntries/models/TimeEntry.js', () => ({
@@ -19,6 +20,10 @@ vi.mock('../modules/workSessions/models/WorkSession.js', () => ({
 
 vi.mock('../modules/activitySamples/models/ActivitySample.js', () => ({
   ActivitySample: { find: mocks.activitySampleFind },
+}));
+
+vi.mock('../modules/appUsageEvents/models/AppUsageEvent.js', () => ({
+  AppUsageEvent: { find: mocks.appUsageEventFind },
 }));
 
 const { default: app } = await import('../app.js');
@@ -92,6 +97,11 @@ beforeEach(() => {
     keyboardCount: 240,
     mouseCount: 85,
   }]));
+  mocks.appUsageEventFind.mockReturnValue(queryResult([{
+    workSessionId: SESSION_ID,
+    appName: 'Microsoft Word',
+    durationSeconds: 240,
+  }]));
   mocks.timeEntryFindById.mockResolvedValue({
     _id: ENTRY_ID,
     status: 'submitted',
@@ -129,6 +139,12 @@ test('GET /api/time-entries returns review context and aggregate activity counts
       activityPercent: 80,
     },
     idleSummary: { totalSeconds: 120, discardedSeconds: 60 },
+    appUsageSummary: {
+      eventCount: 1,
+      durationSeconds: 240,
+      topApp: 'Microsoft Word',
+      topAppSeconds: 240,
+    },
     payableDurationMinutes: 44,
   });
 });

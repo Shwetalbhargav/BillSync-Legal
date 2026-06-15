@@ -301,6 +301,7 @@ export function normalizeTimeEntry(item = {}) {
   const task = item.taskId || item.task || {};
   const activity = item.activityId || item.activity || {};
   const activitySummary = item.activitySummary || item.activitySampleSummary || {};
+  const appUsageSummary = item.appUsageSummary || {};
   const idleSummary = item.idleSummary || activity.idleSummary || activity.webMeter?.idleSummary || {};
   const billableMinutes = Number(item.billableMinutes ?? item.durationMinutes ?? item.minutes ?? 0);
   const nonbillableMinutes = Number(item.nonbillableMinutes ?? 0);
@@ -327,6 +328,10 @@ export function normalizeTimeEntry(item = {}) {
     keyboardCount: Number(activitySummary.keyboardCount || 0),
     mouseCount: Number(activitySummary.mouseCount || 0),
     activityPercent: Number(activitySummary.activityPercent || 0),
+    appUsageSummary,
+    appUsageSeconds: Number(appUsageSummary.durationSeconds || 0),
+    topApp: appUsageSummary.topApp || appUsageSummary.apps?.[0]?.name || "",
+    topAppSeconds: Number(appUsageSummary.topAppSeconds || appUsageSummary.apps?.[0]?.durationSeconds || 0),
     idleSeconds: Number(idleSummary.discardedSeconds ?? idleSummary.totalSeconds ?? activity.webMeter?.inactiveSeconds ?? 0),
     submittedAt: item.submittedAt || "",
     reviewedAt: item.reviewedAt || "",

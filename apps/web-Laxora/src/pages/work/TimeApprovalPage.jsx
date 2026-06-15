@@ -72,6 +72,8 @@ function TimeApprovalCard({ entry, isSaving, onApprove, onReject }) {
         <ReviewMetric label="Task" value={entry.task || "No linked task"} />
         <ReviewMetric label="Work type" value={prettyValue(entry.workType)} />
         <ReviewMetric label="Work tool" value={prettyValue(entry.workTool)} />
+        <ReviewMetric label="App used" value={entry.topApp || "No app recorded"} />
+        <ReviewMetric label="App time" value={entry.appUsageSeconds ? formatSeconds(entry.appUsageSeconds) : "No app history"} />
         <ReviewMetric label="Time recorded" value={formatMinutes(entry.minutes)} />
         <ReviewMetric label="Keyboard activity" value={`${entry.keyboardCount} counts`} />
         <ReviewMetric label="Mouse activity" value={`${entry.mouseCount} counts`} />

@@ -107,6 +107,7 @@ function withWorkSessionParam(url, sessionId) {
   if (!sessionId || !url || /^[a-z][a-z0-9+.-]*:/i.test(url) && !url.startsWith("http")) return url;
   try {
     const parsed = new URL(url, window.location.origin);
+    if (parsed.pathname.startsWith("/files/")) return parsed.toString();
     const hashIndex = parsed.hash.indexOf("?");
     if (hashIndex >= 0) {
       const hashPath = parsed.hash.slice(0, hashIndex);

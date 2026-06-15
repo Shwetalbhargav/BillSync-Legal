@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 import { TimeEntry } from '../models/TimeEntry.js';
 import { Activity } from '../../activities/models/Activity.js';
 import { ActivitySample } from '../../activitySamples/models/ActivitySample.js';
+import { AppUsageEvent } from '../../appUsageEvents/models/AppUsageEvent.js';
 import Billable from '../../billables/models/Billable.js';
 import { WorkSession } from '../../workSessions/models/WorkSession.js';
 import { computeRatedAmount, resolveBillingRate } from '../../rates/services/rateResolver.js';
@@ -70,6 +71,31 @@ const buildActivitySummary = (samples = []) => {
   return summary;
 };
 
+const buildAppUsageSummary = (events = []) => {
+  const summary = events.reduce(
+    (total, event) => ({
+      eventCount: total.eventCount + 1,
+      durationSeconds: total.durationSeconds + Number(event.durationSeconds || 0),
+    }),
+    { eventCount: 0, durationSeconds: 0 }
+  );
+  const apps = new Map();
+  for (const event of events) {
+    const seconds = Number(event.durationSeconds || 0);
+    const appName = event.appName || 'Unknown app';
+    apps.set(appName, (apps.get(appName) || 0) + seconds);
+  }
+  const appRows = [...apps.entries()]
+    .map(([name, durationSeconds]) => ({ name, durationSeconds }))
+    .sort((a, b) => b.durationSeconds - a.durationSeconds);
+  return {
+    ...summary,
+    apps: appRows,
+    topApp: appRows[0]?.name || '',
+    topAppSeconds: appRows[0]?.durationSeconds || 0,
+  };
+};
+
 const enrichTimeEntriesForReview = async (rows) => {
   const plainRows = rows.map((row) => (row?.toObject ? row.toObject() : row));
   const activityIds = plainRows.map((row) => idString(row.activityId)).filter(Boolean);
@@ -84,9 +110,17 @@ const enrichTimeEntriesForReview = async (rows) => {
   const samples = sessionIds.length
     ? await ActivitySample.find({ workSessionId: { $in: sessionIds } }).lean()
     : [];
+  const appEvents = sessionIds.length
+    ? await AppUsageEvent.find({ workSessionId: { $in: sessionIds } }).lean()
+    : [];
   const samplesBySession = samples.reduce((groups, sample) => {
     const key = idString(sample.workSessionId);
     groups.set(key, [...(groups.get(key) || []), sample]);
+    return groups;
+  }, new Map());
+  const appEventsBySession = appEvents.reduce((groups, event) => {
+    const key = idString(event.workSessionId);
+    groups.set(key, [...(groups.get(key) || []), event]);
     return groups;
   }, new Map());
 
@@ -94,11 +128,13 @@ const enrichTimeEntriesForReview = async (rows) => {
     const activityId = idString(row.activityId);
     const session = sessionsByActivity.get(activityId);
     const activitySummary = session ? buildActivitySummary(samplesBySession.get(idString(session._id)) || []) : buildActivitySummary();
+    const appUsageSummary = session ? buildAppUsageSummary(appEventsBySession.get(idString(session._id)) || []) : buildAppUsageSummary();
     const activity = row.activityId && typeof row.activityId === 'object' ? row.activityId : {};
     return {
       ...row,
       workSessionId: session?._id,
       activitySummary,
+      appUsageSummary,
       idleSummary: activity.idleSummary || activity.webMeter?.idleSummary || session?.idleSummary || row.idleSummary,
       payableDurationMinutes: session?.payableDurationMinutes,
     };

@@ -71,7 +71,8 @@ Date baseline: `May 22, 2026`
 
 - Click `Write with AI` and generate a draft.
 - Confirm generated content is inserted into Gmail compose.
-- Use `Insert & Send` and confirm the draft is inserted and the send flow continues.
+- Use `Generate & Insert` and confirm the draft is inserted without sending the email.
+- Review the inserted draft manually, then send from Gmail only after user approval.
 - Confirm AI errors show a visible message instead of failing silently.
 - Disable the AI drafting feature flag and confirm the Gmail AI button does not appear.
 
