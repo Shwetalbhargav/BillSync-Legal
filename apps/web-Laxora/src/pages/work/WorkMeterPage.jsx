@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { activitySamplesApi } from "../../api/activitySamples";
 import { appUsageEventsApi } from "../../api/appUsageEvents";
+import { authApi } from "../../api/auth";
 import { idleIntervalsApi } from "../../api/idleIntervals";
 import { workCaptureApi } from "../../api/workCapture";
 import { workSessionsApi } from "../../api/workSessions";
@@ -32,7 +33,7 @@ const initialForm = {
 const privilegedMeterRoles = new Set(["admin", "partner"]);
 const internalMeterTools = new Set(["manual", "billbot_ai", "other"]);
 const desktopMeterTools = new Set(["microsoft_word", "pdf_reader", "google_meet", "zoom", "microsoft_teams", "whatsapp"]);
-const desktopAgentUrl = "http://127.0.0.1:5273/";
+const desktopAgentProtocol = "lexora-desktop://open-tool";
 
 const wordSessionTemplatePath = "/files/lexora-work-session.dotx";
 const samplePdfPath = "/files/sample.pdf";
@@ -76,7 +77,7 @@ const toolNames = {
 };
 
 function isExternalMeterTool(workTool) {
-  return Boolean(workTool && !internalMeterTools.has(workTool));
+  return Boolean(workTool && !internalMeterTools.has(workTool) && !isDesktopMeterTool(workTool));
 }
 
 function isDesktopMeterTool(workTool) {
@@ -176,11 +177,17 @@ function launchWithProtocolFallback(protocolUrl, fallbackUrl, toolWindow) {
 function createToolLauncher(workTool) {
   if (isDesktopMeterTool(workTool)) {
     const toolWindow = window.open("about:blank", "_blank");
-    return (sessionId) => {
-      const desktopUrl = new URL(desktopAgentUrl);
+    return async (sessionId) => {
+      const desktopUrl = new URL(desktopAgentProtocol);
       desktopUrl.searchParams.set("tool", workTool);
       if (sessionId) desktopUrl.searchParams.set("sessionId", sessionId);
       desktopUrl.searchParams.set("returnUrl", window.location.href);
+      try {
+        const handoff = await authApi.desktopHandoffToken();
+        if (handoff?.handoffToken) desktopUrl.searchParams.set("handoffToken", handoff.handoffToken);
+      } catch {
+        desktopUrl.searchParams.set("needsLogin", "1");
+      }
       if (toolWindow) {
         toolWindow.location.href = desktopUrl.toString();
         return;
@@ -280,7 +287,7 @@ export function WorkMeterPage() {
       if (!hiddenAtRef.current) return;
       const awaySeconds = Math.round((Date.now() - new Date(hiddenAtRef.current).getTime()) / 1000);
       hiddenAtRef.current = null;
-      if (isExternalMeterTool(session.workTool)) return;
+      if (isExternalMeterTool(session.workTool) || isDesktopMeterTool(session.workTool)) return;
       const thresholdSeconds = Number(session.raw?.webMeter?.idleAfterSeconds || 300);
       if (awaySeconds < thresholdSeconds) return;
       try {
@@ -339,7 +346,7 @@ export function WorkMeterPage() {
   }, []);
 
   useEffect(() => {
-    if (!session?.id || session.status !== "running") return undefined;
+    if (!session?.id || session.status !== "running" || isDesktopMeterTool(session.workTool)) return undefined;
     activityBucketRef.current = {
       windowStart: new Date(),
       keyboardCount: 0,
@@ -441,7 +448,7 @@ export function WorkMeterPage() {
       flushBucket();
       flushAppUsage();
     };
-  }, [session?.id, session?.status]);
+  }, [session?.id, session?.status, session?.workTool]);
 
   const canSeeAllMeterOptions = privilegedMeterRoles.has(String(user?.role || "").toLowerCase());
   const userScopedMatters = useMemo(

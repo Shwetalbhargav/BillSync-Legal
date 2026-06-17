@@ -6,4 +6,5 @@ export const authApi = {
   currentUser: () => request("/api/auth/me"),
   logout: () => request("/api/auth/logout", { method: "POST" }),
   extensionToken: () => request("/api/auth/extension-token", { method: "POST" }),
+  desktopHandoffToken: () => request("/api/auth/desktop-handoff-token", { method: "POST" }),
 };
