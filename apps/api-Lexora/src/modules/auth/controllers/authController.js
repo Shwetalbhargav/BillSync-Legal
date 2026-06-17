@@ -5,10 +5,13 @@ import { toSafeUser } from "../../users/utils/safeUser.js";
 import {
   clearAuthCookie,
   getExtensionJwtExpiresIn,
+  getDesktopHandoffJwtExpiresIn,
   setAuthCookie,
   signAuthToken,
+  signDesktopHandoffToken,
   signDesktopToken,
   signExtensionToken,
+  verifyDesktopHandoffToken,
 } from "../services/authTokenService.js";
 
 function isDuplicateUserError(err) {
@@ -163,6 +166,58 @@ export const issueExtensionToken = async (req, res) => {
   } catch (err) {
     console.error("Extension token error:", err);
     res.status(500).json({ success: false, error: "Server error" });
+  }
+};
+
+export const issueDesktopHandoffToken = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id);
+    if (!user) return res.status(404).json({ success: false, error: "User not found" });
+
+    const handoffToken = signDesktopHandoffToken(user);
+    res.json({
+      success: true,
+      handoffToken,
+      tokenType: "Bearer",
+      expiresIn: getDesktopHandoffJwtExpiresIn(),
+      user: toSafeUser(user),
+      desktop: {
+        purpose: "desktop_agent_handoff",
+      },
+    });
+  } catch (err) {
+    console.error("Desktop handoff token error:", err);
+    res.status(500).json({ success: false, error: "Server error" });
+  }
+};
+
+export const loginDesktopWithHandoff = async (req, res) => {
+  try {
+    const { handoffToken } = req.body;
+    if (!handoffToken) return res.status(400).json({ success: false, error: "handoffToken is required" });
+
+    const decoded = verifyDesktopHandoffToken(handoffToken);
+    if (decoded.purpose !== "desktop_agent_handoff") {
+      return res.status(401).json({ success: false, error: "Invalid handoff token" });
+    }
+
+    const user = await User.findById(decoded.id);
+    if (!user) return res.status(404).json({ success: false, error: "User not found" });
+
+    const token = signDesktopToken(user);
+    res.json({
+      success: true,
+      token,
+      tokenType: "Bearer",
+      user: toSafeUser(user),
+      desktop: {
+        purpose: "desktop_agent",
+        source: "web_handoff",
+      },
+    });
+  } catch (err) {
+    console.error("Desktop handoff login error:", err);
+    res.status(401).json({ success: false, error: "Invalid or expired handoff token" });
   }
 };
 

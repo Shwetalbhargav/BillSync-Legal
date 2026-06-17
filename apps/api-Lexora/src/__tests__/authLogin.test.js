@@ -142,6 +142,68 @@ test('POST /api/auth/desktop-login returns a bearer token accepted by authentica
   expect(meBody.user.id).toBe(user._id);
 });
 
+test('POST /api/auth/desktop-handoff-token exchanges a web session for a desktop token', async () => {
+  const user = {
+    _id: '507f1f77bcf86cd799439011',
+    name: 'Asha Partner',
+    email: 'asha@example.com',
+    mobile: '9876543210',
+    role: 'partner',
+    firmId: FIRM_ID,
+    photoUrl: '/images/default-user.jpg',
+    passwordHash: 'hidden',
+  };
+  const webToken = signAuthToken(user);
+
+  findById.mockResolvedValue(user);
+
+  const handoffResponse = await fetch(`${baseUrl}/api/auth/desktop-handoff-token`, {
+    method: 'POST',
+    headers: {
+      cookie: `${AUTH_COOKIE_NAME}=${webToken}`,
+    },
+  });
+  const handoffBody = await handoffResponse.json();
+
+  expect(handoffResponse.status).toBe(200);
+  expect(handoffBody).toMatchObject({
+    success: true,
+    tokenType: 'Bearer',
+    desktop: { purpose: 'desktop_agent_handoff' },
+    user: {
+      id: user._id,
+      name: user.name,
+      role: user.role,
+      firmId: FIRM_ID,
+    },
+  });
+  expect(handoffBody.handoffToken).toEqual(expect.any(String));
+
+  const desktopResponse = await fetch(`${baseUrl}/api/auth/desktop-handoff-login`, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ handoffToken: handoffBody.handoffToken }),
+  });
+  const desktopBody = await desktopResponse.json();
+
+  expect(desktopResponse.status).toBe(200);
+  expect(desktopBody).toMatchObject({
+    success: true,
+    tokenType: 'Bearer',
+    desktop: {
+      purpose: 'desktop_agent',
+      source: 'web_handoff',
+    },
+    user: {
+      id: user._id,
+      name: user.name,
+      role: user.role,
+      firmId: FIRM_ID,
+    },
+  });
+  expect(desktopBody.token).toEqual(expect.any(String));
+});
+
 test('POST /api/auth/login rejects requests missing a required field', async () => {
   const response = await fetch(`${baseUrl}/api/auth/login`, {
     method: 'POST',

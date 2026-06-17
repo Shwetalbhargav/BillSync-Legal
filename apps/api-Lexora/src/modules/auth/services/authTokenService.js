@@ -2,6 +2,7 @@ import jwt from 'jsonwebtoken';
 
 const DEFAULT_EXPIRES_IN = '1d';
 const DEFAULT_EXTENSION_EXPIRES_IN = '15m';
+const DEFAULT_DESKTOP_HANDOFF_EXPIRES_IN = '2m';
 export const AUTH_COOKIE_NAME = process.env.AUTH_COOKIE_NAME || 'billbot_auth';
 const LEGACY_AUTH_COOKIE_NAME = 'token';
 const JWT_ALGORITHM = 'HS256';
@@ -50,6 +51,10 @@ export function getDesktopJwtAudience() {
   return process.env.DESKTOP_JWT_AUDIENCE || 'billbot-desktop';
 }
 
+export function getDesktopHandoffJwtAudience() {
+  return process.env.DESKTOP_HANDOFF_JWT_AUDIENCE || 'billbot-desktop-handoff';
+}
+
 export function getJwtVerifyOptions() {
   return {
     algorithms: [JWT_ALGORITHM],
@@ -94,6 +99,27 @@ export function signDesktopToken(user) {
     audience: getDesktopJwtAudience(),
     expiresIn: getJwtExpiresIn(),
     purpose: 'desktop_agent',
+  });
+}
+
+export function getDesktopHandoffJwtExpiresIn() {
+  return process.env.DESKTOP_HANDOFF_JWT_EXPIRES_IN || DEFAULT_DESKTOP_HANDOFF_EXPIRES_IN;
+}
+
+export function signDesktopHandoffToken(user) {
+  return signAuthToken(user, {
+    audience: getDesktopHandoffJwtAudience(),
+    expiresIn: getDesktopHandoffJwtExpiresIn(),
+    purpose: 'desktop_agent_handoff',
+  });
+}
+
+export function verifyDesktopHandoffToken(token) {
+  return jwt.verify(token, getJwtSecret(), {
+    algorithms: [JWT_ALGORITHM],
+    issuer: getJwtIssuer(),
+    audience: getDesktopHandoffJwtAudience(),
+    clockTolerance: Number(process.env.JWT_CLOCK_TOLERANCE_SECONDS || 5),
   });
 }
 
