@@ -22,6 +22,23 @@ let tray;
 let authSession = readAuthSession(store);
 let currentUser = authSession?.user || null;
 let pollTimer;
+let pendingTool = '';
+let pendingSessionId = '';
+let protocolRegistered = false;
+
+const protocolName = 'lexora-desktop';
+const hasSingleInstanceLock = app.requestSingleInstanceLock();
+
+if (!hasSingleInstanceLock) {
+  app.quit();
+}
+
+function registerProtocolHandler() {
+  if (process.defaultApp) {
+    return app.setAsDefaultProtocolClient(protocolName, process.execPath, [app.getAppPath()]);
+  }
+  return app.setAsDefaultProtocolClient(protocolName);
+}
 
 const client = new BackendClient({
   getBaseUrl: () => store.get('backendBaseUrl') || DEFAULT_BACKEND_URL,
@@ -54,6 +71,61 @@ const desktopToolTargets = {
   whatsapp: () => 'https://web.whatsapp.com/',
   billbot_ai: () => new URL('/app/assistant', webAppOrigin()).toString(),
 };
+
+async function openDesktopTool(tool) {
+  const target = desktopToolTargets[String(tool || '')];
+  if (!target) throw new Error('Unknown desktop tool.');
+  await shell.openExternal(target());
+  return broadcastState({ lastOpenedTool: tool, pendingTool: '', pendingSessionId: '' });
+}
+
+function parseProtocolLaunch(rawUrl) {
+  if (!rawUrl || !String(rawUrl).startsWith(`${protocolName}://`)) return null;
+  try {
+    const parsed = new URL(rawUrl);
+    return {
+      handoffToken: parsed.searchParams.get('handoffToken') || '',
+      sessionId: parsed.searchParams.get('sessionId') || '',
+      tool: parsed.searchParams.get('tool') || '',
+    };
+  } catch {
+    return null;
+  }
+}
+
+async function applyDesktopAuthResponse(response) {
+  authSession = {
+    token: response.token,
+    tokenType: response.tokenType || 'Bearer',
+    user: response.user,
+    loggedInAt: new Date().toISOString(),
+  };
+  currentUser = response.user;
+  writeAuthSession(store, authSession);
+  await refreshUser().catch(() => currentUser);
+  startPolling();
+}
+
+async function handleProtocolLaunch(rawUrl) {
+  const launch = parseProtocolLaunch(rawUrl);
+  if (!launch?.tool) return;
+  pendingTool = launch.tool;
+  pendingSessionId = launch.sessionId;
+  showWindow();
+  broadcastState({ pendingTool, pendingSessionId });
+  if (launch.handoffToken) {
+    try {
+      const response = await client.desktopHandoffLogin(launch.handoffToken);
+      await applyDesktopAuthResponse(response);
+    } catch (error) {
+      broadcastState({ lastError: error.message || 'Could not sign in from web session', pendingTool, pendingSessionId });
+    }
+  }
+  if (!authSession?.token) return;
+  await openDesktopTool(launch.tool).catch((error) => {
+    broadcastState({ lastError: error.message || 'Could not open desktop tool', pendingTool, pendingSessionId });
+  });
+}
 
 function idOf(value) {
   if (!value) return '';
@@ -142,6 +214,9 @@ function buildState(extra = {}) {
     user: currentUser,
     backendBaseUrl: store.get('backendBaseUrl') || DEFAULT_BACKEND_URL,
     webAppUrl: store.get('webAppUrl') || DEFAULT_WEB_APP_URL,
+    pendingSessionId,
+    pendingTool,
+    protocolRegistered,
     ...tracker.snapshot(),
     ...extra,
   };
@@ -202,16 +277,8 @@ ipcMain.handle('agent:update-settings', async (_event, settings) => {
 
 ipcMain.handle('agent:login', async (_event, credentials) => {
   const response = await client.desktopLogin(credentials);
-  authSession = {
-    token: response.token,
-    tokenType: response.tokenType || 'Bearer',
-    user: response.user,
-    loggedInAt: new Date().toISOString(),
-  };
-  currentUser = response.user;
-  writeAuthSession(store, authSession);
-  await refreshUser().catch(() => currentUser);
-  startPolling();
+  await applyDesktopAuthResponse(response);
+  if (pendingTool) await openDesktopTool(pendingTool).catch(() => null);
   return broadcastState({ lastError: '' });
 });
 
@@ -235,13 +302,33 @@ ipcMain.handle('agent:open-web-meter', async () => {
 });
 
 ipcMain.handle('agent:open-tool', async (_event, tool) => {
-  const target = desktopToolTargets[String(tool || '')];
-  if (!target) throw new Error('Unknown desktop tool.');
-  await shell.openExternal(target());
-  return broadcastState({ lastOpenedTool: tool });
+  return openDesktopTool(tool);
+});
+
+ipcMain.handle('agent:stop-session', async (_event, options = {}) => {
+  const session = tracker.snapshot().session;
+  if (!session?.id) throw new Error('No active work session.');
+  await Promise.allSettled([
+    tracker.flushSample(),
+    tracker.flushAppUsage(true),
+    queue.process({ force: true }),
+  ]);
+  const response = await client.stopSession(session.id, {
+    endedAt: new Date().toISOString(),
+    finalNarrative: session.title || session.narrative || 'Focused legal work',
+    createTimeEntry: true,
+    submitTimeEntry: options.submitTimeEntry !== false,
+  });
+  tracker.setSession(null);
+  await pollCurrentSession();
+  return broadcastState({
+    lastSavedEntry: response?.timeEntry || null,
+    lastMessage: options.submitTimeEntry === false ? 'Work was saved as a draft.' : 'Work was saved and submitted.',
+  });
 });
 
 app.whenReady().then(async () => {
+  protocolRegistered = registerProtocolHandler();
   createWindow();
   try {
     createTray();
@@ -254,6 +341,22 @@ app.whenReady().then(async () => {
     startPolling();
   }
   broadcastState();
+  const launchUrl = process.argv.find((arg) => String(arg).startsWith(`${protocolName}://`));
+  if (launchUrl) await handleProtocolLaunch(launchUrl);
+});
+
+app.on('second-instance', (_event, argv) => {
+  const launchUrl = argv.find((arg) => String(arg).startsWith(`${protocolName}://`));
+  if (launchUrl) {
+    handleProtocolLaunch(launchUrl);
+    return;
+  }
+  showWindow();
+});
+
+app.on('open-url', (event, url) => {
+  event.preventDefault();
+  handleProtocolLaunch(url);
 });
 
 app.on('activate', () => {

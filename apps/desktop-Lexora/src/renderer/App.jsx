@@ -185,7 +185,7 @@ function ToolLauncher({ requestedTool, onOpenTool }) {
   );
 }
 
-function Dashboard({ state, requestedTool, onLogout, onRetry, onOpenTool, onOpenWeb }) {
+function Dashboard({ state, requestedTool, onLogout, onRetry, onOpenTool, onOpenWeb, onStopSession }) {
   const live = state.live || {};
   const session = state.session;
   const nativeNotes = useMemo(() => Object.entries(state.nativeStatus || {}).map(([key, value]) => `${key}: ${value}`), [state.nativeStatus]);
@@ -200,9 +200,16 @@ function Dashboard({ state, requestedTool, onLogout, onRetry, onOpenTool, onOpen
         </div>
         <div className="actions">
           <button type="button" onClick={onOpenWeb}>Open Web Work Meter</button>
+          {session ? (
+            <>
+              <button className="secondary" type="button" onClick={() => onStopSession(false)}>Save draft</button>
+              <button type="button" onClick={() => onStopSession(true)}>Save & submit</button>
+            </>
+          ) : null}
           <button className="secondary" type="button" onClick={onLogout}><LogOut /> Logout</button>
         </div>
       </section>
+      {state.lastMessage ? <section className="panel success-message">{state.lastMessage}</section> : null}
 
       <div className="metrics">
         <section className="metric"><Activity /><span>Activity</span><strong>{live.activityPercent || 0}%</strong></section>
@@ -235,6 +242,7 @@ function Dashboard({ state, requestedTool, onLogout, onRetry, onOpenTool, onOpen
             </div>
           </div>
           <p>Last poll: {formatDate(state.lastPollAt)}</p>
+          <p>Desktop link: {state.protocolRegistered ? 'registered' : 'needs app restart'}</p>
           {state.lastError ? <p className="error">{state.lastError}</p> : null}
           <button className="secondary" type="button" onClick={onRetry}>Retry queued sync</button>
         </section>
@@ -251,7 +259,7 @@ function Dashboard({ state, requestedTool, onLogout, onRetry, onOpenTool, onOpen
 function App() {
   const [state, setState] = useState({ signedIn: false, queue: { pending: 0 }, live: {} });
   const [busy, setBusy] = useState(false);
-  const [requestedTool] = useState(() => new URLSearchParams(window.location.search).get('tool') || '');
+  const requestedTool = state.pendingTool || '';
 
   useEffect(() => {
     if (!window.lexoraAgent) return undefined;
@@ -287,6 +295,7 @@ function App() {
           onRetry={() => run(() => window.lexoraAgent.retrySync())}
           onOpenTool={(tool) => run(() => window.lexoraAgent.openTool(tool))}
           onOpenWeb={() => run(() => window.lexoraAgent.openWebMeter())}
+          onStopSession={(submitTimeEntry) => run(() => window.lexoraAgent.stopSession({ submitTimeEntry }))}
         />
       ) : (
         <LoginForm

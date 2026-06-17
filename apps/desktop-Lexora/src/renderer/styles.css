@@ -302,6 +302,13 @@ button:disabled {
   color: #b42318;
 }
 
+.success-message {
+  background: #e6f7ef;
+  border-color: #9edfc4;
+  color: #08734a;
+  font-weight: 800;
+}
+
 .busy {
   background: rgba(23, 32, 51, 0.74);
   border-radius: 999px;

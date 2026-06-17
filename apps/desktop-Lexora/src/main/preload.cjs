@@ -8,6 +8,7 @@ contextBridge.exposeInMainWorld('lexoraAgent', {
   retrySync: () => ipcRenderer.invoke('agent:retry-sync'),
   openWebMeter: () => ipcRenderer.invoke('agent:open-web-meter'),
   openTool: (tool) => ipcRenderer.invoke('agent:open-tool', tool),
+  stopSession: (options) => ipcRenderer.invoke('agent:stop-session', options),
   onState: (callback) => {
     const listener = (_event, state) => callback(state);
     ipcRenderer.on('agent:state', listener);

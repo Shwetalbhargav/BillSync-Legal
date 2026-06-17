@@ -70,6 +70,15 @@ export class BackendClient {
     });
   }
 
+  desktopHandoffLogin(handoffToken) {
+    return this.request('/api/auth/desktop-handoff-login', {
+      method: 'POST',
+      body: { handoffToken },
+      token: '',
+      timeoutMs: 60000,
+    });
+  }
+
   me() {
     return this.request('/api/auth/me');
   }
@@ -88,6 +97,10 @@ export class BackendClient {
 
   appUsageEvent(workSessionId, body) {
     return this.request(`/api/app-usage-events/work-sessions/${workSessionId}/events`, { method: 'POST', body });
+  }
+
+  stopSession(workSessionId, body) {
+    return this.request(`/api/work-sessions/${workSessionId}/stop`, { method: 'POST', body });
   }
 
   detectIdle(workSessionId, body) {
