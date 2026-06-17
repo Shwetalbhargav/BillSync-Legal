@@ -155,6 +155,71 @@ button:disabled {
   justify-content: flex-end;
 }
 
+.handoff {
+  background: #fff7df;
+  border: 1px solid #ead18d;
+  border-radius: 7px;
+  color: #7a5200 !important;
+  font-weight: 800;
+  margin-bottom: 14px !important;
+  padding: 10px 12px;
+}
+
+.tool-grid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.tool-card {
+  align-items: center;
+  background: #f8fafd;
+  border: 1px solid #dfe5ef;
+  color: #172033;
+  justify-content: flex-start;
+  min-height: 84px;
+  padding: 14px;
+  text-align: left;
+}
+
+.tool-card:hover,
+.tool-card.selected {
+  background: #eef5ff;
+  border-color: #2454d6;
+}
+
+.tool-icon {
+  align-items: center;
+  background: #0b3a66;
+  border-radius: 7px;
+  color: #fff;
+  display: inline-flex;
+  height: 38px;
+  justify-content: center;
+  width: 38px;
+}
+
+.tool-icon svg {
+  height: 19px;
+  width: 19px;
+}
+
+.tool-copy {
+  display: grid;
+  gap: 4px;
+}
+
+.tool-copy strong {
+  font-size: 14px;
+}
+
+.tool-copy small {
+  color: #61708a;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
 .metrics {
   display: grid;
   gap: 14px;
@@ -250,6 +315,7 @@ button:disabled {
 
 @media (max-width: 860px) {
   .grid.two,
+  .tool-grid,
   .metrics {
     grid-template-columns: 1fr;
   }

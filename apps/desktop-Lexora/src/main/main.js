@@ -30,6 +30,31 @@ const client = new BackendClient({
 const queue = new SyncQueue(store, client);
 const tracker = new ActivityTracker({ queue, client, emitState: broadcastState });
 
+function webAppOrigin() {
+  try {
+    return new URL(store.get('webAppUrl') || DEFAULT_WEB_APP_URL).origin;
+  } catch {
+    return new URL(DEFAULT_WEB_APP_URL).origin;
+  }
+}
+
+function webFileUrl(filePath) {
+  return new URL(filePath, webAppOrigin()).toString();
+}
+
+const desktopToolTargets = {
+  microsoft_word: () => `ms-word:nft|u|${webFileUrl('/files/lexora-work-session.dotx')}`,
+  pdf_reader: () => webFileUrl('/files/sample.pdf'),
+  google_docs: () => 'https://docs.google.com/document/u/0/',
+  google_chrome: () => 'https://www.google.com/',
+  gmail: () => 'https://mail.google.com/mail/u/0/#inbox?lb_meter=1&lb_compose=1&lb_prompt=BillSync%20Work%20Meter',
+  google_meet: () => 'https://meet.google.com/',
+  zoom: () => 'https://zoom.us/start/videomeeting',
+  microsoft_teams: () => 'https://teams.microsoft.com/v2/',
+  whatsapp: () => 'https://web.whatsapp.com/',
+  billbot_ai: () => new URL('/app/assistant', webAppOrigin()).toString(),
+};
+
 function idOf(value) {
   if (!value) return '';
   if (typeof value === 'string') return value;
@@ -207,6 +232,13 @@ ipcMain.handle('agent:retry-sync', async () => {
 ipcMain.handle('agent:open-web-meter', async () => {
   await shell.openExternal(store.get('webAppUrl') || DEFAULT_WEB_APP_URL);
   return true;
+});
+
+ipcMain.handle('agent:open-tool', async (_event, tool) => {
+  const target = desktopToolTargets[String(tool || '')];
+  if (!target) throw new Error('Unknown desktop tool.');
+  await shell.openExternal(target());
+  return broadcastState({ lastOpenedTool: tool });
 });
 
 app.whenReady().then(async () => {

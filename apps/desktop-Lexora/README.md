@@ -11,6 +11,11 @@ npm run dev
 
 The agent talks to the backend using `POST /api/auth/desktop-login` and then polls `GET /api/work-sessions/current`.
 
+Default deployed targets:
+
+- Backend API: `https://billsync-legal.onrender.com`
+- Web Work Meter: `https://bill-sync-legal.vercel.app/app/work-meter`
+
 ## Privacy
 
 The agent sends counts and timing only:

@@ -1,5 +1,5 @@
 export const DEFAULT_BACKEND_URL = 'https://billsync-legal.onrender.com';
-export const DEFAULT_WEB_APP_URL = 'http://127.0.0.1:5173/app/work-meter';
+export const DEFAULT_WEB_APP_URL = 'https://bill-sync-legal.vercel.app/app/work-meter';
 
 export const POLL_SESSION_MS = 10000;
 export const FLUSH_SAMPLE_MS = 15000;

@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import {
   AlertTriangle,
   Bot,
@@ -104,34 +103,20 @@ function getWorkToolOptionsForType(activityType) {
 
 const toolMeta = {
   manual: { icon: Timer, detail: "Track work inside Lexora." },
-  microsoft_word: { icon: FileText, detail: "Opens Word for a new document." },
+  microsoft_word: { icon: FileText, detail: "Starts the meter, then hands off to the desktop agent." },
   google_docs: { icon: FileText, detail: "Opens Google Docs in a new tab." },
-  pdf_reader: { icon: FileType, detail: "Opens a sample PDF for review." },
+  pdf_reader: { icon: FileType, detail: "Starts the meter, then hands off to the desktop agent." },
   google_chrome: { icon: Chrome, detail: "Opens Chrome/web research." },
   gmail: { icon: Mail, detail: "Opens Gmail." },
-  google_meet: { icon: Video, detail: "Opens Google Meet." },
-  zoom: { icon: Video, detail: "Opens Zoom web launcher." },
-  microsoft_teams: { icon: MonitorPlay, detail: "Opens Microsoft Teams." },
-  whatsapp: { icon: MessageCircle, detail: "Opens WhatsApp Web." },
+  google_meet: { icon: Video, detail: "Starts the meter, then hands off to the desktop agent." },
+  zoom: { icon: Video, detail: "Starts the meter, then hands off to the desktop agent." },
+  microsoft_teams: { icon: MonitorPlay, detail: "Starts the meter, then hands off to the desktop agent." },
+  whatsapp: { icon: MessageCircle, detail: "Starts the meter, then hands off to the desktop agent." },
   billbot_ai: { icon: Bot, detail: "Opens the Assistant workspace." },
   other: { icon: Globe2, detail: "Track work in another tool." },
 };
 
-const blankWordTemplatePath = "/files/blank.dotx";
-const samplePdfPath = "/files/sample.pdf";
-
-const toolLinks = {
-  microsoft_word: blankWordTemplatePath,
-  google_docs: "https://docs.google.com/document/u/0/",
-  pdf_reader: samplePdfPath,
-  google_chrome: "https://www.google.com/",
-  gmail: "https://mail.google.com/mail/u/0/#inbox?lb_meter=1&lb_compose=1&lb_prompt=BillSync%20Work%20Meter",
-  google_meet: "https://meet.google.com/",
-  zoom: "https://zoom.us/start/videomeeting",
-  microsoft_teams: "https://teams.microsoft.com/v2/",
-  whatsapp: "https://web.whatsapp.com/",
-  billbot_ai: "/app/assistant",
-};
+const desktopMeterTools = new Set(["microsoft_word", "pdf_reader", "google_meet", "zoom", "microsoft_teams", "whatsapp"]);
 
 function optionLabel(options, value, fallback = "Not set") {
   return options.find(([optionValue]) => optionValue === value)?.[1] || fallback;
@@ -139,17 +124,6 @@ function optionLabel(options, value, fallback = "Not set") {
 
 function selectedName(items, id, labelKey) {
   return items.find((item) => item.id === id)?.[labelKey] || "";
-}
-
-function toAbsoluteUrl(url) {
-  if (!url) return "";
-  if (url.startsWith("/") && typeof window !== "undefined") return `${window.location.origin}${url}`;
-  return url;
-}
-
-function getToolLink(workTool) {
-  if (workTool === "microsoft_word") return `ms-word:nft|u|${toAbsoluteUrl(blankWordTemplatePath)}`;
-  return toAbsoluteUrl(toolLinks[workTool] || "");
 }
 
 export function WorkMeterPanel({
@@ -173,7 +147,7 @@ export function WorkMeterPanel({
   const effectiveWorkTool = getWorkToolForType(form.activityType, form.workTool);
   const selectedTool = toolMeta[effectiveWorkTool] || toolMeta.manual;
   const SelectedToolIcon = selectedTool.icon;
-  const selectedToolLink = getToolLink(effectiveWorkTool);
+  const startsInDesktop = desktopMeterTools.has(effectiveWorkTool);
   const selectedClientName = selectedName(clients, form.clientId, "name");
   const selectedMatterName = selectedName(matters, form.caseId, "title");
   const selectedTaskName = selectedName(tasks, form.taskId, "title");
@@ -267,17 +241,6 @@ export function WorkMeterPanel({
                       <p className="mt-1 text-xs font-semibold leading-5 text-muted">{selectedTool.detail}</p>
                     </div>
                   </div>
-                  {selectedToolLink ? (
-                    selectedToolLink.startsWith("/") ? (
-                      <Link className="focus-ring mt-5 inline-flex min-h-11 w-full items-center justify-center rounded-lg border border-border bg-white px-3 py-2 text-sm font-semibold text-primary hover:bg-blueSoft" to={selectedToolLink}>
-                        Open tool
-                      </Link>
-                    ) : (
-                      <a className="focus-ring mt-5 inline-flex min-h-11 w-full items-center justify-center rounded-lg border border-border bg-white px-3 py-2 text-sm font-semibold text-primary hover:bg-blueSoft" href={selectedToolLink} rel="noreferrer" target="_blank">
-                        Open tool
-                      </a>
-                    )
-                  ) : null}
                   <div className="mt-4 space-y-3 text-sm">
                     <p className="rounded-lg bg-white p-3"><span className="font-bold text-primary">Client:</span> {selectedClientName || "Select client"}</p>
                     <p className="rounded-lg bg-white p-3"><span className="font-bold text-primary">Matter:</span> {selectedMatterName || "Select matter"}</p>
@@ -285,7 +248,7 @@ export function WorkMeterPanel({
                   </div>
                   <Button className="mt-4 w-full" disabled={isSaving} isLoading={isSaving} onClick={onStart} type="button">
                     <Play className="h-4 w-4" />
-                    Start meter and open tool
+                    {startsInDesktop ? "Start meter in desktop app" : "Start meter"}
                   </Button>
                 </aside>
               </div>

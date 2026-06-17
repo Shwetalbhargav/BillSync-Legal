@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Activity, Clock, LogOut, Monitor, RefreshCw, ShieldCheck, WifiOff } from 'lucide-react';
+import { Activity, Bot, Chrome, Clock, ExternalLink, FileText, FileType, LogOut, Mail, MessageCircle, Monitor, RefreshCw, ShieldCheck, Video, WifiOff } from 'lucide-react';
 import { createRoot } from 'react-dom/client';
 import './styles.css';
 
@@ -31,6 +31,19 @@ function sessionTitle(session) {
   const client = session.clientName || session.clientId?.displayName || session.clientId?.name || 'Client';
   return `${client} / ${matter}`;
 }
+
+const toolCards = [
+  { id: 'microsoft_word', label: 'Microsoft Word', detail: 'Create a Lexora work-session document.', icon: FileText },
+  { id: 'pdf_reader', label: 'PDF reader', detail: 'Open the sample review PDF.', icon: FileType },
+  { id: 'google_docs', label: 'Google Docs', detail: 'Open Docs for browser drafting.', icon: FileText },
+  { id: 'google_chrome', label: 'Chrome research', detail: 'Open browser research.', icon: Chrome },
+  { id: 'gmail', label: 'Gmail', detail: 'Open Gmail with meter context.', icon: Mail },
+  { id: 'google_meet', label: 'Google Meet', detail: 'Open Meet for calls or hearings.', icon: Video },
+  { id: 'zoom', label: 'Zoom', detail: 'Open Zoom web launcher.', icon: Video },
+  { id: 'microsoft_teams', label: 'Teams', detail: 'Open Microsoft Teams.', icon: Monitor },
+  { id: 'whatsapp', label: 'WhatsApp Web', detail: 'Open WhatsApp Web.', icon: MessageCircle },
+  { id: 'billbot_ai', label: 'Assistant', detail: 'Open the Lexora assistant.', icon: Bot },
+];
 
 function StatusPill({ state }) {
   const session = state.session;
@@ -143,7 +156,36 @@ function LoginForm({ state, onLogin, onSettings }) {
   );
 }
 
-function Dashboard({ state, onLogout, onRetry, onOpenWeb }) {
+function ToolLauncher({ requestedTool, onOpenTool }) {
+  return (
+    <section className="panel">
+      <div className="panel-title">
+        <ExternalLink />
+        <div>
+          <h2>Work tools</h2>
+          <p>Launch desktop and browser tools from the agent after starting a web Work Meter session.</p>
+        </div>
+      </div>
+      {requestedTool ? <p className="handoff">Web requested: {toolCards.find((tool) => tool.id === requestedTool)?.label || requestedTool}</p> : null}
+      <div className="tool-grid">
+        {toolCards.map((tool) => {
+          const Icon = tool.icon;
+          return (
+            <button className={`tool-card ${requestedTool === tool.id ? 'selected' : ''}`} key={tool.id} onClick={() => onOpenTool(tool.id)} type="button">
+              <span className="tool-icon"><Icon /></span>
+              <span className="tool-copy">
+                <strong>{tool.label}</strong>
+                <small>{tool.detail}</small>
+              </span>
+            </button>
+          );
+        })}
+      </div>
+    </section>
+  );
+}
+
+function Dashboard({ state, requestedTool, onLogout, onRetry, onOpenTool, onOpenWeb }) {
   const live = state.live || {};
   const session = state.session;
   const nativeNotes = useMemo(() => Object.entries(state.nativeStatus || {}).map(([key, value]) => `${key}: ${value}`), [state.nativeStatus]);
@@ -168,6 +210,8 @@ function Dashboard({ state, onLogout, onRetry, onOpenWeb }) {
         <section className="metric"><span className="iconText">K</span><span>Keys</span><strong>{live.keyboardCount || 0}</strong></section>
         <section className="metric"><span className="iconText">M</span><span>Mouse</span><strong>{live.mouseCount || 0}</strong></section>
       </div>
+
+      <ToolLauncher requestedTool={requestedTool} onOpenTool={onOpenTool} />
 
       <div className="grid two">
         <section className="panel">
@@ -207,8 +251,10 @@ function Dashboard({ state, onLogout, onRetry, onOpenWeb }) {
 function App() {
   const [state, setState] = useState({ signedIn: false, queue: { pending: 0 }, live: {} });
   const [busy, setBusy] = useState(false);
+  const [requestedTool] = useState(() => new URLSearchParams(window.location.search).get('tool') || '');
 
   useEffect(() => {
+    if (!window.lexoraAgent) return undefined;
     window.lexoraAgent.getState().then(setState);
     return window.lexoraAgent.onState(setState);
   }, []);
@@ -236,8 +282,10 @@ function App() {
       {state.signedIn ? (
         <Dashboard
           state={state}
+          requestedTool={requestedTool}
           onLogout={() => run(() => window.lexoraAgent.logout())}
           onRetry={() => run(() => window.lexoraAgent.retrySync())}
+          onOpenTool={(tool) => run(() => window.lexoraAgent.openTool(tool))}
           onOpenWeb={() => run(() => window.lexoraAgent.openWebMeter())}
         />
       ) : (

@@ -31,15 +31,17 @@ const initialForm = {
 
 const privilegedMeterRoles = new Set(["admin", "partner"]);
 const internalMeterTools = new Set(["manual", "billbot_ai", "other"]);
+const desktopMeterTools = new Set(["microsoft_word", "pdf_reader", "google_meet", "zoom", "microsoft_teams", "whatsapp"]);
+const desktopAgentUrl = "http://127.0.0.1:5273/";
 
-const blankWordTemplatePath = "/files/blank.dotx";
+const wordSessionTemplatePath = "/files/lexora-work-session.dotx";
 const samplePdfPath = "/files/sample.pdf";
 
 const toolTargets = {
   microsoft_word: {
     type: "protocol",
     protocol: "ms-word:nft|u|{fileUrl}",
-    filePath: blankWordTemplatePath,
+    filePath: wordSessionTemplatePath,
     fallback: "https://www.office.com/launch/word",
   },
   google_docs: { url: "https://docs.google.com/document/u/0/", external: true },
@@ -75,6 +77,10 @@ const toolNames = {
 
 function isExternalMeterTool(workTool) {
   return Boolean(workTool && !internalMeterTools.has(workTool));
+}
+
+function isDesktopMeterTool(workTool) {
+  return desktopMeterTools.has(workTool);
 }
 
 function valueMatchesUser(value, userId) {
@@ -168,6 +174,20 @@ function launchWithProtocolFallback(protocolUrl, fallbackUrl, toolWindow) {
 }
 
 function createToolLauncher(workTool) {
+  if (isDesktopMeterTool(workTool)) {
+    const toolWindow = window.open("about:blank", "_blank");
+    return (sessionId) => {
+      const desktopUrl = new URL(desktopAgentUrl);
+      desktopUrl.searchParams.set("tool", workTool);
+      if (sessionId) desktopUrl.searchParams.set("sessionId", sessionId);
+      desktopUrl.searchParams.set("returnUrl", window.location.href);
+      if (toolWindow) {
+        toolWindow.location.href = desktopUrl.toString();
+        return;
+      }
+      window.open(desktopUrl.toString(), "_blank");
+    };
+  }
   const target = toolTargets[workTool];
   if (!target?.url && !target?.protocol) return null;
   const toolWindow = window.open("about:blank", "_blank");
