@@ -181,7 +181,7 @@ export function WorkMeterPanel({
   return (
     <>
       <section className="surface-card overflow-hidden">
-        <div className="grid gap-0 xl:grid-cols-[0.9fr_1.1fr]">
+        <div className="grid gap-0 xl:grid-cols-[0.8fr_1.2fr]">
           <div className="min-w-0 border-b border-border bg-gradient-to-br from-blueSoft via-white to-white p-6 xl:border-b-0 xl:border-r">
             <p className="text-sm font-semibold uppercase tracking-wide text-accent">Work Meter</p>
             <h1 className="mt-1 text-2xl font-bold text-primary md:text-3xl">{running ? "Work in progress" : "Ready to start"}</h1>
@@ -208,46 +208,46 @@ export function WorkMeterPanel({
           </div>
           <div className="min-w-0 p-6">
             {!running ? (
-              <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_280px]">
+              <div className="grid gap-6 2xl:grid-cols-[minmax(460px,1fr)_minmax(320px,0.72fr)]">
                 <div className="space-y-4">
                   {validation ? <div className="rounded-lg border border-warning/30 bg-warning/10 p-3 text-sm font-semibold text-warning">{validation}</div> : null}
-                  <div className="grid gap-4 md:grid-cols-2">
+                  <div className="grid gap-4 sm:grid-cols-2">
                     <label className="block text-sm font-semibold text-ink">
                       Client
-                      <select className="focus-ring mt-1 w-full rounded-lg border border-border px-3 py-3" onChange={(event) => onChange("clientId", event.target.value)} value={form.clientId}>
+                      <select className="focus-ring mt-2 min-h-12 w-full min-w-0 rounded-lg border border-border bg-white px-3 py-3 text-sm font-semibold text-ink" onChange={(event) => onChange("clientId", event.target.value)} value={form.clientId}>
                         <option value="">Select client</option>
                         {clients.map((client) => <option key={client.id} value={client.id}>{client.name}</option>)}
                       </select>
                     </label>
                     <label className="block text-sm font-semibold text-ink">
                       Matter
-                      <select className="focus-ring mt-1 w-full rounded-lg border border-border px-3 py-3" onChange={(event) => onChange("caseId", event.target.value)} value={form.caseId}>
+                      <select className="focus-ring mt-2 min-h-12 w-full min-w-0 rounded-lg border border-border bg-white px-3 py-3 text-sm font-semibold text-ink" onChange={(event) => onChange("caseId", event.target.value)} value={form.caseId}>
                         <option value="">Select matter</option>
                         {matters.map((matter) => <option key={matter.id} value={matter.id}>{matter.title}</option>)}
                       </select>
                     </label>
                     <label className="block text-sm font-semibold text-ink">
                       Task
-                      <select className="focus-ring mt-1 w-full rounded-lg border border-border px-3 py-3" onChange={(event) => onChange("taskId", event.target.value)} value={form.taskId}>
+                      <select className="focus-ring mt-2 min-h-12 w-full min-w-0 rounded-lg border border-border bg-white px-3 py-3 text-sm font-semibold text-ink" onChange={(event) => onChange("taskId", event.target.value)} value={form.taskId}>
                         <option value="">No linked task</option>
                         {tasks.map((task) => <option key={task.id} value={task.id}>{task.title}</option>)}
                       </select>
                     </label>
                     <label className="block text-sm font-semibold text-ink">
                       Work type
-                      <select className="focus-ring mt-1 w-full rounded-lg border border-border px-3 py-3" onChange={(event) => onChange("activityType", event.target.value)} value={form.activityType}>
+                      <select className="focus-ring mt-2 min-h-12 w-full min-w-0 rounded-lg border border-border bg-white px-3 py-3 text-sm font-semibold text-ink" onChange={(event) => onChange("activityType", event.target.value)} value={form.activityType}>
                         {workTypeOptions.map(([value, label]) => <option key={value} value={value}>{label}</option>)}
                       </select>
                     </label>
                   </div>
-                  <div className="grid gap-4 md:grid-cols-[minmax(0,1fr)_180px]">
+                  <div className="grid gap-4 sm:grid-cols-[minmax(240px,1fr)_minmax(180px,220px)]">
                     <label className="block text-sm font-semibold text-ink">
                       Work tool
-                      <select className="focus-ring mt-1 w-full rounded-lg border border-border px-3 py-3" onChange={(event) => onChange("workTool", event.target.value)} value={effectiveWorkTool}>
+                      <select className="focus-ring mt-2 min-h-12 w-full min-w-0 rounded-lg border border-border bg-white px-3 py-3 text-sm font-semibold text-ink" onChange={(event) => onChange("workTool", event.target.value)} value={effectiveWorkTool}>
                         {contextualWorkToolOptions.map(([value, label]) => <option key={value} value={value}>{label}</option>)}
                       </select>
                     </label>
-                    <label className="mt-6 flex items-center gap-3 rounded-lg border border-border px-3 py-3 text-sm font-semibold text-ink md:mt-7">
+                    <label className="flex min-h-12 items-center gap-3 self-end rounded-lg border border-border bg-white px-3 py-3 text-sm font-semibold text-ink">
                       <input checked={form.billable} className="h-4 w-4 rounded border-border" onChange={(event) => onChange("billable", event.target.checked)} type="checkbox" />
                       Billable work
                     </label>
@@ -257,23 +257,23 @@ export function WorkMeterPanel({
                     <textarea className="focus-ring mt-1 min-h-24 w-full rounded-lg border border-border px-3 py-3" onChange={(event) => onChange("narrative", event.target.value)} placeholder="Short note for review" value={form.narrative} />
                   </label>
                 </div>
-                <aside className="rounded-lg border border-border bg-surface p-4">
-                  <div className="flex items-center gap-3">
-                    <span className="inline-flex h-11 w-11 items-center justify-center rounded-lg bg-primary text-white">
+                <aside className="rounded-lg border border-border bg-surface p-5">
+                  <div className="flex items-start gap-4">
+                    <span className="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-primary text-white">
                       <SelectedToolIcon className="h-5 w-5" />
                     </span>
                     <div className="min-w-0">
-                      <p className="safe-text text-sm font-bold text-primary">{optionLabel(workToolOptions, effectiveWorkTool, "Manual")}</p>
+                      <p className="safe-text text-base font-bold text-primary">{optionLabel(workToolOptions, effectiveWorkTool, "Manual")}</p>
                       <p className="mt-1 text-xs font-semibold leading-5 text-muted">{selectedTool.detail}</p>
                     </div>
                   </div>
                   {selectedToolLink ? (
                     selectedToolLink.startsWith("/") ? (
-                      <Link className="focus-ring mt-4 inline-flex w-full items-center justify-center rounded-lg border border-border bg-white px-3 py-2 text-sm font-semibold text-primary hover:bg-blueSoft" to={selectedToolLink}>
+                      <Link className="focus-ring mt-5 inline-flex min-h-11 w-full items-center justify-center rounded-lg border border-border bg-white px-3 py-2 text-sm font-semibold text-primary hover:bg-blueSoft" to={selectedToolLink}>
                         Open tool
                       </Link>
                     ) : (
-                      <a className="focus-ring mt-4 inline-flex w-full items-center justify-center rounded-lg border border-border bg-white px-3 py-2 text-sm font-semibold text-primary hover:bg-blueSoft" href={selectedToolLink} rel="noreferrer" target="_blank">
+                      <a className="focus-ring mt-5 inline-flex min-h-11 w-full items-center justify-center rounded-lg border border-border bg-white px-3 py-2 text-sm font-semibold text-primary hover:bg-blueSoft" href={selectedToolLink} rel="noreferrer" target="_blank">
                         Open tool
                       </a>
                     )

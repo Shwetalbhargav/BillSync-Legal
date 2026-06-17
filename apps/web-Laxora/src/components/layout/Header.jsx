@@ -1,8 +1,10 @@
-import { Bell, ChevronDown, LogOut, Menu, Search, Settings } from "lucide-react";
+import { Bell, ChevronDown, LogOut, Search, Settings } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
-export function Header({ isSidebarCollapsed, user, onLogout, onToggleSidebar }) {
+const defaultProfileImage = "/images/default-user.jpg";
+
+export function Header({ user, onLogout }) {
   const [isAccountOpen, setIsAccountOpen] = useState(false);
   const displayName = user?.name || "My profile";
   const initials = displayName
@@ -22,14 +24,6 @@ export function Header({ isSidebarCollapsed, user, onLogout, onToggleSidebar }) 
   return (
     <header className="sticky top-0 z-30 flex min-h-16 min-w-0 items-center justify-between gap-3 border-b border-border bg-panel/95 px-4 backdrop-blur lg:px-8">
       <div className="flex min-w-0 flex-1 items-center gap-3">
-        <button
-          aria-label={isSidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-          className="focus-ring hidden min-h-11 min-w-11 items-center justify-center rounded-lg p-2 text-muted hover:bg-blueSoft hover:text-primary lg:flex"
-          onClick={onToggleSidebar}
-          type="button"
-        >
-          <Menu className="h-5 w-5" />
-        </button>
         <div className="relative hidden w-full max-w-md sm:block">
           <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" />
           <input
@@ -57,7 +51,15 @@ export function Header({ isSidebarCollapsed, user, onLogout, onToggleSidebar }) 
           >
             <span className="flex h-10 w-10 shrink-0 overflow-hidden rounded-full border border-border bg-blueSoft text-sm font-bold text-primary">
               {avatarUrl ? (
-                <img alt={displayName} className="h-full w-full object-cover" src={avatarUrl} />
+                <img
+                  alt={displayName}
+                  className="h-full w-full object-cover"
+                  onError={(event) => {
+                    if (event.currentTarget.src.endsWith(defaultProfileImage)) return;
+                    event.currentTarget.src = defaultProfileImage;
+                  }}
+                  src={avatarUrl}
+                />
               ) : (
                 <span className="flex h-full w-full items-center justify-center">{initials || "U"}</span>
               )}

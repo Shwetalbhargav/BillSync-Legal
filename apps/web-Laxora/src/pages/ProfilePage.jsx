@@ -18,6 +18,8 @@ const profileApis = {
   partner: partnerProfilesApi,
 };
 
+const defaultProfileImage = "/images/default-user.jpg";
+
 function Detail({ label, value }) {
   return (
     <div className="rounded-lg border border-border bg-panel p-4 shadow-sm">
@@ -175,7 +177,19 @@ export function ProfilePage() {
           <div className="relative flex min-w-0 flex-col gap-5 md:flex-row md:items-start md:justify-between">
           <div className="flex min-w-0 items-start gap-4">
             <div className="flex h-20 w-20 shrink-0 overflow-hidden rounded-full border-2 border-white/70 bg-blueSoft text-primary shadow-soft">
-              {photoUrl ? <img alt={fullUser.name} className="h-full w-full object-cover" src={photoUrl} /> : <UserRound className="m-auto h-7 w-7" />}
+              {photoUrl ? (
+                <img
+                  alt={fullUser.name}
+                  className="h-full w-full object-cover"
+                  onError={(event) => {
+                    if (event.currentTarget.src.endsWith(defaultProfileImage)) return;
+                    event.currentTarget.src = defaultProfileImage;
+                  }}
+                  src={photoUrl}
+                />
+              ) : (
+                <UserRound className="m-auto h-7 w-7" />
+              )}
             </div>
             <div className="min-w-0">
               <p className="text-sm font-semibold uppercase tracking-wide text-accent">My Profile</p>

@@ -16,9 +16,9 @@ export function AppShell({ role, user, onLogout }) {
       <a className="focus-ring sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-lg focus:bg-panel focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-primary focus:shadow-soft" href="#main-content">
         Skip to main content
       </a>
-      <Sidebar collapsed={isSidebarCollapsed} role={role} />
+      <Sidebar collapsed={isSidebarCollapsed} onToggleSidebar={() => setIsSidebarCollapsed((current) => !current)} role={role} />
       <div className={isSidebarCollapsed ? "min-w-0 lg:pl-20" : "min-w-0 lg:pl-64"}>
-        <Header isSidebarCollapsed={isSidebarCollapsed} onLogout={onLogout} onToggleSidebar={() => setIsSidebarCollapsed((current) => !current)} role={role} user={user} />
+        <Header onLogout={onLogout} role={role} user={user} />
         <PageContainer>
           <Outlet />
         </PageContainer>
