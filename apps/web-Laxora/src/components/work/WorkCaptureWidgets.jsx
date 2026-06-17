@@ -103,20 +103,18 @@ function getWorkToolOptionsForType(activityType) {
 
 const toolMeta = {
   manual: { icon: Timer, detail: "Track work inside Lexora." },
-  microsoft_word: { icon: FileText, detail: "Starts the meter, then hands off to the desktop agent." },
+  microsoft_word: { icon: FileText, detail: "Start the meter here, then open Word from the desktop app." },
   google_docs: { icon: FileText, detail: "Opens Google Docs in a new tab." },
-  pdf_reader: { icon: FileType, detail: "Starts the meter, then hands off to the desktop agent." },
+  pdf_reader: { icon: FileType, detail: "Start the meter here, then open PDF review from the desktop app." },
   google_chrome: { icon: Chrome, detail: "Opens Chrome/web research." },
   gmail: { icon: Mail, detail: "Opens Gmail." },
-  google_meet: { icon: Video, detail: "Starts the meter, then hands off to the desktop agent." },
-  zoom: { icon: Video, detail: "Starts the meter, then hands off to the desktop agent." },
-  microsoft_teams: { icon: MonitorPlay, detail: "Starts the meter, then hands off to the desktop agent." },
-  whatsapp: { icon: MessageCircle, detail: "Starts the meter, then hands off to the desktop agent." },
+  google_meet: { icon: Video, detail: "Start the meter here, then open Meet from the desktop app." },
+  zoom: { icon: Video, detail: "Start the meter here, then open Zoom from the desktop app." },
+  microsoft_teams: { icon: MonitorPlay, detail: "Start the meter here, then open Teams from the desktop app." },
+  whatsapp: { icon: MessageCircle, detail: "Start the meter here, then open WhatsApp from the desktop app." },
   billbot_ai: { icon: Bot, detail: "Opens the Assistant workspace." },
   other: { icon: Globe2, detail: "Track work in another tool." },
 };
-
-const desktopMeterTools = new Set(["microsoft_word", "pdf_reader", "google_meet", "zoom", "microsoft_teams", "whatsapp"]);
 
 function optionLabel(options, value, fallback = "Not set") {
   return options.find(([optionValue]) => optionValue === value)?.[1] || fallback;
@@ -147,7 +145,6 @@ export function WorkMeterPanel({
   const effectiveWorkTool = getWorkToolForType(form.activityType, form.workTool);
   const selectedTool = toolMeta[effectiveWorkTool] || toolMeta.manual;
   const SelectedToolIcon = selectedTool.icon;
-  const startsInDesktop = desktopMeterTools.has(effectiveWorkTool);
   const selectedClientName = selectedName(clients, form.clientId, "name");
   const selectedMatterName = selectedName(matters, form.caseId, "title");
   const selectedTaskName = selectedName(tasks, form.taskId, "title");
@@ -248,7 +245,7 @@ export function WorkMeterPanel({
                   </div>
                   <Button className="mt-4 w-full" disabled={isSaving} isLoading={isSaving} onClick={onStart} type="button">
                     <Play className="h-4 w-4" />
-                    {startsInDesktop ? "Start meter in desktop app" : "Start meter"}
+                    Start meter
                   </Button>
                 </aside>
               </div>

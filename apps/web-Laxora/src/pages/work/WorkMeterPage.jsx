@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { activitySamplesApi } from "../../api/activitySamples";
 import { appUsageEventsApi } from "../../api/appUsageEvents";
-import { authApi } from "../../api/auth";
 import { idleIntervalsApi } from "../../api/idleIntervals";
 import { workCaptureApi } from "../../api/workCapture";
 import { workSessionsApi } from "../../api/workSessions";
@@ -33,31 +32,11 @@ const initialForm = {
 const privilegedMeterRoles = new Set(["admin", "partner"]);
 const internalMeterTools = new Set(["manual", "billbot_ai", "other"]);
 const desktopMeterTools = new Set(["microsoft_word", "pdf_reader", "google_meet", "zoom", "microsoft_teams", "whatsapp"]);
-const desktopAgentProtocol = "lexora-desktop://open-tool";
-
-const wordSessionTemplatePath = "/files/lexora-work-session.dotx";
-const samplePdfPath = "/files/sample.pdf";
 
 const toolTargets = {
-  microsoft_word: {
-    type: "protocol",
-    protocol: "ms-word:nft|u|{fileUrl}",
-    filePath: wordSessionTemplatePath,
-    fallback: "https://www.office.com/launch/word",
-  },
   google_docs: { url: "https://docs.google.com/document/u/0/", external: true },
-  pdf_reader: {
-    type: "protocol",
-    protocol: "billpdf://open?url={encodedFileUrl}",
-    filePath: samplePdfPath,
-    fallback: samplePdfPath,
-  },
   google_chrome: { url: "https://www.google.com/", external: true },
   gmail: { url: "https://mail.google.com/mail/u/0/#inbox?lb_meter=1&lb_compose=1&lb_prompt=BillSync%20Work%20Meter", external: true },
-  google_meet: { url: "https://meet.google.com/", external: true },
-  zoom: { url: "https://zoom.us/start/videomeeting", external: true },
-  microsoft_teams: { url: "https://teams.microsoft.com/v2/", external: true },
-  whatsapp: { url: "https://web.whatsapp.com/", external: true },
   billbot_ai: { url: "/app/assistant", external: false },
 };
 
@@ -135,82 +114,13 @@ function toAbsoluteUrl(url) {
   return url.startsWith("/") ? `${window.location.origin}${url}` : url;
 }
 
-function buildProtocolUrl(target) {
-  const fileUrl = toAbsoluteUrl(target.filePath || target.fileUrl || "");
-  return target.protocol
-    ?.replace("{fileUrl}", fileUrl)
-    .replace("{encodedFileUrl}", encodeURIComponent(fileUrl));
-}
-
-function launchWithProtocolFallback(protocolUrl, fallbackUrl, toolWindow) {
-  let didLeavePage = false;
-  const markLeft = () => {
-    didLeavePage = true;
-  };
-  const cleanup = () => {
-    window.removeEventListener("blur", markLeft);
-    window.removeEventListener("pagehide", markLeft);
-    document.removeEventListener("visibilitychange", markLeft);
-  };
-
-  window.addEventListener("blur", markLeft, { once: true });
-  window.addEventListener("pagehide", markLeft, { once: true });
-  document.addEventListener("visibilitychange", markLeft, { once: true });
-
-  if (toolWindow) {
-    toolWindow.location.href = protocolUrl;
-  } else {
-    window.location.href = protocolUrl;
-  }
-
-  window.setTimeout(() => {
-    cleanup();
-    if (didLeavePage || !fallbackUrl) return;
-    if (toolWindow && !toolWindow.closed) {
-      toolWindow.location.href = fallbackUrl;
-      return;
-    }
-    window.open(fallbackUrl, "_blank", "noopener,noreferrer");
-  }, 1200);
-}
-
 function createToolLauncher(workTool) {
-  if (isDesktopMeterTool(workTool)) {
-    const toolWindow = window.open("about:blank", "_blank");
-    return async (sessionId) => {
-      const desktopUrl = new URL(desktopAgentProtocol);
-      desktopUrl.searchParams.set("tool", workTool);
-      if (sessionId) desktopUrl.searchParams.set("sessionId", sessionId);
-      desktopUrl.searchParams.set("returnUrl", window.location.href);
-      try {
-        const handoff = await authApi.desktopHandoffToken();
-        if (handoff?.handoffToken) desktopUrl.searchParams.set("handoffToken", handoff.handoffToken);
-      } catch {
-        desktopUrl.searchParams.set("needsLogin", "1");
-      }
-      if (toolWindow) {
-        toolWindow.location.href = desktopUrl.toString();
-        return;
-      }
-      window.open(desktopUrl.toString(), "_blank");
-    };
-  }
+  if (isDesktopMeterTool(workTool)) return null;
   const target = toolTargets[workTool];
-  if (!target?.url && !target?.protocol) return null;
-  const toolWindow = window.open("about:blank", "_blank");
+  if (!target?.url) return null;
   return (sessionId) => {
-    if (target.type === "protocol") {
-      const protocolUrl = buildProtocolUrl(target);
-      const fallbackUrl = withWorkSessionParam(toAbsoluteUrl(target.fallback || target.filePath), sessionId);
-      launchWithProtocolFallback(protocolUrl, fallbackUrl, toolWindow);
-      return;
-    }
     const toolUrl = toAbsoluteUrl(target.url);
     const launchUrl = withWorkSessionParam(toolUrl, sessionId);
-    if (toolWindow) {
-      toolWindow.location.href = launchUrl;
-      return;
-    }
     window.open(launchUrl, "_blank");
   };
 }
@@ -504,7 +414,6 @@ export function WorkMeterPage() {
     }
     const matchedWorkTool = getWorkToolForType(form.activityType, form.workTool);
     setStatus("saving");
-    const launchSelectedTool = createToolLauncher(matchedWorkTool);
     try {
       const response = await workSessionsApi.start({
         caseId: form.caseId,
@@ -532,6 +441,7 @@ export function WorkMeterPage() {
       setLastSavedEntry(null);
       setStatus("ready");
       setForm(initialForm);
+      const launchSelectedTool = createToolLauncher(matchedWorkTool);
       if (launchSelectedTool) launchSelectedTool(startedSession.id);
     } catch (error) {
       setStatus("ready");
