@@ -25,19 +25,52 @@ const initialForm = {
   activityType: "drafting",
   activityCode: "",
   workTool: getDefaultWorkToolForType("drafting"),
+  workspaceProvider: "google",
   narrative: "",
   billable: true,
 };
 
 const privilegedMeterRoles = new Set(["admin", "partner"]);
 const internalMeterTools = new Set(["manual", "billbot_ai", "other"]);
-const desktopMeterTools = new Set(["microsoft_word", "pdf_reader", "google_meet", "zoom", "microsoft_teams", "whatsapp"]);
+const workspaceProviders = new Set(["google", "zoho", "microsoft"]);
 
-const toolTargets = {
-  google_docs: { url: "https://docs.google.com/document/u/0/", external: true },
-  google_chrome: { url: "https://www.google.com/", external: true },
-  gmail: { url: "https://mail.google.com/mail/u/0/#inbox?lb_meter=1&lb_compose=1&lb_prompt=BillSync%20Work%20Meter", external: true },
-  billbot_ai: { url: "/app/assistant", external: false },
+const toolTargetsByProvider = {
+  google: {
+    microsoft_word: { url: "https://docs.google.com/document/u/0/create", external: true },
+    google_docs: { url: "https://docs.google.com/document/u/0/create", external: true },
+    pdf_reader: { url: "https://drive.google.com/drive/u/0/my-drive", external: true },
+    google_chrome: { url: "https://www.google.com/", external: true },
+    gmail: { url: "https://mail.google.com/mail/u/0/#inbox?lb_meter=1&lb_compose=1&lb_prompt=BillSync%20Work%20Meter", external: true },
+    google_meet: { url: "https://meet.google.com/new", external: true },
+    zoom: { url: "https://zoom.us/start/videomeeting", external: true },
+    microsoft_teams: { url: "https://teams.microsoft.com/v2/", external: true },
+    whatsapp: { url: "https://web.whatsapp.com/", external: true },
+    billbot_ai: { url: "/app/assistant", external: false },
+  },
+  zoho: {
+    microsoft_word: { url: "https://writer.zoho.in/writer/open/new", external: true },
+    google_docs: { url: "https://writer.zoho.in/writer/open/new", external: true },
+    pdf_reader: { url: "https://workdrive.zoho.in/home", external: true },
+    google_chrome: { url: "https://www.google.com/", external: true },
+    gmail: { url: "https://mail.zoho.in/zm/#mail/folder/inbox", external: true },
+    google_meet: { url: "https://meeting.zoho.in/meeting", external: true },
+    zoom: { url: "https://zoom.us/start/videomeeting", external: true },
+    microsoft_teams: { url: "https://teams.microsoft.com/v2/", external: true },
+    whatsapp: { url: "https://web.whatsapp.com/", external: true },
+    billbot_ai: { url: "/app/assistant", external: false },
+  },
+  microsoft: {
+    microsoft_word: { url: "https://www.microsoft365.com/launch/word", external: true },
+    google_docs: { url: "https://www.microsoft365.com/launch/word", external: true },
+    pdf_reader: { url: "https://www.microsoft365.com/launch/onedrive", external: true },
+    google_chrome: { url: "https://www.bing.com/", external: true },
+    gmail: { url: "https://outlook.office.com/mail/", external: true },
+    google_meet: { url: "https://teams.microsoft.com/v2/", external: true },
+    zoom: { url: "https://zoom.us/start/videomeeting", external: true },
+    microsoft_teams: { url: "https://teams.microsoft.com/v2/", external: true },
+    whatsapp: { url: "https://web.whatsapp.com/", external: true },
+    billbot_ai: { url: "/app/assistant", external: false },
+  },
 };
 
 const toolNames = {
@@ -56,11 +89,7 @@ const toolNames = {
 };
 
 function isExternalMeterTool(workTool) {
-  return Boolean(workTool && !internalMeterTools.has(workTool) && !isDesktopMeterTool(workTool));
-}
-
-function isDesktopMeterTool(workTool) {
-  return desktopMeterTools.has(workTool);
+  return Boolean(workTool && !internalMeterTools.has(workTool));
 }
 
 function valueMatchesUser(value, userId) {
@@ -114,15 +143,37 @@ function toAbsoluteUrl(url) {
   return url.startsWith("/") ? `${window.location.origin}${url}` : url;
 }
 
-function createToolLauncher(workTool) {
-  if (isDesktopMeterTool(workTool)) return null;
-  const target = toolTargets[workTool];
+function getToolTarget(workTool, workspaceProvider = "google") {
+  const provider = workspaceProviders.has(workspaceProvider) ? workspaceProvider : "google";
+  return toolTargetsByProvider[provider]?.[workTool] || toolTargetsByProvider.google[workTool] || null;
+}
+
+function createToolLauncher(workTool, workspaceProvider) {
+  const target = getToolTarget(workTool, workspaceProvider);
   if (!target?.url) return null;
   return (sessionId) => {
     const toolUrl = toAbsoluteUrl(target.url);
     const launchUrl = withWorkSessionParam(toolUrl, sessionId);
     window.open(launchUrl, "_blank");
   };
+}
+
+function hasZohoWorkspace(item) {
+  const zoho = item?.integrations?.zoho || item?.raw?.integrations?.zoho;
+  return Boolean(zoho?.workdriveFolderUrl || zoho?.workdriveFolderId || zoho?.crmRecordId || zoho?.lastSyncedAt);
+}
+
+function inferWorkspaceProvider({ client, matter }) {
+  const explicit =
+    matter?.raw?.workspaceProvider ||
+    matter?.raw?.integrations?.workspaceProvider ||
+    matter?.raw?.integrations?.preferredProvider ||
+    client?.raw?.workspaceProvider ||
+    client?.raw?.integrations?.workspaceProvider ||
+    client?.raw?.integrations?.preferredProvider;
+  const normalized = String(explicit || "").toLowerCase();
+  if (workspaceProviders.has(normalized)) return normalized;
+  return hasZohoWorkspace(matter) || hasZohoWorkspace(client) ? "zoho" : "google";
 }
 
 export function WorkMeterPage() {
@@ -197,7 +248,7 @@ export function WorkMeterPage() {
       if (!hiddenAtRef.current) return;
       const awaySeconds = Math.round((Date.now() - new Date(hiddenAtRef.current).getTime()) / 1000);
       hiddenAtRef.current = null;
-      if (isExternalMeterTool(session.workTool) || isDesktopMeterTool(session.workTool)) return;
+      if (isExternalMeterTool(session.workTool)) return;
       const thresholdSeconds = Number(session.raw?.webMeter?.idleAfterSeconds || 300);
       if (awaySeconds < thresholdSeconds) return;
       try {
@@ -256,7 +307,7 @@ export function WorkMeterPage() {
   }, []);
 
   useEffect(() => {
-    if (!session?.id || session.status !== "running" || isDesktopMeterTool(session.workTool)) return undefined;
+    if (!session?.id || session.status !== "running") return undefined;
     activityBucketRef.current = {
       windowStart: new Date(),
       keyboardCount: 0,
@@ -329,7 +380,7 @@ export function WorkMeterPage() {
             ? toolNames[session.workTool] || session.workTool.replaceAll("_", " ")
             : "BillSync Legal",
           url: document.visibilityState === "hidden" && isExternalMeterTool(session.workTool)
-            ? toolTargets[session.workTool]?.url || toolTargets[session.workTool]?.filePath || ""
+            ? getToolTarget(session.workTool, session.workspaceProvider)?.url || ""
             : `${window.location.origin}${window.location.pathname}`,
           domain: document.visibilityState === "hidden" && isExternalMeterTool(session.workTool)
             ? ""
@@ -390,11 +441,14 @@ export function WorkMeterPage() {
     setValidation("");
     setForm((current) => {
       if (field === "clientId") {
-        return { ...current, clientId: value, caseId: "", taskId: "" };
+        const client = clients.find((item) => item.id === value);
+        return { ...current, clientId: value, caseId: "", taskId: "", workspaceProvider: inferWorkspaceProvider({ client }) };
       }
       if (field === "caseId") {
         const matter = matters.find((item) => item.id === value);
-        return { ...current, caseId: value, clientId: matter?.clientId || current.clientId || "", taskId: "" };
+        const clientId = matter?.clientId || current.clientId || "";
+        const client = clients.find((item) => item.id === clientId);
+        return { ...current, caseId: value, clientId, taskId: "", workspaceProvider: inferWorkspaceProvider({ client, matter }) };
       }
       if (field === "activityType") {
         return { ...current, activityType: value, workTool: getDefaultWorkToolForType(value) };
@@ -437,11 +491,12 @@ export function WorkMeterPage() {
         matter: startedSession.matter || selectedMatter?.title || "",
         task: startedSession.task || selectedTask?.title || "",
         workTool: startedSession.workTool || matchedWorkTool,
+        workspaceProvider: form.workspaceProvider,
       });
       setLastSavedEntry(null);
       setStatus("ready");
       setForm(initialForm);
-      const launchSelectedTool = createToolLauncher(matchedWorkTool);
+      const launchSelectedTool = createToolLauncher(matchedWorkTool, form.workspaceProvider);
       if (launchSelectedTool) launchSelectedTool(startedSession.id);
     } catch (error) {
       setStatus("ready");

@@ -16,6 +16,7 @@ $requiredFiles = @(
   "manifest.json",
   "background.js",
   "captureCore.js",
+  "browserActivity.js",
   "content.js",
   "gmailAdapter.js",
   "options.html",

@@ -1,7 +1,7 @@
 import { date, number, objectId, oneOf, required, string, validateBody, validateParams, validateQuery } from '../../../middleware/validate.js';
 
 const platforms = ['desktop_windows', 'desktop_macos', 'desktop_linux', 'mobile_ios', 'mobile_android', 'web', 'unknown'];
-const sourceApps = ['desktop_agent', 'mobile_agent', 'web_meter', 'manual_agent', 'unknown'];
+const sourceApps = ['desktop_agent', 'mobile_agent', 'web_meter', 'manual_agent', 'chrome_extension', 'unknown'];
 
 export const validateWorkSessionId = validateParams({
   id: [required, objectId()],

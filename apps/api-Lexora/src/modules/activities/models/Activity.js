@@ -27,7 +27,7 @@ const ActivitySchema = new mongoose.Schema(
     source: { type: String, enum: ['gmail', 'extension', 'research', 'manual', 'meter', 'integration', 'system'], default: 'extension' },
     workTool: {
       type: String,
-      enum: ['gmail', 'google_chrome', 'billbot_ai', 'microsoft_word', 'google_docs', 'pdf_reader', 'phone', 'video_meeting', 'court', 'manual', 'other'],
+      enum: ['gmail', 'google_chrome', 'billbot_ai', 'microsoft_word', 'google_docs', 'pdf_reader', 'google_meet', 'zoom', 'microsoft_teams', 'whatsapp', 'phone', 'video_meeting', 'court', 'manual', 'other'],
     },
     sourceRef: { type: String },
 

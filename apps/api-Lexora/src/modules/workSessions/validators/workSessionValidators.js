@@ -1,7 +1,7 @@
 import { boolean, date, number, objectId, oneOf, required, string, validateBody, validateParams } from '../../../middleware/validate.js';
 
 const activityTypes = ['email', 'drafting', 'review', 'meeting', 'hearing', 'research', 'call', 'other'];
-const workTools = ['gmail', 'google_chrome', 'billbot_ai', 'microsoft_word', 'google_docs', 'pdf_reader', 'phone', 'video_meeting', 'court', 'manual', 'other'];
+const workTools = ['gmail', 'google_chrome', 'billbot_ai', 'microsoft_word', 'google_docs', 'pdf_reader', 'google_meet', 'zoom', 'microsoft_teams', 'whatsapp', 'phone', 'video_meeting', 'court', 'manual', 'other'];
 
 export const validateWorkSessionId = validateParams({
   id: [required, objectId()],

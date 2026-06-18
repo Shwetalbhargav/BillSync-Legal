@@ -5,11 +5,14 @@ Tracks actual typing time in Gmail, captures research work from the active brows
 ## Current scope
 
 - Gmail content script on `https://mail.google.com/*`
+- Work Meter browser activity recorder for Google Workspace, Zoho Workspace, and Microsoft 365 web apps
 - Active typing timer with idle pause
 - Confirmed-send email-entry logging
 - AI draft generation inside Gmail
 - Post-log client/matter dropdown mapping
 - Research capture from the extension action button
+- Active Work Meter session detection from the backend
+- Safe activity metadata capture: active app/domain/title, duration, idle time, keyboard counts, mouse counts, focus/blur, pause/resume, and save/submit controls
 - Centralized Gmail DOM adapter with fallback selectors and MutationObserver refresh
 - Local pending-capture queue with retry/backoff and sync status UI
 - Extension settings page for identity, backend URL, frontend login URL, auth session linking, and feature flags
@@ -25,10 +28,14 @@ The extension currently sends:
 - typing time in `m.ss` display format
 - resolved user email
 - source metadata: `sourceRef`, `messageId`, `threadId`, `url`, and `domain`
+- Work Meter metadata for supported browser tools: active app name, URL, domain, tab title, duration, active/idle seconds, keyboard count, mouse count, focus/blur heartbeats, and `workSessionId`
 
 The extension does not send:
 
 - email body content
+- actual keystroke values
+- page text or document contents
+- screenshots
 
 Note: the backend may still generate a billable summary from the subject or backend-side rules, but the extension itself no longer submits the compose body text.
 
@@ -94,6 +101,13 @@ Endpoints used:
 - `GET /api/clients`
 - `GET /api/cases`
 - `POST /api/ai/generate-email`
+- `GET /api/work-sessions/current`
+- `POST /api/work-sessions/:id/heartbeat`
+- `POST /api/work-sessions/:id/pause`
+- `POST /api/work-sessions/:id/resume`
+- `POST /api/work-sessions/:id/stop`
+- `POST /api/activity-samples/work-sessions/:id/samples`
+- `POST /api/app-usage-events/work-sessions/:id/events`
 
 ## Automated QA
 
@@ -131,6 +145,14 @@ If the backend is offline or returns a retryable failure, the capture is stored 
 3. Click the extension action button.
 4. Enter minutes, select client and matter, then save.
 5. The capture is posted as `source: "research"` with page URL/domain metadata and `autoConvert: true`.
+
+## Work Meter browser activity flow
+
+1. Start a Work Meter session from Lexora with a client, matter, task, workspace, and tool.
+2. Lexora opens the selected Google Workspace, Zoho Workspace, or Microsoft 365 tool.
+3. The extension detects the active backend work session and records safe activity metadata while the supported app tab is focused.
+4. The in-page Lexora control strip can pause, resume, or save and submit the active session.
+5. The extension posts activity samples and app-usage events with `workSessionId` so backend summaries and billing review stay linked to the matter.
 
 ## Operational robustness
 

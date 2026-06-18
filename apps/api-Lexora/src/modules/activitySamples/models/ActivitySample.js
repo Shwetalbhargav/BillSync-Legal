@@ -17,13 +17,13 @@ const ActivitySampleSchema = new mongoose.Schema(
     mouseCount: { type: Number, required: true, min: 0, max: 100000 },
     sourceDevice: {
       type: String,
-      enum: ['web', 'desktop', 'mobile', 'unknown'],
+      enum: ['web', 'desktop', 'mobile', 'chrome_extension', 'unknown'],
       default: 'web',
       index: true,
     },
     sourceApp: {
       type: String,
-      enum: ['web_meter', 'desktop_agent', 'mobile_agent', 'manual_agent', 'unknown'],
+      enum: ['web_meter', 'desktop_agent', 'mobile_agent', 'manual_agent', 'chrome_extension', 'unknown'],
       default: 'web_meter',
       index: true,
     },

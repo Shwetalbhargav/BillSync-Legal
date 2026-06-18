@@ -2,7 +2,7 @@ import { boolean, date, number, objectId, oneOf, required, string, validateBody,
 
 const activityTypes = ['email', 'drafting', 'review', 'meeting', 'hearing', 'research', 'call', 'other'];
 const activitySources = ['gmail', 'extension', 'research', 'manual', 'meter', 'integration', 'system'];
-const workTools = ['gmail', 'google_chrome', 'billbot_ai', 'microsoft_word', 'google_docs', 'pdf_reader', 'phone', 'video_meeting', 'court', 'manual', 'other'];
+const workTools = ['gmail', 'google_chrome', 'billbot_ai', 'microsoft_word', 'google_docs', 'pdf_reader', 'google_meet', 'zoom', 'microsoft_teams', 'whatsapp', 'phone', 'video_meeting', 'court', 'manual', 'other'];
 const activityStatuses = ['captured', 'reviewed', 'converted', 'ignored', 'locked', 'voided'];
 const roundingPolicies = ['exact', 'six_minute', 'fifteen_minute'];
 const activitySortFields = [

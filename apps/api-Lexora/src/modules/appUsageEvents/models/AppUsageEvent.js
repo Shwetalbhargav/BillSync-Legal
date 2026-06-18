@@ -23,7 +23,7 @@ const AppUsageEventSchema = new mongoose.Schema(
     },
     sourceApp: {
       type: String,
-      enum: ['desktop_agent', 'mobile_agent', 'web_meter', 'manual_agent', 'unknown'],
+      enum: ['desktop_agent', 'mobile_agent', 'web_meter', 'manual_agent', 'chrome_extension', 'unknown'],
       default: 'unknown',
       index: true,
     },

@@ -58,6 +58,7 @@ export function normalizeMatter(item = {}) {
     billingType: item.billingType || "hourly",
     matterType: item.case_type || "",
     description: item.description || "",
+    integrations: item.integrations || {},
     openedAt: item.openedAt || "",
     closedAt: item.closedAt || "",
     assignedUsers: Array.isArray(item.assignedUsers) ? item.assignedUsers : [],

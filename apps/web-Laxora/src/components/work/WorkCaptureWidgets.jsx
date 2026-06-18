@@ -76,6 +76,12 @@ const workToolOptions = [
   ["other", "Other"],
 ];
 
+const workspaceProviderOptions = [
+  ["google", "Google Workspace"],
+  ["zoho", "Zoho Workspace"],
+  ["microsoft", "Microsoft 365"],
+];
+
 const workTypeToolMap = {
   drafting: ["microsoft_word", "google_docs"],
   review: ["pdf_reader", "microsoft_word", "google_docs"],
@@ -103,15 +109,15 @@ function getWorkToolOptionsForType(activityType) {
 
 const toolMeta = {
   manual: { icon: Timer, detail: "Track work inside Lexora." },
-  microsoft_word: { icon: FileText, detail: "Start the meter here, then open Word from the desktop app." },
-  google_docs: { icon: FileText, detail: "Opens Google Docs in a new tab." },
-  pdf_reader: { icon: FileType, detail: "Start the meter here, then open PDF review from the desktop app." },
+  microsoft_word: { icon: FileText, detail: "Opens the document editor in the selected online workspace." },
+  google_docs: { icon: FileText, detail: "Opens the document editor in the selected online workspace." },
+  pdf_reader: { icon: FileType, detail: "Opens the document storage/review area in the selected online workspace." },
   google_chrome: { icon: Chrome, detail: "Opens Chrome/web research." },
-  gmail: { icon: Mail, detail: "Opens Gmail." },
-  google_meet: { icon: Video, detail: "Start the meter here, then open Meet from the desktop app." },
-  zoom: { icon: Video, detail: "Start the meter here, then open Zoom from the desktop app." },
-  microsoft_teams: { icon: MonitorPlay, detail: "Start the meter here, then open Teams from the desktop app." },
-  whatsapp: { icon: MessageCircle, detail: "Start the meter here, then open WhatsApp from the desktop app." },
+  gmail: { icon: Mail, detail: "Opens email in the selected online workspace." },
+  google_meet: { icon: Video, detail: "Opens the meeting tool in the selected online workspace." },
+  zoom: { icon: Video, detail: "Opens Zoom." },
+  microsoft_teams: { icon: MonitorPlay, detail: "Opens Microsoft Teams." },
+  whatsapp: { icon: MessageCircle, detail: "Opens WhatsApp Web." },
   billbot_ai: { icon: Bot, detail: "Opens the Assistant workspace." },
   other: { icon: Globe2, detail: "Track work in another tool." },
 };
@@ -148,6 +154,7 @@ export function WorkMeterPanel({
   const selectedClientName = selectedName(clients, form.clientId, "name");
   const selectedMatterName = selectedName(matters, form.caseId, "title");
   const selectedTaskName = selectedName(tasks, form.taskId, "title");
+  const selectedWorkspaceName = optionLabel(workspaceProviderOptions, form.workspaceProvider, "Google Workspace");
   const activeSeconds = Number(liveActivity?.activeSeconds || 0);
   return (
     <>
@@ -211,13 +218,21 @@ export function WorkMeterPanel({
                       </select>
                     </label>
                   </div>
-                  <div className="grid gap-4 sm:grid-cols-[minmax(240px,1fr)_minmax(180px,220px)]">
+                  <div className="grid gap-4 sm:grid-cols-2">
                     <label className="block text-sm font-semibold text-ink">
                       Work tool
                       <select className="focus-ring mt-2 min-h-12 w-full min-w-0 rounded-lg border border-border bg-white px-3 py-3 text-sm font-semibold text-ink" onChange={(event) => onChange("workTool", event.target.value)} value={effectiveWorkTool}>
                         {contextualWorkToolOptions.map(([value, label]) => <option key={value} value={value}>{label}</option>)}
                       </select>
                     </label>
+                    <label className="block text-sm font-semibold text-ink">
+                      Workspace
+                      <select className="focus-ring mt-2 min-h-12 w-full min-w-0 rounded-lg border border-border bg-white px-3 py-3 text-sm font-semibold text-ink" onChange={(event) => onChange("workspaceProvider", event.target.value)} value={form.workspaceProvider || "google"}>
+                        {workspaceProviderOptions.map(([value, label]) => <option key={value} value={value}>{label}</option>)}
+                      </select>
+                    </label>
+                  </div>
+                  <div className="grid gap-4 sm:grid-cols-[minmax(240px,1fr)_minmax(180px,220px)]">
                     <label className="flex min-h-12 items-center gap-3 self-end rounded-lg border border-border bg-white px-3 py-3 text-sm font-semibold text-ink">
                       <input checked={form.billable} className="h-4 w-4 rounded border-border" onChange={(event) => onChange("billable", event.target.checked)} type="checkbox" />
                       Billable work
@@ -242,10 +257,11 @@ export function WorkMeterPanel({
                     <p className="rounded-lg bg-white p-3"><span className="font-bold text-primary">Client:</span> {selectedClientName || "Select client"}</p>
                     <p className="rounded-lg bg-white p-3"><span className="font-bold text-primary">Matter:</span> {selectedMatterName || "Select matter"}</p>
                     <p className="rounded-lg bg-white p-3"><span className="font-bold text-primary">Task:</span> {selectedTaskName || "No linked task"}</p>
+                    <p className="rounded-lg bg-white p-3"><span className="font-bold text-primary">Workspace:</span> {selectedWorkspaceName}</p>
                   </div>
                   <Button className="mt-4 w-full" disabled={isSaving} isLoading={isSaving} onClick={onStart} type="button">
                     <Play className="h-4 w-4" />
-                    Start meter
+                    Start meter and open tool
                   </Button>
                 </aside>
               </div>
