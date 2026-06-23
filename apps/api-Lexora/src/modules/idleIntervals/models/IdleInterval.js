@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { workspaceScopedPlugin } from '../../../middleware/workspaceScopedPlugin.js';
 
 const IdleIntervalSchema = new mongoose.Schema(
   {
@@ -40,5 +41,6 @@ const IdleIntervalSchema = new mongoose.Schema(
 IdleIntervalSchema.index({ workSessionId: 1, intervalStart: 1, intervalEnd: 1 }, { unique: true });
 IdleIntervalSchema.index({ userId: 1, status: 1, intervalStart: -1 });
 
+IdleIntervalSchema.plugin(workspaceScopedPlugin);
 export const IdleInterval = mongoose.model('IdleInterval', IdleIntervalSchema);
 export default IdleInterval;

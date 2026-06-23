@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { workspaceScopedPlugin } from '../../../middleware/workspaceScopedPlugin.js';
 
 const MatterDocumentSchema = new mongoose.Schema(
   {
@@ -22,5 +23,6 @@ const MatterDocumentSchema = new mongoose.Schema(
 MatterDocumentSchema.index({ caseId: 1, createdAt: -1 });
 MatterDocumentSchema.index({ title: 'text', content: 'text', summary: 'text', tags: 'text' });
 
+MatterDocumentSchema.plugin(workspaceScopedPlugin);
 export const MatterDocument = mongoose.model('MatterDocument', MatterDocumentSchema);
 export default MatterDocument;

@@ -1,6 +1,7 @@
 // src/models/Activity.js
 
 import mongoose from 'mongoose';
+import { workspaceScopedPlugin } from '../../../middleware/workspaceScopedPlugin.js';
 
 const ActivitySchema = new mongoose.Schema(
   {
@@ -102,5 +103,6 @@ ActivitySchema.index(
   }
 );
 
+ActivitySchema.plugin(workspaceScopedPlugin);
 export const Activity = mongoose.model('Activity', ActivitySchema);
 export default Activity;

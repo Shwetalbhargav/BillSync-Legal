@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { workspaceScopedPlugin } from '../../../middleware/workspaceScopedPlugin.js';
 
 const ActivitySampleSchema = new mongoose.Schema(
   {
@@ -42,5 +43,6 @@ ActivitySampleSchema.index({ workSessionId: 1, windowStart: 1 }, { unique: true 
 ActivitySampleSchema.index({ userId: 1, windowStart: -1 });
 ActivitySampleSchema.index({ caseId: 1, windowStart: -1 });
 
+ActivitySampleSchema.plugin(workspaceScopedPlugin);
 export const ActivitySample = mongoose.model('ActivitySample', ActivitySampleSchema);
 export default ActivitySample;

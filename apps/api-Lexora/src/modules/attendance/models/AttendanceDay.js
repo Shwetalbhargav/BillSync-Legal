@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { workspaceScopedPlugin } from '../../../middleware/workspaceScopedPlugin.js';
 
 const AttendanceDaySchema = new mongoose.Schema(
   {
@@ -25,5 +26,6 @@ const AttendanceDaySchema = new mongoose.Schema(
 
 AttendanceDaySchema.index({ userId: 1, date: 1 }, { unique: true });
 
+AttendanceDaySchema.plugin(workspaceScopedPlugin);
 export const AttendanceDay = mongoose.model('AttendanceDay', AttendanceDaySchema);
 export default AttendanceDay;

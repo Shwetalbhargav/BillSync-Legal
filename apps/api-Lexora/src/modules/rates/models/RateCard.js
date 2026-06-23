@@ -1,6 +1,7 @@
 	// src/models/RateCard.js
 	
 	import mongoose from 'mongoose';
+import { workspaceScopedPlugin } from '../../../middleware/workspaceScopedPlugin.js';
 
 	const RateCardSchema = new mongoose.Schema(
 	  {
@@ -17,5 +18,6 @@
 
 	RateCardSchema.index({ userId: 1, caseId: 1, activityCode: 1, effectiveFrom: -1 });
 
+	RateCardSchema.plugin(workspaceScopedPlugin);
 	export const RateCard = mongoose.model('RateCard', RateCardSchema);
 	export default RateCard;

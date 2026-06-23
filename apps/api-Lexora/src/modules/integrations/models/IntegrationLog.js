@@ -1,5 +1,6 @@
 // /models/IntegrationLog.js
 import mongoose from 'mongoose';
+import { workspaceScopedPlugin } from '../../../middleware/workspaceScopedPlugin.js';
 
 const IntegrationLogSchema = new mongoose.Schema(
   {
@@ -21,5 +22,6 @@ IntegrationLogSchema.index({ platform: 1, createdAt: -1 });
 IntegrationLogSchema.index({ billableId: 1, createdAt: -1 });
 IntegrationLogSchema.index({ invoiceId: 1, createdAt: -1 });
 
+IntegrationLogSchema.plugin(workspaceScopedPlugin);
 const IntegrationLog = mongoose.model('IntegrationLog', IntegrationLogSchema);
 export default IntegrationLog;

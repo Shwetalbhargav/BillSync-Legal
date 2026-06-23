@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { workspaceScopedPlugin } from '../../../middleware/workspaceScopedPlugin.js';
 
 const ChecklistItemSchema = new mongoose.Schema(
   {
@@ -46,5 +47,6 @@ TaskSchema.index({ assignedTo: 1, status: 1, dueDate: 1 });
 TaskSchema.index({ caseId: 1, status: 1, dueDate: 1 });
 TaskSchema.index({ title: 'text', description: 'text' });
 
+TaskSchema.plugin(workspaceScopedPlugin);
 export const Task = mongoose.model('Task', TaskSchema);
 export default Task;

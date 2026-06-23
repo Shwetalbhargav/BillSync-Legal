@@ -1,4 +1,5 @@
 import bcrypt from "bcryptjs";
+import crypto from "crypto";
 import Firm from "../../firms/models/Firm.js";
 import User from "../../users/models/User.js";
 import { toSafeUser } from "../../users/utils/safeUser.js";
@@ -28,6 +29,10 @@ function normalizeName(value) {
 
 function normalizeMobile(value) {
   return String(value || "").replace(/\D/g, "");
+}
+
+function hashResetToken(token) {
+  return crypto.createHash("sha256").update(String(token)).digest("hex");
 }
 
 async function resolveFirmId({ firmId, firmName }) {
@@ -264,6 +269,70 @@ export const registerUser = async (req, res) => {
       return res.status(err.statusCode).json({ error: err.message });
     }
     console.error("Register error:", err);
+    res.status(500).json({ error: "Server error" });
+  }
+};
+
+export const requestPasswordReset = async (req, res) => {
+  try {
+    const mobile = normalizeMobile(req.body?.mobile);
+    const role = String(req.body?.role || "").toLowerCase();
+    const firmId = req.body?.firmId;
+    if (!mobile || !role || !firmId) {
+      return res.status(400).json({ error: "mobile, role and firmId are required" });
+    }
+
+    const user = await User.findOne({ mobile, role, firmId });
+    if (user) {
+      const token = crypto.randomBytes(32).toString("base64url");
+      user.passwordResetTokenHash = hashResetToken(token);
+      user.passwordResetExpiresAt = new Date(Date.now() + Number(process.env.PASSWORD_RESET_TTL_MS || 30 * 60_000));
+      user.passwordResetUsedAt = undefined;
+      await user.save();
+      if (process.env.NODE_ENV !== "production") {
+        return res.json({ success: true, resetToken: token });
+      }
+    }
+
+    res.json({ success: true });
+  } catch (err) {
+    console.error("Password reset request error:", err);
+    res.status(500).json({ error: "Server error" });
+  }
+};
+
+export const resetPassword = async (req, res) => {
+  try {
+    const { token, password } = req.body || {};
+    if (!token || !password) return res.status(400).json({ error: "token and password are required" });
+
+    const user = await User.findOne({
+      passwordResetTokenHash: hashResetToken(token),
+      passwordResetExpiresAt: { $gt: new Date() },
+      passwordResetUsedAt: { $exists: false },
+    });
+    if (!user) return res.status(400).json({ error: "Invalid or expired reset token" });
+
+    user.passwordHash = await bcrypt.hash(password, 10);
+    user.passwordResetUsedAt = new Date();
+    user.passwordResetTokenHash = undefined;
+    user.passwordResetExpiresAt = undefined;
+    user.tokenVersion = Number(user.tokenVersion || 0) + 1;
+    await user.save();
+    res.json({ success: true });
+  } catch (err) {
+    console.error("Password reset error:", err);
+    res.status(500).json({ error: "Server error" });
+  }
+};
+
+export const revokeSessions = async (req, res) => {
+  try {
+    await User.updateOne({ _id: req.user.id }, { $inc: { tokenVersion: 1 } });
+    clearAuthCookie(res);
+    res.json({ success: true });
+  } catch (err) {
+    console.error("Session revoke error:", err);
     res.status(500).json({ error: "Server error" });
   }
 };

@@ -1,6 +1,7 @@
 // src/models/Invoice.js
 
 import mongoose from 'mongoose';
+import { workspaceScopedPlugin } from '../../../middleware/workspaceScopedPlugin.js';
 
 const InvoiceSchema = new mongoose.Schema(
   {
@@ -91,5 +92,6 @@ InvoiceSchema.methods.computeStatus = function (paidAmount = 0) {
 InvoiceSchema.index({ clientId: 1, status: 1, issueDate: 1 });
 InvoiceSchema.index({ caseId: 1, status: 1 });
 
+InvoiceSchema.plugin(workspaceScopedPlugin);
 export const Invoice = mongoose.model('Invoice', InvoiceSchema);
 export default Invoice;

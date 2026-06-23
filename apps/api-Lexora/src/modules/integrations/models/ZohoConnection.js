@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { workspaceScopedPlugin } from '../../../middleware/workspaceScopedPlugin.js';
 
 const ZohoConnectionSchema = new mongoose.Schema(
   {
@@ -27,6 +28,7 @@ const ZohoConnectionSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+ZohoConnectionSchema.plugin(workspaceScopedPlugin);
 const ZohoConnection = mongoose.model('ZohoConnection', ZohoConnectionSchema);
 
 export default ZohoConnection;

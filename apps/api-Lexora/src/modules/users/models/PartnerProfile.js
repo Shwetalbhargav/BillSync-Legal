@@ -1,6 +1,7 @@
 // src/models/PartnerProfile.js
 
 import mongoose from 'mongoose';
+import { workspaceScopedPlugin } from '../../../middleware/workspaceScopedPlugin.js';
 
 const PartnerProfileSchema = new mongoose.Schema({
   userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true, unique: true },
@@ -20,5 +21,6 @@ const PartnerProfileSchema = new mongoose.Schema({
   billingRate: { type: Number, default: 4000 }  // INR
 });
 
+PartnerProfileSchema.plugin(workspaceScopedPlugin);
 const PartnerProfile = mongoose.model('PartnerProfile', PartnerProfileSchema);
 export default PartnerProfile;

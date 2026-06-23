@@ -1,6 +1,7 @@
 // src/models/EmailEntry.js
 
 import mongoose from 'mongoose';
+import { workspaceScopedPlugin } from '../../../middleware/workspaceScopedPlugin.js';
 
 const EmailEntrySchema = new mongoose.Schema(
   {
@@ -59,5 +60,6 @@ EmailEntrySchema.index(
 EmailEntrySchema.index({ userId: 1, status: 1, createdAt: -1 });
 EmailEntrySchema.index({ userId: 1, domain: 1, createdAt: -1 });
 
+EmailEntrySchema.plugin(workspaceScopedPlugin);
 export const EmailEntry = mongoose.model('EmailEntry', EmailEntrySchema);
 export default EmailEntry;

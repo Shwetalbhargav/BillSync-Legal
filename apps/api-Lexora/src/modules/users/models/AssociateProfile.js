@@ -1,6 +1,7 @@
 // src/models/AssociateProfile.js
 
 import mongoose from 'mongoose';
+import { workspaceScopedPlugin } from '../../../middleware/workspaceScopedPlugin.js';
 
 const AssociateProfileSchema = new mongoose.Schema({
   userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true, unique: true },
@@ -13,5 +14,6 @@ const AssociateProfileSchema = new mongoose.Schema({
   billingRate: { type: Number, default: 1500 }  // INR
 });
 
+AssociateProfileSchema.plugin(workspaceScopedPlugin);
 const AssociateProfile = mongoose.model('AssociateProfile', AssociateProfileSchema);
 export default AssociateProfile;

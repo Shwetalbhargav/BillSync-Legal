@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { workspaceScopedPlugin } from '../../../middleware/workspaceScopedPlugin.js';
 
 const HolidaySchema = new mongoose.Schema(
   {
@@ -11,5 +12,6 @@ const HolidaySchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+HolidaySchema.plugin(workspaceScopedPlugin);
 export const Holiday = mongoose.model('Holiday', HolidaySchema);
 export default Holiday;

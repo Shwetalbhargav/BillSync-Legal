@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { workspaceScopedPlugin } from '../../../middleware/workspaceScopedPlugin.js';
 
 const AuditEntrySchema = new mongoose.Schema(
   {
@@ -56,5 +57,6 @@ StoredDocumentSchema.index({ clientId: 1, status: 1, createdAt: -1 });
 StoredDocumentSchema.index({ provider: 1, storageKey: 1 }, { unique: true });
 StoredDocumentSchema.index({ title: 'text', originalFileName: 'text', description: 'text', tags: 'text' });
 
+StoredDocumentSchema.plugin(workspaceScopedPlugin);
 export const StoredDocument = mongoose.model('StoredDocument', StoredDocumentSchema);
 export default StoredDocument;

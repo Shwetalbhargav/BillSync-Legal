@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { workspaceScopedPlugin } from '../../../middleware/workspaceScopedPlugin.js';
 
 const WorkSessionSchema = new mongoose.Schema(
   {
@@ -82,5 +83,6 @@ WorkSessionSchema.index(
 WorkSessionSchema.index({ activityType: 1, 'calendarEvent.scheduledStart': 1 });
 WorkSessionSchema.index({ 'webMeter.lastActiveAt': -1 });
 
+WorkSessionSchema.plugin(workspaceScopedPlugin);
 export const WorkSession = mongoose.model('WorkSession', WorkSessionSchema);
 export default WorkSession;
