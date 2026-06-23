@@ -5,7 +5,7 @@ import { Button, Card, CardBody, CardHeader, DataTable, StateCard, StatusBadge }
 export const billableStatuses = [
   { label: "All", value: "" },
   { label: "Pending", value: "pending" },
-  { label: "Approved", value: "approved" },
+  { label: "Ready to Bill", value: "approved" },
   { label: "Rejected", value: "rejected" },
   { label: "Billed", value: "billed" },
 ];

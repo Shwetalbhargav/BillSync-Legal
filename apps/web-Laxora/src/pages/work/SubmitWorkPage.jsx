@@ -31,7 +31,7 @@ export function SubmitWorkPage() {
     try {
       await timeEntriesApi.submit(entry.id);
       await load();
-      setMessage("Work submitted. A reviewer can approve it from Approve Work.");
+      setMessage("Work reviewed. A reviewer can mark it Ready to Bill from Work Review when configured.");
     } catch (error) {
       setStatus("error");
       setMessage(error?.userMessage || "We could not submit this work right now.");
@@ -42,7 +42,7 @@ export function SubmitWorkPage() {
     <div className="space-y-6">
       <section className="surface-card p-6">
         <p className="text-sm font-semibold uppercase tracking-wide text-accent">Approval</p>
-        <h1 className="mt-1 text-2xl font-bold text-primary md:text-3xl">Submit Work for Approval</h1>
+        <h1 className="mt-1 text-2xl font-bold text-primary md:text-3xl">Review Work</h1>
         <p className="mt-2 max-w-2xl text-sm leading-6 text-muted">Send complete time entries to reviewers when the description and time look right.</p>
         <div className="mt-4">
           <Link className="text-sm font-semibold text-primary underline-offset-4 hover:underline" to="/app/time-approval">

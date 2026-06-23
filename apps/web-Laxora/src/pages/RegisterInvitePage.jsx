@@ -9,8 +9,7 @@ const initialForm = {
   email: "",
   mobile: "",
   password: "",
-  role: "lawyer",
-  firmId: "",
+  practiceName: "",
   address: "",
   qualifications: "",
 };
@@ -22,9 +21,9 @@ function cleanMobile(value) {
 function validateInvite(form) {
   if (!form.name.trim()) return "Enter your full name.";
   if (!form.email.trim()) return "Enter your work email.";
-  if (form.mobile.length !== 10) return "Enter the 10 digit mobile number registered with your firm.";
+  if (form.mobile.length !== 10) return "Enter your 10 digit mobile number.";
   if (form.password.length < 8) return "Choose a password with at least 8 characters.";
-  if (!form.firmId.trim()) return "Enter your firm code.";
+  if (!form.practiceName.trim()) return "Enter your practice name.";
   return "";
 }
 
@@ -50,7 +49,7 @@ export function RegisterInvitePage() {
 
     setIsSubmitting(true);
     try {
-      await register({ ...form, name: form.name.trim(), email: form.email.trim(), firmId: form.firmId.trim() });
+      await register({ ...form, name: form.name.trim(), email: form.email.trim(), practiceName: form.practiceName.trim() });
       setIsAccepted(true);
     } catch (submitError) {
       setError(submitError?.userMessage || "We could not accept the invite right now. Please check the details and try again.");
@@ -65,13 +64,13 @@ export function RegisterInvitePage() {
         <div className="rounded-lg bg-success/10 p-3 text-success">
           <CheckCircle2 className="h-6 w-6" />
         </div>
-        <h2 className="mt-5 text-xl font-semibold text-ink">Invite accepted</h2>
-        <p className="mt-2 text-sm leading-6 text-muted">Your profile is ready. Sign in with the same details to open your workspace.</p>
+        <h2 className="mt-5 text-xl font-semibold text-ink">Workspace created</h2>
+        <p className="mt-2 text-sm leading-6 text-muted">Your solo practice workspace is ready. Sign in with the same details to continue onboarding.</p>
         <Link
           className="focus-ring mt-6 inline-flex w-full items-center justify-center rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white transition hover:bg-primaryStrong"
-          to="/login"
+          to="/app/setup-status"
         >
-          Continue to sign in
+          Continue onboarding
         </Link>
       </section>
     );
@@ -80,8 +79,8 @@ export function RegisterInvitePage() {
   return (
     <section className="surface-card p-6">
       <header className="mb-6">
-        <h2 className="text-xl font-semibold text-ink">Accept your invite</h2>
-        <p className="mt-1 text-sm text-muted">Create your profile using the details shared by your firm.</p>
+        <h2 className="text-xl font-semibold text-ink">Create your workspace</h2>
+        <p className="mt-1 text-sm text-muted">Start as the Owner of a solo or small-firm workspace.</p>
       </header>
 
       {error ? (
@@ -119,27 +118,16 @@ export function RegisterInvitePage() {
             <input className="focus-ring w-full rounded-lg border border-border py-3 pl-10 pr-3" onChange={(event) => updateField("password", event.target.value)} placeholder="Create password" type="password" value={form.password} />
           </span>
         </label>
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-          <label className="block text-sm font-semibold text-ink">
-            Role
-            <select className="focus-ring mt-1 w-full rounded-lg border border-border py-3 pl-3 pr-8" onChange={(event) => updateField("role", event.target.value)} value={form.role}>
-              <option value="lawyer">Lawyer</option>
-              <option value="partner">Partner</option>
-              <option value="associate">Associate</option>
-              <option value="intern">Intern</option>
-            </select>
-          </label>
-          <label className="block text-sm font-semibold text-ink">
-            Firm code
-            <input className="focus-ring mt-1 w-full rounded-lg border border-border px-3 py-3" onChange={(event) => updateField("firmId", event.target.value)} placeholder="Firm code" value={form.firmId} />
-          </label>
-        </div>
+        <label className="block text-sm font-semibold text-ink">
+          Practice name
+          <input className="focus-ring mt-1 w-full rounded-lg border border-border px-3 py-3" onChange={(event) => updateField("practiceName", event.target.value)} placeholder="Shah Legal Practice" value={form.practiceName} />
+        </label>
         <Button className="w-full" isLoading={isSubmitting} type="submit">
-          Accept invite
+          Create workspace
         </Button>
       </form>
       <footer className="mt-6 border-t border-border pt-4 text-center text-sm text-muted">
-        Already accepted?{" "}
+        Already registered?{" "}
         <Link className="font-semibold text-primary" to="/login">
           Sign in
         </Link>

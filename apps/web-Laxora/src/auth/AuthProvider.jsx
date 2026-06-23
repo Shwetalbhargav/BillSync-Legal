@@ -57,7 +57,12 @@ export function AuthProvider({ children }) {
   const register = useCallback(async (profile) => {
     setLastMessage("");
     const response = await authApi.register(profile);
-    return response?.user ? normalizeUser(response.user) : null;
+    const registeredUser = response?.user ? normalizeUser(response.user) : null;
+    if (registeredUser) {
+      setUser(registeredUser);
+      setStatus("authenticated");
+    }
+    return registeredUser;
   }, []);
 
   const logout = useCallback(async () => {

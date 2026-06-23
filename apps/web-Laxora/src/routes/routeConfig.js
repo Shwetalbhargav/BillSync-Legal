@@ -47,27 +47,19 @@ import {
 
 export const navigationItems = [
   { label: "Dashboard", path: "/app/dashboard", icon: LayoutDashboard, moduleKey: "dashboard" },
-  { label: "My Profile", path: "/app/profile", icon: UserRound, moduleKey: "dashboard" },
   { label: "Clients", path: "/app/clients", icon: Users, moduleKey: "clients" },
   { label: "Matters", path: "/app/matters", icon: BriefcaseBusiness, moduleKey: "matters" },
   { label: "Tasks", path: "/app/tasks", icon: CheckSquare, moduleKey: "tasks" },
-  { label: "Work Meter", path: "/app/work-meter", icon: Timer, moduleKey: "work" },
-  { label: "Submit Work", path: "/app/submit-work", icon: CheckCircle2, moduleKey: "work" },
-  { label: "Approve Work", path: "/app/time-approval", icon: ShieldCheck, moduleKey: "approval" },
-  { label: "Time Entries", path: "/app/time-entries", icon: FileClock, moduleKey: "work" },
-  { label: "Captured Work", path: "/app/captured-work", icon: Inbox, moduleKey: "work" },
-  { label: "Court Sync", path: "/app/court-sync", icon: Gavel, moduleKey: "work" },
-  { label: "Communications", path: "/app/communications", icon: MessageCircle, moduleKey: "clients" },
+  { label: "Work", path: "/app/work-meter", icon: Timer, moduleKey: "work" },
+  { label: "Review Work", path: "/app/submit-work", icon: CheckCircle2, moduleKey: "work" },
   { label: "Billing", path: "/app/billables", icon: CircleDollarSign, moduleKey: "billing" },
   { label: "Invoices", path: "/app/invoices", icon: ReceiptText, moduleKey: "billing" },
   { label: "Payments", path: "/app/payments", icon: CreditCard, moduleKey: "finance" },
-  { label: "Finance", path: "/app/finance", icon: BarChart3, moduleKey: "finance" },
-  { label: "People", path: "/app/hr", icon: Users, moduleKey: "people" },
-  { label: "Assistant", path: "/app/assistant", icon: Bot, moduleKey: "assistant" },
+  { label: "Reports", path: "/app/reports", icon: FileText, moduleKey: "reports" },
   { label: "Settings", path: "/app/settings", icon: Settings, moduleKey: "settings" },
 ];
 
-export const appRoutes = [
+const rawAppRoutes = [
   { path: "/app/dashboard", title: "Dashboard", module: "Daily Work", moduleKey: "dashboard", roleGroup: "All roles", icon: Gauge },
   { path: "/app/profile", title: "My Profile", module: "Workspace", moduleKey: "dashboard", roleGroup: "All roles", icon: UserRound },
   { path: "/app/setup-status", title: "My Setup Status", module: "Onboarding", moduleKey: "extension", roleGroup: "All roles", icon: Plug },
@@ -102,9 +94,9 @@ export const appRoutes = [
   { path: "/app/work-sessions/:sessionId", title: "Work Session Detail", module: "Time Capture", moduleKey: "work", roleGroup: "All legal roles", icon: FileClock },
   { path: "/app/time-entry/new", title: "Manual Time Entry", module: "Time Capture", moduleKey: "work", roleGroup: "All legal roles", icon: Timer },
   { path: "/app/time-entries", title: "Time Entries", module: "Time Capture", moduleKey: "work", roleGroup: "All legal roles", icon: FileClock },
-  { path: "/app/time-approval", title: "Approve Submitted Work", module: "Time Capture", moduleKey: "approval", roleGroup: "Admin, Partner", icon: ShieldCheck },
+  { path: "/app/time-approval", title: "Work Review", module: "Time Capture", moduleKey: "work", roleGroup: "Owner", icon: ShieldCheck },
   { path: "/app/captured-work", title: "Captured Work Review", module: "Capture", moduleKey: "work", roleGroup: "All legal roles", icon: Inbox },
-  { path: "/app/submit-work", title: "Submit Work for Approval", module: "Capture", moduleKey: "work", roleGroup: "All legal roles", icon: CheckCircle2 },
+  { path: "/app/submit-work", title: "Review Work", module: "Capture", moduleKey: "work", roleGroup: "All legal roles", icon: CheckCircle2 },
   { path: "/app/gmail-review", title: "Gmail Capture Review", module: "Capture", moduleKey: "work", roleGroup: "All legal roles", icon: Mail },
   { path: "/app/research-review", title: "Research Capture Review", module: "Capture", moduleKey: "work", roleGroup: "All legal roles", icon: Search },
   { path: "/app/activities", title: "Activity Capture", module: "Capture", moduleKey: "work", roleGroup: "All legal roles", icon: Activity },
@@ -128,7 +120,7 @@ export const appRoutes = [
   { path: "/app/kpi", title: "KPI Summary", module: "Finance", moduleKey: "finance", roleGroup: "Admin, Partner", icon: BarChart3 },
   { path: "/app/kpi-snapshots", title: "KPI Snapshots", module: "Finance", moduleKey: "finance", roleGroup: "Admin, Partner", icon: Archive },
   { path: "/app/analytics", title: "Analytics", module: "Finance", moduleKey: "finance", roleGroup: "Admin, Partner", icon: BarChart3 },
-  { path: "/app/reports", title: "Reports", module: "Finance", moduleKey: "finance", roleGroup: "Admin, Partner", icon: FileText },
+  { path: "/app/reports", title: "Reports", module: "Finance", moduleKey: "reports", roleGroup: "Owner, Billing Assistant, Accountant", icon: FileText },
   { path: "/app/finance", title: "Finance Dashboard", module: "Finance", moduleKey: "finance", roleGroup: "Admin, Partner", icon: BarChart3 },
   { path: "/app/gst", title: "GST Dashboard", module: "Finance", moduleKey: "finance", roleGroup: "Admin, Partner", icon: ReceiptText },
   { path: "/app/tds", title: "TDS Management", module: "Finance", moduleKey: "finance", roleGroup: "Admin, Partner", icon: Landmark },
@@ -189,6 +181,30 @@ export const appRoutes = [
   { path: "/app/admin/intern-profiles", title: "Intern Profiles", module: "Admin", moduleKey: "admin", roleGroup: "Admin", icon: UserCog },
   { path: "/app/evidence", title: "Testing Evidence", module: "Support", moduleKey: "support", roleGroup: "Admin, Partner", icon: UploadCloud },
 ];
+
+const excludedProductionPaths = new Set([
+  "/app/hr",
+  "/app/people",
+  "/app/people/:userId",
+  "/app/workload",
+  "/app/attendance",
+  "/app/workforce-analytics",
+  "/app/payroll",
+  "/app/payroll/:runId",
+  "/app/compensation",
+  "/app/admin",
+  "/app/admin/users",
+  "/app/admin/partner-profiles",
+  "/app/admin/lawyer-profiles",
+  "/app/admin/associate-profiles",
+  "/app/admin/intern-profiles",
+]);
+
+export const appRoutes = rawAppRoutes.filter((route) => (
+  import.meta.env.DEV
+  || import.meta.env.VITE_ENABLE_ENTERPRISE_MODULES === "true"
+  || !excludedProductionPaths.has(route.path)
+));
 
 export const fallbackRoutes = [
   { path: "/states/loading-workspace", title: "Loading Workspace", module: "Fallback States", icon: Clock3 },

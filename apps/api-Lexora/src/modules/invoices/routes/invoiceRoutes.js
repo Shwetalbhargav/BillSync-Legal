@@ -1,5 +1,6 @@
 import { Router } from 'express';
-import { authenticate, authorize } from '../../../middleware/auth.js';
+import { authenticate } from '../../../middleware/auth.js';
+import { requireFinancialMutation, requireFinancialRead } from '../../../middleware/commercialPermissions.js';
 import {
   validateGenerateFromBillables,
   validateGenerateFromTime,
@@ -23,16 +24,16 @@ const router = Router();
 
 router.use(authenticate);
 
-router.get('/', getAllInvoices);
-router.post('/from-time', validateGenerateFromTime, generateFromApprovedTime);
-router.post('/from-billables/auto', authorize('admin'), autoGenerateFromApprovedBillables);
-router.post('/from-billables', authorize('admin'), validateGenerateFromBillables, generateFromApprovedBillables);
-router.get('/__analytics/pending-by-client', getPendingSummaryByClient);
-router.get('/__pipeline', getPipeline);
-router.get('/:id', getInvoiceById);
-router.get('/:id/pdf', downloadInvoicePdf);
-router.get('/:id/document', previewInvoiceHtml);
-router.post('/:id/send', validateSendInvoice, sendInvoice);
-router.post('/:id/void', voidInvoice);
+router.get('/', requireFinancialRead, getAllInvoices);
+router.post('/from-time', requireFinancialMutation, validateGenerateFromTime, generateFromApprovedTime);
+router.post('/from-billables/auto', requireFinancialMutation, autoGenerateFromApprovedBillables);
+router.post('/from-billables', requireFinancialMutation, validateGenerateFromBillables, generateFromApprovedBillables);
+router.get('/__analytics/pending-by-client', requireFinancialRead, getPendingSummaryByClient);
+router.get('/__pipeline', requireFinancialRead, getPipeline);
+router.get('/:id', requireFinancialRead, getInvoiceById);
+router.get('/:id/pdf', requireFinancialRead, downloadInvoicePdf);
+router.get('/:id/document', requireFinancialRead, previewInvoiceHtml);
+router.post('/:id/send', requireFinancialMutation, validateSendInvoice, sendInvoice);
+router.post('/:id/void', requireFinancialMutation, voidInvoice);
 
 export default router;

@@ -1,7 +1,7 @@
 import { array, matches, objectId, oneOf, required, string, validateBody } from '../../../middleware/validate.js';
 
 const roles = ['partner', 'lawyer', 'associate', 'intern', 'admin'];
-const registerRoles = roles.filter((role) => role !== 'admin');
+const loginRoles = [...roles, 'owner', 'billing_assistant', 'accountant'];
 const currentYear = new Date().getFullYear();
 
 const qualification = (value) => {
@@ -28,7 +28,7 @@ export const validateLogin = validateBody({
   name: [required, string({ min: 1, max: 120 })],
   mobile: [required, string({ min: 10, max: 10 }), matches(/^\d{10}$/, "a 10-digit mobile number")],
   password: [required, string({ min: 1, max: 128 })],
-  role: [required, oneOf(roles)],
+  role: [required, oneOf(loginRoles)],
   firmId: [required, objectId()],
 });
 
@@ -36,9 +36,8 @@ export const validateRegister = validateBody({
   name: [required, string({ min: 1, max: 120 }), matches(/^[A-Za-z .'-]+$/, "letters, spaces, apostrophes, periods, or hyphens only")],
   mobile: [required, string({ min: 10, max: 10 }), matches(/^\d{10}$/, "a 10-digit mobile number")],
   password: [required, string({ min: 8, max: 128 })],
-  role: [required, oneOf(registerRoles)],
   email: [required, string({ max: 254 }), matches(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, "a valid email address")],
-  firmId: [required, objectId()],
+  practiceName: [string({ min: 1, max: 180 })],
   firmName: [string({ min: 1, max: 180 })],
   address: [string({ max: 500 })],
   qualifications: [array({ item: qualification })],

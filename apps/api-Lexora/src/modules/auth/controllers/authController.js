@@ -2,6 +2,8 @@ import bcrypt from "bcryptjs";
 import crypto from "crypto";
 import Firm from "../../firms/models/Firm.js";
 import User from "../../users/models/User.js";
+import Membership from "../../workspace/models/Membership.js";
+import AuditEvent from "../../workspace/models/AuditEvent.js";
 import { toSafeUser } from "../../users/utils/safeUser.js";
 import {
   clearAuthCookie,
@@ -226,40 +228,71 @@ export const loginDesktopWithHandoff = async (req, res) => {
   }
 };
 
-// Register all fields needed by the User schema and shared profile fields.
+// Solo registration creates a workspace and Owner membership.
 export const registerUser = async (req, res) => {
+  const session = await User.startSession();
   try {
-    const { name, email, mobile, address, role, password, firmId, firmName, qualifications } = req.body;
+    const { name, email, mobile, address, password, practiceName, firmName, qualifications } = req.body;
 
-    if (!name || !mobile || !password || !role) {
-      return res.status(400).json({ error: "Name, mobile, password and role are required" });
+    if (!name || !mobile || !password) {
+      return res.status(400).json({ error: "Name, mobile and password are required" });
     }
 
-    const existing = await User.findOne({
-      $or: [
-        { name },
-        { mobile },
-      ],
-    });
+    const normalizedMobile = normalizeMobile(mobile);
+    const existing = await User.findOne({ mobile: normalizedMobile });
     if (existing) return res.status(409).json({ error: "User already exists with this name or mobile" });
 
-    const resolvedFirmId = await resolveFirmId({ firmId, firmName });
     const passwordHash = await bcrypt.hash(password, 10);
+    let firm;
+    let user;
+    let membership;
 
-    const user = await User.create({
-      name,
-      email,
-      mobile,
-      address,
-      role,
-      firmId: resolvedFirmId,
-      passwordHash,
-      qualifications,
+    await session.withTransaction(async () => {
+      [firm] = await Firm.create([{
+        name: String(practiceName || firmName || `${name}'s Practice`).trim(),
+        contact: { email, phone: normalizedMobile },
+        memberLimit: 5,
+      }], { session });
+
+      [user] = await User.create([{
+        name,
+        email,
+        mobile: normalizedMobile,
+        address,
+        role: 'owner',
+        commercialRole: 'owner',
+        firmId: firm._id,
+        workspaceId: firm._id,
+        passwordHash,
+        qualifications,
+      }], { session });
+
+      [membership] = await Membership.create([{
+        userId: user._id,
+        workspaceId: firm._id,
+        role: 'owner',
+        status: 'active',
+        acceptedAt: new Date(),
+      }], { session });
+
+      await AuditEvent.create([{
+        workspaceId: firm._id,
+        actorId: user._id,
+        action: 'workspace.registered',
+        targetType: 'workspace',
+        targetId: firm._id,
+        changes: { ownerUserId: user._id, membershipId: membership._id },
+      }], { session });
     });
+
+    const token = signAuthToken(user);
+    setAuthCookie(res, token);
 
     res.status(201).json({
       success: true,
       user: toSafeUser(user),
+      workspace: firm,
+      membership,
     });
   } catch (err) {
     if (isDuplicateUserError(err)) {
@@ -270,6 +303,8 @@ export const registerUser = async (req, res) => {
     }
     console.error("Register error:", err);
     res.status(500).json({ error: "Server error" });
+  } finally {
+    session.endSession();
   }
 };
 

@@ -14,6 +14,8 @@ export function toSafeUser(user) {
     email: obj.email ?? null,
     mobile: obj.mobile ?? null,
     role: obj.role ?? null,
+    commercialRole: obj.commercialRole ?? obj.role ?? null,
+    workspaceId: normalizeId(obj.workspaceId ?? obj.firmId),
     firmId: normalizeId(obj.firmId),
     photoUrl: obj.photoUrl ?? '/images/default-user.jpg',
     address: obj.address ?? null,

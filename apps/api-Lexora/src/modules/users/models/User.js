@@ -2,16 +2,18 @@
 
 import mongoose from 'mongoose';
 import { workspaceScopedPlugin } from '../../../middleware/workspaceScopedPlugin.js';
+import { COMMERCIAL_ROLES } from '../../workspace/roles.js';
 
 const UserSchema = new mongoose.Schema({
   name: { type: String, required: true, trim: true },
   email: {type: String, required: false, trim: true  },
   role: { 
     type: String, 
-    enum: ['partner', 'lawyer', 'associate', 'intern', 'admin'], 
+    enum: [...COMMERCIAL_ROLES, 'partner', 'associate', 'intern', 'admin'], 
     required: true,
     default: 'lawyer'
   },
+  commercialRole: { type: String, enum: COMMERCIAL_ROLES, default: 'lawyer', index: true },
   firmId: { type: mongoose.Schema.Types.ObjectId, ref: 'Firm' },
   tokenVersion: { type: Number, default: 0 },
   passwordResetTokenHash: { type: String },
