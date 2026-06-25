@@ -1,6 +1,7 @@
 // src/models/InvoiceLine.js
 
 import mongoose from 'mongoose';
+import { workspaceScopedPlugin } from '../../../middleware/workspaceScopedPlugin.js';
 
 const InvoiceLineSchema = new mongoose.Schema(
   {
@@ -16,5 +17,6 @@ const InvoiceLineSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+InvoiceLineSchema.plugin(workspaceScopedPlugin);
 export const InvoiceLine = mongoose.model('InvoiceLine', InvoiceLineSchema);
 export default InvoiceLine;

@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { workspaceScopedPlugin } from '../../../middleware/workspaceScopedPlugin.js';
 
 const LeaveRequestSchema = new mongoose.Schema(
   {
@@ -23,5 +24,6 @@ const LeaveRequestSchema = new mongoose.Schema(
 
 LeaveRequestSchema.index({ userId: 1, startDate: 1, endDate: 1 });
 
+LeaveRequestSchema.plugin(workspaceScopedPlugin);
 export const LeaveRequest = mongoose.model('LeaveRequest', LeaveRequestSchema);
 export default LeaveRequest;

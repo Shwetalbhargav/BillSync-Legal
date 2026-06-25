@@ -14,7 +14,9 @@ function paymentPortalConfig() {
   return {
     upiId: String(process.env.PAYMENT_UPI_ID || '').trim(),
     upiName: String(process.env.PAYMENT_UPI_NAME || process.env.FIRM_NAME || 'BillSync Legal').trim(),
-    mockGatewayEnabled: String(process.env.PAYMENT_MOCK_GATEWAY_ENABLED || 'true').toLowerCase() !== 'false',
+    mockGatewayEnabled: process.env.PAYMENT_MOCK_GATEWAY_ENABLED
+      ? String(process.env.PAYMENT_MOCK_GATEWAY_ENABLED).toLowerCase() === 'true'
+      : process.env.NODE_ENV !== 'production',
   };
 }
 

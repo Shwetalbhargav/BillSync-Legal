@@ -1,6 +1,7 @@
 // src/models/Payment.js
 
 import mongoose from 'mongoose';
+import { workspaceScopedPlugin } from '../../../middleware/workspaceScopedPlugin.js';
 
 const PaymentAuditSchema = new mongoose.Schema(
   {
@@ -39,5 +40,6 @@ const PaymentSchema = new mongoose.Schema(
 PaymentSchema.index({ invoiceId: 1, receivedDate: -1 });
 PaymentSchema.index({ transactionType: 1, status: 1, receivedDate: -1 });
 
+PaymentSchema.plugin(workspaceScopedPlugin);
 export const Payment = mongoose.model('Payment', PaymentSchema);
 export default Payment;

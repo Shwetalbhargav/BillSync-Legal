@@ -1,6 +1,7 @@
 // src/models/LawyerProfile.js
 
 import mongoose from 'mongoose';
+import { workspaceScopedPlugin } from '../../../middleware/workspaceScopedPlugin.js';
 
 const LawyerProfileSchema = new mongoose.Schema({
   userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true, unique: true },
@@ -16,5 +17,6 @@ const LawyerProfileSchema = new mongoose.Schema({
   billingRate: { type: Number, default: 2500 }  // INR
 });
 
+LawyerProfileSchema.plugin(workspaceScopedPlugin);
 const LawyerProfile = mongoose.model('LawyerProfile', LawyerProfileSchema);
 export default LawyerProfile;

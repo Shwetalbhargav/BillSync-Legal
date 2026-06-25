@@ -155,7 +155,7 @@ test('POST /api/clients rejects unknown client payload fields', async () => {
   expect(mocks.clientCreate).not.toHaveBeenCalled();
 });
 
-test('POST /api/clients normalizes accepted payload fields and validates references', async () => {
+test('POST /api/clients normalizes accepted payload fields without caller ownership', async () => {
   mocks.clientCreate.mockImplementation(async (payload) => ({ _id: CLIENT_ID, ...payload }));
 
   const response = await jsonRequest('/api/clients', {
@@ -166,8 +166,6 @@ test('POST /api/clients normalizes accepted payload fields and validates referen
       email: 'CLIENT@EXAMPLE.COM ',
       phone: ' +91 99999 ',
       contactInfo: '  Billing contact prefers email  ',
-      firmId: FIRM_ID,
-      ownerUserId: USER_ID,
       paymentTerms: 'net30',
       status: 'Prospect',
       contacts: [{ name: 'Priya Accounts', email: 'accounts@nimbus.example', phone: '+91 77777', role: 'Finance' }],
@@ -177,16 +175,14 @@ test('POST /api/clients normalizes accepted payload fields and validates referen
   const body = await response.json();
 
   expect(response.status).toBe(201);
-  expect(mocks.firmExists).toHaveBeenCalledWith({ _id: FIRM_ID });
-  expect(mocks.userExists).toHaveBeenCalledWith({ _id: USER_ID });
+  expect(mocks.firmExists).not.toHaveBeenCalled();
+  expect(mocks.userExists).not.toHaveBeenCalled();
   expect(mocks.clientCreate).toHaveBeenCalledWith({
     displayName: 'Nimbus Retail',
     name: 'Nimbus Retail Legacy',
     email: 'client@example.com',
     phone: '+91 99999',
     contactInfo: 'Billing contact prefers email',
-    firmId: FIRM_ID,
-    ownerUserId: USER_ID,
     paymentTerms: 'NET30',
     status: 'prospect',
     contacts: [{ name: 'Priya Accounts', email: 'accounts@nimbus.example', phone: '+91 77777', role: 'Finance' }],
@@ -195,7 +191,7 @@ test('POST /api/clients normalizes accepted payload fields and validates referen
   expect(body.data.displayName).toBe('Nimbus Retail');
 });
 
-test('POST /api/clients rejects missing referenced firms', async () => {
+test('POST /api/clients rejects caller supplied firm ownership', async () => {
   mocks.firmExists.mockResolvedValue(null);
 
   const response = await jsonRequest('/api/clients', {
@@ -208,10 +204,8 @@ test('POST /api/clients rejects missing referenced firms', async () => {
   const body = await response.json();
 
   expect(response.status).toBe(400);
-  expect(body.errors).toContainEqual({
-    field: 'firmId',
-    message: 'firmId does not reference an existing firm',
-  });
+  expect(body.message).toBe('Ownership and operator fields are not accepted in client payloads');
+  expect(body.fields).toEqual(['firmId']);
   expect(mocks.clientCreate).not.toHaveBeenCalled();
 });
 
@@ -253,7 +247,7 @@ test('PUT /api/clients/:clientId runs mongoose validators during updates', async
   expect(body.data.displayName).toBe('Nimbus Retail');
 });
 
-test('PATCH /api/clients/:clientId/assign-owner clears owner when ownerUserId is null', async () => {
+test('PATCH /api/clients/:clientId/assign-owner rejects caller supplied ownerUserId', async () => {
   mocks.clientFindByIdAndUpdate.mockReturnValue(queryResult({ _id: CLIENT_ID, ownerUserId: null }));
 
   const response = await jsonRequest(`/api/clients/${CLIENT_ID}/assign-owner`, {
@@ -261,13 +255,9 @@ test('PATCH /api/clients/:clientId/assign-owner clears owner when ownerUserId is
     body: JSON.stringify({ ownerUserId: null }),
   });
 
-  expect(response.status).toBe(200);
+  expect(response.status).toBe(400);
   expect(mocks.userExists).not.toHaveBeenCalled();
-  expect(mocks.clientFindByIdAndUpdate).toHaveBeenCalledWith(
-    CLIENT_ID,
-    { ownerUserId: null },
-    { new: true, runValidators: true }
-  );
+  expect(mocks.clientFindByIdAndUpdate).not.toHaveBeenCalled();
 });
 
 test('DELETE /api/clients/:clientId blocks hard delete when related records exist', async () => {

@@ -1,5 +1,6 @@
 // src/models/CaseAssignment.js
 import mongoose from 'mongoose';
+import { workspaceScopedPlugin } from '../../../middleware/workspaceScopedPlugin.js';
 
 const { Schema } = mongoose;
 
@@ -38,5 +39,6 @@ CaseAssignmentSchema.index({ caseId: 1, userId: 1, status: 1, startAt: 1, endAt:
 CaseAssignmentSchema.index({ firmId: 1, clientId: 1, status: 1 });
 CaseAssignmentSchema.index({ caseId: 1, status: 1 });
 
+CaseAssignmentSchema.plugin(workspaceScopedPlugin);
 export const CaseAssignment = mongoose.model('CaseAssignment', CaseAssignmentSchema);
 export default CaseAssignment;

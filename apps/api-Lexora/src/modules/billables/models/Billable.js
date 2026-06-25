@@ -1,5 +1,6 @@
 // models/Billable.js
 import mongoose from 'mongoose';
+import { workspaceScopedPlugin } from '../../../middleware/workspaceScopedPlugin.js';
 
 export const BILLABLE_STATUSES = ['pending', 'approved', 'rejected', 'billed'];
 
@@ -117,6 +118,7 @@ BillableSchema.index(
     },
   }
 );
+BillableSchema.plugin(workspaceScopedPlugin);
 const Billable = mongoose.model('Billable', BillableSchema);
 export default Billable;
 export { Billable };

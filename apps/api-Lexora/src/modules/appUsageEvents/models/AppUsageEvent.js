@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { workspaceScopedPlugin } from '../../../middleware/workspaceScopedPlugin.js';
 
 const AppUsageEventSchema = new mongoose.Schema(
   {
@@ -41,5 +42,6 @@ AppUsageEventSchema.index({ workSessionId: 1, startedAt: 1, appName: 1 });
 AppUsageEventSchema.index({ userId: 1, startedAt: -1 });
 AppUsageEventSchema.index({ domain: 1, startedAt: -1 });
 
+AppUsageEventSchema.plugin(workspaceScopedPlugin);
 export const AppUsageEvent = mongoose.model('AppUsageEvent', AppUsageEventSchema);
 export default AppUsageEvent;

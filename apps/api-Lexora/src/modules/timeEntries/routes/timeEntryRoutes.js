@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { authenticate } from '../../../middleware/auth.js';
+import { requireLegalMutation } from '../../../middleware/commercialPermissions.js';
 import {
   validateActivityIdParam,
   validateCreateTimeEntry,
@@ -19,12 +20,12 @@ const router = Router();
 
 router.use(authenticate);
 
-router.post('/', validateCreateTimeEntry, createTimeEntry);
-router.post('/from-activity/:activityId', validateActivityIdParam, createFromActivity);
+router.post('/', requireLegalMutation, validateCreateTimeEntry, createTimeEntry);
+router.post('/from-activity/:activityId', requireLegalMutation, validateActivityIdParam, createFromActivity);
 router.get('/', listTimeEntries);
-router.patch('/:id', validateUpdateTimeEntry, updateTimeEntry);
-router.post('/:id/submit', submitTimeEntry);
-router.post('/:id/approve', approveTimeEntry);
-router.post('/:id/reject', rejectTimeEntry);
+router.patch('/:id', requireLegalMutation, validateUpdateTimeEntry, updateTimeEntry);
+router.post('/:id/submit', requireLegalMutation, submitTimeEntry);
+router.post('/:id/approve', requireLegalMutation, approveTimeEntry);
+router.post('/:id/reject', requireLegalMutation, rejectTimeEntry);
 
 export default router;

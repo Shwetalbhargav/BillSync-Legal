@@ -70,6 +70,8 @@ export function signAuthToken(user, options = {}) {
       id: user._id.toString(),
       role: user.role,
       email: user.email,
+      workspaceId: String(user.workspaceId || user.firmId || ''),
+      tokenVersion: Number(user.tokenVersion || 0),
       ...(options.purpose ? { purpose: options.purpose } : {}),
     },
     getJwtSecret(),

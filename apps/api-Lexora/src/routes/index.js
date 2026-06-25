@@ -29,6 +29,7 @@ import { reportsRoutes } from '../modules/reports/index.js';
 import { taskRoutes } from '../modules/tasks/index.js';
 import { timeEntryRoutes } from '../modules/timeEntries/index.js';
 import { workSessionRoutes } from '../modules/workSessions/index.js';
+import { workspaceRoutes } from '../modules/workspace/index.js';
 import {
   adminRoutes,
   associateProfileRoutes,
@@ -39,13 +40,16 @@ import {
 } from '../modules/users/index.js';
 
 const router = Router();
+const enterpriseModulesEnabled =
+  process.env.NODE_ENV !== 'production'
+  || String(process.env.ENABLE_ENTERPRISE_MODULES || '').toLowerCase() === 'true';
 
 // Resource-relative routers.
 router.use('/activities', activityRoutes);
 router.use('/activity-samples', activitySampleRoutes);
 router.use('/app-usage-events', appUsageEventRoutes);
-router.use('/attendance', attendanceRoutes);
-router.use('/analytics', analyticsRoutes);
+if (enterpriseModulesEnabled) router.use('/attendance', attendanceRoutes);
+if (enterpriseModulesEnabled) router.use('/analytics', analyticsRoutes);
 router.use('/ar', arRoutes);
 router.use('/billables', billableRoutes);
 router.use('/case-assignments', caseAssignmentRoutes);
@@ -65,9 +69,10 @@ router.use('/payments', paymentRoutes);
 router.use('/rate-cards', rateCardRoutes);
 router.use('/reports', reportsRoutes);
 router.use('/tasks', taskRoutes);
-router.use('/revenue', revenueRoutes);
+if (enterpriseModulesEnabled) router.use('/revenue', revenueRoutes);
 router.use('/time-entries', timeEntryRoutes);
 router.use('/work-sessions', workSessionRoutes);
+router.use('/workspace', workspaceRoutes);
 router.use('/users', userRoutes);
 router.use('/auth', authRoutes);
 router.use('/admin', adminRoutes);

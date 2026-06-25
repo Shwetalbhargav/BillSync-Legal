@@ -1,6 +1,7 @@
 // src/models/TimeEntry.js
 
 import mongoose from 'mongoose';
+import { workspaceScopedPlugin } from '../../../middleware/workspaceScopedPlugin.js';
 
 const TimeEntrySchema = new mongoose.Schema(
   {
@@ -52,5 +53,6 @@ TimeEntrySchema.index(
   }
 );
 
+TimeEntrySchema.plugin(workspaceScopedPlugin);
 export const TimeEntry = mongoose.model('TimeEntry', TimeEntrySchema);
 export default TimeEntry;

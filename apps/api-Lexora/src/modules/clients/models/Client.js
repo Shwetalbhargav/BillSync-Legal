@@ -1,6 +1,7 @@
 // src/models/Client.js 
 
 import mongoose from 'mongoose';
+import { workspaceScopedPlugin } from '../../../middleware/workspaceScopedPlugin.js';
 
 export const CLIENT_STATUSES = ['active', 'inactive', 'prospect'];
 export const PAYMENT_TERMS = [
@@ -54,6 +55,9 @@ const ClientSchema = new mongoose.Schema(
 );
 
 ClientSchema.index({ displayName: 'text', email: 1, phone: 1 });
+ClientSchema.index({ workspaceId: 1, displayName: 1 }, { unique: true });
+ClientSchema.index({ workspaceId: 1, email: 1 });
 
+ClientSchema.plugin(workspaceScopedPlugin);
 export const Client = mongoose.model('Client', ClientSchema);
 export default Client;

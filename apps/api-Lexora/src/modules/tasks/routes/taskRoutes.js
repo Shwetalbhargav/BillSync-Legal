@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { authenticate } from '../../../middleware/auth.js';
+import { requireLegalMutation } from '../../../middleware/commercialPermissions.js';
 import { TaskController } from '../controllers/taskController.js';
 import {
   validateCreateTask,
@@ -13,9 +14,9 @@ const router = Router();
 router.use(authenticate);
 
 router.get('/', validateListTasks, TaskController.list);
-router.post('/', validateCreateTask, TaskController.create);
+router.post('/', requireLegalMutation, validateCreateTask, TaskController.create);
 router.get('/:taskId', validateTaskId, TaskController.getById);
-router.patch('/:taskId', validateTaskId, validateUpdateTask, TaskController.update);
-router.delete('/:taskId', validateTaskId, TaskController.remove);
+router.patch('/:taskId', requireLegalMutation, validateTaskId, validateUpdateTask, TaskController.update);
+router.delete('/:taskId', requireLegalMutation, validateTaskId, TaskController.remove);
 
 export default router;

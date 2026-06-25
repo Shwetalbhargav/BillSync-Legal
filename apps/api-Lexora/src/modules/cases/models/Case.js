@@ -1,6 +1,7 @@
 // src/models/Case.js
 
 import mongoose from 'mongoose';
+import { workspaceScopedPlugin } from '../../../middleware/workspaceScopedPlugin.js';
 
 const CaseSchema = new mongoose.Schema(
   {
@@ -38,5 +39,6 @@ const CaseSchema = new mongoose.Schema(
 CaseSchema.index({ clientId: 1, status: 1 });
 CaseSchema.index({ title: 'text', description: 'text' });
 
+CaseSchema.plugin(workspaceScopedPlugin);
 export const Case = mongoose.model('Case', CaseSchema);
 export default Case;

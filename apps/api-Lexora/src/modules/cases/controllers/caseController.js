@@ -7,6 +7,7 @@ import { TimeEntry } from '../../timeEntries/models/TimeEntry.js';
 import { Invoice } from '../../invoices/models/Invoice.js';
 import { Payment } from '../../payments/models/Payment.js';
 import User from '../../users/models/User.js';
+import Firm from '../../firms/models/Firm.js';
 
 // ---------- helpers ----------
 const CASE_MUTABLE_FIELDS = [
@@ -235,7 +236,8 @@ export const getAllCases = async (req, res) => {
     const { page, limit, skip } = getPagination(req.query);
     const q = {};
     const requesterId = req.user?.id;
-    const requesterRole = String(req.user?.role || '').toLowerCase();
+    const requesterRole = String(req.user?.commercialRole || req.user?.role || '').toLowerCase();
+    const workspace = req.workspaceId ? await Firm.findById(req.workspaceId).select('restrictedMatterVisibility') : null;
 
     if (req.query.clientId) q.clientId = req.query.clientId;
     if (req.query.status) q.status = req.query.status;
@@ -245,7 +247,12 @@ export const getAllCases = async (req, res) => {
       const pattern = new RegExp(escapeRegex(req.query.q), 'i');
       q.$or = [{ title: pattern }, { description: pattern }, { case_type: pattern }];
     }
-    if (requesterRole !== 'admin' && requesterId && mongoose.Types.ObjectId.isValid(requesterId)) {
+    if (
+      workspace?.restrictedMatterVisibility
+      && requesterRole === 'lawyer'
+      && requesterId
+      && mongoose.Types.ObjectId.isValid(requesterId)
+    ) {
       q.$and = [
         ...(q.$and || []),
         {
@@ -282,6 +289,17 @@ export const getCaseById = async (req, res) => {
       .populate('assignedUsers', 'name role')
       .populate('primaryLawyerId', 'name');
     if (!doc) return notFound(res, 'Case not found');
+    const workspace = req.workspaceId ? await Firm.findById(req.workspaceId).select('restrictedMatterVisibility') : null;
+    if (workspace?.restrictedMatterVisibility && String(req.user?.commercialRole || req.user?.role || '').toLowerCase() === 'lawyer') {
+      const requesterId = String(req.user?.id || '');
+      const allowed = [
+        doc.leadPartnerId,
+        doc.managingLawyerId,
+        doc.primaryLawyerId,
+        ...(doc.assignedUsers || []),
+      ].some((id) => String(id?._id || id || '') === requesterId);
+      if (!allowed) return notFound(res, 'Case not found');
+    }
     res.json({ ok: true, data: doc });
   } catch (err) {
     res.status(500).json({ ok: false, message: 'Failed to fetch case' });

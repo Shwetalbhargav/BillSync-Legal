@@ -115,7 +115,7 @@ export function TimeApprovalPage() {
         status: entries.length ? "ready" : "empty",
         entries,
         message: "",
-        success: "Work approved. It is now ready for billing review.",
+        success: "Work marked Ready to Bill.",
       });
     } catch (error) {
       setState((current) => ({ ...current, message: error?.userMessage || "We could not approve this work right now." }));
@@ -215,7 +215,7 @@ export function TimeApprovalPage() {
         <div className="flex items-start gap-3">
           <FileClock className="mt-0.5 h-5 w-5 text-primary" />
           <p className="text-sm leading-6 text-muted">
-            Approval creates billing-ready work from approved billable time. Invoice screens can then pull approved billables into client bills.
+            Work Review creates billing-ready work when owner review is configured. Invoice screens can then pull Ready to Bill items into client bills.
           </p>
         </div>
       </section>
