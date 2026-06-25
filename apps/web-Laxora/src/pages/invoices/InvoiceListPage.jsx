@@ -90,14 +90,14 @@ export function InvoiceListPage() {
         ...(filters.clientId ? { clientId: filters.clientId } : {}),
         ...(user?.id ? { createdBy: user.id } : {}),
       });
-      const payload = result?.data || result;
-      const count = payload?.invoices?.length || 0;
-      const billableCount = payload?.groupedBillables || 0;
+      const invoiceResult = result?.data || result;
+      const count = invoiceResult?.invoices?.length || 0;
+      const billableCount = invoiceResult?.groupedBillables || 0;
       setState((current) => ({
         ...current,
         message: count
           ? `${count} draft invoice${count === 1 ? "" : "s"} created from ${billableCount} approved billable item${billableCount === 1 ? "" : "s"}.`
-          : payload?.message || "No approved unbilled billables found.",
+          : invoiceResult?.message || "No approved unbilled billables found.",
       }));
       await load(filters);
     } catch (error) {

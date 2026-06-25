@@ -11,6 +11,8 @@ import {
   updateBillable,
   deleteBillable,
   createFromEmail,
+  createExpense,
+  listExpenses,
   approveBillable,
   rejectBillable
   } from '../controllers/billableController.js';
@@ -21,6 +23,8 @@ router.use(authenticate);
 
 router.post('/', validateCreateBillable, createBillable);
 router.get('/', getAllBillables);
+router.post('/expenses', createExpense);
+router.get('/expenses', listExpenses);
 router.post('/from-email/:emailEntryId', createFromEmail);
 router.post('/:id/approve', authorize('admin'), approveBillable);
 router.post('/:id/reject', authorize('admin'), rejectBillable);

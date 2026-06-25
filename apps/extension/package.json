@@ -2,6 +2,10 @@
   "name": "legal-billables-extension",
   "version": "1.0.9",
   "private": true,
+  "engines": {
+    "node": "22.16.x",
+    "npm": ">=10"
+  },
   "scripts": {
     "test": "node --test tests/*.test.js",
     "release:check": "node --test tests/*.test.js",

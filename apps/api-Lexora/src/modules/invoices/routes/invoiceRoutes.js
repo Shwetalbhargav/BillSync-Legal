@@ -16,6 +16,8 @@ import {
   downloadInvoicePdf,
   previewInvoiceHtml,
   voidInvoice,
+  finaliseInvoice,
+  reviseInvoice,
   getPipeline,
   getPendingSummaryByClient
 } from '../controllers/invoiceController.js';
@@ -33,6 +35,8 @@ router.get('/__pipeline', requireFinancialRead, getPipeline);
 router.get('/:id', requireFinancialRead, getInvoiceById);
 router.get('/:id/pdf', requireFinancialRead, downloadInvoicePdf);
 router.get('/:id/document', requireFinancialRead, previewInvoiceHtml);
+router.post('/:id/finalise', requireFinancialMutation, finaliseInvoice);
+router.post('/:id/revise', requireFinancialMutation, reviseInvoice);
 router.post('/:id/send', requireFinancialMutation, validateSendInvoice, sendInvoice);
 router.post('/:id/void', requireFinancialMutation, voidInvoice);
 

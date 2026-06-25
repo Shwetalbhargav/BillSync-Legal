@@ -3,6 +3,8 @@ import crypto from 'crypto';
 import mongoose from 'mongoose';
 import { Payment } from '../models/Payment.js';
 import { Invoice } from '../../invoices/models/Invoice.js';
+import { nextReceiptNumber } from '../../finance/sequenceService.js';
+import { fromPaise, toPaise } from '../../finance/money.js';
 
 const PORTAL_TOKEN_DAYS = 30;
 
@@ -32,28 +34,66 @@ function buildAudit(action, req, changes, note) {
 
 /** Recalculate an invoice's status from cleared payments and persist */
 async function recomputeInvoiceStatus(invoiceId, session = null) {
-  const cleared = await Payment.aggregate([
-    { $match: { invoiceId: new mongoose.Types.ObjectId(invoiceId), status: 'cleared', transactionType: { $in: ['payment', 'write_off'] } } },
+  const clearedPaiseRows = await Payment.aggregate([
+    { $match: { invoiceId: new mongoose.Types.ObjectId(invoiceId), status: 'cleared', transactionType: { $in: ['payment', 'write_off', 'refund'] } } },
     {
       $group: {
         _id: '$invoiceId',
-        paid: {
+        paidPaise: {
           $sum: {
-            $cond: [{ $eq: ['$transactionType', 'refund'] }, { $multiply: ['$amount', -1] }, '$amount']
-          }
-        }
-      }
+            $cond: [
+              { $eq: ['$transactionType', 'refund'] },
+              { $multiply: ['$amountPaise', -1] },
+              '$amountPaise',
+            ],
+          },
+        },
+      },
     },
-  ]);
-  const paidAmount = cleared[0]?.paid || 0;
+  ]).session(session);
+  const paidPaise = Math.max(0, clearedPaiseRows[0]?.paidPaise || 0);
+  const paidAmount = fromPaise(paidPaise);
 
   const inv = await Invoice.findById(invoiceId).session(session);
   if (!inv) return null;
 
+  inv.balancePaise = Math.max(0, Number(inv.totalPaise || toPaise(inv.total)) - paidPaise);
   const newStatus = inv.computeStatus(paidAmount);
   inv.status = newStatus;
   await inv.save({ session });
-  return { invoice: inv, paidAmount, newStatus };
+  return { invoice: inv, paidAmount, paidPaise, balancePaise: inv.balancePaise, newStatus };
+}
+
+async function clearedPaidPaise(invoiceId, session = null) {
+  const rows = await Payment.aggregate([
+    { $match: { invoiceId: new mongoose.Types.ObjectId(invoiceId), status: 'cleared', transactionType: { $in: ['payment', 'write_off'] } } },
+    {
+      $group: {
+        _id: '$invoiceId',
+        paidPaise: {
+          $sum: '$amountPaise',
+        },
+      },
+    },
+  ]).session(session);
+  return rows[0]?.paidPaise || 0;
+}
+
+async function netPaidPaise(invoiceId, session = null) {
+  const result = await recomputeInvoiceStatus(invoiceId, session);
+  return result?.paidPaise || 0;
+}
+
+async function outstandingPaise(invoiceId, session) {
+  const invoice = await Invoice.findById(invoiceId).session(session);
+  if (!invoice) return null;
+  await recomputeInvoiceStatus(invoiceId, session);
+  const fresh = await Invoice.findById(invoiceId).session(session);
+  return { invoice: fresh, outstanding: Number(fresh.balancePaise ?? fresh.totalPaise ?? toPaise(fresh.total)) };
+}
+
+function requireReference({ method, reference }) {
+  return ['bank_transfer', 'upi'].includes(method) && !String(reference || '').trim();
 }
 
 /**
@@ -89,7 +129,22 @@ export const createPayment = async (req, res) => {
   session.startTransaction();
   try {
     const data = req.body || {};
-    if (!data.invoiceId) return res.status(400).json({ error: 'invoiceId is required' });
+    if (!data.invoiceId) {
+      await session.abortTransaction();
+      return res.status(400).json({ error: 'invoiceId is required' });
+    }
+    const idempotencyKey = req.get?.('idempotency-key') || data.idempotencyKey;
+    if (idempotencyKey) {
+      const existing = await Payment.findOne({ idempotencyKey }).session(session);
+      if (existing) {
+        await session.commitTransaction();
+        return res.status(200).json({ payment: existing, idempotent: true });
+      }
+    }
+    if (requireReference(data)) {
+      await session.abortTransaction();
+      return res.status(400).json({ error: 'Reference is required for bank transfer and UPI payments' });
+    }
 
     const inv = await Invoice.findById(data.invoiceId).session(session);
     if (!inv) {
@@ -100,23 +155,42 @@ export const createPayment = async (req, res) => {
       await session.abortTransaction();
       return res.status(400).json({ error: 'Cannot record payment against a void invoice' });
     }
+    const amountPaise = data.amountPaise ?? toPaise(data.amount);
+    const current = await outstandingPaise(inv._id, session);
+    const transactionType = data.transactionType || 'payment';
+    if (['payment', 'write_off'].includes(transactionType) && amountPaise > current.outstanding && !data.creditApplied) {
+      await session.abortTransaction();
+      return res.status(400).json({ error: transactionType === 'write_off' ? 'Write-off cannot exceed outstanding amount' : 'Payment exceeds outstanding balance' });
+    }
+    if (transactionType === 'refund' && amountPaise > (await clearedPaidPaise(inv._id, session))) {
+      await session.abortTransaction();
+      return res.status(400).json({ error: 'Refund cannot exceed cleared paid amount' });
+    }
+    if (transactionType === 'write_off' && !String(data.notes || data.reason || '').trim()) {
+      await session.abortTransaction();
+      return res.status(400).json({ error: 'Write-off reason is required' });
+    }
 
     const payment = await Payment.create([{
       ...data,
-      transactionType: data.transactionType || 'payment',
+      amount: fromPaise(amountPaise),
+      amountPaise,
+      transactionType,
       receivedBy: data.receivedBy || req.user?.id,
+      idempotencyKey,
+      receiptNumber: await nextReceiptNumber(req.workspaceId || inv.workspaceId, session),
       auditTrail: [buildAudit('created', req, { status: data.status || 'cleared', amount: data.amount })],
     }], { session });
     const result = await recomputeInvoiceStatus(inv._id, session);
 
     await session.commitTransaction();
-    session.endSession();
     res.status(201).json({ payment: payment[0], invoice: result?.invoice, paidAmount: result?.paidAmount, status: result?.newStatus });
   } catch (e) {
     console.error(e);
     await session.abortTransaction();
-    session.endSession();
     res.status(500).json({ error: 'Failed to create payment' });
+  } finally {
+    session.endSession();
   }
 };
 
@@ -205,15 +279,27 @@ export const createWriteOff = async (req, res) => {
       await session.abortTransaction();
       return res.status(400).json({ error: 'Cannot write off a void invoice' });
     }
+    const amountPaise = req.body.amountPaise ?? toPaise(req.body.amount);
+    const current = await outstandingPaise(inv._id, session);
+    if (amountPaise > current.outstanding) {
+      await session.abortTransaction();
+      return res.status(400).json({ error: 'Write-off cannot exceed outstanding amount' });
+    }
+    if (!String(req.body.notes || req.body.reason || '').trim()) {
+      await session.abortTransaction();
+      return res.status(400).json({ error: 'Write-off reason is required' });
+    }
     const [payment] = await Payment.create([{
       invoiceId: req.body.invoiceId,
-      amount: req.body.amount,
+      amount: fromPaise(amountPaise),
+      amountPaise,
       transactionType: 'write_off',
       method: 'other',
       receivedDate: new Date(),
       reference: req.body.reference,
       status: 'cleared',
       receivedBy: req.user?.id,
+      receiptNumber: await nextReceiptNumber(req.workspaceId || inv.workspaceId, session),
       notes: req.body.notes,
       auditTrail: [buildAudit('write_off_created', req, { amount: req.body.amount }, req.body.notes)],
     }], { session });
@@ -233,25 +319,32 @@ export const financeSummary = async (_req, res) => {
     const [invoiceAgg, paymentAgg] = await Promise.all([
       Invoice.aggregate([
         { $match: { status: { $ne: 'void' } } },
-        { $group: { _id: '$status', count: { $sum: 1 }, total: { $sum: { $ifNull: ['$total', 0] } } } },
+        { $group: { _id: '$status', count: { $sum: 1 }, totalPaise: { $sum: { $ifNull: ['$totalPaise', { $round: [{ $multiply: [{ $ifNull: ['$total', 0] }, 100] }, 0] }] } } } },
       ]),
       Payment.aggregate([
         { $match: { status: 'cleared' } },
-        { $group: { _id: '$transactionType', count: { $sum: 1 }, total: { $sum: '$amount' } } },
+        { $group: { _id: '$transactionType', count: { $sum: 1 }, totalPaise: { $sum: { $ifNull: ['$amountPaise', { $round: [{ $multiply: ['$amount', 100] }, 0] }] } } } },
       ]),
     ]);
-    const invoiceTotal = invoiceAgg.reduce((sum, row) => sum + row.total, 0);
-    const clearedPayments = paymentAgg.filter((row) => row._id === 'payment').reduce((sum, row) => sum + row.total, 0);
-    const writeOffs = paymentAgg.filter((row) => row._id === 'write_off').reduce((sum, row) => sum + row.total, 0);
+    const invoiceTotalPaise = invoiceAgg.reduce((sum, row) => sum + row.totalPaise, 0);
+    const clearedPaymentsPaise = paymentAgg.filter((row) => row._id === 'payment').reduce((sum, row) => sum + row.totalPaise, 0);
+    const writeOffsPaise = paymentAgg.filter((row) => row._id === 'write_off').reduce((sum, row) => sum + row.totalPaise, 0);
+    const invoiceTotal = fromPaise(invoiceTotalPaise);
+    const clearedPayments = fromPaise(clearedPaymentsPaise);
+    const writeOffs = fromPaise(writeOffsPaise);
     res.json({
       ok: true,
       data: {
         invoiceTotal,
+        invoiceTotalPaise,
         clearedPayments,
+        clearedPaymentsPaise,
         writeOffs,
-        outstanding: Math.max(invoiceTotal - clearedPayments - writeOffs, 0),
-        invoiceByStatus: invoiceAgg,
-        paymentByType: paymentAgg,
+        writeOffsPaise,
+        outstanding: fromPaise(Math.max(invoiceTotalPaise - clearedPaymentsPaise - writeOffsPaise, 0)),
+        outstandingPaise: Math.max(invoiceTotalPaise - clearedPaymentsPaise - writeOffsPaise, 0),
+        invoiceByStatus: invoiceAgg.map((row) => ({ ...row, total: fromPaise(row.totalPaise || 0) })),
+        paymentByType: paymentAgg.map((row) => ({ ...row, total: fromPaise(row.totalPaise || 0) })),
       },
     });
   } catch (e) {
@@ -296,16 +389,17 @@ async function loadPortalInvoice(token, session = null) {
 }
 
 async function clearedAmountForInvoice(invoiceId, session = null) {
-  const rows = await Payment.aggregate([
-    { $match: { invoiceId: new mongoose.Types.ObjectId(invoiceId), status: 'cleared', transactionType: { $in: ['payment', 'write_off'] } } },
-    { $group: { _id: '$invoiceId', paid: { $sum: '$amount' } } },
-  ]).session(session);
-  return rows[0]?.paid || 0;
+  return fromPaise(await netPaidPaise(invoiceId, session));
+}
+
+async function outstandingForPortal(invoiceId, session = null) {
+  const result = await recomputeInvoiceStatus(invoiceId, session);
+  return result?.balancePaise ?? 0;
 }
 
 export const getPortalInvoice = async (req, res) => {
   try {
-    const invoice = await loadPortalInvoice(req.params.token);
+    const invoice = await loadPortalInvoice(req.params.token, session);
     if (!invoice) return res.status(404).json({ ok: false, message: 'Payment link is invalid or expired' });
     const paidAmount = await clearedAmountForInvoice(invoice._id);
     res.json({
@@ -344,9 +438,16 @@ export const submitPortalPayment = async (req, res) => {
       await session.abortTransaction();
       return res.status(400).json({ ok: false, message: 'UPI reference or UTR is required' });
     }
+    const amountPaise = req.body.amountPaise ?? toPaise(req.body.amount);
+    const outstanding = await outstandingForPortal(invoice._id, session);
+    if (amountPaise > outstanding) {
+      await session.abortTransaction();
+      return res.status(400).json({ ok: false, message: 'Payment exceeds outstanding balance' });
+    }
     const [payment] = await Payment.create([{
       invoiceId: invoice._id,
-      amount: req.body.amount,
+      amount: fromPaise(amountPaise),
+      amountPaise,
       method: req.body.method,
       receivedDate: new Date(),
       reference: req.body.reference,
@@ -391,18 +492,20 @@ export const mockCompletePortalPayment = async (req, res) => {
       return res.status(400).json({ ok: false, message: 'Cannot pay a void invoice' });
     }
 
-    const paidAmount = await clearedAmountForInvoice(invoice._id, session);
-    const outstanding = Math.max(Number(invoice.total || 0) - paidAmount, 0);
-    const amount = Math.min(Number(req.body?.amount || outstanding), outstanding);
-    if (!amount) {
+    const outstanding = await outstandingForPortal(invoice._id, session);
+    const requestedPaise = req.body?.amountPaise || toPaise(req.body?.amount || fromPaise(outstanding));
+    const amountPaise = Math.min(requestedPaise, outstanding);
+    if (!amountPaise) {
       await session.abortTransaction();
       return res.status(400).json({ ok: false, message: 'This invoice has no outstanding amount' });
     }
+    const amount = fromPaise(amountPaise);
 
     const reference = `MOCK-UPI-${Date.now()}`;
     const [payment] = await Payment.create([{
       invoiceId: invoice._id,
       amount,
+      amountPaise,
       method: 'upi',
       receivedDate: new Date(),
       reference,

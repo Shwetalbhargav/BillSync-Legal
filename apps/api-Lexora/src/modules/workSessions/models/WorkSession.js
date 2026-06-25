@@ -17,7 +17,21 @@ const WorkSessionSchema = new mongoose.Schema(
     activityCode: { type: String, trim: true, maxlength: 80 },
     workTool: {
       type: String,
-      enum: ['gmail', 'google_chrome', 'billbot_ai', 'microsoft_word', 'google_docs', 'pdf_reader', 'google_meet', 'zoom', 'microsoft_teams', 'whatsapp', 'phone', 'video_meeting', 'court', 'manual', 'other'],
+      enum: ['gmail', 'google_chrome', 'billbot_ai', 'microsoft_word', 'google_docs', 'pdf_reader', 'google_meet', 'zoom', 'microsoft_teams', 'whatsapp', 'phone', 'video_meeting', 'court', 'manual', 'research_capture', 'desktop_agent', 'other'],
+    },
+    captureSource: { type: String, enum: ['web_timer', 'manual_time', 'task_timer', 'gmail', 'research', 'desktop_agent', 'offline_queue'], default: 'web_timer', index: true },
+    externalSourceId: { type: String, trim: true, maxlength: 240 },
+    sourceFingerprint: { type: String, trim: true, maxlength: 128 },
+    captureHealth: {
+      status: { type: String, enum: ['healthy', 'stale', 'retrying', 'failed', 'duplicate'], default: 'healthy', index: true },
+      message: { type: String, trim: true, maxlength: 500 },
+      checkedAt: { type: Date },
+    },
+    offlineQueue: {
+      queuedAt: { type: Date },
+      retryCount: { type: Number, default: 0, min: 0 },
+      lastRetryAt: { type: Date },
+      nextRetryAt: { type: Date },
     },
     narrative: { type: String, trim: true, maxlength: 2000 },
     billable: { type: Boolean, default: true },
@@ -82,6 +96,10 @@ WorkSessionSchema.index(
 );
 WorkSessionSchema.index({ activityType: 1, 'calendarEvent.scheduledStart': 1 });
 WorkSessionSchema.index({ 'webMeter.lastActiveAt': -1 });
+WorkSessionSchema.index(
+  { workspaceId: 1, captureSource: 1, sourceFingerprint: 1 },
+  { unique: true, partialFilterExpression: { sourceFingerprint: { $exists: true, $type: 'string' } } }
+);
 
 WorkSessionSchema.plugin(workspaceScopedPlugin);
 export const WorkSession = mongoose.model('WorkSession', WorkSessionSchema);

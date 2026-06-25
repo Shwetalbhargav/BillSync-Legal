@@ -204,6 +204,7 @@ export const createTimeEntry = async (req, res) => {
     if (finalRate == null) {
       const resolved = await resolveBillingRate({
         userId,
+        clientId,
         caseId,
         activityCode: finalActivityCode,
         at: date,
@@ -278,6 +279,7 @@ export const createFromActivity = async (req, res) => {
 
       const resolvedRate = await resolveBillingRate({
         userId: act.userId,
+        clientId: act.clientId,
         caseId: act.caseId,
         activityCode: act.activityCode,
         at: act.endedAt || act.startedAt || new Date(),

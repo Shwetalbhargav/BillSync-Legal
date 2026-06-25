@@ -9,7 +9,7 @@ import {
   validateQuery,
 } from '../../../middleware/validate.js';
 
-export const CLIENT_STATUSES = ['active', 'inactive', 'prospect'];
+export const CLIENT_STATUSES = ['active', 'inactive', 'prospect', 'archived'];
 export const PAYMENT_TERMS = [
   'DUE_ON_RECEIPT',
   'NET7',
@@ -26,6 +26,9 @@ const CLIENT_WRITE_FIELDS = new Set([
   'email',
   'phone',
   'contactInfo',
+  'billingAddress',
+  'gst',
+  'notes',
   'firmId',
   'ownerUserId',
   'paymentTerms',
@@ -69,7 +72,7 @@ const contactsArray = () => (value, field, payload) => {
   if (!Array.isArray(value)) return `${field} must be an array`;
   for (const [index, contact] of value.entries()) {
     if (!isPlainObject(contact)) return `${field}.${index} must be an object`;
-    const allowed = new Set(['name', 'email', 'phone', 'role', 'integrations']);
+    const allowed = new Set(['name', 'email', 'phone', 'role', 'isPrimary', 'notes', 'integrations']);
     const unknown = Object.keys(contact).filter((key) => !allowed.has(key));
     if (unknown.length) return `${field}.${index}.${unknown[0]} is not allowed`;
   }
@@ -129,7 +132,7 @@ export const requireClientBodyFields = (allowedFields = CLIENT_WRITE_FIELDS) => 
 export const normalizeClientPayload = (req, _res, next) => {
   const body = req.body || {};
 
-  for (const field of ['displayName', 'name', 'email', 'phone', 'contactInfo', 'firmId', 'ownerUserId', 'paymentTerms', 'status']) {
+  for (const field of ['displayName', 'name', 'email', 'phone', 'contactInfo', 'firmId', 'ownerUserId', 'paymentTerms', 'status', 'notes']) {
     if (typeof body[field] === 'string') body[field] = body[field].trim();
   }
 
@@ -170,6 +173,9 @@ export const validateCreateClient = validateBody({
   email: [string({ max: 254 }), email()],
   phone: [string({ max: 40 })],
   contactInfo: [string({ max: 500 })],
+  billingAddress: [plainObjectWhenPresent()],
+  gst: [plainObjectWhenPresent()],
+  notes: [string({ max: 4000 })],
   firmId: [objectId()],
   ownerUserId: [nullableObjectId()],
   paymentTerms: [string({ max: 40 }), oneOf(PAYMENT_TERMS)],
@@ -184,6 +190,9 @@ export const validateUpdateClient = validateBody({
   email: [string({ max: 254 }), email()],
   phone: [string({ max: 40 })],
   contactInfo: [string({ max: 500 })],
+  billingAddress: [plainObjectWhenPresent()],
+  gst: [plainObjectWhenPresent()],
+  notes: [string({ max: 4000 })],
   firmId: [objectId()],
   ownerUserId: [nullableObjectId()],
   paymentTerms: [string({ max: 40 }), oneOf(PAYMENT_TERMS)],

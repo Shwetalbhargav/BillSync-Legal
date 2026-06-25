@@ -1,5 +1,6 @@
 // src/controllers/rateCardController.js
 import { Case } from '../../cases/models/Case.js';
+import { Client } from '../../clients/models/Client.js';
 import User from '../../users/models/User.js';
 import { RateCard } from '../models/RateCard.js';
 import { resolveBillingRate } from '../services/rateResolver.js';
@@ -24,10 +25,11 @@ const missingStringClause = (field) => ({
 
 const normalizeCreatePayload = (body) => {
   const payload = {
-    userId: body.userId,
     ratePerHour: body.ratePerHour,
     effectiveFrom: cleanDate(body.effectiveFrom),
   };
+  if (!isBlank(body.userId)) payload.userId = body.userId;
+  if (!isBlank(body.clientId)) payload.clientId = body.clientId;
   if (!isBlank(body.caseId)) payload.caseId = body.caseId;
   const activityCode = cleanActivityCode(body.activityCode);
   if (activityCode) payload.activityCode = activityCode;
@@ -41,6 +43,10 @@ const normalizeUpdatePayload = (body) => {
   const unset = {};
 
   if ('userId' in body && !isBlank(body.userId)) set.userId = body.userId;
+  if ('clientId' in body) {
+    if (isBlank(body.clientId)) unset.clientId = 1;
+    else set.clientId = body.clientId;
+  }
   if ('caseId' in body) {
     if (isBlank(body.caseId)) unset.caseId = 1;
     else set.caseId = body.caseId;
@@ -89,10 +95,25 @@ const validateEffectiveWindow = (payload, res) => {
 };
 
 const assertReferencesExist = async (payload, res) => {
-  const user = await User.exists({ _id: payload.userId });
-  if (!user) {
-    res.status(404).json({ error: 'User not found' });
+  if (!payload.userId && !payload.clientId && !payload.caseId) {
+    res.status(400).json({ error: 'A rate card must target a matter, client, or lawyer' });
     return false;
+  }
+
+  if (payload.userId) {
+    const user = await User.exists({ _id: payload.userId });
+    if (!user) {
+      res.status(404).json({ error: 'User not found' });
+      return false;
+    }
+  }
+
+  if (payload.clientId) {
+    const client = await Client.exists({ _id: payload.clientId });
+    if (!client) {
+      res.status(404).json({ error: 'Client not found' });
+      return false;
+    }
   }
 
   if (payload.caseId) {
@@ -106,9 +127,15 @@ const assertReferencesExist = async (payload, res) => {
   return true;
 };
 
-const specificityClauses = ({ caseId, activityCode }) => {
+const specificityClauses = ({ userId, clientId, caseId, activityCode }) => {
   const clauses = [];
   const query = {};
+
+  if (userId) query.userId = userId;
+  else clauses.push(missingObjectIdClause('userId'));
+
+  if (clientId) query.clientId = clientId;
+  else clauses.push(missingObjectIdClause('clientId'));
 
   if (caseId) query.caseId = caseId;
   else clauses.push(missingObjectIdClause('caseId'));
@@ -124,6 +151,8 @@ const assertNoOverlappingRateCard = async (payload, res, excludeId) => {
   const effectiveTo = payload.effectiveTo ? new Date(payload.effectiveTo) : null;
   const activityCode = cleanActivityCode(payload.activityCode);
   const { query: specificityQuery, clauses } = specificityClauses({
+    userId: payload.userId,
+    clientId: payload.clientId,
     caseId: payload.caseId,
     activityCode,
   });
@@ -143,7 +172,6 @@ const assertNoOverlappingRateCard = async (payload, res, excludeId) => {
   }
 
   const query = {
-    userId: payload.userId,
     ...specificityQuery,
     $and: overlapClauses,
   };
@@ -165,9 +193,10 @@ const assertNoOverlappingRateCard = async (payload, res, excludeId) => {
  */
 export const listRateCards = async (req, res) => {
   try {
-    const { userId, caseId, activityCode, activeOn } = req.query;
+    const { userId, clientId, caseId, activityCode, activeOn } = req.query;
     const q = {};
     if (userId) q.userId = userId;
+    if (clientId) q.clientId = clientId;
     if (caseId) q.caseId = caseId;
     if (activityCode) q.activityCode = activityCode;
     if (activeOn) {
@@ -271,7 +300,7 @@ export const deleteRateCard = async (req, res) => {
  */
 export const resolveRate = async (req, res) => {
   try {
-    const { userId, caseId, activityCode } = req.query;
+    const { userId, clientId, caseId, activityCode } = req.query;
     if (!userId) return res.status(400).json({ error: 'userId is required' });
     const requesterRole = String(req.user?.role || '').toLowerCase();
     const canResolveAny = ['admin', 'partner'].includes(requesterRole);
@@ -281,6 +310,7 @@ export const resolveRate = async (req, res) => {
 
     const result = await resolveBillingRate({
       userId,
+      clientId,
       caseId,
       activityCode,
       at: req.query.at,

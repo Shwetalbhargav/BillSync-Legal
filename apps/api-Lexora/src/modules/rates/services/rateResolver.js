@@ -56,11 +56,22 @@ const profileModelForRole = (role) => {
   }
 };
 
-const buildRateCardQuery = ({ userId, caseId, activityCode, at }) => {
+const buildRateCardQuery = ({ userId, clientId, caseId, activityCode, at }) => {
   const query = {
-    userId,
     $and: activeWindowClauses(at),
   };
+
+  if (userId) {
+    query.userId = userId;
+  } else {
+    query.$and.push(missingObjectIdClause('userId'));
+  }
+
+  if (clientId) {
+    query.clientId = clientId;
+  } else {
+    query.$and.push(missingObjectIdClause('clientId'));
+  }
 
   if (caseId) {
     query.caseId = caseId;
@@ -92,6 +103,7 @@ export const computeRatedAmount = ({ amount, ratePerHour, billableMinutes }) => 
 
 export async function resolveBillingRate({
   userId,
+  clientId,
   caseId,
   activityCode,
   at,
@@ -103,21 +115,31 @@ export async function resolveBillingRate({
   }
 
   const resolvedCaseId = toObjectId(caseId);
+  const resolvedClientId = toObjectId(clientId);
   const resolvedActivityCode = cleanActivityCode(activityCode);
   const ts = at ? new Date(at) : new Date();
 
   const attempts = [
     resolvedCaseId && resolvedActivityCode
-      ? { caseId: resolvedCaseId, activityCode: resolvedActivityCode }
+      ? { userId: resolvedUserId, clientId: null, caseId: resolvedCaseId, activityCode: resolvedActivityCode }
       : null,
-    resolvedCaseId ? { caseId: resolvedCaseId, activityCode: null } : null,
-    resolvedActivityCode ? { caseId: null, activityCode: resolvedActivityCode } : null,
-    { caseId: null, activityCode: null },
+    resolvedCaseId ? { userId: resolvedUserId, clientId: null, caseId: resolvedCaseId, activityCode: null } : null,
+    resolvedCaseId && resolvedActivityCode
+      ? { userId: null, clientId: null, caseId: resolvedCaseId, activityCode: resolvedActivityCode }
+      : null,
+    resolvedCaseId ? { userId: null, clientId: null, caseId: resolvedCaseId, activityCode: null } : null,
+    resolvedClientId && resolvedActivityCode
+      ? { userId: null, clientId: resolvedClientId, caseId: null, activityCode: resolvedActivityCode }
+      : null,
+    resolvedClientId ? { userId: null, clientId: resolvedClientId, caseId: null, activityCode: null } : null,
+    resolvedActivityCode ? { userId: resolvedUserId, clientId: null, caseId: null, activityCode: resolvedActivityCode } : null,
+    { userId: resolvedUserId, clientId: null, caseId: null, activityCode: null },
   ].filter(Boolean);
 
   for (const attempt of attempts) {
     const query = buildRateCardQuery({
-      userId: resolvedUserId,
+      userId: attempt.userId,
+      clientId: attempt.clientId,
       caseId: attempt.caseId,
       activityCode: attempt.activityCode,
       at: ts,

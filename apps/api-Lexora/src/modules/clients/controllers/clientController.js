@@ -7,9 +7,10 @@ import { TimeEntry } from '../../timeEntries/models/TimeEntry.js';
 import { Firm } from '../../firms/models/Firm.js';
 import User from '../../users/models/User.js';
 import mongoose from 'mongoose';
+import { Parser as Json2csv } from 'json2csv';
 
 const toNumber = (v, d = 0) => (v === undefined || v === null || Number.isNaN(Number(v)) ? d : Number(v));
-const CLIENT_MUTABLE_FIELDS = ['displayName', 'name', 'email', 'phone', 'contactInfo', 'firmId', 'ownerUserId', 'paymentTerms', 'status', 'contacts', 'integrations'];
+const CLIENT_MUTABLE_FIELDS = ['displayName', 'name', 'email', 'phone', 'contactInfo', 'billingAddress', 'gst', 'notes', 'firmId', 'ownerUserId', 'paymentTerms', 'status', 'contacts', 'integrations'];
 const DEFAULT_LIMIT = 25;
 const MAX_LIMIT = 200;
 
@@ -43,6 +44,100 @@ const buildMeta = ({ page, limit }, total) => ({
   total,
   totalPages: total ? Math.ceil(total / limit) : 0,
 });
+
+const escapeCsvRegex = (value = '') => String(value).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+const csvValue = (row, key) => row?.[key] == null ? '' : String(row[key]).trim();
+
+const parseCsvRows = (csv = '') => {
+  const lines = String(csv || '').split(/\r?\n/).filter((line) => line.trim());
+  if (!lines.length) return [];
+  const parseLine = (line) => {
+    const values = [];
+    let current = '';
+    let quoted = false;
+    for (let i = 0; i < line.length; i += 1) {
+      const char = line[i];
+      if (char === '"' && line[i + 1] === '"') {
+        current += '"';
+        i += 1;
+      } else if (char === '"') {
+        quoted = !quoted;
+      } else if (char === ',' && !quoted) {
+        values.push(current);
+        current = '';
+      } else {
+        current += char;
+      }
+    }
+    values.push(current);
+    return values;
+  };
+  const headers = parseLine(lines.shift()).map((header) => header.trim());
+  return lines.map((line) => {
+    const values = parseLine(line);
+    return headers.reduce((row, header, index) => {
+      row[header] = values[index] ?? '';
+      return row;
+    }, {});
+  });
+};
+
+const clientFinancials = async (clientIds) => {
+  if (typeof Invoice.aggregate !== 'function' || typeof Payment.aggregate !== 'function' || typeof TimeEntry.aggregate !== 'function') {
+    return new Map(clientIds.map((id) => [String(id), { billedPaise: 0, collectedPaise: 0, outstandingPaise: 0, wipPaise: 0 }]));
+  }
+  const ids = clientIds.map((id) => new mongoose.Types.ObjectId(id));
+  const [invoiceRows, paymentRows, wipRows] = await Promise.all([
+    Invoice.aggregate([
+      { $match: { clientId: { $in: ids }, status: { $nin: ['void', 'revised'] } } },
+      { $group: { _id: '$clientId', billedPaise: { $sum: { $ifNull: ['$totalPaise', { $round: [{ $multiply: [{ $ifNull: ['$total', 0] }, 100] }, 0] }] } }, balancePaise: { $sum: { $ifNull: ['$balancePaise', 0] } } } },
+    ]),
+    Payment.aggregate([
+      { $match: { status: 'cleared' } },
+      { $lookup: { from: 'invoices', localField: 'invoiceId', foreignField: '_id', as: 'invoice' } },
+      { $unwind: '$invoice' },
+      { $match: { 'invoice.clientId': { $in: ids } } },
+      { $group: { _id: '$invoice.clientId', collectedPaise: { $sum: { $ifNull: ['$amountPaise', { $round: [{ $multiply: ['$amount', 100] }, 0] }] } } } },
+    ]),
+    TimeEntry.aggregate([
+      { $match: { clientId: { $in: ids }, status: { $in: ['draft', 'submitted', 'approved', 'ready_to_bill'] } } },
+      { $group: { _id: '$clientId', wipPaise: { $sum: { $ifNull: ['$amountPaise', { $round: [{ $multiply: [{ $ifNull: ['$amount', 0] }, 100] }, 0] }] } } } },
+    ]),
+  ]);
+  const map = new Map(ids.map((id) => [String(id), { billedPaise: 0, collectedPaise: 0, outstandingPaise: 0, wipPaise: 0 }]));
+  invoiceRows.forEach((row) => {
+    const entry = map.get(String(row._id)) || {};
+    map.set(String(row._id), { ...entry, billedPaise: row.billedPaise || 0, outstandingPaise: row.balancePaise || 0 });
+  });
+  paymentRows.forEach((row) => {
+    const entry = map.get(String(row._id)) || {};
+    map.set(String(row._id), { ...entry, collectedPaise: row.collectedPaise || 0 });
+  });
+  wipRows.forEach((row) => {
+    const entry = map.get(String(row._id)) || {};
+    map.set(String(row._id), { ...entry, wipPaise: row.wipPaise || 0 });
+  });
+  return map;
+};
+
+const withClientFinancials = async (clients) => {
+  const plain = clients.map((client) => client.toObject ? client.toObject() : client);
+  const financials = await clientFinancials(plain.map((client) => client._id));
+  return plain.map((client) => {
+    const totals = financials.get(String(client._id)) || {};
+    return {
+      ...client,
+      financialSummary: {
+        ...totals,
+        billed: toNumber(totals.billedPaise) / 100,
+        collected: toNumber(totals.collectedPaise) / 100,
+        outstanding: toNumber(totals.outstandingPaise) / 100,
+        wip: toNumber(totals.wipPaise) / 100,
+      },
+    };
+  });
+};
 
 const validationFailed = (res, errors) =>
   res.status(400).json({
@@ -94,7 +189,7 @@ export const getAllClients = async (req, res) => {
     if (req.query.firmId) filter.firmId = req.query.firmId;
     if (req.query.ownerUserId) filter.ownerUserId = req.query.ownerUserId;
     if (req.query.q) {
-      const pattern = new RegExp(req.query.q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
+      const pattern = new RegExp(escapeCsvRegex(req.query.q), 'i');
       filter.$or = [{ displayName: pattern }, { email: pattern }, { phone: pattern }];
     }
     if (requesterRole !== 'admin' && requesterId && mongoose.Types.ObjectId.isValid(requesterId)) {
@@ -119,7 +214,7 @@ export const getAllClients = async (req, res) => {
 
     const [clients, total] = await Promise.all([
       Client.find(filter)
-      .select('displayName name email phone contactInfo paymentTerms status ownerUserId contacts integrations createdAt updatedAt')
+      .select('displayName name email phone contactInfo billingAddress gst notes paymentTerms status ownerUserId contacts integrations createdAt updatedAt')
       .populate('ownerUserId', 'name email')
       .sort({ createdAt: -1 })
       .skip(skip)
@@ -127,7 +222,7 @@ export const getAllClients = async (req, res) => {
       Client.countDocuments(filter),
     ]);
 
-    res.json({ ok: true, data: clients, meta: buildMeta({ page, limit }, total) });
+    res.json({ ok: true, data: await withClientFinancials(clients), meta: buildMeta({ page, limit }, total) });
   } catch (err) {
     res.status(500).json({ ok: false, message: 'Failed to fetch clients' });
   }
@@ -138,7 +233,8 @@ export const getClientById = async (req, res) => {
     const client = await Client.findById(req.params.clientId)
       .populate('ownerUserId', 'name email');
     if (!client) return res.status(404).json({ ok: false, message: 'Client not found' });
-    res.json({ ok: true, data: client });
+    const [data] = await withClientFinancials([client]);
+    res.json({ ok: true, data });
   } catch (err) {
     res.status(500).json({ ok: false, message: 'Failed to fetch client' });
   }
@@ -154,6 +250,84 @@ export const createClient = async (req, res) => {
     res.status(201).json({ ok: true, data: doc });
   } catch (err) {
     res.status(400).json({ ok: false, message: err.message });
+  }
+};
+
+export const exportClientsCsv = async (req, res) => {
+  try {
+    const filter = {};
+    if (req.query.status) filter.status = req.query.status;
+    const rows = await Client.find(filter).sort({ displayName: 1 }).lean();
+    const shaped = (await withClientFinancials(rows)).map((client) => ({
+      displayName: client.displayName,
+      email: client.email || '',
+      phone: client.phone || '',
+      status: client.status,
+      paymentTerms: client.paymentTerms,
+      gstin: client.gst?.gstin || '',
+      gstTreatment: client.gst?.treatment || '',
+      billingLine1: client.billingAddress?.line1 || '',
+      billingCity: client.billingAddress?.city || '',
+      billingState: client.billingAddress?.state || '',
+      billingPostalCode: client.billingAddress?.postalCode || '',
+      primaryContact: client.contacts?.find((contact) => contact.isPrimary)?.name || client.contacts?.[0]?.name || '',
+      notes: client.notes || '',
+      outstanding: client.financialSummary.outstanding,
+      wip: client.financialSummary.wip,
+    }));
+    const csv = new Json2csv({ fields: Object.keys(shaped[0] || {
+      displayName: '', email: '', phone: '', status: '', paymentTerms: '', gstin: '', gstTreatment: '', billingLine1: '', billingCity: '', billingState: '', billingPostalCode: '', primaryContact: '', notes: '', outstanding: '', wip: '',
+    }) }).parse(shaped);
+    res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+    res.setHeader('Content-Disposition', 'attachment; filename="clients.csv"');
+    res.send(csv);
+  } catch (err) {
+    res.status(500).json({ ok: false, message: 'Failed to export clients CSV' });
+  }
+};
+
+export const importClientsCsv = async (req, res) => {
+  try {
+    const rows = parseCsvRows(req.body?.csv || req.body?.data || '');
+    const results = [];
+    for (const row of rows) {
+      const displayName = csvValue(row, 'displayName') || csvValue(row, 'name');
+      if (!displayName) {
+        results.push({ ok: false, error: 'displayName is required', row });
+        continue;
+      }
+      const payload = {
+        displayName,
+        email: csvValue(row, 'email').toLowerCase() || undefined,
+        phone: csvValue(row, 'phone') || undefined,
+        status: csvValue(row, 'status').toLowerCase() || 'active',
+        paymentTerms: (csvValue(row, 'paymentTerms') || 'NET30').toUpperCase(),
+        notes: csvValue(row, 'notes') || undefined,
+        gst: {
+          gstin: csvValue(row, 'gstin').toUpperCase() || undefined,
+          treatment: csvValue(row, 'gstTreatment') || 'gst',
+          registered: Boolean(csvValue(row, 'gstin')),
+        },
+        billingAddress: {
+          line1: csvValue(row, 'billingLine1') || undefined,
+          city: csvValue(row, 'billingCity') || undefined,
+          state: csvValue(row, 'billingState') || undefined,
+          postalCode: csvValue(row, 'billingPostalCode') || undefined,
+          country: csvValue(row, 'billingCountry') || 'India',
+        },
+      };
+      const contactName = csvValue(row, 'primaryContact');
+      if (contactName) payload.contacts = [{ name: contactName, email: payload.email, phone: payload.phone, isPrimary: true }];
+      const doc = await Client.findOneAndUpdate(
+        { displayName },
+        { $set: payload },
+        { new: true, upsert: true, runValidators: true, setDefaultsOnInsert: true }
+      );
+      results.push({ ok: true, clientId: doc._id, displayName: doc.displayName });
+    }
+    res.status(201).json({ ok: true, imported: results.filter((row) => row.ok).length, failed: results.filter((row) => !row.ok).length, results });
+  } catch (err) {
+    res.status(400).json({ ok: false, message: err.message || 'Failed to import clients CSV' });
   }
 };
 

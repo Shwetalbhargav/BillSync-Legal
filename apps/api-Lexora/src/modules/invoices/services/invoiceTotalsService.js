@@ -2,9 +2,10 @@ import { Client } from '../../clients/models/Client.js';
 import { Firm } from '../../firms/models/Firm.js';
 import { Invoice } from '../models/Invoice.js';
 import { InvoiceLine } from '../models/InvoiceLine.js';
+import { addPaise, calculateTax, fromPaise, toPaise } from '../../finance/money.js';
 
 export function roundMoney(value) {
-  return Math.round((Number(value) || 0) * 100) / 100;
+  return fromPaise(toPaise(value));
 }
 
 function normalizeTaxSettings(settings = {}) {
@@ -36,16 +37,26 @@ export async function getInvoiceTaxSettings(invoice, session) {
 
 export function computeTotalsFromLines(lines = [], taxSettings = {}) {
   const settings = normalizeTaxSettings(taxSettings);
-  const lineTotal = roundMoney(lines.reduce((sum, line) => sum + (Number(line.amount) || 0), 0));
-  const rate = settings.taxRatePct / 100;
-  const taxableAmount = settings.inclusive && rate > 0 ? roundMoney(lineTotal / (1 + rate)) : lineTotal;
-  const tax = rate > 0 ? roundMoney(settings.inclusive ? lineTotal - taxableAmount : taxableAmount * rate) : 0;
-  const total = settings.inclusive ? lineTotal : roundMoney(taxableAmount + tax);
+  const lineTotalPaise = addPaise(lines.map((line) => ({
+    amountPaise: line.amountPaise || toPaise(line.amount),
+  })));
+  const { subtotalPaise, taxPaise, totalPaise } = calculateTax({
+    grossOrNetPaise: lineTotalPaise,
+    taxRatePct: settings.taxRatePct,
+    inclusive: settings.inclusive,
+  });
+  const taxableAmount = fromPaise(subtotalPaise);
+  const tax = fromPaise(taxPaise);
+  const total = fromPaise(totalPaise);
 
   return {
     subtotal: taxableAmount,
+    subtotalPaise,
     tax,
+    taxPaise,
     total,
+    totalPaise,
+    balancePaise: totalPaise,
     taxName: settings.taxName,
     taxRatePct: settings.taxRatePct,
     taxInclusive: settings.inclusive,
@@ -56,6 +67,9 @@ export function computeTotalsFromLines(lines = [], taxSettings = {}) {
       taxableAmount,
       taxAmount: tax,
       grossAmount: total,
+      taxableAmountPaise: subtotalPaise,
+      taxAmountPaise: taxPaise,
+      grossAmountPaise: totalPaise,
     },
   };
 }
@@ -74,9 +88,13 @@ export async function recalcInvoiceTotals(invoiceId, { session } = {}) {
     durationMinutes: roundMoney((Number(line.qtyHours) || 0) * 60),
     qtyHours: line.qtyHours,
     rate: line.rate,
+    ratePaise: line.ratePaise || toPaise(line.rate),
     amount: line.amount,
+    amountPaise: line.amountPaise || toPaise(line.amount),
   }));
 
-  await Invoice.findByIdAndUpdate(invoiceId, { ...totals, items }, { session });
+  const update = { ...totals, items };
+  if (invoice.status !== 'draft') delete update.balancePaise;
+  await Invoice.findByIdAndUpdate(invoiceId, update, { session });
   return totals;
 }

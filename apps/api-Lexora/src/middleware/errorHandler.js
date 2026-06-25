@@ -1,13 +1,15 @@
+import { logger } from '../utils/logger.js';
+
 export function errorHandler(err, req, res, _next) {
   const statusCode = Number(err.statusCode || err.status) || 500;
   const isServerError = statusCode >= 500;
 
   if (isServerError) {
-    console.error('[API Error]', {
+    logger.error('api.error', {
+      requestId: req.requestId,
       method: req.method,
       path: req.originalUrl,
-      message: err.message,
-      stack: err.stack,
+      error: err,
     });
   }
 
@@ -16,6 +18,7 @@ export function errorHandler(err, req, res, _next) {
     error: {
       message: isServerError ? 'Internal server error' : err.message,
       statusCode,
+      requestId: req.requestId,
     },
   });
 }

@@ -67,6 +67,7 @@ async function recalculateConvertedWork(interval) {
   const nonbillableMinutes = entry.billableMinutes ? 0 : payableMinutes;
   const resolved = await resolveBillingRate({
     userId: session.userId,
+    clientId: session.clientId,
     caseId: session.caseId,
     activityCode: session.activityCode,
     at: session.endedAt || session.startedAt || new Date(),

@@ -1,0 +1,94 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - staging
+
+jobs:
+  test-build-audit:
+    runs-on: windows-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: ['22.16.0']
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: npm
+          cache-dependency-path: |
+            apps/api-Lexora/package-lock.json
+            apps/web-Laxora/package-lock.json
+            apps/desktop-Lexora/package-lock.json
+            apps/extension/package-lock.json
+
+      - name: Install API from lockfile
+        working-directory: apps/api-Lexora
+        run: npm ci
+
+      - name: Install web from lockfile
+        working-directory: apps/web-Laxora
+        run: npm ci
+
+      - name: Install desktop from lockfile
+        working-directory: apps/desktop-Lexora
+        run: npm ci
+
+      - name: Install extension from lockfile
+        working-directory: apps/extension
+        run: npm ci
+
+      - name: API lint
+        working-directory: apps/api-Lexora
+        run: npm run lint
+
+      - name: API tests
+        working-directory: apps/api-Lexora
+        run: npm test
+
+      - name: Workspace isolation tests
+        working-directory: apps/api-Lexora
+        run: npm run test:workspace-isolation
+
+      - name: Financial invariant tests
+        working-directory: apps/api-Lexora
+        run: npm run test:financial
+
+      - name: Web lint
+        working-directory: apps/web-Laxora
+        run: npm run lint
+
+      - name: Web build
+        working-directory: apps/web-Laxora
+        run: npm run build
+
+      - name: Desktop lint
+        working-directory: apps/desktop-Lexora
+        run: npm run lint
+
+      - name: Desktop build
+        working-directory: apps/desktop-Lexora
+        run: npm run build
+
+      - name: Extension tests
+        working-directory: apps/extension
+        run: npm test
+
+      - name: Dependency audit
+        run: node scripts/audit-workspace.mjs
+
+      - name: Upload audit reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: dependency-audit-reports
+          path: audit-reports/*.audit.json
+
+      - name: End-to-end smoke test
+        working-directory: apps/web-Laxora
+        run: npm run smoke

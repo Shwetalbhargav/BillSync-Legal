@@ -222,7 +222,7 @@ test('PUT /api/clients/:clientId rejects empty update payloads', async () => {
 test('PUT /api/clients/:clientId validates enum fields before updating', async () => {
   const response = await jsonRequest(`/api/clients/${CLIENT_ID}`, {
     method: 'PUT',
-    body: JSON.stringify({ status: 'archived' }),
+    body: JSON.stringify({ status: 'deleted' }),
   });
 
   expect(response.status).toBe(400);

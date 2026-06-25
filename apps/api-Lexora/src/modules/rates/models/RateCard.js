@@ -5,7 +5,8 @@ import { workspaceScopedPlugin } from '../../../middleware/workspaceScopedPlugin
 
 	const RateCardSchema = new mongoose.Schema(
 	  {
-		userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true, index: true },
+		userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', index: true },
+		clientId: { type: mongoose.Schema.Types.ObjectId, ref: 'Client', index: true },
 		caseId: { type: mongoose.Schema.Types.ObjectId, ref: 'Case' },
 		activityCode: { type: String },
 
@@ -16,6 +17,7 @@ import { workspaceScopedPlugin } from '../../../middleware/workspaceScopedPlugin
 	  { timestamps: true }
 	);
 
+	RateCardSchema.index({ caseId: 1, clientId: 1, userId: 1, activityCode: 1, effectiveFrom: -1 });
 	RateCardSchema.index({ userId: 1, caseId: 1, activityCode: 1, effectiveFrom: -1 });
 
 	RateCardSchema.plugin(workspaceScopedPlugin);

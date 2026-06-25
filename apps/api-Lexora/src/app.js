@@ -14,6 +14,7 @@ import {
   runWorkspaceContext,
   sanitizeOwnershipFields,
 } from './middleware/workspaceContext.js';
+import { requestContext } from './middleware/requestContext.js';
 
 // API routes
 import apiRoutes from './routes/index.js';
@@ -22,6 +23,7 @@ const app = express();
 
 // Trust proxy & health
 app.set('trust proxy', 1);
+app.use(requestContext);
 app.use(runWorkspaceContext);
 app.use((req, res, next) => {
   res.setHeader('X-Content-Type-Options', 'nosniff');
@@ -34,7 +36,7 @@ app.use((req, res, next) => {
   }
   next();
 });
-app.get('/healthz', (req, res) => res.json({ ok: true }));
+app.get('/healthz', (req, res) => res.json({ ok: true, requestId: req.requestId }));
 app.get('/version', (req, res) => res.json({
   ok: true,
   commit: process.env.RENDER_GIT_COMMIT || process.env.GIT_COMMIT || null,
