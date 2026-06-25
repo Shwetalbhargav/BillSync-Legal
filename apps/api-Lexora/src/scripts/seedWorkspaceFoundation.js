@@ -4,28 +4,20 @@ dotenv.config();
 import mongoose from 'mongoose';
 import connectDB from '../config/db.js';
 import {
-  backfillWorkspaceIds,
-  backfillWorkspacesFromFirms,
-  ensureWorkspacesForExistingWorkspaceIds,
+  ensureWorkspaceFoundationIndexes,
+  seedCorePlatformData,
   validateWorkspaceFoundation,
 } from '../modules/workspace/services/workspaceFoundationService.js';
 
 async function main() {
   await connectDB();
   const db = mongoose.connection.db;
-  const workspaces = await backfillWorkspacesFromFirms(db);
-  const workspaceIds = await backfillWorkspaceIds(db);
-  const placeholderWorkspaces = await ensureWorkspacesForExistingWorkspaceIds(db);
+
+  await ensureWorkspaceFoundationIndexes(db);
+  const seeded = await seedCorePlatformData(db);
   const validation = await validateWorkspaceFoundation(db);
 
-  console.log(JSON.stringify({
-    ok: validation.ok,
-    workspaces,
-    workspaceIds,
-    placeholderWorkspaces,
-    validation,
-  }, null, 2));
-
+  console.log(JSON.stringify({ ok: validation.ok, seeded, validation }, null, 2));
   if (!validation.ok) process.exitCode = 2;
 }
 

@@ -53,8 +53,40 @@ export async function runMigrations({ dryRun = false } = {}) {
   return { applied: pending.map((item) => item.migrationName) };
 }
 
+export async function rollbackLastMigration() {
+  validateEnv();
+  await connectDB();
+  const files = await migrationFiles();
+  const fileByMigrationName = new Map();
+  for (const file of files) {
+    const filePath = path.join(migrationsDir, file);
+    const mod = await import(pathToFileURL(filePath));
+    fileByMigrationName.set(mod.name || file.replace(/\.js$/, ''), { file, filePath, mod });
+  }
+
+  const latest = await Migration.findOne({}).sort({ appliedAt: -1, createdAt: -1 }).lean();
+  if (!latest) return { rolledBack: [] };
+
+  const migration = fileByMigrationName.get(latest.name);
+  if (!migration?.mod?.down) {
+    const error = new Error(`Migration ${latest.name} does not define a rollback`);
+    error.code = 'MIGRATION_ROLLBACK_UNAVAILABLE';
+    throw error;
+  }
+
+  logger.info('migration.rollback_start', { migration: latest.name });
+  await migration.mod.down(mongoose.connection.db);
+  await Migration.deleteOne({ _id: latest._id });
+  logger.info('migration.rolled_back', { migration: latest.name });
+  return { rolledBack: [latest.name] };
+}
+
 const command = process.argv[2] || 'up';
-runMigrations({ dryRun: command === 'status' })
+const runner = command === 'down'
+  ? rollbackLastMigration()
+  : runMigrations({ dryRun: command === 'status' });
+
+runner
   .then((result) => {
     logger.info('migration.complete', result);
     return mongoose.disconnect();

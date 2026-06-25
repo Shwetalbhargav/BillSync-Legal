@@ -1,2 +1,13 @@
 export { default as workspaceRoutes } from './routes/workspaceRoutes.js';
-
+export { default as Workspace } from './models/Workspace.js';
+export { default as Membership } from './models/Membership.js';
+export { default as Invitation } from './models/Invitation.js';
+export { default as AuditEvent } from './models/AuditEvent.js';
+export { default as Plan } from './models/Plan.js';
+export { default as Feature } from './models/Feature.js';
+export { default as Permission } from './models/Permission.js';
+export { default as Role } from './models/Role.js';
+export { default as Policy } from './models/Policy.js';
+export { default as ModuleRegistry } from './models/ModuleRegistry.js';
+export { default as WorkspaceModule } from './models/WorkspaceModule.js';
+export { default as Subscription } from './models/Subscription.js';

@@ -16,9 +16,12 @@
     "lint": "node --check server.js && node --check src/app.js",
     "audit": "npm audit --audit-level=high",
     "migrate": "node src/scripts/migrate.js up",
+    "migrate:down": "node src/scripts/migrate.js down",
     "migrate:status": "node src/scripts/migrate.js status",
     "migrate:workspace-ids": "node src/scripts/migrateWorkspaceIds.js",
     "migrate:commercial-roles": "node src/scripts/migrateCommercialRoles.js",
+    "seed:workspace-foundation": "node src/scripts/seedWorkspaceFoundation.js",
+    "validate:workspace-foundation": "node src/scripts/validateWorkspaceFoundation.js",
     "seed:dev": "node src/seeds/seedDevData.js",
     "seed:firm": "node src/seeds/seedFirm.js",
     "seed:veeresh-demo": "node src/seeds/seedVeereshDemoData.js"

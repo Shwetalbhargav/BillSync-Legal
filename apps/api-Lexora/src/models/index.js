@@ -1,4 +1,16 @@
 export { Firm } from '../modules/firms/models/Firm.js';
+export { Workspace } from '../modules/workspace/models/Workspace.js';
+export { Membership } from '../modules/workspace/models/Membership.js';
+export { Invitation } from '../modules/workspace/models/Invitation.js';
+export { AuditEvent } from '../modules/workspace/models/AuditEvent.js';
+export { Plan } from '../modules/workspace/models/Plan.js';
+export { Feature } from '../modules/workspace/models/Feature.js';
+export { Permission } from '../modules/workspace/models/Permission.js';
+export { Role } from '../modules/workspace/models/Role.js';
+export { Policy } from '../modules/workspace/models/Policy.js';
+export { ModuleRegistry } from '../modules/workspace/models/ModuleRegistry.js';
+export { WorkspaceModule } from '../modules/workspace/models/WorkspaceModule.js';
+export { Subscription } from '../modules/workspace/models/Subscription.js';
 export { Client } from '../modules/clients/models/Client.js';
 export { Case } from '../modules/cases/models/Case.js';
 export { CaseAssignment } from '../modules/cases/models/CaseAssignment.js';
