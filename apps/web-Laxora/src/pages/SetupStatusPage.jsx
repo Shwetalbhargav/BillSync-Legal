@@ -6,7 +6,9 @@ import { SetupCard } from "../components/dashboard/DashboardWidgets";
 
 const onboardingSteps = [
   "Create account",
-  "Practice details",
+  "Workspace details",
+  "Choose plan",
+  "Invite members",
   "Tax defaults",
   "Billing defaults",
   "Default rate",
@@ -28,7 +30,7 @@ export function SetupStatusPage() {
   return (
     <div className="space-y-6">
       <section className="surface-card p-6">
-        <p className="text-sm font-semibold uppercase tracking-wide text-accent">Practice Onboarding</p>
+        <p className="text-sm font-semibold uppercase tracking-wide text-accent">Workspace Onboarding</p>
         <h1 className="mt-1 text-2xl font-bold text-primary md:text-3xl">Setup Status</h1>
         <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           {onboardingSteps.map((step, index) => (

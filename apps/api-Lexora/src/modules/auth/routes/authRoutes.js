@@ -14,6 +14,7 @@ import {
   resetPassword,
   revokeSessions,
   registerUser,
+  switchWorkspace,
 } from '../controllers/authController.js';
 import { validateLogin, validateRegister } from '../validators/authValidators.js';
 
@@ -27,6 +28,7 @@ router.post('/password-reset/request', requestPasswordReset);
 router.post('/password-reset/confirm', resetPassword);
 router.post('/logout', logoutUser);
 router.get('/me', authenticate, getCurrentUser);
+router.post('/switch-workspace', authenticate, switchWorkspace);
 router.post('/revoke-sessions', authenticate, revokeSessions);
 router.post('/extension-token', authenticate, issueExtensionToken);
 router.post('/desktop-handoff-token', authenticate, issueDesktopHandoffToken);

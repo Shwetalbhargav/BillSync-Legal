@@ -1,4 +1,4 @@
-import Firm from '../../firms/models/Firm.js';
+import Workspace from '../models/Workspace.js';
 import AuditEvent from '../models/AuditEvent.js';
 import { isOwner } from '../roles.js';
 
@@ -39,7 +39,7 @@ function pickWorkspaceSettings(body = {}) {
 
 export async function getOnboarding(req, res) {
   try {
-    const workspace = await Firm.findById(req.workspaceId);
+    const workspace = await Workspace.findById(req.workspaceId);
     if (!workspace) return res.status(404).json({ ok: false, message: 'Workspace not found' });
     res.json({ ok: true, data: { workspace, onboarding: workspace.onboarding || {} } });
   } catch (err) {
@@ -61,7 +61,7 @@ export async function updateOnboarding(req, res) {
     if (req.body.firstWorkEntryId) update['onboarding.firstWorkEntryId'] = req.body.firstWorkEntryId;
     if (completedSteps.includes('first_work')) update['onboarding.completedAt'] = new Date();
 
-    const workspace = await Firm.findByIdAndUpdate(req.workspaceId, { $set: update }, { new: true, runValidators: true });
+    const workspace = await Workspace.findByIdAndUpdate(req.workspaceId, { $set: update }, { new: true, runValidators: true });
     await AuditEvent.create({
       workspaceId: req.workspaceId,
       actorId: req.user.id,
@@ -79,7 +79,7 @@ export async function updateOnboarding(req, res) {
 export async function updateWorkReview(req, res) {
   try {
     if (!isOwner(req.user?.commercialRole || req.user?.role)) return res.status(403).json({ ok: false, message: 'Only Owners can update work review settings' });
-    const workspace = await Firm.findByIdAndUpdate(
+    const workspace = await Workspace.findByIdAndUpdate(
       req.workspaceId,
       { $set: { workReview: { ...req.body } } },
       { new: true, runValidators: true }

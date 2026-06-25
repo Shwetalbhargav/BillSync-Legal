@@ -1,28 +1,20 @@
 import crypto from 'crypto';
-import bcrypt from 'bcryptjs';
-import Firm from '../../firms/models/Firm.js';
 import User from '../../users/models/User.js';
 import Membership from '../models/Membership.js';
 import Invitation from '../models/Invitation.js';
 import AuditEvent from '../models/AuditEvent.js';
+import Workspace from '../models/Workspace.js';
 import { canManageMembership, COMMERCIAL_ROLES, isOwner, normalizeRole } from '../roles.js';
+import {
+  acceptWorkspaceInvitation,
+  createWorkspaceInvitation,
+  getWorkspaceContextForUser,
+  publicInvite,
+  publicMembership,
+  publicWorkspace,
+} from '../services/workspaceMembershipService.js';
 
 const INVITE_DAYS = 7;
-
-function normalizeMobile(value) {
-  return String(value || '').replace(/\D/g, '');
-}
-
-function publicInvite(invite, token) {
-  return {
-    id: invite._id,
-    email: invite.email,
-    role: invite.role,
-    status: invite.status,
-    expiresAt: invite.expiresAt,
-    token,
-  };
-}
 
 async function audit({ workspaceId, actorId, action, targetType, targetId, changes }, options = {}) {
   await AuditEvent.create([{
@@ -53,16 +45,30 @@ function requireOwner(req, res) {
 
 export async function listMemberships(req, res) {
   try {
-    const rows = await Membership.find({}).populate('userId', 'name email mobile role commercialRole');
-    res.json({ ok: true, data: rows });
+    const rows = await Membership.find({ workspaceId: req.workspaceId, status: { $ne: 'removed' } })
+      .populate('userId', 'name email mobile role commercialRole')
+      .sort({ createdAt: 1 });
+    res.json({ ok: true, data: rows.map((row) => publicMembership(row)) });
   } catch (err) {
     res.status(500).json({ ok: false, message: 'Failed to list members' });
   }
 }
 
+export async function getWorkspaceContext(req, res) {
+  try {
+    const [workspace, memberships] = await Promise.all([
+      Workspace.findById(req.workspaceId),
+      getWorkspaceContextForUser(req.user.id),
+    ]);
+    const activeMembership = memberships.find((membership) => membership.workspaceId === String(req.workspaceId)) || null;
+    res.json({ ok: true, data: { workspace: publicWorkspace(workspace), memberships, activeMembership } });
+  } catch (err) {
+    res.status(500).json({ ok: false, message: 'Failed to load workspace context' });
+  }
+}
+
 export async function inviteMember(req, res) {
   if (!requireOwner(req, res)) return;
-  const session = await Membership.startSession();
   try {
     const { email, role = 'lawyer' } = req.body || {};
     const commercialRole = normalizeRole(role);
@@ -70,114 +76,31 @@ export async function inviteMember(req, res) {
       return res.status(400).json({ ok: false, message: 'email and a valid role are required' });
     }
 
-    let invite;
-    let token;
-    await session.withTransaction(async () => {
-      const workspace = await Firm.findById(req.workspaceId).session(session);
-      const limit = Number(workspace?.memberLimit || 5);
-      const count = await activeMemberCount(req.workspaceId, session);
-      if (count >= limit) {
-        const error = new Error('Member limit reached for this plan');
-        error.statusCode = 409;
-        throw error;
-      }
-
-      token = crypto.randomBytes(32).toString('base64url');
-      [invite] = await Invitation.create([{
-        workspaceId: req.workspaceId,
-        email,
-        role: commercialRole,
-        tokenHash: Invitation.hashToken(token),
-        invitedBy: req.user.id,
-        expiresAt: new Date(Date.now() + INVITE_DAYS * 24 * 60 * 60 * 1000),
-      }], { session });
-      await audit({
-        workspaceId: req.workspaceId,
-        actorId: req.user.id,
-        action: 'membership.invited',
-        targetType: 'invitation',
-        targetId: invite._id,
-        changes: { email, role: commercialRole },
-      }, { session });
+    const { invite, token } = await createWorkspaceInvitation({
+      workspaceId: req.workspaceId,
+      actorId: req.user.id,
+      email,
+      role: commercialRole,
     });
 
     res.status(201).json({ ok: true, data: publicInvite(invite, process.env.NODE_ENV === 'production' ? undefined : token) });
   } catch (err) {
     res.status(err.statusCode || 500).json({ ok: false, message: err.message || 'Failed to invite member' });
-  } finally {
-    session.endSession();
   }
 }
 
 export async function acceptInvitation(req, res) {
-  const session = await Invitation.startSession();
   try {
     const { token, name, mobile, password } = req.body || {};
     if (!token || !name || !mobile || !password) {
       return res.status(400).json({ ok: false, message: 'token, name, mobile and password are required' });
     }
 
-    let user;
-    let membership;
-    await session.withTransaction(async () => {
-      const invite = await Invitation.findOne({
-        tokenHash: Invitation.hashToken(token),
-        status: 'pending',
-        expiresAt: { $gt: new Date() },
-      }).session(session);
-      if (!invite) {
-        const error = new Error('Invitation is invalid or expired');
-        error.statusCode = 404;
-        throw error;
-      }
-
-      const workspace = await Firm.findById(invite.workspaceId).session(session);
-      const count = await activeMemberCount(invite.workspaceId, session);
-      if (count >= Number(workspace?.memberLimit || 5)) {
-        const error = new Error('Member limit reached for this plan');
-        error.statusCode = 409;
-        throw error;
-      }
-
-      const passwordHash = await bcrypt.hash(password, 10);
-      [user] = await User.create([{
-        name,
-        email: invite.email,
-        mobile: normalizeMobile(mobile),
-        role: invite.role,
-        commercialRole: invite.role,
-        firmId: invite.workspaceId,
-        workspaceId: invite.workspaceId,
-        passwordHash,
-      }], { session });
-      [membership] = await Membership.create([{
-        workspaceId: invite.workspaceId,
-        userId: user._id,
-        role: invite.role,
-        status: 'active',
-        invitedBy: invite.invitedBy,
-        invitedAt: invite.createdAt,
-        acceptedAt: new Date(),
-      }], { session });
-      invite.status = 'accepted';
-      invite.acceptedBy = user._id;
-      invite.acceptedAt = new Date();
-      await invite.save({ session });
-      await audit({
-        workspaceId: invite.workspaceId,
-        actorId: user._id,
-        action: 'membership.accepted',
-        targetType: 'membership',
-        targetId: membership._id,
-        changes: { role: invite.role },
-      }, { session });
-    });
+    const { user, membership } = await acceptWorkspaceInvitation({ token, name, mobile, password });
 
     res.status(201).json({ ok: true, data: { userId: user._id, membership } });
   } catch (err) {
     res.status(err.statusCode || 500).json({ ok: false, message: err.message || 'Failed to accept invitation' });
-  } finally {
-    session.endSession();
   }
 }
 

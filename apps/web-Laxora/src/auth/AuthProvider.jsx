@@ -2,10 +2,11 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState } 
 import { useLocation } from "react-router-dom";
 import { authApi } from "../api/auth.js";
 import { normalizeUser } from "../api/normalizers.js";
+import { workspaceMembershipApi } from "../api/workspaceMembership.js";
 import { defaultRole } from "../constants/roles.js";
 
 const AuthContext = createContext(null);
-const publicAuthPaths = new Set(["/login", "/register", "/forgot-password", "/reset-password"]);
+const publicAuthPaths = new Set(["/login", "/register", "/invite/accept", "/forgot-password", "/reset-password"]);
 
 function friendlyAuthMessage(error) {
   return error?.userMessage || "We could not complete that request right now. Please check the details and try again.";
@@ -14,6 +15,7 @@ function friendlyAuthMessage(error) {
 export function AuthProvider({ children }) {
   const location = useLocation();
   const [user, setUser] = useState(null);
+  const [workspaceContext, setWorkspaceContext] = useState({ status: "idle", workspace: null, memberships: [], activeMembership: null, message: "" });
   const [status, setStatus] = useState("loading");
   const [lastMessage, setLastMessage] = useState("");
 
@@ -24,9 +26,27 @@ export function AuthProvider({ children }) {
       const currentUser = response?.user ? normalizeUser(response.user) : null;
       setUser(currentUser);
       setStatus(currentUser ? "authenticated" : "guest");
+      if (currentUser) {
+        try {
+          setWorkspaceContext((current) => ({ ...current, status: "loading", message: "" }));
+          const context = await workspaceMembershipApi.context();
+          setWorkspaceContext({ status: "ready", ...context, message: "" });
+        } catch (workspaceError) {
+          setWorkspaceContext({
+            status: "error",
+            workspace: null,
+            memberships: [],
+            activeMembership: null,
+            message: workspaceError?.userMessage || "Workspace details could not be loaded.",
+          });
+        }
+      } else {
+        setWorkspaceContext({ status: "idle", workspace: null, memberships: [], activeMembership: null, message: "" });
+      }
       return currentUser;
     } catch (error) {
       setUser(null);
+      setWorkspaceContext({ status: "idle", workspace: null, memberships: [], activeMembership: null, message: "" });
       setStatus("guest");
       setLastMessage(friendlyAuthMessage(error));
       return null;
@@ -37,6 +57,7 @@ export function AuthProvider({ children }) {
     if (publicAuthPaths.has(location.pathname)) {
       setStatus("guest");
       setUser(null);
+      setWorkspaceContext({ status: "idle", workspace: null, memberships: [], activeMembership: null, message: "" });
       return;
     }
     refreshCurrentUser();
@@ -51,6 +72,12 @@ export function AuthProvider({ children }) {
     }
     setUser(signedInUser);
     setStatus("authenticated");
+    try {
+      const context = await workspaceMembershipApi.context();
+      setWorkspaceContext({ status: "ready", ...context, message: "" });
+    } catch {
+      setWorkspaceContext({ status: "error", workspace: null, memberships: [], activeMembership: null, message: "Workspace details could not be loaded." });
+    }
     return signedInUser;
   }, []);
 
@@ -61,8 +88,24 @@ export function AuthProvider({ children }) {
     if (registeredUser) {
       setUser(registeredUser);
       setStatus("authenticated");
+      try {
+        const context = await workspaceMembershipApi.context();
+        setWorkspaceContext({ status: "ready", ...context, message: "" });
+      } catch {
+        setWorkspaceContext({ status: "error", workspace: null, memberships: [], activeMembership: null, message: "Workspace details could not be loaded." });
+      }
     }
     return registeredUser;
+  }, []);
+
+  const switchWorkspace = useCallback(async (workspaceId) => {
+    setLastMessage("");
+    setWorkspaceContext((current) => ({ ...current, status: "loading", message: "" }));
+    const response = await workspaceMembershipApi.switchWorkspace(workspaceId);
+    if (response.user) setUser(response.user);
+    const context = await workspaceMembershipApi.context();
+    setWorkspaceContext({ status: "ready", ...context, message: "" });
+    return response;
   }, []);
 
   const logout = useCallback(async () => {
@@ -71,6 +114,7 @@ export function AuthProvider({ children }) {
       await authApi.logout();
     } finally {
       setUser(null);
+      setWorkspaceContext({ status: "idle", workspace: null, memberships: [], activeMembership: null, message: "" });
       setStatus("guest");
     }
   }, []);
@@ -79,6 +123,8 @@ export function AuthProvider({ children }) {
     () => ({
       user,
       role: user?.role || defaultRole,
+      workspace: workspaceContext.workspace,
+      workspaceContext,
       status,
       isLoading: status === "loading",
       isAuthenticated: status === "authenticated",
@@ -87,8 +133,9 @@ export function AuthProvider({ children }) {
       logout,
       register,
       refreshCurrentUser,
+      switchWorkspace,
     }),
-    [lastMessage, login, logout, refreshCurrentUser, register, status, user],
+    [lastMessage, login, logout, refreshCurrentUser, register, status, switchWorkspace, user, workspaceContext],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
