@@ -1,5 +1,6 @@
 import nodemailer from 'nodemailer';
 import { InvoiceLine } from '../models/InvoiceLine.js';
+import { fromPaise } from '../../finance/money.js';
 
 function escapeText(value) {
   return String(value ?? '')
@@ -22,6 +23,15 @@ function invoiceNumber(invoice) {
 }
 
 async function invoiceLines(invoice) {
+  const snapshotLines = invoice.immutableSnapshot?.lines;
+  if (Array.isArray(snapshotLines) && snapshotLines.length) {
+    return snapshotLines.map((line) => ({
+      description: line.description || line.snapshot?.description || 'Professional services',
+      qtyHours: line.qtyHours ?? line.quantityHours ?? 0,
+      rate: line.rate ?? (line.ratePaise != null ? fromPaise(line.ratePaise) : 0),
+      amount: line.amount ?? (line.amountPaise != null ? fromPaise(line.amountPaise) : 0),
+    }));
+  }
   return InvoiceLine.find({ invoiceId: invoice._id }).sort({ createdAt: 1 }).lean();
 }
 

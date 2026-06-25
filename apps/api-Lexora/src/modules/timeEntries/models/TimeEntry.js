@@ -23,10 +23,12 @@ const TimeEntrySchema = new mongoose.Schema(
     },
 
     rateApplied: { type: Number, min: 0 },
+    rateAppliedPaise: { type: Number, min: 0, default: 0 },
     amount: { type: Number, min: 0 },
+    amountPaise: { type: Number, min: 0, default: 0 },
     date: { type: Date, default: () => new Date() },
 
-    status: { type: String, enum: ['draft', 'submitted', 'approved', 'billed', 'paid', 'rejected'], default: 'draft', index: true },
+    status: { type: String, enum: ['draft', 'submitted', 'ready_to_bill', 'approved', 'billed', 'paid', 'excluded', 'rejected'], default: 'draft', index: true },
     submittedAt: { type: Date },
     submittedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     reviewedAt: { type: Date },

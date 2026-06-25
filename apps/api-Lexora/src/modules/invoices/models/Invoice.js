@@ -15,9 +15,14 @@ const InvoiceSchema = new mongoose.Schema(
     dueDate: { type: Date },
 
     currency: { type: String, default: 'INR' },
+    invoiceNumber: { type: String, trim: true },
+    revisionOf: { type: mongoose.Schema.Types.ObjectId, ref: 'Invoice' },
+    revisionReason: { type: String, trim: true },
 
     subtotal: { type: Number, default: 0 },
+    subtotalPaise: { type: Number, default: 0 },
     tax: { type: Number, default: 0 },
+    taxPaise: { type: Number, default: 0 },
     taxName: { type: String, default: 'GST', trim: true },
     taxRatePct: { type: Number, default: 0, min: 0, max: 100 },
     taxInclusive: { type: Boolean, default: false },
@@ -30,13 +35,23 @@ const InvoiceSchema = new mongoose.Schema(
       grossAmount: { type: Number, default: 0 },
     },
     total: { type: Number, required: true },
+    totalPaise: { type: Number, required: true, default: 0 },
+    balancePaise: { type: Number, default: 0 },
+    finalisedAt: { type: Date },
+    finalisedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+    immutableSnapshot: {
+      lines: { type: [mongoose.Schema.Types.Mixed], default: [] },
+      taxSettings: { type: mongoose.Schema.Types.Mixed },
+      totals: { type: mongoose.Schema.Types.Mixed },
+    },
 
-    status: { type: String, enum: ['draft', 'sent', 'partial', 'paid', 'overdue', 'void'], default: 'draft', index: true },
+    status: { type: String, enum: ['draft', 'ready_to_bill', 'finalised', 'sent', 'partial', 'paid', 'overdue', 'void', 'revised'], default: 'draft', index: true },
     pdfUrl: { type: String },
     sentAt: { type: Date },
     sentTo: { type: String, trim: true, lowercase: true },
     deliveryStatus: { type: String, enum: ['not_sent', 'sent', 'failed'], default: 'not_sent' },
     deliveryError: { type: String },
+    deliveryHistory: { type: [mongoose.Schema.Types.Mixed], default: [] },
     paymentPortal: {
       enabled: { type: Boolean, default: false },
       tokenHash: { type: String, index: true },
@@ -61,7 +76,9 @@ const InvoiceSchema = new mongoose.Schema(
         durationMinutes: Number,
         qtyHours: Number,
         rate: Number,
+        ratePaise: Number,
         amount: Number,
+        amountPaise: Number,
       },
     ],
   },
@@ -72,10 +89,15 @@ InvoiceSchema.pre('validate', function(next) {
   const items = this.items || [];
   if (items.length) {
     const subtotal = items.reduce((s, i) => s + (i.amount || 0), 0);
+    const subtotalPaise = items.reduce((s, i) => s + (i.amountPaise || Math.round((i.amount || 0) * 100)), 0);
     this.subtotal = Math.round(subtotal * 100) / 100;
+    this.subtotalPaise = subtotalPaise;
   }
   const tax = this.tax || 0;
   this.total = Math.round((this.subtotal + tax) * 100) / 100;
+  if (this.taxPaise == null) this.taxPaise = Math.round(tax * 100);
+  if (this.totalPaise == null) this.totalPaise = Math.round(this.total * 100);
+  if (this.balancePaise == null) this.balancePaise = this.totalPaise;
   next();
 });
 
@@ -91,6 +113,7 @@ InvoiceSchema.methods.computeStatus = function (paidAmount = 0) {
 
 InvoiceSchema.index({ clientId: 1, status: 1, issueDate: 1 });
 InvoiceSchema.index({ caseId: 1, status: 1 });
+InvoiceSchema.index({ workspaceId: 1, invoiceNumber: 1 }, { unique: true, sparse: true });
 
 InvoiceSchema.plugin(workspaceScopedPlugin);
 export const Invoice = mongoose.model('Invoice', InvoiceSchema);

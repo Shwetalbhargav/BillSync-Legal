@@ -387,7 +387,10 @@ test('GET /api/rate-cards/resolve applies specific-to-generic rate-card fallback
     'partner'
   );
   const body = await response.json();
-  const [exact, userCase, userActivity, userOnly] = mocks.rateCardFindOne.mock.calls.map(([query]) => query);
+  const queries = mocks.rateCardFindOne.mock.calls.map(([query]) => query);
+  const [exact, userCase] = queries;
+  const userActivity = queries.find((query) => query.activityCode === 'L100' && !query.caseId);
+  const userOnly = queries.find((query) => !query.caseId && !query.clientId && !query.activityCode);
 
   expect(response.status).toBe(200);
   expect(body.sourceType).toBe('firm');

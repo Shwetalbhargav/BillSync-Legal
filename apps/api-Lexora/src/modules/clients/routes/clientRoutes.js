@@ -24,6 +24,8 @@ import {
   listClientInvoices,
   listClientPayments,
   clientSummary,
+  exportClientsCsv,
+  importClientsCsv,
 } from '../controllers/clientController.js';
 
 const router = Router();
@@ -32,6 +34,8 @@ router.use(authenticate);
 
 // CRUD
 router.get('/', validateListClientsQuery, getAllClients);
+router.get('/export.csv', validateListClientsQuery, exportClientsCsv);
+router.post('/import.csv', importClientsCsv);
 router.post(
   '/',
   rejectUnknownClientFields(clientWriteFields),

@@ -1,7 +1,8 @@
 import { boolean, date, number, objectId, oneOf, required, string, validateBody, validateParams } from '../../../middleware/validate.js';
 
 const activityTypes = ['email', 'drafting', 'review', 'meeting', 'hearing', 'research', 'call', 'other'];
-const workTools = ['gmail', 'google_chrome', 'billbot_ai', 'microsoft_word', 'google_docs', 'pdf_reader', 'google_meet', 'zoom', 'microsoft_teams', 'whatsapp', 'phone', 'video_meeting', 'court', 'manual', 'other'];
+const workTools = ['gmail', 'google_chrome', 'billbot_ai', 'microsoft_word', 'google_docs', 'pdf_reader', 'google_meet', 'zoom', 'microsoft_teams', 'whatsapp', 'phone', 'video_meeting', 'court', 'manual', 'research_capture', 'desktop_agent', 'other'];
+const captureSources = ['web_timer', 'manual_time', 'task_timer', 'gmail', 'research', 'desktop_agent', 'offline_queue'];
 
 export const validateWorkSessionId = validateParams({
   id: [required, objectId()],
@@ -14,6 +15,9 @@ export const validateStartWorkSession = validateBody({
   activityType: [required, oneOf(activityTypes)],
   activityCode: [string({ max: 80 })],
   workTool: [oneOf(workTools)],
+  captureSource: [oneOf(captureSources)],
+  externalSourceId: [string({ max: 240 })],
+  sourceFingerprint: [string({ max: 128 })],
   narrative: [string({ max: 2000 })],
   billable: [boolean()],
   timezone: [string({ max: 80 })],
@@ -29,6 +33,8 @@ export const validateHeartbeatWorkSession = validateBody({
   title: [string({ max: 300 })],
   inactiveSeconds: [number({ min: 0 })],
   activitySignal: [string({ max: 80 })],
+  captureHealthStatus: [oneOf(['healthy', 'stale', 'retrying', 'failed', 'duplicate'])],
+  captureHealthMessage: [string({ max: 500 })],
 });
 
 export const validatePauseWorkSession = validateBody({

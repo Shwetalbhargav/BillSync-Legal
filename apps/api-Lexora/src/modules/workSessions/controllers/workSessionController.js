@@ -103,6 +103,7 @@ async function createTimeEntryForActivity(activity, req, session, durationMinute
   const nonbillableMinutes = activity.billable === false ? durationMinutes : 0;
   const resolved = await resolveBillingRate({
     userId: activity.userId,
+    clientId: activity.clientId,
     caseId: activity.caseId,
     activityCode: activity.activityCode,
     at: activity.endedAt || activity.startedAt || new Date(),
@@ -196,6 +197,22 @@ export const WorkSessionController = {
         }
       }
 
+      const captureSource = req.body.captureSource || (taskDoc ? 'task_timer' : 'web_timer');
+      if (req.body.sourceFingerprint) {
+        const duplicate = await WorkSession.findOne({
+          captureSource,
+          sourceFingerprint: req.body.sourceFingerprint,
+        });
+        if (duplicate) {
+          return res.status(409).json({
+            ok: false,
+            code: 'DUPLICATE_CAPTURE_SOURCE',
+            message: 'This source event has already been captured',
+            data: duplicate,
+          });
+        }
+      }
+
       const doc = await WorkSession.create({
         userId,
         clientId: req.body.clientId,
@@ -204,6 +221,15 @@ export const WorkSessionController = {
         activityType: req.body.activityType,
         activityCode: req.body.activityCode,
         workTool: req.body.workTool,
+        captureSource,
+        externalSourceId: req.body.externalSourceId,
+        sourceFingerprint: req.body.sourceFingerprint,
+        captureHealth: {
+          status: captureSource === 'offline_queue' ? 'retrying' : 'healthy',
+          checkedAt: new Date(),
+          message: captureSource === 'offline_queue' ? 'Queued offline capture accepted for retry' : undefined,
+        },
+        offlineQueue: captureSource === 'offline_queue' ? { queuedAt: new Date(), retryCount: 0 } : undefined,
         narrative: req.body.narrative,
         billable: req.body.billable !== undefined ? req.body.billable : true,
         timezone: req.body.timezone,
@@ -347,6 +373,14 @@ export const WorkSessionController = {
         ].slice(-20),
       };
       session.heartbeatCount = Number(session.heartbeatCount || 0) + 1;
+      if (req.body?.captureHealthStatus || req.body?.captureHealthMessage) {
+        session.captureHealth = {
+          ...(session.captureHealth?.toObject?.() || session.captureHealth || {}),
+          status: req.body.captureHealthStatus || session.captureHealth?.status || 'healthy',
+          message: req.body.captureHealthMessage,
+          checkedAt: new Date(),
+        };
+      }
       await session.save();
 
       res.json({ ok: true, data: session });

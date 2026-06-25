@@ -7,6 +7,19 @@ import Billable from '../../billables/models/Billable.js';
 import { EmailEntry } from '../../emailEntries/models/EmailEntry.js';
 import { buildInvoiceHtml, buildInvoicePdfBuffer, emailInvoice } from '../services/invoiceDeliveryService.js';
 import { recalcInvoiceTotals } from '../services/invoiceTotalsService.js';
+import { nextInvoiceNumber } from '../../finance/sequenceService.js';
+import { fromPaise, toPaise } from '../../finance/money.js';
+
+const FINAL_STATUSES = new Set(['finalised', 'sent', 'partial', 'paid', 'overdue', 'void', 'revised']);
+const READY_STATUSES = new Set(['approved', 'ready_to_bill']);
+
+function assertDraft(invoice, res) {
+  if (FINAL_STATUSES.has(invoice.status)) {
+    res.status(409).json({ error: 'Finalised invoices are immutable. Create a revision or credit instead.' });
+    return false;
+  }
+  return true;
+}
 
 /**
  * GET /api/invoices/:id
@@ -92,9 +105,9 @@ export const generateFromApprovedTime = async (req, res) => {
 
     // Validate all entries are approved, belong to the same client/case
     for (const e of entries) {
-      if (e.status !== 'approved') {
+      if (!READY_STATUSES.has(e.status)) {
         await session.abortTransaction();
-        return res.status(400).json({ error: 'All time entries must be in approved status' });
+        return res.status(400).json({ error: 'All time entries must be Ready to Bill' });
       }
       if (String(e.clientId) !== String(clientId)) {
         await session.abortTransaction();
@@ -134,7 +147,10 @@ export const generateFromApprovedTime = async (req, res) => {
         description: e.narrative || 'Professional services',
         qtyHours,
         rate,
+        ratePaise: toPaise(rate),
         amount,
+        amountPaise: toPaise(amount),
+        snapshot: { sourceType: 'time_entry', sourceStatus: e.status, description: e.narrative || 'Professional services', capturedAt: new Date() },
       };
     });
     await InvoiceLine.insertMany(linesToInsert, { session });
@@ -187,9 +203,9 @@ export const generateFromApprovedBillables = async (req, res) => {
     }
 
     for (const billable of billables) {
-      if (billable.status !== 'approved') {
+      if (!READY_STATUSES.has(billable.status)) {
         await session.abortTransaction();
-        return res.status(400).json({ error: 'All billables must be approved before invoicing' });
+        return res.status(400).json({ error: 'All billables must be Ready to Bill before invoicing' });
       }
       if (billable.invoiceId || billable.status === 'billed') {
         await session.abortTransaction();
@@ -219,7 +235,9 @@ export const generateFromApprovedBillables = async (req, res) => {
         description: billable.description || billable.category || 'Professional services',
         durationMinutes,
         rate,
+        ratePaise: billable.ratePaise || toPaise(rate),
         amount,
+        amountPaise: billable.amountPaise || toPaise(amount),
       };
     });
 
@@ -242,7 +260,10 @@ export const generateFromApprovedBillables = async (req, res) => {
       description: item.description,
       qtyHours: Number(((item.durationMinutes || 0) / 60).toFixed(4)),
       rate: item.rate,
+      ratePaise: item.ratePaise,
       amount: item.amount,
+      amountPaise: item.amountPaise,
+      snapshot: { sourceType: 'billable', sourceStatus: 'ready_to_bill', description: item.description, capturedAt: new Date() },
     })), { session });
 
     const totals = await recalcInvoiceTotals(invoice._id, { session });
@@ -286,7 +307,7 @@ export const autoGenerateFromApprovedBillables = async (req, res) => {
   try {
     const { clientId, currency = 'INR', dueDate, periodStart, periodEnd, createdBy } = req.body || {};
     const billableFilter = {
-      status: 'approved',
+      status: { $in: READY_STATUSES },
       $or: [{ invoiceId: { $exists: false } }, { invoiceId: null }],
     };
     if (clientId) billableFilter.clientId = clientId;
@@ -329,7 +350,10 @@ export const autoGenerateFromApprovedBillables = async (req, res) => {
         description: billable.description || billable.category || 'Professional services',
         qtyHours: Number(((Number(billable.durationMinutes || 0)) / 60).toFixed(4)),
         rate: Number(billable.rate || 0),
+        ratePaise: billable.ratePaise || toPaise(billable.rate),
         amount: Number((billable.amount != null ? billable.amount : Number(billable.rate || 0) * (Number(billable.durationMinutes || 0) / 60)).toFixed(2)),
+        amountPaise: billable.amountPaise || toPaise(billable.amount != null ? billable.amount : Number(billable.rate || 0) * (Number(billable.durationMinutes || 0) / 60)),
+        snapshot: { sourceType: 'billable', sourceStatus: billable.status, description: billable.description || billable.category || 'Professional services', capturedAt: new Date() },
       }));
 
       await InvoiceLine.insertMany(lines, { session });
@@ -372,7 +396,9 @@ export const sendInvoice = async (req, res) => {
     if (!inv) return res.status(404).json({ error: 'Invoice not found' });
     if (inv.status === 'void') return res.status(400).json({ error: 'Cannot send a void invoice' });
 
-    await recalcInvoiceTotals(inv._id);
+    if (inv.status === 'draft' || inv.status === 'ready_to_bill') {
+      await recalcInvoiceTotals(inv._id);
+    }
     const refreshed = await Invoice.findById(id).populate('clientId caseId createdBy');
     if (dueDate) refreshed.dueDate = new Date(dueDate);
     if (pdfUrl) refreshed.pdfUrl = pdfUrl;
@@ -380,15 +406,18 @@ export const sendInvoice = async (req, res) => {
     refreshed.status = 'sent';
     refreshed.sentAt = new Date();
     refreshed.deliveryStatus = 'sent';
+    refreshed.deliveryHistory.push({ action: 'send_attempt', at: new Date(), to, status: 'pending' });
 
     let delivery = null;
     try {
       delivery = await emailInvoice(refreshed, { to, subject, message });
       refreshed.sentTo = delivery.to;
       refreshed.deliveryError = undefined;
+      refreshed.deliveryHistory.push({ action: 'sent', at: new Date(), to: delivery.to, status: 'sent' });
     } catch (deliveryError) {
       refreshed.deliveryStatus = 'failed';
       refreshed.deliveryError = deliveryError.message;
+      refreshed.deliveryHistory.push({ action: 'failed', at: new Date(), to, status: 'failed', error: deliveryError.message });
     }
 
     await refreshed.save();
@@ -403,7 +432,7 @@ export const downloadInvoicePdf = async (req, res) => {
   try {
     const invoice = await Invoice.findById(req.params.id).populate('clientId caseId createdBy');
     if (!invoice) return res.status(404).json({ error: 'Invoice not found' });
-    await recalcInvoiceTotals(invoice._id);
+    if (invoice.status === 'draft' || invoice.status === 'ready_to_bill') await recalcInvoiceTotals(invoice._id);
     const refreshed = await Invoice.findById(req.params.id).populate('clientId caseId createdBy');
     const pdf = await buildInvoicePdfBuffer(refreshed);
     res.setHeader('Content-Type', 'application/pdf');
@@ -419,7 +448,7 @@ export const previewInvoiceHtml = async (req, res) => {
   try {
     const invoice = await Invoice.findById(req.params.id).populate('clientId caseId createdBy');
     if (!invoice) return res.status(404).json({ error: 'Invoice not found' });
-    await recalcInvoiceTotals(invoice._id);
+    if (invoice.status === 'draft' || invoice.status === 'ready_to_bill') await recalcInvoiceTotals(invoice._id);
     const refreshed = await Invoice.findById(req.params.id).populate('clientId caseId createdBy');
     const html = await buildInvoiceHtml(refreshed);
     res.setHeader('Content-Type', 'text/html; charset=utf-8');
@@ -438,12 +467,104 @@ export const voidInvoice = async (req, res) => {
     const { id } = req.params;
     const inv = await Invoice.findById(id);
     if (!inv) return res.status(404).json({ error: 'Invoice not found' });
+    if (inv.status === 'paid') return res.status(409).json({ error: 'Paid invoices require a refund or revision workflow' });
     inv.status = 'void';
     await inv.save();
     res.json(inv);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Failed to void invoice' });
+  }
+};
+
+export const finaliseInvoice = async (req, res) => {
+  const session = await mongoose.startSession();
+  session.startTransaction();
+  try {
+    const invoice = await Invoice.findById(req.params.id).session(session);
+    if (!invoice) {
+      await session.abortTransaction();
+      return res.status(404).json({ error: 'Invoice not found' });
+    }
+    if (!assertDraft(invoice, res)) {
+      await session.abortTransaction();
+      return;
+    }
+
+    const totals = await recalcInvoiceTotals(invoice._id, { session });
+    const lines = await InvoiceLine.find({ invoiceId: invoice._id }).session(session).lean();
+    invoice.invoiceNumber = invoice.invoiceNumber || await nextInvoiceNumber(req.workspaceId || invoice.workspaceId, session);
+    invoice.status = 'finalised';
+    invoice.finalisedAt = new Date();
+    invoice.finalisedBy = req.user?.id;
+    invoice.subtotalPaise = totals.subtotalPaise;
+    invoice.taxPaise = totals.taxPaise;
+    invoice.totalPaise = totals.totalPaise;
+    invoice.balancePaise = totals.totalPaise;
+    invoice.immutableSnapshot = {
+      lines: lines.map((line) => ({
+        description: line.description,
+        qtyHours: line.qtyHours,
+        ratePaise: line.ratePaise || toPaise(line.rate),
+        amountPaise: line.amountPaise || toPaise(line.amount),
+        taxCategory: line.taxCategory,
+        source: { timeEntryId: line.timeEntryId, billableId: line.billableId },
+      })),
+      taxSettings: {
+        taxName: invoice.taxName,
+        taxRatePct: invoice.taxRatePct,
+        taxInclusive: invoice.taxInclusive,
+      },
+      totals,
+    };
+    await invoice.save({ session });
+    await session.commitTransaction();
+    res.json(invoice);
+  } catch (error) {
+    await session.abortTransaction();
+    if (error?.code === 11000) return res.status(409).json({ error: 'Invoice number already exists' });
+    res.status(500).json({ error: 'Failed to finalise invoice' });
+  } finally {
+    session.endSession();
+  }
+};
+
+export const reviseInvoice = async (req, res) => {
+  const session = await mongoose.startSession();
+  session.startTransaction();
+  try {
+    const original = await Invoice.findById(req.params.id).session(session);
+    if (!original) {
+      await session.abortTransaction();
+      return res.status(404).json({ error: 'Invoice not found' });
+    }
+    if (original.status === 'draft') {
+      await session.abortTransaction();
+      return res.status(400).json({ error: 'Draft invoices can be edited directly' });
+    }
+    original.status = 'revised';
+    await original.save({ session });
+    const [revision] = await Invoice.create([{
+      clientId: original.clientId,
+      caseId: original.caseId,
+      currency: original.currency,
+      status: 'draft',
+      revisionOf: original._id,
+      revisionReason: req.body?.reason,
+      createdBy: req.user?.id,
+      subtotal: 0,
+      total: 0,
+      subtotalPaise: 0,
+      totalPaise: 0,
+      balancePaise: 0,
+    }], { session });
+    await session.commitTransaction();
+    res.status(201).json({ original, revision });
+  } catch (error) {
+    await session.abortTransaction();
+    res.status(500).json({ error: 'Failed to revise invoice' });
+  } finally {
+    session.endSession();
   }
 };
 

@@ -200,9 +200,11 @@ const excludedProductionPaths = new Set([
   "/app/admin/intern-profiles",
 ]);
 
+const viteEnv = import.meta.env ?? {};
+
 export const appRoutes = rawAppRoutes.filter((route) => (
-  import.meta.env.DEV
-  || import.meta.env.VITE_ENABLE_ENTERPRISE_MODULES === "true"
+  viteEnv.DEV
+  || viteEnv.VITE_ENABLE_ENTERPRISE_MODULES === "true"
   || !excludedProductionPaths.has(route.path)
 ));
 

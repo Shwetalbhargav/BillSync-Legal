@@ -57,7 +57,7 @@ export function GlobalAssistantDrawer({ isOpen, onClose }) {
       setNotice({ tone: "warning", title: "Assistant is not ready", message: error?.userMessage || "Please try again in a moment." });
       setMessages((current) => [
         ...current,
-        { role: "assistant", text: "I could not reach the assistant service. Check that the API server is running and you are signed in." },
+        { role: "assistant", text: "I could not reach the assistant service. Check your connection and sign-in status." },
       ]);
     } finally {
       setIsLoading(false);

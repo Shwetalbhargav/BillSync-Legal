@@ -107,7 +107,7 @@ export function ProfilePage() {
     if (!currentUser) return;
     const api = profileApis[currentUser.role];
     if (!api?.me) {
-      setProfileState({ status: "empty", profile: null, message: "Role profile endpoint is not configured yet." });
+      setProfileState({ status: "empty", profile: null, message: "This profile setup is not available yet." });
       return;
     }
 

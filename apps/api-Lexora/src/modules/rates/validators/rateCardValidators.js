@@ -10,7 +10,8 @@ import {
 } from '../../../middleware/validate.js';
 
 export const validateCreateRateCard = validateBody({
-  userId: [required, objectId()],
+  userId: [objectId()],
+  clientId: [objectId()],
   caseId: [objectId()],
   activityCode: [string({ max: 80 })],
   ratePerHour: [required, number({ min: 0.01 })],
@@ -20,6 +21,7 @@ export const validateCreateRateCard = validateBody({
 
 export const validateUpdateRateCard = validateBody({
   userId: [objectId()],
+  clientId: [objectId()],
   caseId: [objectId()],
   activityCode: [string({ max: 80 })],
   ratePerHour: [number({ min: 0.01 })],
@@ -29,6 +31,7 @@ export const validateUpdateRateCard = validateBody({
 
 export const validateListRateCards = validateQuery({
   userId: [objectId()],
+  clientId: [objectId()],
   caseId: [objectId()],
   activityCode: [string({ max: 80 })],
   activeOn: [date()],
@@ -36,6 +39,7 @@ export const validateListRateCards = validateQuery({
 
 export const validateResolveRate = validateQuery({
   userId: [required, objectId()],
+  clientId: [objectId()],
   caseId: [objectId()],
   activityCode: [string({ max: 80 })],
   at: [date()],

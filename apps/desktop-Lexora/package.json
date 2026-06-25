@@ -4,6 +4,10 @@
   "version": "0.1.0",
   "description": "Windows-first Lexora desktop activity agent.",
   "type": "module",
+  "engines": {
+    "node": "22.16.x",
+    "npm": ">=10"
+  },
   "main": "src/main/main.js",
   "scripts": {
     "dev": "concurrently -k \"vite --host 127.0.0.1 --port 5273\" \"wait-on http://127.0.0.1:5273 && cross-env VITE_DEV_SERVER_URL=http://127.0.0.1:5273 electron .\"",

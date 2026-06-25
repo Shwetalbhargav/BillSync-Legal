@@ -49,6 +49,7 @@ export const createBillable = async (req, res) => {
     if (finalRate == null) {
       const resolved = await resolveBillingRate({
         userId,
+        clientId,
         caseId,
         activityCode: finalActivityCode,
         at: workDate,
@@ -82,6 +83,79 @@ export const createBillable = async (req, res) => {
     res.status(201).json(doc);
   } catch (err) {
     res.status(500).json({ error: err.message });
+  }
+};
+
+export const createExpense = async (req, res) => {
+  try {
+    const {
+      userId,
+      clientId,
+      caseId,
+      amount,
+      date,
+      description,
+      category,
+      vendor,
+      billable = true,
+      gstTreatment = 'gst',
+      gstRatePct = 0,
+      receiptDocumentId,
+      approvalRequired = false,
+      sourceFingerprint,
+    } = req.body || {};
+
+    if (sourceFingerprint) {
+      const duplicate = await Billable.findOne({ sourceFingerprint });
+      if (duplicate) {
+        return res.status(409).json({ error: 'This expense source has already been captured', billable: duplicate });
+      }
+    }
+
+    const doc = await Billable.create({
+      userId,
+      clientId,
+      caseId,
+      description: description || category || 'Billable expense',
+      date: date ? new Date(date) : new Date(),
+      durationMinutes: 0,
+      rate: 0,
+      amount: Number(amount || 0),
+      category: 'Miscellaneous administrative legal work',
+      activityCode: 'OTHER',
+      status: approvalRequired ? 'pending' : billable ? 'ready_to_bill' : 'excluded',
+      sourceFingerprint,
+      expense: {
+        isExpense: true,
+        category,
+        vendor,
+        gstTreatment,
+        gstRatePct,
+        billable: Boolean(billable),
+        approvalRequired: Boolean(approvalRequired),
+        approvalStatus: approvalRequired ? 'pending' : 'not_required',
+        receiptDocumentId,
+      },
+    });
+
+    res.status(201).json(doc);
+  } catch (err) {
+    res.status(400).json({ error: err.message || 'Failed to create expense' });
+  }
+};
+
+export const listExpenses = async (req, res) => {
+  try {
+    const filters = { 'expense.isExpense': true };
+    if (req.query.clientId) filters.clientId = req.query.clientId;
+    if (req.query.caseId) filters.caseId = req.query.caseId;
+    if (req.query.status) filters.status = billableStatusQuery(req.query.status);
+    const rows = await Billable.find(filters)
+      .populate('clientId caseId userId')
+      .sort({ date: -1 });
+    res.json(rows);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to fetch expenses' });
   }
 };
 
@@ -229,15 +303,16 @@ export const updateBillable = async (req, res) => {
       patch.durationMinutes = roundToIncrement(minutes, 6);
     }
 
-    const rateResolutionFields = ['userId', 'caseId', 'activityCode', 'date'];
+    const rateResolutionFields = ['userId', 'clientId', 'caseId', 'activityCode', 'date'];
     const shouldResolveRate = patch.rate == null && rateResolutionFields.some((field) => field in patch);
     let current = null;
     if (typeof patch.rate === 'number' || typeof patch.durationMinutes === 'number' || shouldResolveRate) {
       // need current or patched values to compute amount
-      current = await Billable.findById(req.params.id).select('rate durationMinutes userId caseId activityCode date');
+      current = await Billable.findById(req.params.id).select('rate durationMinutes userId clientId caseId activityCode date');
       if (shouldResolveRate) {
         const resolved = await resolveBillingRate({
           userId: patch.userId ?? current?.userId,
+          clientId: patch.clientId ?? current?.clientId,
           caseId: patch.caseId ?? current?.caseId,
           activityCode: patch.activityCode ?? current?.activityCode,
           at: patch.date ?? current?.date,

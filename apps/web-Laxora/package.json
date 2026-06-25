@@ -3,10 +3,16 @@
   "private": true,
   "version": "0.1.0",
   "type": "module",
+  "engines": {
+    "node": "22.16.x",
+    "npm": ">=10"
+  },
   "scripts": {
     "dev": "vite --host 127.0.0.1 --port 5173",
     "start": "vite --host 127.0.0.1 --port 5173",
     "build": "vite build",
+    "lint": "node --check vite.config.js",
+    "audit": "npm audit --audit-level=high",
     "smoke": "node scripts/demo-smoke.mjs",
     "preview": "vite preview --host 127.0.0.1 --port 4173"
   },

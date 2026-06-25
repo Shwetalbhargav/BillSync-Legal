@@ -141,6 +141,7 @@ async function ensureTimeEntryForCapture(entry, { activity, body = {}, actorId, 
   if (rateApplied == null) {
     const resolved = await resolveBillingRate({
       userId: entry.userId,
+      clientId: entry.clientId,
       caseId: entry.caseId,
       activityCode: kind.activityCode,
       at: workDate,
@@ -191,6 +192,7 @@ async function ensureBillableForCapture(entry, { activity, timeEntry, session } 
   if (rate == null) {
     const resolved = await resolveBillingRate({
       userId: entry.userId,
+      clientId: entry.clientId,
       caseId: entry.caseId,
       activityCode: kind.activityCode,
       at: timeEntry.date || entry.workDate || entry.createdAt,

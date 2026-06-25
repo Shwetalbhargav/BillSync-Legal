@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 import {
   array,
   date,
+  number,
   objectId,
   oneOf,
   required,
@@ -18,6 +19,7 @@ export const assignmentStatuses = ['active', 'inactive'];
 
 const CASE_WRITE_FIELDS = new Set([
   'clientId',
+  'matterNumber',
   'title',
   'description',
   'status',
@@ -28,8 +30,14 @@ const CASE_WRITE_FIELDS = new Set([
   'primaryLawyerId',
   'assignedUsers',
   'billingType',
+  'fixedFeeAmount',
+  'fixedFeeAmountPaise',
+  'fixedFeeDescription',
   'case_type',
   'case_type_id',
+  'court',
+  'caseDetails',
+  'importantDates',
 ]);
 
 const CASE_STATUS_FIELDS = new Set(['status', 'closedAt']);
@@ -68,6 +76,11 @@ const stringWhenPresent = ({ min = 0, max } = {}) => (value, field, payload) => 
   if (trimmed.length < min) return `${field} must be at least ${min} characters`;
   if (max && trimmed.length > max) return `${field} must be at most ${max} characters`;
   return null;
+};
+
+const plainObjectWhenPresent = () => (value, field, payload) => {
+  if (!hasOwn(payload, field)) return null;
+  return isPlainObject(value) ? null : `${field} must be an object`;
 };
 
 const positiveIntQuery = ({ min = 1, max } = {}) => (value, field) => {
@@ -146,10 +159,12 @@ export const normalizeCasePayload = (req, _res, next) => {
 
   trimStrings(body, [
     'clientId',
+    'matterNumber',
     'title',
     'description',
     'status',
     'billingType',
+    'fixedFeeDescription',
     'leadPartnerId',
     'managingLawyerId',
     'primaryLawyerId',
@@ -225,33 +240,47 @@ export const requireAssignmentUpdateFields = requireBodyFields(ASSIGNMENT_UPDATE
 export const validateCreateCase = validateBody({
   clientId: [required, objectId()],
   title: [required, string({ min: 1, max: 180 })],
+  matterNumber: [string({ max: 80 })],
   description: [string({ max: 4000 })],
   status: [oneOf(caseStatuses)],
   openedAt: [date()],
   closedAt: [date(), caseDateOrder()],
   billingType: [oneOf(billingTypes)],
+  fixedFeeAmount: [number({ min: 0 })],
+  fixedFeeAmountPaise: [number({ min: 0 })],
+  fixedFeeDescription: [string({ max: 500 })],
   leadPartnerId: [nullableObjectId()],
   managingLawyerId: [nullableObjectId()],
   primaryLawyerId: [nullableObjectId()],
   assignedUsers: [array({ item: objectId() })],
   case_type: [string({ max: 120 })],
   case_type_id: [nullableObjectId()],
+  court: [plainObjectWhenPresent()],
+  caseDetails: [plainObjectWhenPresent()],
+  importantDates: [plainObjectWhenPresent()],
 });
 
 export const validateUpdateCase = validateBody({
   clientId: [objectId()],
   title: [stringWhenPresent({ min: 1, max: 180 })],
+  matterNumber: [string({ max: 80 })],
   description: [string({ max: 4000 })],
   status: [oneOf(caseStatuses)],
   openedAt: [date()],
   closedAt: [date(), caseDateOrder()],
   billingType: [oneOf(billingTypes)],
+  fixedFeeAmount: [number({ min: 0 })],
+  fixedFeeAmountPaise: [number({ min: 0 })],
+  fixedFeeDescription: [string({ max: 500 })],
   leadPartnerId: [nullableObjectId()],
   managingLawyerId: [nullableObjectId()],
   primaryLawyerId: [nullableObjectId()],
   assignedUsers: [array({ item: objectId() })],
   case_type: [string({ max: 120 })],
   case_type_id: [nullableObjectId()],
+  court: [plainObjectWhenPresent()],
+  caseDetails: [plainObjectWhenPresent()],
+  importantDates: [plainObjectWhenPresent()],
 });
 
 export const validateCaseStatus = validateBody({

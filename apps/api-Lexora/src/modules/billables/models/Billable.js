@@ -2,7 +2,7 @@
 import mongoose from 'mongoose';
 import { workspaceScopedPlugin } from '../../../middleware/workspaceScopedPlugin.js';
 
-export const BILLABLE_STATUSES = ['pending', 'approved', 'rejected', 'billed'];
+export const BILLABLE_STATUSES = ['draft', 'pending', 'ready_to_bill', 'approved', 'billed', 'excluded', 'rejected'];
 
 const LEGACY_STATUS_MAP = {
   Pending: 'pending',
@@ -63,13 +63,30 @@ const BillableSchema = new mongoose.Schema({
   description:     { type: String, required: true },
   durationMinutes: { type: Number, required: true },
   rate:            { type: Number, required: true },
+  ratePaise:       { type: Number, min: 0, default: 0 },
   amount:          { type: Number, required: true },
+  amountPaise:     { type: Number, min: 0, default: 0 },
+  adjustmentPaise: { type: Number, default: 0 },
+  adjustmentReason:{ type: String, trim: true },
+  expense: {
+    isExpense: { type: Boolean, default: false },
+    category: { type: String, trim: true },
+    vendor: { type: String, trim: true },
+    gstTreatment: { type: String, enum: ['gst', 'no_gst', 'inclusive', 'exempt'], default: 'gst' },
+    gstRatePct: { type: Number, min: 0, max: 100, default: 0 },
+    billable: { type: Boolean, default: true },
+    approvalRequired: { type: Boolean, default: false },
+    approvalStatus: { type: String, enum: ['not_required', 'pending', 'approved', 'rejected'], default: 'not_required' },
+    receiptDocumentId: { type: mongoose.Schema.Types.ObjectId, ref: 'StoredDocument' },
+  },
+  billingSnapshot: { type: mongoose.Schema.Types.Mixed },
   date:            { type: Date, required: true },
 
   // optional push metadata
   invoiceId:       { type: mongoose.Schema.Types.ObjectId, ref: 'Invoice', index: true },
   pushedAt:        { type: Date },
   externalEntryId: { type: String },
+  sourceFingerprint: { type: String, trim: true },
 
   approvedAt: { type: Date },
   approvedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
@@ -87,6 +104,8 @@ BillableSchema.pre('validate', function(next) {
   if ((this.amount == null || this.amount === 0) && this.rate != null && this.durationMinutes != null) {
     this.amount = Math.round((this.rate * (this.durationMinutes / 60)) * 100) / 100;
   }
+  this.ratePaise = this.ratePaise || Math.round(Number(this.rate || 0) * 100);
+  this.amountPaise = this.amountPaise || Math.round(Number(this.amount || 0) * 100);
   next();
 });
 
@@ -109,6 +128,10 @@ BillableSchema.virtual('hours').get(function () {
 BillableSchema.index({ clientId: 1, caseId: 1, date: -1 });
 BillableSchema.index({ userId: 1, date: -1 });
 BillableSchema.index({ activityId: 1, date: -1 });
+BillableSchema.index(
+  { workspaceId: 1, sourceFingerprint: 1 },
+  { unique: true, partialFilterExpression: { sourceFingerprint: { $exists: true, $type: 'string' } } }
+);
 BillableSchema.index(
   { activityId: 1 },
   {

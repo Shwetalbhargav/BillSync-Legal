@@ -12,6 +12,7 @@ import Firm from '../../firms/models/Firm.js';
 // ---------- helpers ----------
 const CASE_MUTABLE_FIELDS = [
   'clientId',
+  'matterNumber',
   'title',
   'description',
   'status',
@@ -22,8 +23,14 @@ const CASE_MUTABLE_FIELDS = [
   'primaryLawyerId',
   'assignedUsers',
   'billingType',
+  'fixedFeeAmount',
+  'fixedFeeAmountPaise',
+  'fixedFeeDescription',
   'case_type',
   'case_type_id',
+  'court',
+  'caseDetails',
+  'importantDates',
 ];
 
 const USER_REFERENCE_FIELDS = ['leadPartnerId', 'managingLawyerId', 'primaryLawyerId'];
@@ -486,29 +493,41 @@ export const caseRollup = async (req, res) => {
 
     const invoices = await Invoice.find({
       caseId,
-      status: { $in: ['draft', 'sent', 'partial', 'paid', 'overdue'] }
-    }).select('total');
+      status: { $nin: ['void', 'revised'] }
+    }).select('total totalPaise balancePaise');
 
-    const billed = invoices.reduce((s, i) => s + toNumber(i.total, 0), 0);
+    const billedPaise = invoices.reduce((s, i) => s + toNumber(i.totalPaise, Math.round(toNumber(i.total, 0) * 100)), 0);
+    const outstandingPaise = invoices.reduce((s, i) => s + toNumber(i.balancePaise, 0), 0);
+    const billed = billedPaise / 100;
 
     const invoiceIds = invoices.map(i => i._id);
     const payQuery = { invoiceId: { $in: invoiceIds } };
     if (clearedOnly) payQuery.status = 'cleared';
 
     const payments = invoiceIds.length
-      ? await Payment.find(payQuery).select('amount')
+      ? await Payment.find(payQuery).select('amount amountPaise transactionType')
       : [];
-    const paid = payments.reduce((s, p) => s + toNumber(p.amount, 0), 0);
+    const collectedPaise = payments.reduce((s, p) => {
+      const sign = p.transactionType === 'refund' ? -1 : 1;
+      return s + sign * toNumber(p.amountPaise, Math.round(toNumber(p.amount, 0) * 100));
+    }, 0);
+    const paid = collectedPaise / 100;
 
-    const ar = Math.max(0, billed - paid);
+    const ar = Math.max(0, outstandingPaise / 100);
 
     res.json({
       ok: true,
       data: {
         caseId,
         wip: +wip.toFixed(2),
+        wipPaise: Math.round(wip * 100),
         billed: +billed.toFixed(2),
+        billedPaise,
+        collected: +paid.toFixed(2),
+        collectedPaise,
         paid: +paid.toFixed(2),
+        outstanding: +ar.toFixed(2),
+        outstandingPaise,
         ar: +ar.toFixed(2),
       }
     });
