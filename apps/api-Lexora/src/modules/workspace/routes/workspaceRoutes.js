@@ -3,6 +3,7 @@ import { authenticate } from '../../../middleware/auth.js';
 import {
   acceptInvitation,
   expireInvitation,
+  getWorkspaceContext,
   inviteMember,
   listMemberships,
   removeMembership,
@@ -21,6 +22,7 @@ const router = Router();
 router.post('/invitations/accept', acceptInvitation);
 
 router.use(authenticate);
+router.get('/context', getWorkspaceContext);
 router.get('/onboarding', getOnboarding);
 router.patch('/onboarding', updateOnboarding);
 router.patch('/work-review', updateWorkReview);

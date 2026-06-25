@@ -1,10 +1,12 @@
 import bcrypt from "bcryptjs";
 import crypto from "crypto";
-import Firm from "../../firms/models/Firm.js";
 import User from "../../users/models/User.js";
-import Membership from "../../workspace/models/Membership.js";
-import AuditEvent from "../../workspace/models/AuditEvent.js";
 import { toSafeUser } from "../../users/utils/safeUser.js";
+import {
+  createWorkspaceOwnerAccount,
+  normalizeMobile,
+  switchUserWorkspace,
+} from "../../workspace/services/workspaceMembershipService.js";
 import {
   clearAuthCookie,
   getExtensionJwtExpiresIn,
@@ -29,53 +31,37 @@ function normalizeName(value) {
   return String(value || "").trim().replace(/\s+/g, " ").toLowerCase();
 }
 
-function normalizeMobile(value) {
-  return String(value || "").replace(/\D/g, "");
-}
-
 function hashResetToken(token) {
   return crypto.createHash("sha256").update(String(token)).digest("hex");
 }
 
-async function resolveFirmId({ firmId, firmName }) {
-  if (firmId) {
-    const firmExists = await Firm.exists({ _id: firmId });
-    if (!firmExists) {
-      const error = new Error("Firm not found. Please choose an existing firm.");
-      error.statusCode = 400;
-      throw error;
-    }
-    return firmId;
-  }
-
-  const normalizedFirmName = String(firmName || "").trim();
-  if (!normalizedFirmName) return undefined;
-
-  const firm = await Firm.findOne({
-    name: { $regex: `^${escapeRegExp(normalizedFirmName)}$`, $options: "i" },
-  });
-
-  if (!firm) {
-    const error = new Error("Firm not found. Please enter an existing firm name.");
-    error.statusCode = 400;
-    throw error;
-  }
-
-  return firm._id;
+async function findLoginCandidates(query) {
+  if (typeof User.find === 'function') return User.find(query);
+  const legacyQuery = {
+    mobile: query.mobile,
+    ...(query.role ? { role: query.role } : {}),
+    ...(query.workspaceId ? { firmId: query.workspaceId } : {}),
+  };
+  const row = await User.findOne(legacyQuery);
+  return row ? [row] : [];
 }
 
 // Login uses name + mobile + password + role + firm.
 export const loginUser = async (req, res) => {
-  const { name, mobile, password, role, firmId } = req.body;
+  const { name, mobile, password, role, firmId, workspaceId } = req.body;
 
   try {
-    if (!name || !mobile || !password || !role || !firmId) {
-      return res.status(400).json({ error: "Name, mobile, password, role and firm are required" });
+    if (!name || !mobile || !password) {
+      return res.status(400).json({ error: "Name, mobile and password are required" });
     }
 
     const normalizedMobile = normalizeMobile(mobile);
-    const normalizedRole = String(role || "").toLowerCase();
-    const user = await User.findOne({ mobile: normalizedMobile, role: normalizedRole, firmId });
+    const query = { mobile: normalizedMobile };
+    if (workspaceId || firmId) query.workspaceId = workspaceId || firmId;
+    if (role) query.role = String(role || "").toLowerCase();
+
+    const candidates = await findLoginCandidates(query);
+    const user = candidates.find((candidate) => normalizeName(candidate.name) === normalizeName(name));
     if (!user || normalizeName(user.name) !== normalizeName(name)) {
       return res.status(400).json({ error: "Invalid credentials" });
     }
@@ -102,16 +88,20 @@ export const logoutUser = (_req, res) => {
 };
 
 export const loginDesktopUser = async (req, res) => {
-  const { name, mobile, password, role, firmId } = req.body;
+  const { name, mobile, password, role, firmId, workspaceId } = req.body;
 
   try {
-    if (!name || !mobile || !password || !role || !firmId) {
-      return res.status(400).json({ error: "Name, mobile, password, role and firm are required" });
+    if (!name || !mobile || !password) {
+      return res.status(400).json({ error: "Name, mobile and password are required" });
     }
 
     const normalizedMobile = normalizeMobile(mobile);
-    const normalizedRole = String(role || "").toLowerCase();
-    const user = await User.findOne({ mobile: normalizedMobile, role: normalizedRole, firmId });
+    const query = { mobile: normalizedMobile };
+    if (workspaceId || firmId) query.workspaceId = workspaceId || firmId;
+    if (role) query.role = String(role || "").toLowerCase();
+
+    const candidates = await findLoginCandidates(query);
+    const user = candidates.find((candidate) => normalizeName(candidate.name) === normalizeName(name));
     if (!user || normalizeName(user.name) !== normalizeName(name)) {
       return res.status(400).json({ error: "Invalid credentials" });
     }
@@ -152,6 +142,19 @@ export const getCurrentUser = async (req, res) => {
   } catch (err) {
     console.error("Current user error:", err);
     res.status(500).json({ success: false, error: "Server error" });
+  }
+};
+
+export const switchWorkspace = async (req, res) => {
+  try {
+    const workspaceId = req.body?.workspaceId;
+    if (!workspaceId) return res.status(400).json({ success: false, error: "workspaceId is required" });
+    const { user, membership } = await switchUserWorkspace({ userId: req.user.id, workspaceId });
+    const token = signAuthToken(user);
+    setAuthCookie(res, token);
+    res.json({ success: true, user: toSafeUser(user), membership });
+  } catch (err) {
+    res.status(err.statusCode || 500).json({ success: false, error: err.message || "Could not switch workspace" });
   }
 };
 
@@ -230,59 +233,22 @@ export const loginDesktopWithHandoff = async (req, res) => {
 
 // Solo registration creates a workspace and Owner membership.
 export const registerUser = async (req, res) => {
-  const session = await User.startSession();
   try {
-    const { name, email, mobile, address, password, practiceName, firmName, qualifications } = req.body;
+    const { name, email, mobile, address, password, practiceName, workspaceName, planKey, qualifications } = req.body;
 
-    if (!name || !mobile || !password) {
-      return res.status(400).json({ error: "Name, mobile and password are required" });
+    if (!name || !email || !mobile || !password) {
+      return res.status(400).json({ error: "Name, email, mobile and password are required" });
     }
 
-    const normalizedMobile = normalizeMobile(mobile);
-    const existing = await User.findOne({ mobile: normalizedMobile });
-    if (existing) return res.status(409).json({ error: "User already exists with this name or mobile" });
-
-    const passwordHash = await bcrypt.hash(password, 10);
-    let firm;
-    let user;
-    let membership;
-
-    await session.withTransaction(async () => {
-      [firm] = await Firm.create([{
-        name: String(practiceName || firmName || `${name}'s Practice`).trim(),
-        contact: { email, phone: normalizedMobile },
-        memberLimit: 5,
-      }], { session });
-
-      [user] = await User.create([{
-        name,
-        email,
-        mobile: normalizedMobile,
-        address,
-        role: 'owner',
-        commercialRole: 'owner',
-        firmId: firm._id,
-        workspaceId: firm._id,
-        passwordHash,
-        qualifications,
-      }], { session });
-
-      [membership] = await Membership.create([{
-        userId: user._id,
-        workspaceId: firm._id,
-        role: 'owner',
-        status: 'active',
-        acceptedAt: new Date(),
-      }], { session });
-
-      await AuditEvent.create([{
-        workspaceId: firm._id,
-        actorId: user._id,
-        action: 'workspace.registered',
-        targetType: 'workspace',
-        targetId: firm._id,
-        changes: { ownerUserId: user._id, membershipId: membership._id },
-      }], { session });
+    const { workspace, user, membership } = await createWorkspaceOwnerAccount({
+      name,
+      email,
+      mobile,
+      address,
+      password,
+      workspaceName: workspaceName || practiceName,
+      planKey,
+      qualifications,
     });
 
     const token = signAuthToken(user);
@@ -291,7 +257,7 @@ export const registerUser = async (req, res) => {
     res.status(201).json({
       success: true,
       user: toSafeUser(user),
-      workspace: firm,
+      workspace,
       membership,
     });
   } catch (err) {
@@ -303,8 +269,6 @@ export const registerUser = async (req, res) => {
     }
     console.error("Register error:", err);
     res.status(500).json({ error: "Server error" });
-  } finally {
-    session.endSession();
   }
 };
 

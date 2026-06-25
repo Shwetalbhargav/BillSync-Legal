@@ -37,6 +37,7 @@ import { CloudIntegrationsPage } from "./pages/integrations/CloudIntegrationsPag
 import { ZohoIntegrationPage } from "./pages/integrations/ZohoIntegrationPage";
 import { LoginPage } from "./pages/LoginPage";
 import { ManualCourtTimeEntryPage } from "./pages/calendar/ManualCourtTimeEntryPage";
+import { AcceptInvitePage } from "./pages/AcceptInvitePage";
 import { AssistantCorePage } from "./pages/assistant/AssistantCorePage";
 import { AiDocumentCreatePage } from "./pages/assistant/AiDocumentCreatePage";
 import { AiDocumentSummaryPage } from "./pages/assistant/AiDocumentSummaryPage";
@@ -93,6 +94,7 @@ import { TimeApprovalPage } from "./pages/work/TimeApprovalPage";
 import { WorkMeterPage } from "./pages/work/WorkMeterPage";
 import { WorkSessionDetailPage } from "./pages/work/WorkSessionDetailPage";
 import { WorkSessionHistoryPage } from "./pages/work/WorkSessionHistoryPage";
+import { WorkspaceMembersPage } from "./pages/workspace/WorkspaceMembersPage";
 
 function ProtectedShell() {
   const { isAuthenticated, isLoading, logout, role, user } = useAuth();
@@ -222,6 +224,7 @@ function ProtectedPage({ route }) {
   if (route.path === "/app/compensation") return <CompensationPage />;
   if (route.path === "/app/submit-work") return <SubmitWorkPage />;
   if (route.path === "/app/profile") return <ProfilePage />;
+  if (route.path === "/app/workspace/members") return <WorkspaceMembersPage />;
   if (route.path === "/app/settings") return <SettingsAdminPage />;
   if (route.path === "/app/settings/invoice-tax") return <SettingsAdminPage view="invoice" />;
   if (route.path === "/app/settings/storage-defaults") return <SettingsAdminPage view="storage" />;
@@ -246,6 +249,7 @@ function AppRoutes() {
       <Route element={<AuthLayout />}>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterInvitePage />} />
+        <Route path="/invite/accept" element={<AcceptInvitePage />} />
         <Route path="/forgot-password" element={<PasswordHelpPage />} />
         <Route path="/reset-password" element={<PasswordHelpPage mode="reset" />} />
       </Route>

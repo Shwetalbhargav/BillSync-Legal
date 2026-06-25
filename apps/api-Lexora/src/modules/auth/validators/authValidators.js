@@ -28,8 +28,9 @@ export const validateLogin = validateBody({
   name: [required, string({ min: 1, max: 120 })],
   mobile: [required, string({ min: 10, max: 10 }), matches(/^\d{10}$/, "a 10-digit mobile number")],
   password: [required, string({ min: 1, max: 128 })],
-  role: [required, oneOf(loginRoles)],
-  firmId: [required, objectId()],
+  role: [oneOf(loginRoles)],
+  firmId: [objectId()],
+  workspaceId: [objectId()],
 });
 
 export const validateRegister = validateBody({
@@ -38,6 +39,8 @@ export const validateRegister = validateBody({
   password: [required, string({ min: 8, max: 128 })],
   email: [required, string({ max: 254 }), matches(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, "a valid email address")],
   practiceName: [string({ min: 1, max: 180 })],
+  workspaceName: [string({ min: 1, max: 180 })],
+  planKey: [oneOf(['solo', 'small_workspace'])],
   firmName: [string({ min: 1, max: 180 })],
   address: [string({ max: 500 })],
   qualifications: [array({ item: qualification })],

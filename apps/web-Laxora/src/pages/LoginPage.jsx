@@ -1,8 +1,6 @@
 import { Eye, EyeOff } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { firmsApi } from "../api/firms";
-import { asList } from "../api/normalizers";
 import { Button } from "../components/common/Button";
 import { useAuth } from "../auth/AuthProvider";
 
@@ -10,8 +8,6 @@ const initialForm = {
   name: "",
   mobile: "",
   password: "",
-  role: "lawyer",
-  firmId: "",
 };
 
 function cleanMobile(value) {
@@ -20,17 +16,14 @@ function cleanMobile(value) {
 
 function validateForm(form) {
   if (!form.name.trim()) return "Enter your full name.";
-  if (form.mobile.length !== 10) return "Enter the 10 digit mobile number registered with your firm.";
+  if (form.mobile.length !== 10) return "Enter the 10 digit mobile number registered with your account.";
   if (!form.password) return "Enter your password.";
-  if (!form.firmId.trim()) return "Choose your firm.";
   return "";
 }
 
 export function LoginPage() {
   const [form, setForm] = useState(initialForm);
   const [error, setError] = useState("");
-  const [firms, setFirms] = useState([]);
-  const [firmStatus, setFirmStatus] = useState("loading");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const { login } = useAuth();
@@ -38,36 +31,6 @@ export function LoginPage() {
   const location = useLocation();
 
   const redirectTo = location.state?.from || "/app/dashboard";
-
-  useEffect(() => {
-    let ignore = false;
-
-    async function loadFirms() {
-      setFirmStatus("loading");
-      try {
-        const response = await firmsApi.listOptions();
-        const options = asList(response).map((firm) => ({
-          id: firm.id || firm._id,
-          name: firm.name || "Firm",
-        }));
-        if (ignore) return;
-        setFirms(options);
-        setFirmStatus(options.length ? "ready" : "empty");
-        if (options.length === 1) {
-          setForm((current) => ({ ...current, firmId: current.firmId || options[0].id }));
-        }
-      } catch {
-        if (ignore) return;
-        setFirms([]);
-        setFirmStatus("error");
-      }
-    }
-
-    loadFirms();
-    return () => {
-      ignore = true;
-    };
-  }, []);
 
   function updateField(field, value) {
     setError("");
@@ -85,7 +48,7 @@ export function LoginPage() {
     setIsSubmitting(true);
     setError("");
     try {
-      await login({ ...form, name: form.name.trim(), firmId: form.firmId.trim() });
+      await login({ ...form, name: form.name.trim() });
       navigate(redirectTo, { replace: true });
     } catch (submitError) {
       setError(submitError?.userMessage || submitError?.message || "We could not open your workspace. Please try again.");
@@ -151,58 +114,12 @@ export function LoginPage() {
             </button>
           </span>
         </label>
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-          <label className="block text-sm font-semibold text-ink">
-            Role
-            <select
-              className="focus-ring mt-1 w-full rounded-lg border border-border py-3 pl-3 pr-8"
-              onChange={(event) => updateField("role", event.target.value)}
-              value={form.role}
-            >
-              <option value="lawyer">Lawyer</option>
-              <option value="partner">Partner</option>
-              <option value="associate">Associate</option>
-              <option value="intern">Intern</option>
-              <option value="admin">Admin</option>
-            </select>
-          </label>
-          <label className="block text-sm font-semibold text-ink">
-            Firm
-            {firmStatus === "ready" ? (
-              <select
-                className="focus-ring mt-1 w-full rounded-lg border border-border py-3 pl-3 pr-8"
-                onChange={(event) => updateField("firmId", event.target.value)}
-                value={form.firmId}
-              >
-                <option value="">Choose firm</option>
-                {firms.map((firm) => (
-                  <option key={firm.id} value={firm.id}>
-                    {firm.name}
-                  </option>
-                ))}
-              </select>
-            ) : (
-              <input
-                className="focus-ring mt-1 w-full rounded-lg border border-border px-3 py-3"
-                disabled={firmStatus === "loading"}
-                onChange={(event) => updateField("firmId", event.target.value)}
-                placeholder={firmStatus === "loading" ? "Loading firms" : "Paste firm id"}
-                value={form.firmId}
-              />
-            )}
-          </label>
-        </div>
-        {firmStatus === "error" ? (
-          <p className="rounded-lg border border-warning/30 bg-warning/10 p-3 text-sm font-semibold text-warning">
-            Firm choices could not load. Paste the firm id shared by your admin.
-          </p>
-        ) : null}
         <div className="flex flex-col gap-2 text-sm sm:flex-row sm:items-center sm:justify-between">
           <Link className="font-semibold text-primary" to="/forgot-password">
             Need help signing in?
           </Link>
           <Link className="font-semibold text-primary" to="/register">
-            Accept invite
+            Create workspace
           </Link>
         </div>
         <Button className="w-full" isLoading={isSubmitting} type="submit">

@@ -16,7 +16,7 @@ export function Sidebar({ collapsed = false, onToggleSidebar, role }) {
           </div>
           <div className={collapsed ? "sr-only" : ""}>
             <p className="font-bold leading-5">BillSync Legal</p>
-            <p className="text-xs text-[#B5C7EA]">Law Firm Management</p>
+            <p className="text-xs text-[#B5C7EA]">Workspace Management</p>
           </div>
         </div>
         <button

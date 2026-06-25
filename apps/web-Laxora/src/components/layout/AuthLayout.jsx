@@ -11,7 +11,7 @@ export function AuthLayout() {
           </div>
           <div>
             <h1 className="text-2xl font-bold text-primary">BillSync Legal</h1>
-            <p className="text-sm text-muted">Law Firm Management</p>
+            <p className="text-sm text-muted">Workspace Management</p>
           </div>
         </div>
         <Outlet />
