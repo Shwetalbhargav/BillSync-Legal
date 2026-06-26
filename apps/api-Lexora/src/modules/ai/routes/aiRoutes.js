@@ -1,6 +1,7 @@
 import express from 'express';
 import { authenticate } from '../../../middleware/auth.js';
 import { Case } from '../../cases/models/Case.js';
+import { can } from '../../workspace/services/rbacPolicyService.js';
 import { generateBillableSummary } from '../services/gptService.js';
 import { buildAppGuideAnswer } from '../services/appGuideService.js';
 import { MatterDocument } from '../models/MatterDocument.js';
@@ -18,10 +19,25 @@ import {
   validateMatterChat,
   validateMatterDocument,
 } from '../validators/aiValidators.js';
+import {
+  AI_CONSUMERS,
+  getAiUsageSummary,
+  publicAiConsumer,
+  requireAiAccess,
+  sendAiSuccess,
+} from '../services/aiPlatformService.js';
 
 const router = express.Router();
 
 router.use(authenticate);
+
+function assistConsumer(req) {
+  const mode = req.body?.mode;
+  if (mode === 'analyze_text') return 'research';
+  if (mode === 'billable_narrative') return 'invoice';
+  if (mode === 'draft_email') return 'client';
+  return 'dashboard';
+}
 
 async function assertMatterAccess({ caseId, clientId }, req, res) {
   const matter = await Case.findById(caseId).select('clientId assignedUsers leadPartnerId managingLawyerId primaryLawyerId');
@@ -33,8 +49,20 @@ async function assertMatterAccess({ caseId, clientId }, req, res) {
     res.status(400).json({ success: false, message: 'clientId must match the selected matter client' });
     return null;
   }
-  if (req.user?.role === 'admin' || req.user?.role === 'partner') return matter;
   const userId = String(req.user?.id || '');
+  const matterRead = await can(
+    req.user?.id,
+    req.workspaceId,
+    'matter.read',
+    {
+      resourceType: 'matter',
+      matterId: matter._id,
+      assignedUserIds: matter.assignedUsers || [],
+      assignedUserId: matter.primaryLawyerId || matter.managingLawyerId || matter.leadPartnerId,
+    },
+    { user: req.user },
+  );
+  if (matterRead.allowed) return matter;
   const assigned = [
     ...(matter.assignedUsers || []),
     matter.leadPartnerId,
@@ -42,7 +70,7 @@ async function assertMatterAccess({ caseId, clientId }, req, res) {
     matter.primaryLawyerId,
   ].some((value) => String(value || '') === userId);
   if (!assigned) {
-    res.status(403).json({ success: false, message: 'You can only use AI on assigned matters' });
+    res.status(403).json({ success: false, message: 'You do not have access to this AI tool.' });
     return null;
   }
   return matter;
@@ -228,7 +256,7 @@ function buildEmailDraft(prompt = '') {
  * Body: { prompt: string }
  * Resp: { success, email: { text } }
  */
-router.post('/generate-email', validateGenerateEmail, async (req, res) => {
+router.post('/generate-email', requireAiAccess('client'), validateGenerateEmail, async (req, res) => {
   try {
     const { prompt } = req.body || {};
     if (!prompt || typeof prompt !== 'string') {
@@ -242,7 +270,7 @@ router.post('/generate-email', validateGenerateEmail, async (req, res) => {
       ...draft.lines
     ].join('\n');
 
-    return res.json({ success: true, email: { text } });
+    return sendAiSuccess(req, res, { success: true, email: { text } }, { outputText: text });
   } catch (err) {
     console.error('[AI] generate-email failed:', err);
     return res.status(500).json({ success: false, message: err.message });
@@ -254,14 +282,27 @@ router.post('/generate-email', validateGenerateEmail, async (req, res) => {
  * Global MVP assistant for app-wide drafting, summarization, research notes,
  * and billable narrative generation.
  */
-router.post('/assist', validateAssist, async (req, res) => {
+router.get('/consumers', async (_req, res) => {
+  res.json({ success: true, data: Object.values(AI_CONSUMERS).map(publicAiConsumer) });
+});
+
+router.get('/usage', async (req, res) => {
+  try {
+    const usage = await getAiUsageSummary({ workspaceId: req.workspaceId });
+    res.json({ success: true, data: usage });
+  } catch {
+    res.status(500).json({ success: false, message: 'AI usage could not be loaded right now.' });
+  }
+});
+
+router.post('/assist', requireAiAccess(assistConsumer), validateAssist, async (req, res) => {
   try {
     const { mode, input, context = {} } = req.body || {};
     const cleanInput = String(input || '').trim();
 
     if (mode === 'draft_email') {
       const draft = buildEmailDraft(cleanInput);
-      return res.json({
+      return sendAiSuccess(req, res, {
         success: true,
         mode,
         result: {
@@ -269,7 +310,7 @@ router.post('/assist', validateAssist, async (req, res) => {
           text: [`Subject: ${draft.subject}`, '', ...draft.lines].join('\n'),
         },
         context,
-      });
+      }, { outputText: [`Subject: ${draft.subject}`, '', ...draft.lines].join('\n') });
     }
 
     if (mode === 'billable_narrative') {
@@ -277,7 +318,7 @@ router.post('/assist', validateAssist, async (req, res) => {
         subject: context.subject || 'Billable work',
         body: cleanInput,
       });
-      return res.json({
+      return sendAiSuccess(req, res, {
         success: true,
         mode,
         result: {
@@ -285,16 +326,17 @@ router.post('/assist', validateAssist, async (req, res) => {
           text: narrative,
         },
         context,
-      });
+      }, { outputText: narrative });
     }
 
     if (mode === 'app_guide') {
-      return res.json({
+      const result = await buildAppGuideAnswer({ input: cleanInput, context, requestUser: req.user });
+      return sendAiSuccess(req, res, {
         success: true,
         mode,
-        result: await buildAppGuideAnswer({ input: cleanInput, context, requestUser: req.user }),
+        result,
         context,
-      });
+      }, { outputText: result?.text || result?.answer || JSON.stringify(result) });
     }
 
     const sentences = cleanInput
@@ -304,7 +346,7 @@ router.post('/assist', validateAssist, async (req, res) => {
     const summary = sentences.slice(0, mode === 'summarize_text' ? 3 : 5).join(' ') || cleanInput;
     const prefix = mode === 'analyze_text' ? 'Key analysis' : 'Summary';
 
-    return res.json({
+    return sendAiSuccess(req, res, {
       success: true,
       mode,
       result: {
@@ -312,14 +354,14 @@ router.post('/assist', validateAssist, async (req, res) => {
         text: `${prefix}: ${summary}`,
       },
       context,
-    });
+    }, { outputText: `${prefix}: ${summary}` });
   } catch (err) {
     console.error('[AI] assist failed:', err);
     return res.status(500).json({ success: false, message: err.message });
   }
 });
 
-router.get('/matter-documents', async (req, res) => {
+router.get('/matter-documents', requireAiAccess('document'), async (req, res) => {
   try {
     const { caseId } = req.query;
     if (!caseId) return res.status(400).json({ success: false, message: 'caseId is required' });
@@ -336,7 +378,7 @@ router.get('/matter-documents', async (req, res) => {
   }
 });
 
-router.post('/matter-documents', validateMatterDocument, async (req, res) => {
+router.post('/matter-documents', requireAiAccess('document'), validateMatterDocument, async (req, res) => {
   try {
     const matter = await assertMatterAccess(req.body, req, res);
     if (!matter) return;
@@ -350,14 +392,15 @@ router.post('/matter-documents', validateMatterDocument, async (req, res) => {
       tags: Array.isArray(req.body.tags) ? req.body.tags.slice(0, 12) : [],
       createdBy: req.user.id,
     });
-    res.status(201).json({ success: true, data: doc });
+    res.status(201);
+    sendAiSuccess(req, res, { success: true, data: doc }, { outputText: doc.summary || '' });
   } catch (err) {
     console.error('[AI] create matter document failed:', err);
     res.status(500).json({ success: false, message: err.message });
   }
 });
 
-router.post('/matter-chat', validateMatterChat, async (req, res) => {
+router.post('/matter-chat', requireAiAccess('matter'), validateMatterChat, async (req, res) => {
   try {
     const matter = await assertMatterAccess({ caseId: req.body.caseId }, req, res);
     if (!matter) return;
@@ -366,14 +409,14 @@ router.post('/matter-chat', validateMatterChat, async (req, res) => {
       question: req.body.question,
     });
     const result = buildMatterAnswer({ question: req.body.question, documents });
-    res.json({ success: true, result });
+    sendAiSuccess(req, res, { success: true, result }, { outputText: result?.answer || '' });
   } catch (err) {
     console.error('[AI] matter-chat failed:', err);
     res.status(500).json({ success: false, message: err.message });
   }
 });
 
-router.post('/generate-document', validateGenerateDocument, async (req, res) => {
+router.post('/generate-document', requireAiAccess('document'), validateGenerateDocument, async (req, res) => {
   try {
     const matter = await assertMatterAccess(req.body, req, res);
     if (!matter) return;
@@ -387,7 +430,7 @@ router.post('/generate-document', validateGenerateDocument, async (req, res) => 
       instructions: req.body.instructions,
       sourceDocuments: documents,
     });
-    res.json({
+    sendAiSuccess(req, res, {
       success: true,
       result: {
         ...generated,
@@ -397,7 +440,7 @@ router.post('/generate-document', validateGenerateDocument, async (req, res) => 
           documentType: doc.documentType,
         })),
       },
-    });
+    }, { outputText: generated?.content || generated?.text || '' });
   } catch (err) {
     console.error('[AI] generate-document failed:', err);
     res.status(500).json({ success: false, message: err.message });
@@ -422,7 +465,7 @@ router.post('/generate-document', validateGenerateDocument, async (req, res) => 
  * Resp:
  *   { success, planned: {...} }
  */
-router.post('/email-to-billable', validateEmailToBillable, async (req, res) => {
+router.post('/email-to-billable', requireAiAccess('invoice'), validateEmailToBillable, async (req, res) => {
   try {
     const {
       userId,
@@ -442,7 +485,7 @@ router.post('/email-to-billable', validateEmailToBillable, async (req, res) => {
     const qtyHours = Math.max(Number(minutes ?? 6) / 60, 0.1);
     const description = await generateBillableSummary({ subject, body });
 
-    return res.json({
+    return sendAiSuccess(req, res, {
       success: true,
       planned: {
         recipient: to,
@@ -452,7 +495,7 @@ router.post('/email-to-billable', validateEmailToBillable, async (req, res) => {
         date: date || new Date().toISOString().split('T')[0],
         dryRun: Boolean(dryRun),
       },
-    });
+    }, { outputText: description });
   } catch (err) {
     const msg = (err?.response?.data && JSON.stringify(err.response.data)) || err.message || 'Unknown error';
     console.error('[AI] email-to-billable failed:', msg);

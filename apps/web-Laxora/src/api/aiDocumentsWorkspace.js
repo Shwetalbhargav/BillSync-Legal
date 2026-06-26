@@ -35,6 +35,7 @@ function normalizeGenerated(response) {
     title: result.title || "Document draft",
     text: result.content || result.text || "",
     citations: result.citations || [],
+    usage: response?.aiUsage || null,
     raw: response,
   };
 }
@@ -45,6 +46,7 @@ function normalizeAnswer(response) {
     title: "Matter answer",
     text: result.answer || "",
     citations: result.citations || [],
+    usage: response?.aiUsage || null,
     raw: response,
   };
 }

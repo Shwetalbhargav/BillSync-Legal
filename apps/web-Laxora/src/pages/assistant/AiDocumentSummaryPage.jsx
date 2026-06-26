@@ -9,10 +9,12 @@ import {
   SectionIssues,
   SourceDocumentForm,
 } from "../../components/assistant/AiDocumentWidgets";
+import { useAiPlatformAccess } from "./useAiPlatformAccess";
 
 const blankForm = { caseId: "", clientId: "", title: "", documentType: "note", content: "" };
 
 export function AiDocumentSummaryPage() {
+  const access = useAiPlatformAccess("ai.document");
   const [state, setState] = useState({ status: "loading", matters: [], documents: [], issues: [], message: "" });
   const [form, setForm] = useState(blankForm);
   const [result, setResult] = useState({ title: "", text: "", citations: [] });
@@ -50,6 +52,10 @@ export function AiDocumentSummaryPage() {
 
   async function save(event) {
     event.preventDefault();
+    if (access.unavailable || access.readOnly || !access.canUse || access.creditDepleted) {
+      setNotice({ tone: "warning", title: "Document AI is not available", message: access.message || "You do not have access to this AI tool." });
+      return;
+    }
     if (!form.caseId || !form.title.trim() || !form.content.trim()) {
       setNotice({ tone: "warning", title: "Add document details", message: "Choose a matter, add a title, and paste source text before saving." });
       return;
@@ -64,6 +70,7 @@ export function AiDocumentSummaryPage() {
       });
       setResult({ title: saved.title, text: saved.summary || "Summary saved.", citations: [{ documentId: saved.id, title: saved.title, documentType: saved.type }] });
       setNotice({ tone: "success", title: "Source note saved", message: "The summary is ready for review and matter questions." });
+      access.refreshUsage();
       setForm((current) => ({ ...blankForm, caseId: current.caseId, clientId: current.clientId }));
       await load(form.caseId);
     } catch (error) {
@@ -73,13 +80,19 @@ export function AiDocumentSummaryPage() {
     }
   }
 
+  if (access.status === "loading") return <SkeletonBlock />;
+  if (access.unavailable) return <StateCard state="empty" title="Document AI is not available" message={access.message} />;
+  if (!access.canUse) return <StateCard state="permission" title="Document AI is not available" message="You do not have access to this AI tool." />;
+  if (access.creditDepleted) return <StateCard state="retry" title="AI credits are used up" message={access.message} actionLabel="Refresh" onAction={access.refreshUsage} />;
   if (state.status === "loading") return <SkeletonBlock />;
-  if (state.status === "error") return <StateCard state="error" title="Document notes need attention" message={state.message} actionLabel="Retry" />;
+  if (state.status === "error") return <StateCard state="error" title="Document notes need attention" message={state.message} actionLabel="Retry" onAction={() => load()} />;
 
   return (
     <div className="space-y-6">
       <AiDocumentHero title="Document summary" />
       {notice ? <Toast tone={notice.tone} title={notice.title} message={notice.message} /> : null}
+      {access.readOnly ? <StateCard state="empty" title="Document AI is paused" message={access.message} /> : null}
+      {access.usage.status === "error" ? <StateCard state="retry" title="AI usage could not be refreshed" message={access.usage.message} actionLabel="Retry" onAction={access.refreshUsage} /> : null}
       <SectionIssues issues={state.issues} />
       <IndexingRequired documents={state.documents} />
       <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_420px]">
