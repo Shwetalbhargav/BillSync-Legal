@@ -30,19 +30,19 @@ jobs:
 
       - name: Install API from lockfile
         working-directory: apps/api-Lexora
-        run: npm ci
+        run: npm ci --workspaces=false
 
       - name: Install web from lockfile
         working-directory: apps/web-Laxora
-        run: npm ci
+        run: npm ci --workspaces=false
 
       - name: Install desktop from lockfile
         working-directory: apps/desktop-Lexora
-        run: npm ci
+        run: npm ci --workspaces=false
 
       - name: Install extension from lockfile
         working-directory: apps/extension
-        run: npm ci
+        run: npm ci --workspaces=false
 
       - name: API lint
         working-directory: apps/api-Lexora
