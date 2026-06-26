@@ -54,6 +54,26 @@ test('roles only reference known permissions', () => {
   }
 });
 
+test('module registry manifests define plan, feature, permission, dependency, and navigation contracts', () => {
+  const moduleKeys = new Set(CORE_MODULES.map((module) => module.key));
+  const featureKeys = new Set(CORE_FEATURES.map((feature) => feature.key));
+  const permissionKeys = new Set(CORE_PERMISSIONS.map((permission) => permission.key));
+  const planKeys = new Set(CORE_PLANS.map((plan) => plan.key));
+
+  for (const module of CORE_MODULES) {
+    expect(planKeys.has(module.requiredPlanKey)).toBe(true);
+    expect(module.featureKeys.length).toBeGreaterThan(0);
+    expect(module.featureKeys.every((key) => featureKeys.has(key))).toBe(true);
+    expect(module.permissionKeys.every((key) => permissionKeys.has(key))).toBe(true);
+    expect((module.dependencies || []).every((key) => moduleKeys.has(key))).toBe(true);
+    expect(module.navigation).toEqual(expect.objectContaining({
+      label: expect.any(String),
+      path: expect.stringMatching(/^\/app\//),
+      iconKey: expect.any(String),
+    }));
+  }
+});
+
 test('tenant-owned coverage map includes current retained legal ERP collections', () => {
   const names = new Set(TENANT_OWNED_COLLECTIONS.map((item) => item.name));
   for (const required of [

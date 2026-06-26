@@ -1,12 +1,14 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { authApi } from "../api/auth.js";
+import { moduleNavigationApi } from "../api/moduleNavigation.js";
 import { normalizeUser } from "../api/normalizers.js";
 import { workspaceMembershipApi } from "../api/workspaceMembership.js";
 import { defaultRole } from "../constants/roles.js";
 
 const AuthContext = createContext(null);
 const publicAuthPaths = new Set(["/login", "/register", "/invite/accept", "/forgot-password", "/reset-password"]);
+const emptyModuleNavigation = { status: "idle", items: [], modules: [], permissions: { permissions: [] }, validation: { ok: true, unknownDependencies: [], cycles: [] }, message: "" };
 
 function friendlyAuthMessage(error) {
   return error?.userMessage || "We could not complete that request right now. Please check the details and try again.";
@@ -16,8 +18,25 @@ export function AuthProvider({ children }) {
   const location = useLocation();
   const [user, setUser] = useState(null);
   const [workspaceContext, setWorkspaceContext] = useState({ status: "idle", workspace: null, memberships: [], activeMembership: null, message: "" });
+  const [moduleNavigation, setModuleNavigation] = useState(emptyModuleNavigation);
   const [status, setStatus] = useState("loading");
   const [lastMessage, setLastMessage] = useState("");
+
+  const refreshModuleNavigation = useCallback(async () => {
+    setModuleNavigation((current) => ({ ...current, status: "loading", message: "" }));
+    try {
+      const navigation = await moduleNavigationApi.navigation();
+      setModuleNavigation({ status: "ready", ...navigation });
+      return navigation;
+    } catch (error) {
+      setModuleNavigation({
+        ...emptyModuleNavigation,
+        status: "error",
+        message: error?.userMessage || "Navigation could not be loaded for this workspace.",
+      });
+      return null;
+    }
+  }, []);
 
   const refreshCurrentUser = useCallback(async () => {
     setStatus("loading");
@@ -31,6 +50,7 @@ export function AuthProvider({ children }) {
           setWorkspaceContext((current) => ({ ...current, status: "loading", message: "" }));
           const context = await workspaceMembershipApi.context();
           setWorkspaceContext({ status: "ready", ...context, message: "" });
+          await refreshModuleNavigation();
         } catch (workspaceError) {
           setWorkspaceContext({
             status: "error",
@@ -39,25 +59,29 @@ export function AuthProvider({ children }) {
             activeMembership: null,
             message: workspaceError?.userMessage || "Workspace details could not be loaded.",
           });
+          setModuleNavigation({ ...emptyModuleNavigation, status: "error", message: "Navigation could not be loaded for this workspace." });
         }
       } else {
         setWorkspaceContext({ status: "idle", workspace: null, memberships: [], activeMembership: null, message: "" });
+        setModuleNavigation(emptyModuleNavigation);
       }
       return currentUser;
     } catch (error) {
       setUser(null);
       setWorkspaceContext({ status: "idle", workspace: null, memberships: [], activeMembership: null, message: "" });
+      setModuleNavigation(emptyModuleNavigation);
       setStatus("guest");
       setLastMessage(friendlyAuthMessage(error));
       return null;
     }
-  }, []);
+  }, [refreshModuleNavigation]);
 
   useEffect(() => {
     if (publicAuthPaths.has(location.pathname)) {
       setStatus("guest");
       setUser(null);
       setWorkspaceContext({ status: "idle", workspace: null, memberships: [], activeMembership: null, message: "" });
+      setModuleNavigation(emptyModuleNavigation);
       return;
     }
     refreshCurrentUser();
@@ -75,11 +99,13 @@ export function AuthProvider({ children }) {
     try {
       const context = await workspaceMembershipApi.context();
       setWorkspaceContext({ status: "ready", ...context, message: "" });
+      await refreshModuleNavigation();
     } catch {
       setWorkspaceContext({ status: "error", workspace: null, memberships: [], activeMembership: null, message: "Workspace details could not be loaded." });
+      setModuleNavigation({ ...emptyModuleNavigation, status: "error", message: "Navigation could not be loaded for this workspace." });
     }
     return signedInUser;
-  }, []);
+  }, [refreshModuleNavigation]);
 
   const register = useCallback(async (profile) => {
     setLastMessage("");
@@ -91,12 +117,14 @@ export function AuthProvider({ children }) {
       try {
         const context = await workspaceMembershipApi.context();
         setWorkspaceContext({ status: "ready", ...context, message: "" });
+        await refreshModuleNavigation();
       } catch {
         setWorkspaceContext({ status: "error", workspace: null, memberships: [], activeMembership: null, message: "Workspace details could not be loaded." });
+        setModuleNavigation({ ...emptyModuleNavigation, status: "error", message: "Navigation could not be loaded for this workspace." });
       }
     }
     return registeredUser;
-  }, []);
+  }, [refreshModuleNavigation]);
 
   const switchWorkspace = useCallback(async (workspaceId) => {
     setLastMessage("");
@@ -105,8 +133,9 @@ export function AuthProvider({ children }) {
     if (response.user) setUser(response.user);
     const context = await workspaceMembershipApi.context();
     setWorkspaceContext({ status: "ready", ...context, message: "" });
+    await refreshModuleNavigation();
     return response;
-  }, []);
+  }, [refreshModuleNavigation]);
 
   const logout = useCallback(async () => {
     setLastMessage("");
@@ -115,6 +144,7 @@ export function AuthProvider({ children }) {
     } finally {
       setUser(null);
       setWorkspaceContext({ status: "idle", workspace: null, memberships: [], activeMembership: null, message: "" });
+      setModuleNavigation(emptyModuleNavigation);
       setStatus("guest");
     }
   }, []);
@@ -125,6 +155,7 @@ export function AuthProvider({ children }) {
       role: user?.role || defaultRole,
       workspace: workspaceContext.workspace,
       workspaceContext,
+      moduleNavigation,
       status,
       isLoading: status === "loading",
       isAuthenticated: status === "authenticated",
@@ -133,9 +164,10 @@ export function AuthProvider({ children }) {
       logout,
       register,
       refreshCurrentUser,
+      refreshModuleNavigation,
       switchWorkspace,
     }),
-    [lastMessage, login, logout, refreshCurrentUser, register, status, switchWorkspace, user, workspaceContext],
+    [lastMessage, login, logout, moduleNavigation, refreshCurrentUser, refreshModuleNavigation, register, status, switchWorkspace, user, workspaceContext],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

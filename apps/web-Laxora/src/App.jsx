@@ -121,10 +121,25 @@ function ProtectedShell() {
   return <AppShell role={role} user={user} onLogout={handleLogout} />;
 }
 
-function ProtectedPage({ route }) {
-  const { role } = useAuth();
+function canOpenModule({ moduleNavigation, role, moduleKey }) {
+  if (!moduleKey) return true;
+  if (moduleNavigation.status === "loading") return "loading";
+  if (moduleNavigation.status !== "ready") return canAccess(role, moduleKey);
+  const module = moduleNavigation.modules.find((item) => item.key === moduleKey);
+  if (!module) return canAccess(role, moduleKey);
+  if (module.state === "hidden" || module.state === "disabled") return false;
+  return module.allowed || module.readOnly || module.experimental;
+}
 
-  if (!canAccess(role, route.moduleKey)) {
+function ProtectedPage({ route }) {
+  const { moduleNavigation, role } = useAuth();
+  const access = canOpenModule({ moduleNavigation, role, moduleKey: route.moduleKey });
+
+  if (access === "loading") {
+    return <StateCard state="loading" title="Checking access" message="We are checking what is available in this workspace." />;
+  }
+
+  if (!access) {
     return <PermissionDeniedPage />;
   }
 

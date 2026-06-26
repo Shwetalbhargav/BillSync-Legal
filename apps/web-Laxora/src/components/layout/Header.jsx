@@ -8,10 +8,13 @@ const defaultProfileImage = "/images/default-user.jpg";
 export function Header({ user, onLogout }) {
   const [isAccountOpen, setIsAccountOpen] = useState(false);
   const [switchError, setSwitchError] = useState("");
-  const { switchWorkspace, workspaceContext } = useAuth();
+  const { moduleNavigation, switchWorkspace, workspaceContext } = useAuth();
   const displayName = user?.name || "My profile";
   const activeWorkspace = workspaceContext?.workspace;
   const memberships = workspaceContext?.memberships || [];
+  const quickModules = (moduleNavigation?.items || [])
+    .filter((item) => !item.disabled && item.state !== "hidden")
+    .slice(0, 3);
   const initials = displayName
     .split(" ")
     .filter(Boolean)
@@ -48,6 +51,19 @@ export function Header({ user, onLogout }) {
             placeholder="Search matters, clients, or tasks"
           />
         </div>
+        {quickModules.length > 0 ? (
+          <nav className="hidden min-w-0 items-center gap-1 xl:flex" aria-label="Workspace shortcuts">
+            {quickModules.map((item) => (
+              <Link
+                key={item.path}
+                className="focus-ring max-w-28 truncate rounded-lg px-3 py-2 text-sm font-semibold text-muted hover:bg-blueSoft hover:text-primary"
+                to={item.path}
+              >
+                {item.experimental ? "Preview" : item.readOnly ? `${item.label} read-only` : item.label}
+              </Link>
+            ))}
+          </nav>
+        ) : null}
       </div>
       <div className="flex flex-1 items-center justify-between gap-3 sm:flex-none sm:justify-end">
         <div className="hidden min-w-0 items-center gap-2 md:flex">
