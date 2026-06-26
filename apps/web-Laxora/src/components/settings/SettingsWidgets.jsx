@@ -1,4 +1,4 @@
-import { AlertTriangle, Bell, Building2, CheckCircle2, CreditCard, DatabaseBackup, Lock, ReceiptText, Save, ShieldCheck } from "lucide-react";
+import { AlertTriangle, Bell, Building2, CheckCircle2, CreditCard, DatabaseBackup, Lock, ReceiptText, RefreshCw, Save, ShieldCheck } from "lucide-react";
 import { Button } from "../common/Button";
 import { StatusBadge } from "../common/StatusBadge";
 
@@ -170,6 +170,133 @@ export function TaxDefaultsForm({ form, onChange, onSubmit, saving }) {
           <Save className="h-4 w-4" />
           Save tax defaults
         </Button>
+      </div>
+    </section>
+  );
+}
+
+function usageRow(usage = {}, key, fallbackLabel) {
+  const item = usage[key] || {};
+  return {
+    label: item.label || fallbackLabel,
+    used: Number(item.used || 0),
+    included: Number(item.included || 0),
+    remaining: Number(item.remaining || 0),
+    overage: Number(item.overage || 0),
+  };
+}
+
+function formatDate(value) {
+  if (!value) return "Not set";
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? "Not set" : date.toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" });
+}
+
+function InlineNotice({ actionLabel, message, onAction, title, tone = "muted" }) {
+  const toneClass = tone === "warning" ? "border-warning/30 bg-warning/10" : "border-border bg-app";
+  return (
+    <div className={`rounded-lg border p-4 ${toneClass}`}>
+      <p className="font-semibold text-ink">{title}</p>
+      <p className="mt-1 text-sm leading-6 text-muted">{message}</p>
+      {onAction ? (
+        <Button className="mt-3" onClick={onAction} type="button" variant="secondary">
+          {actionLabel || "Try again"}
+        </Button>
+      ) : null}
+    </div>
+  );
+}
+
+export function PlatformBillingPanel({ billing = {}, onCreateInvoice, onMarkFailed, saving }) {
+  const usageRows = [
+    usageRow(billing.usage, "seats", "Seats"),
+    usageRow(billing.usage, "storage", "Storage"),
+    usageRow(billing.usage, "aiCredits", "AI credits"),
+  ];
+  const latestOpenInvoice = billing.invoices?.find((invoice) => ["open", "past_due"].includes(invoice.status));
+  const providerMessage = billing.provider?.message || "Subscription payment setup is not connected yet.";
+
+  return (
+    <section className="surface-card p-5">
+      <div className="flex min-w-0 flex-col gap-3 md:flex-row md:items-start md:justify-between">
+        <div>
+          <p className="text-sm font-semibold uppercase tracking-wide text-accent">Lexora subscription</p>
+          <h2 className="mt-1 text-xl font-bold text-primary">{billing.planName || "Plan not selected"}</h2>
+          <p className="mt-1 text-sm leading-6 text-muted">This is Lexora subscription billing for the workspace. It is separate from client invoices and client payments.</p>
+        </div>
+        <StatusBadge tone={billing.status === "active" ? "success" : billing.status === "past_due" ? "warning" : "muted"}>{billing.status || "Not configured"}</StatusBadge>
+      </div>
+
+      <div className="mt-5 grid gap-4 md:grid-cols-4">
+        <div className="rounded-lg border border-border bg-app p-4">
+          <p className="text-sm font-semibold text-muted">Plan price</p>
+          <p className="mt-2 text-xl font-bold text-primary">{billing.price || "Not set"}</p>
+          <p className="mt-1 text-sm text-muted">per {billing.interval || "month"}</p>
+        </div>
+        {usageRows.map((row) => (
+          <div className="rounded-lg border border-border bg-app p-4" key={row.label}>
+            <p className="text-sm font-semibold text-muted">{row.label}</p>
+            <p className="mt-2 text-xl font-bold text-primary">{row.used} / {row.included}</p>
+            <p className={row.overage > 0 ? "mt-1 text-sm text-warning" : "mt-1 text-sm text-muted"}>{row.overage > 0 ? `${row.overage} over included amount` : `${row.remaining} remaining`}</p>
+          </div>
+        ))}
+      </div>
+
+      {!billing.provider?.configured ? <div className="mt-5"><InlineNotice title="Subscription payments are not connected" message={providerMessage} /></div> : null}
+      {billing.paymentState?.status === "failed" ? (
+        <div className="mt-5">
+          <InlineNotice tone="warning" title="Subscription payment needs attention" message={billing.paymentState.message || "The latest Lexora subscription payment did not go through."} actionLabel="Check again" onAction={() => latestOpenInvoice && onMarkFailed(latestOpenInvoice)} />
+        </div>
+      ) : null}
+
+      <div className="mt-5 flex flex-wrap gap-3">
+        <Button isLoading={saving === "platform-invoice"} onClick={onCreateInvoice} type="button" variant="secondary">
+          <ReceiptText className="h-4 w-4" />
+          Prepare subscription invoice
+        </Button>
+        {latestOpenInvoice ? (
+          <Button isLoading={saving === "platform-payment"} onClick={() => onMarkFailed(latestOpenInvoice)} type="button" variant="secondary">
+            <RefreshCw className="h-4 w-4" />
+            Check payment state
+          </Button>
+        ) : null}
+      </div>
+
+      <div className="mt-6 grid gap-4 lg:grid-cols-2">
+        <div>
+          <h3 className="font-bold text-ink">Platform invoices</h3>
+          <div className="mt-3 space-y-3">
+            {billing.invoices?.length ? billing.invoices.map((invoice) => (
+              <div className="rounded-lg border border-border bg-app p-4" key={invoice.id}>
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <p className="font-semibold text-ink">{invoice.number}</p>
+                    <p className="mt-1 text-sm text-muted">Due {formatDate(invoice.dueAt)}</p>
+                  </div>
+                  <StatusBadge tone={invoice.status === "paid" ? "success" : invoice.status === "past_due" ? "warning" : "muted"}>{invoice.status}</StatusBadge>
+                </div>
+                <p className="mt-2 text-sm text-muted">Total {invoice.total} · Balance {invoice.balance}</p>
+              </div>
+            )) : <InlineNotice title="No Lexora subscription invoices yet" message="Prepare a subscription invoice when this workspace is ready for platform billing review." />}
+          </div>
+        </div>
+        <div>
+          <h3 className="font-bold text-ink">Platform payments</h3>
+          <div className="mt-3 space-y-3">
+            {billing.payments?.length ? billing.payments.map((payment) => (
+              <div className="rounded-lg border border-border bg-app p-4" key={payment.id}>
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <p className="font-semibold text-ink">{payment.amount}</p>
+                    <p className="mt-1 text-sm text-muted">{formatDate(payment.receivedAt)}</p>
+                  </div>
+                  <StatusBadge tone={payment.status === "succeeded" ? "success" : payment.status === "failed" ? "warning" : "muted"}>{payment.status}</StatusBadge>
+                </div>
+                {payment.failureMessage ? <p className="mt-2 text-sm text-warning">{payment.failureMessage}</p> : null}
+              </div>
+            )) : <InlineNotice title="No Lexora subscription payments yet" message="Subscription payment records will appear here after checkout or provider sync is connected." />}
+          </div>
+        </div>
       </div>
     </section>
   );

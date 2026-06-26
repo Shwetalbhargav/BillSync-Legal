@@ -68,6 +68,9 @@ test('roles only reference known permissions', () => {
   expect(permissionKeys.has('ai.court')).toBe(true);
   expect(permissionKeys.has('ai.research')).toBe(true);
   expect(permissionKeys.has('ai.dashboard')).toBe(true);
+  expect(permissionKeys.has('platform_billing.read')).toBe(true);
+  expect(permissionKeys.has('platform_billing.manage')).toBe(true);
+  expect(permissionKeys.has('platform_billing.pay')).toBe(true);
   for (const role of CORE_ROLES) {
     expect(role.permissionKeys.every((key) => permissionKeys.has(key))).toBe(true);
   }
@@ -107,6 +110,9 @@ test('tenant-owned coverage map includes current retained legal ERP collections'
     'invoices',
     'invoicelines',
     'payments',
+    'platforminvoices',
+    'platformpayments',
+    'platformusagerecords',
     'ratecards',
     'matterdocuments',
     'storeddocuments',

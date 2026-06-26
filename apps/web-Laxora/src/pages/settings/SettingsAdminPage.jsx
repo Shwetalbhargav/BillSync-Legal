@@ -7,6 +7,7 @@ import {
   BillingDefaultsForm,
   FirmSetupForm,
   PermissionsMatrix,
+  PlatformBillingPanel,
   SectionIssues,
   SettingsHero,
   SettingsSummary,
@@ -67,6 +68,7 @@ export function SettingsAdminPage({ view = "settings" }) {
         users: [],
         roleSummary: {},
         defaults: {},
+        platformBilling: {},
         issues: [],
         message: error?.userMessage || "Settings could not be loaded right now.",
       });
@@ -78,13 +80,13 @@ export function SettingsAdminPage({ view = "settings" }) {
   }, [loadSettings]);
 
   const visibleSections = useMemo(() => {
-    if (view === "invoice") return ["billing", "tax", "unavailable"];
+    if (view === "invoice") return ["platformBilling", "billing", "tax", "unavailable"];
     if (view === "storage" || view === "notifications") return ["unavailable", "permissions"];
     if (view === "security") return ["permissions", "unavailable"];
     if (view === "compliance") return ["tax", "unavailable"];
     if (view === "firm") return ["firm", "billing", "tax"];
     if (view === "admin") return ["firm", "permissions", "unavailable"];
-    return ["firm", "billing", "tax", "permissions", "unavailable"];
+    return ["firm", "platformBilling", "billing", "tax", "permissions", "unavailable"];
   }, [view]);
 
   if (requiresAdmin && role !== "admin") {
@@ -181,6 +183,43 @@ export function SettingsAdminPage({ view = "settings" }) {
     }
   }
 
+  async function createPlatformInvoice() {
+    setSaving("platform-invoice");
+    setNotice(null);
+    try {
+      await settingsWorkspaceApi.createPlatformInvoice();
+      setNotice({ tone: "success", title: "Subscription invoice prepared", message: "The Lexora subscription invoice is ready for review." });
+      await loadSettings();
+    } catch (error) {
+      setNotice({ tone: "warning", title: "Subscription invoice was not prepared", message: error?.userMessage || "Please try again after checking the workspace plan." });
+    } finally {
+      setSaving("");
+    }
+  }
+
+  async function markPlatformPaymentFailed(invoice) {
+    if (!invoice?.id) {
+      setNotice({ tone: "warning", title: "No subscription invoice selected", message: "Prepare a Lexora subscription invoice before checking payment state." });
+      return;
+    }
+    setSaving("platform-payment");
+    setNotice(null);
+    try {
+      await settingsWorkspaceApi.recordPlatformPayment(invoice.id, {
+        status: "failed",
+        amountPaise: invoice.raw?.balancePaise || invoice.raw?.totalPaise || 0,
+        failureMessage: "The subscription payment needs review before the workspace can be marked paid.",
+        method: "provider_pending",
+      });
+      setNotice({ tone: "warning", title: "Subscription payment needs review", message: "The failed payment state is visible for follow-up." });
+      await loadSettings();
+    } catch (error) {
+      setNotice({ tone: "warning", title: "Payment state was not updated", message: error?.userMessage || "Please try again after checking the subscription invoice." });
+    } finally {
+      setSaving("");
+    }
+  }
+
   if (state.status === "loading") return <SkeletonBlock />;
   if (state.status === "error") return <StateCard state="error" title="Settings need attention" message={state.message} actionLabel="Retry" />;
 
@@ -196,6 +235,7 @@ export function SettingsAdminPage({ view = "settings" }) {
       </div>
       <SectionIssues issues={state.issues} />
       <SettingsSummary firm={state.firm} roleSummary={state.roleSummary} />
+      {visibleSections.includes("platformBilling") ? <PlatformBillingPanel billing={state.platformBilling} onCreateInvoice={createPlatformInvoice} onMarkFailed={markPlatformPaymentFailed} saving={saving} /> : null}
       {visibleSections.includes("firm") ? <FirmSetupForm form={firmForm} onChange={updateFirmForm} onSubmit={saveFirmSetup} saving={saving === "firm"} /> : null}
       {visibleSections.includes("billing") ? <BillingDefaultsForm form={billingForm} onChange={updateBillingForm} onSubmit={saveBillingDefaults} saving={saving === "billing"} /> : null}
       {visibleSections.includes("tax") ? <TaxDefaultsForm form={taxForm} onChange={updateTaxForm} onSubmit={saveTaxDefaults} saving={saving === "tax"} /> : null}
