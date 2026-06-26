@@ -5,6 +5,7 @@ import { useAuth } from "../../auth/AuthProvider";
 import { Button, SkeletonBlock, StateCard, Toast } from "../../components/common";
 import {
   BillingDefaultsForm,
+  EnterpriseFoundationsPanel,
   FirmSetupForm,
   PermissionsMatrix,
   PlatformBillingPanel,
@@ -43,7 +44,7 @@ function taxFormFrom(firm = {}) {
 
 export function SettingsAdminPage({ view = "settings" }) {
   const { role, user } = useAuth();
-  const [state, setState] = useState({ status: "loading", firm: {}, users: [], roleSummary: {}, defaults: {}, issues: [], message: "" });
+  const [state, setState] = useState({ status: "loading", firm: {}, users: [], roleSummary: {}, defaults: {}, enterprise: {}, issues: [], message: "" });
   const [firmForm, setFirmForm] = useState(firmFormFrom());
   const [billingForm, setBillingForm] = useState(billingFormFrom());
   const [taxForm, setTaxForm] = useState(taxFormFrom());
@@ -68,6 +69,7 @@ export function SettingsAdminPage({ view = "settings" }) {
         users: [],
         roleSummary: {},
         defaults: {},
+        enterprise: {},
         platformBilling: {},
         issues: [],
         message: error?.userMessage || "Settings could not be loaded right now.",
@@ -86,6 +88,7 @@ export function SettingsAdminPage({ view = "settings" }) {
     if (view === "compliance") return ["tax", "unavailable"];
     if (view === "firm") return ["firm", "billing", "tax"];
     if (view === "admin") return ["firm", "permissions", "unavailable"];
+    if (view === "enterprise") return ["enterprise"];
     return ["firm", "platformBilling", "billing", "tax", "permissions", "unavailable"];
   }, [view]);
 
@@ -220,8 +223,41 @@ export function SettingsAdminPage({ view = "settings" }) {
     }
   }
 
+  async function createEnterpriseUnit(type) {
+    const sampleNames = {
+      department: "Corporate",
+      office: "Mumbai",
+      practice_group: "Disputes",
+    };
+    setSaving(type);
+    setNotice(null);
+    try {
+      await settingsWorkspaceApi.createEnterpriseUnit({ type, name: sampleNames[type] || "Enterprise area" });
+      setNotice({ tone: "success", title: "Enterprise area saved", message: "The workspace structure is ready for review." });
+      await loadSettings();
+    } catch (error) {
+      setNotice({ tone: "warning", title: "Enterprise area was not saved", message: error?.userMessage || "Please review the details and try again." });
+    } finally {
+      setSaving("");
+    }
+  }
+
+  async function enableEnterpriseSetting(category) {
+    setSaving(category);
+    setNotice(null);
+    try {
+      await settingsWorkspaceApi.updateEnterpriseSetting(category, { status: "enabled", configuration: {} });
+      setNotice({ tone: "success", title: "Enterprise setting updated", message: "The setting is visible for workspace review." });
+      await loadSettings();
+    } catch (error) {
+      setNotice({ tone: "warning", title: "Enterprise setting was not updated", message: error?.userMessage || "Please try again after checking access." });
+    } finally {
+      setSaving("");
+    }
+  }
+
   if (state.status === "loading") return <SkeletonBlock />;
-  if (state.status === "error") return <StateCard state="error" title="Settings need attention" message={state.message} actionLabel="Retry" />;
+  if (state.status === "error") return <StateCard state="error" title="Settings need attention" message={state.message} actionLabel="Retry" onAction={loadSettings} />;
 
   return (
     <div className="space-y-6">
@@ -235,6 +271,7 @@ export function SettingsAdminPage({ view = "settings" }) {
       </div>
       <SectionIssues issues={state.issues} />
       <SettingsSummary firm={state.firm} roleSummary={state.roleSummary} />
+      {visibleSections.includes("enterprise") || (state.enterprise?.enabled && view === "settings") ? <EnterpriseFoundationsPanel enterprise={state.enterprise} onCreateUnit={createEnterpriseUnit} onEnableSetting={enableEnterpriseSetting} onRetry={loadSettings} saving={saving} /> : null}
       {visibleSections.includes("platformBilling") ? <PlatformBillingPanel billing={state.platformBilling} onCreateInvoice={createPlatformInvoice} onMarkFailed={markPlatformPaymentFailed} saving={saving} /> : null}
       {visibleSections.includes("firm") ? <FirmSetupForm form={firmForm} onChange={updateFirmForm} onSubmit={saveFirmSetup} saving={saving === "firm"} /> : null}
       {visibleSections.includes("billing") ? <BillingDefaultsForm form={billingForm} onChange={updateBillingForm} onSubmit={saveBillingDefaults} saving={saving === "billing"} /> : null}

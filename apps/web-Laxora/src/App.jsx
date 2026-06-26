@@ -244,6 +244,7 @@ function ProtectedPage({ route }) {
   if (route.path === "/app/settings/invoice-tax") return <SettingsAdminPage view="invoice" />;
   if (route.path === "/app/settings/storage-defaults") return <SettingsAdminPage view="storage" />;
   if (route.path === "/app/settings/notifications") return <SettingsAdminPage view="notifications" />;
+  if (route.path === "/app/settings/enterprise") return <SettingsAdminPage view="enterprise" />;
   if (route.path === "/app/security") return <SettingsAdminPage view="security" />;
   if (route.path === "/app/compliance") return <SettingsAdminPage view="compliance" />;
   if (route.path === "/app/firms") return <SettingsAdminPage view="firm" />;

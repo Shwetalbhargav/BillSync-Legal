@@ -1,4 +1,4 @@
-import { AlertTriangle, Bell, Building2, CheckCircle2, CreditCard, DatabaseBackup, Lock, ReceiptText, RefreshCw, Save, ShieldCheck } from "lucide-react";
+import { AlertTriangle, Bell, Building2, CheckCircle2, CreditCard, DatabaseBackup, KeyRound, Lock, MapPin, Network, Palette, ReceiptText, RefreshCw, Save, ScrollText, ShieldCheck, Users, Workflow } from "lucide-react";
 import { Button } from "../common/Button";
 import { StatusBadge } from "../common/StatusBadge";
 
@@ -12,6 +12,7 @@ export function SettingsHero({ firm, role, variant = "settings" }) {
     invoice: "Invoice defaults",
     storage: "Storage defaults",
     notifications: "Notification defaults",
+    enterprise: "Enterprise controls",
   };
 
   return (
@@ -298,6 +299,180 @@ export function PlatformBillingPanel({ billing = {}, onCreateInvoice, onMarkFail
           </div>
         </div>
       </div>
+    </section>
+  );
+}
+
+function settingIcon(category) {
+  const icons = {
+    sso: ShieldCheck,
+    scim: Users,
+    api_keys: KeyRound,
+    webhooks: Network,
+    audit_logs: ScrollText,
+    data_retention: DatabaseBackup,
+    white_label: Palette,
+    custom_workflows: Workflow,
+    custom_roles: Lock,
+  };
+  return icons[category] || ShieldCheck;
+}
+
+function statusTone(status) {
+  if (status === "enabled" || status === "active") return "success";
+  if (status === "disabled") return "warning";
+  return "muted";
+}
+
+function unitLabel(type) {
+  if (type === "practice_group") return "Practice group";
+  return type.charAt(0).toUpperCase() + type.slice(1);
+}
+
+export function EnterpriseFoundationsPanel({ enterprise = {}, onCreateUnit, onEnableSetting, onRetry, saving }) {
+  if (enterprise.state === "hidden" && !enterprise.enabled) {
+    return (
+      <section className="surface-card p-5">
+        <div className="flex items-start gap-3">
+          <div className="rounded-lg bg-blueSoft p-2 text-primary">
+            <ShieldCheck className="h-5 w-5" />
+          </div>
+          <div>
+            <h2 className="text-xl font-bold text-primary">Enterprise controls</h2>
+            <p className="mt-1 text-sm leading-6 text-muted">{enterprise.message || "Enterprise controls are available on Enterprise plans."}</p>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (enterprise.state === "error") {
+    return (
+      <section className="surface-card p-5">
+        <InlineNotice tone="warning" title="Enterprise controls need attention" message={enterprise.message || "Enterprise controls could not be loaded right now."} actionLabel="Retry" onAction={onRetry} />
+      </section>
+    );
+  }
+
+  const unitGroups = [
+    { key: "departments", type: "department", label: "Departments", icon: Building2 },
+    { key: "offices", type: "office", label: "Offices", icon: MapPin },
+    { key: "practiceGroups", type: "practice_group", label: "Practice groups", icon: Users },
+  ];
+
+  return (
+    <section className="surface-card p-5">
+      <div className="flex min-w-0 flex-col gap-3 md:flex-row md:items-start md:justify-between">
+        <div>
+          <p className="text-sm font-semibold uppercase tracking-wide text-accent">Enterprise</p>
+          <h2 className="mt-1 text-xl font-bold text-primary">Enterprise controls</h2>
+          <p className="mt-1 max-w-3xl text-sm leading-6 text-muted">Manage larger-workspace foundations without changing the Lexora app your team already uses.</p>
+        </div>
+        <StatusBadge tone={enterprise.enabled ? "success" : "muted"}>{enterprise.enabled ? "Enabled" : "Not available"}</StatusBadge>
+      </div>
+
+      <div className="mt-5 grid gap-4 lg:grid-cols-3">
+        {unitGroups.map((group) => {
+          const Icon = group.icon;
+          const rows = enterprise.units?.[group.key] || [];
+          return (
+            <div className="rounded-lg border border-border bg-app p-4" key={group.key}>
+              <div className="flex items-start justify-between gap-3">
+                <div className="flex items-center gap-2">
+                  <Icon className="h-5 w-5 text-accent" />
+                  <h3 className="font-bold text-ink">{group.label}</h3>
+                </div>
+                <StatusBadge tone={rows.length ? "success" : "muted"}>{rows.length || "Empty"}</StatusBadge>
+              </div>
+              <div className="mt-3 space-y-2">
+                {rows.length ? rows.map((unit) => (
+                  <div className="rounded-lg border border-border bg-panel p-3" key={unit.id || unit.key}>
+                    <p className="font-semibold text-ink">{unit.name}</p>
+                    <p className="mt-1 text-xs text-muted">{unitLabel(unit.type)} · {unit.status}</p>
+                  </div>
+                )) : <p className="text-sm leading-6 text-muted">No {group.label.toLowerCase()} have been added yet.</p>}
+              </div>
+              <Button className="mt-4" disabled={!enterprise.enabled} isLoading={saving === group.type} onClick={() => onCreateUnit(group.type)} type="button" variant="secondary">
+                <Save className="h-4 w-4" />
+                Add sample {unitLabel(group.type).toLowerCase()}
+              </Button>
+            </div>
+          );
+        })}
+      </div>
+
+      <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+        {(enterprise.settings || []).map((setting) => {
+          const Icon = settingIcon(setting.category);
+          return (
+            <div className="rounded-lg border border-border bg-app p-4" key={setting.category}>
+              <div className="flex items-start justify-between gap-3">
+                <div className="flex min-w-0 items-start gap-3">
+                  <div className="rounded-lg bg-blueSoft p-2 text-primary">
+                    <Icon className="h-5 w-5" />
+                  </div>
+                  <div className="min-w-0">
+                    <h3 className="font-bold text-ink">{setting.displayName}</h3>
+                    <p className="mt-1 text-sm leading-6 text-muted">{setting.message || "This control is prepared for later setup."}</p>
+                  </div>
+                </div>
+                <StatusBadge tone={statusTone(setting.status)}>{setting.status || "Not configured"}</StatusBadge>
+              </div>
+              <Button className="mt-4" disabled={!enterprise.enabled || setting.status === "enabled"} isLoading={saving === setting.category} onClick={() => onEnableSetting(setting.category)} type="button" variant="secondary">
+                <CheckCircle2 className="h-4 w-4" />
+                Mark ready
+              </Button>
+            </div>
+          );
+        })}
+      </div>
+
+      <div className="mt-6 grid gap-4 lg:grid-cols-3">
+        <div>
+          <h3 className="font-bold text-ink">API keys</h3>
+          <div className="mt-3 space-y-3">
+            {enterprise.apiKeys?.length ? enterprise.apiKeys.map((key) => (
+              <div className="rounded-lg border border-border bg-app p-4" key={key.id}>
+                <p className="font-semibold text-ink">{key.name}</p>
+                <p className="mt-1 text-sm text-muted">{key.keyPrefix}</p>
+              </div>
+            )) : <InlineNotice title="No API keys yet" message="API keys are prepared, but secure key creation is not enabled yet." />}
+          </div>
+        </div>
+        <div>
+          <h3 className="font-bold text-ink">Webhooks</h3>
+          <div className="mt-3 space-y-3">
+            {enterprise.webhooks?.length ? enterprise.webhooks.map((webhook) => (
+              <div className="rounded-lg border border-border bg-app p-4" key={webhook.id}>
+                <p className="font-semibold text-ink">{webhook.name}</p>
+                <p className="mt-1 text-sm text-muted">{webhook.status}</p>
+              </div>
+            )) : <InlineNotice title="No webhooks yet" message="Webhook destinations can be added after delivery and signing are connected." />}
+          </div>
+        </div>
+        <div>
+          <h3 className="font-bold text-ink">Audit logs</h3>
+          <div className="mt-3 space-y-3">
+            {enterprise.auditEvents?.length ? enterprise.auditEvents.map((event) => (
+              <div className="rounded-lg border border-border bg-app p-4" key={event.id}>
+                <p className="font-semibold text-ink">{event.action}</p>
+                <p className="mt-1 text-sm text-muted">{formatDate(event.createdAt)}</p>
+              </div>
+            )) : <InlineNotice title="No enterprise audit events yet" message="Enterprise changes will appear here after controls are used." />}
+          </div>
+        </div>
+      </div>
+
+      {enterprise.backendGaps?.length ? (
+        <div className="mt-6">
+          <h3 className="font-bold text-ink">Not connected yet</h3>
+          <div className="mt-3 grid gap-3 md:grid-cols-2">
+            {enterprise.backendGaps.map((gap) => (
+              <InlineNotice key={gap.area} title={gap.area} message={gap.routeNeeded} />
+            ))}
+          </div>
+        </div>
+      ) : null}
     </section>
   );
 }
