@@ -5,6 +5,7 @@ import { clientsApi } from "../../api/clients";
 import { asList, normalizeClient, normalizeInvoice, normalizePayment } from "../../api/normalizers";
 import { Button, Card, CardBody, CardHeader, SkeletonBlock, StateCard, StatusBadge } from "../../components/common";
 import { ClientSummaryTiles } from "../../components/clients/ClientWidgets";
+import { useClientModuleAccess } from "./useClientModuleAccess";
 
 const paymentTerms = ["DUE_ON_RECEIPT", "NET7", "NET15", "NET30", "NET45", "NET60", "NET90"];
 
@@ -81,12 +82,17 @@ function PaymentDetailPanel({ onClose, payment, summary }) {
 
 export function ClientBillingPage() {
   const { clientId } = useParams();
+  const access = useClientModuleAccess();
   const [state, setState] = useState({ status: "loading", client: null, summary: null, invoices: [], payments: [], message: "" });
   const [selectedPayment, setSelectedPayment] = useState(null);
   const [terms, setTerms] = useState("NET30");
   const [saving, setSaving] = useState(false);
 
   async function load() {
+    if (access.unavailable || !access.canRead) {
+      setState({ status: "permission", client: null, summary: null, invoices: [], payments: [], message: access.message || "You do not have access to client billing." });
+      return;
+    }
     setState((current) => ({ ...current, status: "loading", message: "" }));
     try {
       const [clientResponse, summaryResponse, invoicesResponse, paymentsResponse] = await Promise.all([
@@ -106,27 +112,39 @@ export function ClientBillingPage() {
         message: "",
       });
     } catch (error) {
-      setState({ status: "error", client: null, summary: null, invoices: [], payments: [], message: error?.userMessage || "We could not load billing details right now." });
+      setState({
+        status: error?.status === 403 ? "permission" : "error",
+        client: null,
+        summary: null,
+        invoices: [],
+        payments: [],
+        message: error?.status === 403 ? "You do not have access to client billing." : (error?.userMessage || "We could not load billing details right now."),
+      });
     }
   }
 
   useEffect(() => {
     load();
-  }, [clientId]);
+  }, [clientId, access.status, access.unavailable, access.canRead]);
 
   async function saveBilling() {
+    if (access.readOnly || !access.canEdit) {
+      setState((current) => ({ ...current, message: "You can review billing details, but changes are paused for this workspace." }));
+      return;
+    }
     setSaving(true);
     try {
       await clientsApi.assignOwner(clientId, { paymentTerms: terms });
       await load();
     } catch (error) {
-      setState((current) => ({ ...current, message: error?.userMessage || "We could not update billing settings." }));
+      setState((current) => ({ ...current, message: error?.status === 403 ? "You do not have access to change billing settings." : (error?.userMessage || "We could not update billing settings.") }));
     } finally {
       setSaving(false);
     }
   }
 
   if (state.status === "loading") return <div className="grid gap-4 lg:grid-cols-2"><SkeletonBlock /><SkeletonBlock /></div>;
+  if (state.status === "permission") return <StateCard state="permission" title="Client billing is not available" message={state.message} />;
   if (state.status === "error") return <StateCard state="error" title="Billing summary needs attention" message={state.message} onAction={load} />;
 
   return (
@@ -139,10 +157,10 @@ export function ClientBillingPage() {
             <p className="mt-2 max-w-2xl text-sm leading-6 text-muted">Edit billing terms, review invoices, and inspect payment status for this client.</p>
           </div>
           <div className="flex flex-col gap-2 sm:flex-row">
-            <select className="focus-ring rounded-lg border border-border px-3 py-2 text-sm font-semibold text-primary" onChange={(event) => setTerms(event.target.value)} value={terms}>
+            <select className="focus-ring rounded-lg border border-border px-3 py-2 text-sm font-semibold text-primary" disabled={access.readOnly || !access.canEdit} onChange={(event) => setTerms(event.target.value)} value={terms}>
               {paymentTerms.map((term) => <option key={term} value={term}>{term}</option>)}
             </select>
-            <Button isLoading={saving} onClick={saveBilling} type="button" variant="secondary">
+            <Button disabled={access.readOnly || !access.canEdit} isLoading={saving} onClick={saveBilling} type="button" variant="secondary">
               <Edit3 className="h-4 w-4" />
               Save billing
             </Button>
@@ -150,6 +168,7 @@ export function ClientBillingPage() {
         </div>
         {state.message ? <div className="mt-4 rounded-lg border border-warning/30 bg-warning/10 p-3 text-sm font-semibold text-warning">{state.message}</div> : null}
       </section>
+      {access.readOnly ? <StateCard state="permission" title="Clients are read-only" message={access.message} /> : null}
       <ClientSummaryTiles summary={state.summary} />
       <PaymentDetailPanel onClose={() => setSelectedPayment(null)} payment={selectedPayment} summary={state.summary} />
       <div className="grid gap-6 xl:grid-cols-2">

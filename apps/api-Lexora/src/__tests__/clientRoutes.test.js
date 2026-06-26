@@ -4,9 +4,12 @@ import { AUTH_COOKIE_NAME, signAuthToken } from '../modules/auth/services/authTo
 
 const mocks = vi.hoisted(() => ({
   clientFind: vi.fn(),
+  clientFindOne: vi.fn(),
   clientFindById: vi.fn(),
   clientCreate: vi.fn(),
+  clientFindOneAndUpdate: vi.fn(),
   clientFindByIdAndUpdate: vi.fn(),
+  clientFindOneAndDelete: vi.fn(),
   clientFindByIdAndDelete: vi.fn(),
   clientExists: vi.fn(),
   clientCountDocuments: vi.fn(),
@@ -25,9 +28,12 @@ const mocks = vi.hoisted(() => ({
 vi.mock('../modules/clients/models/Client.js', () => {
   const Client = {
     find: mocks.clientFind,
+    findOne: mocks.clientFindOne,
     findById: mocks.clientFindById,
     create: mocks.clientCreate,
+    findOneAndUpdate: mocks.clientFindOneAndUpdate,
     findByIdAndUpdate: mocks.clientFindByIdAndUpdate,
+    findOneAndDelete: mocks.clientFindOneAndDelete,
     findByIdAndDelete: mocks.clientFindByIdAndDelete,
     exists: mocks.clientExists,
     countDocuments: mocks.clientCountDocuments,
@@ -79,6 +85,8 @@ const { default: app } = await import('../app.js');
 
 const CLIENT_ID = '64b000000000000000000001';
 const FIRM_ID = '64b000000000000000000002';
+const WORKSPACE_ID = FIRM_ID;
+const OTHER_WORKSPACE_ID = '64b000000000000000000099';
 const USER_ID = '64b000000000000000000003';
 const INVOICE_ID = '64b000000000000000000004';
 
@@ -86,7 +94,10 @@ let server;
 let baseUrl;
 
 const authCookie = () =>
-  `${AUTH_COOKIE_NAME}=${signAuthToken({ _id: USER_ID, role: 'admin', email: 'admin@example.com' })}`;
+  `${AUTH_COOKIE_NAME}=${signAuthToken({ _id: USER_ID, role: 'admin', email: 'admin@example.com', workspaceId: WORKSPACE_ID })}`;
+
+const noClientReadCookie = () =>
+  `${AUTH_COOKIE_NAME}=${signAuthToken({ _id: USER_ID, role: 'accountant', email: 'accountant@example.com', workspaceId: WORKSPACE_ID })}`;
 
 const jsonRequest = (path, options = {}) =>
   fetch(`${baseUrl}${path}`, {
@@ -137,7 +148,7 @@ test('GET /api/clients/:clientId rejects invalid client ids before hitting the d
 
   expect(response.status).toBe(400);
   expect(body).toMatchObject({ ok: false, message: 'Validation failed' });
-  expect(mocks.clientFindById).not.toHaveBeenCalled();
+  expect(mocks.clientFindOne).not.toHaveBeenCalled();
 });
 
 test('POST /api/clients rejects unknown client payload fields', async () => {
@@ -187,6 +198,7 @@ test('POST /api/clients normalizes accepted payload fields without caller owners
     status: 'prospect',
     contacts: [{ name: 'Priya Accounts', email: 'accounts@nimbus.example', phone: '+91 77777', role: 'Finance' }],
     integrations: { zoho: { crmModule: 'Accounts', crmRecordId: 'zcrm-1' } },
+    workspaceId: WORKSPACE_ID,
   });
   expect(body.data.displayName).toBe('Nimbus Retail');
 });
@@ -230,7 +242,7 @@ test('PUT /api/clients/:clientId validates enum fields before updating', async (
 });
 
 test('PUT /api/clients/:clientId runs mongoose validators during updates', async () => {
-  mocks.clientFindByIdAndUpdate.mockResolvedValue({ _id: CLIENT_ID, displayName: 'Nimbus Retail' });
+  mocks.clientFindOneAndUpdate.mockResolvedValue({ _id: CLIENT_ID, displayName: 'Nimbus Retail' });
 
   const response = await jsonRequest(`/api/clients/${CLIENT_ID}`, {
     method: 'PUT',
@@ -239,8 +251,8 @@ test('PUT /api/clients/:clientId runs mongoose validators during updates', async
   const body = await response.json();
 
   expect(response.status).toBe(200);
-  expect(mocks.clientFindByIdAndUpdate).toHaveBeenCalledWith(
-    CLIENT_ID,
+  expect(mocks.clientFindOneAndUpdate).toHaveBeenCalledWith(
+    { workspaceId: WORKSPACE_ID, _id: CLIENT_ID },
     { displayName: 'Nimbus Retail' },
     { new: true, runValidators: true }
   );
@@ -248,7 +260,7 @@ test('PUT /api/clients/:clientId runs mongoose validators during updates', async
 });
 
 test('PATCH /api/clients/:clientId/assign-owner rejects caller supplied ownerUserId', async () => {
-  mocks.clientFindByIdAndUpdate.mockReturnValue(queryResult({ _id: CLIENT_ID, ownerUserId: null }));
+  mocks.clientFindOneAndUpdate.mockReturnValue(queryResult({ _id: CLIENT_ID, ownerUserId: null }));
 
   const response = await jsonRequest(`/api/clients/${CLIENT_ID}/assign-owner`, {
     method: 'PATCH',
@@ -257,11 +269,11 @@ test('PATCH /api/clients/:clientId/assign-owner rejects caller supplied ownerUse
 
   expect(response.status).toBe(400);
   expect(mocks.userExists).not.toHaveBeenCalled();
-  expect(mocks.clientFindByIdAndUpdate).not.toHaveBeenCalled();
+  expect(mocks.clientFindOneAndUpdate).not.toHaveBeenCalled();
 });
 
 test('DELETE /api/clients/:clientId blocks hard delete when related records exist', async () => {
-  mocks.clientFindById.mockReturnValue(queryResult({ _id: CLIENT_ID }));
+  mocks.clientFindOne.mockReturnValue(queryResult({ _id: CLIENT_ID }));
   mocks.caseCountDocuments.mockResolvedValue(1);
   mocks.invoiceFind.mockReturnValue(queryResult([{ _id: INVOICE_ID }]));
   mocks.timeEntryCountDocuments.mockResolvedValue(2);
@@ -271,13 +283,18 @@ test('DELETE /api/clients/:clientId blocks hard delete when related records exis
   const body = await response.json();
 
   expect(response.status).toBe(409);
+  expect(mocks.clientFindOne).toHaveBeenCalledWith({ workspaceId: WORKSPACE_ID, _id: CLIENT_ID });
+  expect(mocks.caseCountDocuments).toHaveBeenCalledWith({ workspaceId: WORKSPACE_ID, clientId: CLIENT_ID });
+  expect(mocks.invoiceFind).toHaveBeenCalledWith({ workspaceId: WORKSPACE_ID, clientId: CLIENT_ID });
+  expect(mocks.timeEntryCountDocuments).toHaveBeenCalledWith({ workspaceId: WORKSPACE_ID, clientId: CLIENT_ID });
+  expect(mocks.paymentCountDocuments).toHaveBeenCalledWith({ workspaceId: WORKSPACE_ID, invoiceId: { $in: [INVOICE_ID] } });
   expect(body.details).toEqual({
     cases: 1,
     invoices: 1,
     timeEntries: 2,
     payments: 3,
   });
-  expect(mocks.clientFindByIdAndDelete).not.toHaveBeenCalled();
+  expect(mocks.clientFindOneAndDelete).not.toHaveBeenCalled();
 });
 
 test('GET /api/clients/:clientId/cases returns 404 when the client does not exist', async () => {
@@ -286,6 +303,7 @@ test('GET /api/clients/:clientId/cases returns 404 when the client does not exis
   const response = await jsonRequest(`/api/clients/${CLIENT_ID}/cases`);
 
   expect(response.status).toBe(404);
+  expect(mocks.clientExists).toHaveBeenCalledWith({ workspaceId: WORKSPACE_ID, _id: CLIENT_ID });
   expect(mocks.caseFind).not.toHaveBeenCalled();
 });
 
@@ -302,8 +320,8 @@ test('GET /api/clients supports filtering and pagination', async () => {
   expect(response.status).toBe(200);
   expect(mocks.clientFind).toHaveBeenCalledWith(
     expect.objectContaining({
+      workspaceId: WORKSPACE_ID,
       status: 'active',
-      ownerUserId: USER_ID,
       $or: expect.any(Array),
     })
   );
@@ -315,6 +333,30 @@ test('GET /api/clients supports filtering and pagination', async () => {
     total: 1,
     totalPages: 1,
   });
+});
+
+test('GET /api/clients/:clientId only searches the active workspace', async () => {
+  mocks.clientFindOne.mockReturnValue(queryResult({ _id: CLIENT_ID, displayName: 'Nimbus Retail', workspaceId: WORKSPACE_ID }));
+
+  const response = await jsonRequest(`/api/clients/${CLIENT_ID}`);
+
+  expect(response.status).toBe(200);
+  expect(mocks.clientFindOne).toHaveBeenCalledWith({ workspaceId: WORKSPACE_ID, _id: CLIENT_ID });
+  expect(mocks.clientFindOne).not.toHaveBeenCalledWith({ workspaceId: OTHER_WORKSPACE_ID, _id: CLIENT_ID });
+});
+
+test('GET /api/clients denies users without client read permission', async () => {
+  const response = await fetch(`${baseUrl}/api/clients`, {
+    headers: {
+      cookie: noClientReadCookie(),
+      'content-type': 'application/json',
+    },
+  });
+  const body = await response.json();
+
+  expect(response.status).toBe(403);
+  expect(body.message).toBe('You do not have access to this area.');
+  expect(mocks.clientFind).not.toHaveBeenCalled();
 });
 
 test('GET /api/clients accepts option-list requests up to 200 records', async () => {

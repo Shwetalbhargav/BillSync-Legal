@@ -29,7 +29,6 @@ const CLIENT_WRITE_FIELDS = new Set([
   'billingAddress',
   'gst',
   'notes',
-  'firmId',
   'ownerUserId',
   'paymentTerms',
   'status',
@@ -132,7 +131,7 @@ export const requireClientBodyFields = (allowedFields = CLIENT_WRITE_FIELDS) => 
 export const normalizeClientPayload = (req, _res, next) => {
   const body = req.body || {};
 
-  for (const field of ['displayName', 'name', 'email', 'phone', 'contactInfo', 'firmId', 'ownerUserId', 'paymentTerms', 'status', 'notes']) {
+  for (const field of ['displayName', 'name', 'email', 'phone', 'contactInfo', 'ownerUserId', 'paymentTerms', 'status', 'notes']) {
     if (typeof body[field] === 'string') body[field] = body[field].trim();
   }
 
@@ -141,7 +140,7 @@ export const normalizeClientPayload = (req, _res, next) => {
   if (body.status) body.status = body.status.toLowerCase();
   if (body.ownerUserId === '') body.ownerUserId = null;
 
-  for (const field of ['name', 'email', 'phone', 'contactInfo', 'firmId', 'paymentTerms', 'status']) {
+  for (const field of ['name', 'email', 'phone', 'contactInfo', 'paymentTerms', 'status']) {
     if (body[field] === '') delete body[field];
   }
 
@@ -155,7 +154,6 @@ export const validateClientIdParam = validateParams({
 export const validateListClientsQuery = validateQuery({
   q: [string({ max: 160 })],
   status: [oneOf(CLIENT_STATUSES)],
-  firmId: [objectId()],
   ownerUserId: [objectId()],
   page: [positiveIntQuery({ min: 1 })],
   limit: [positiveIntQuery({ min: 1, max: 200 })],
@@ -176,7 +174,6 @@ export const validateCreateClient = validateBody({
   billingAddress: [plainObjectWhenPresent()],
   gst: [plainObjectWhenPresent()],
   notes: [string({ max: 4000 })],
-  firmId: [objectId()],
   ownerUserId: [nullableObjectId()],
   paymentTerms: [string({ max: 40 }), oneOf(PAYMENT_TERMS)],
   status: [oneOf(CLIENT_STATUSES)],
@@ -193,7 +190,6 @@ export const validateUpdateClient = validateBody({
   billingAddress: [plainObjectWhenPresent()],
   gst: [plainObjectWhenPresent()],
   notes: [string({ max: 4000 })],
-  firmId: [objectId()],
   ownerUserId: [nullableObjectId()],
   paymentTerms: [string({ max: 40 }), oneOf(PAYMENT_TERMS)],
   status: [oneOf(CLIENT_STATUSES)],

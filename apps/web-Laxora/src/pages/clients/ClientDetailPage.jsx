@@ -7,6 +7,7 @@ import { timeEntriesApi } from "../../api/timeEntries";
 import { workSessionsApi } from "../../api/workSessions";
 import { Button, Card, CardBody, CardHeader, SkeletonBlock, StateCard, StatusBadge } from "../../components/common";
 import { ClientSummaryTiles } from "../../components/clients/ClientWidgets";
+import { useClientModuleAccess } from "./useClientModuleAccess";
 
 function unwrap(response) {
   return response?.data || response;
@@ -105,9 +106,14 @@ function ClientWorkChart({ rows }) {
 
 export function ClientDetailPage() {
   const { clientId } = useParams();
+  const access = useClientModuleAccess();
   const [state, setState] = useState({ status: "loading", client: null, matters: [], summary: null, timeEntries: [], workSessions: [], message: "" });
 
   async function load() {
+    if (access.unavailable || !access.canRead) {
+      setState({ status: "permission", client: null, matters: [], summary: null, timeEntries: [], workSessions: [], message: access.message || "You do not have access to this client." });
+      return;
+    }
     setState((current) => ({ ...current, status: "loading", message: "" }));
     try {
       const [clientResponse, casesResponse, summaryResponse, entriesResponse, sessionsResponse] = await Promise.all([
@@ -127,15 +133,24 @@ export function ClientDetailPage() {
         message: "",
       });
     } catch (error) {
-      setState({ status: "error", client: null, matters: [], summary: null, timeEntries: [], workSessions: [], message: error?.userMessage || "We could not load this client right now." });
+      setState({
+        status: error?.status === 403 ? "permission" : "error",
+        client: null,
+        matters: [],
+        summary: null,
+        timeEntries: [],
+        workSessions: [],
+        message: error?.status === 403 ? "You do not have access to this client." : (error?.userMessage || "We could not load this client right now."),
+      });
     }
   }
 
   useEffect(() => {
     load();
-  }, [clientId]);
+  }, [clientId, access.status, access.unavailable, access.canRead]);
 
   if (state.status === "loading") return <div className="grid gap-4 lg:grid-cols-2"><SkeletonBlock /><SkeletonBlock /></div>;
+  if (state.status === "permission") return <StateCard state="permission" title="Client is not available" message={state.message} />;
   if (state.status === "error") return <StateCard state="error" title="Client needs attention" message={state.message} actionLabel="Retry" onAction={load} />;
 
   const client = state.client;
@@ -175,13 +190,17 @@ export function ClientDetailPage() {
               <ReceiptText className="h-4 w-4" />
               Billing
             </Link>
-            <Link className="focus-ring inline-flex items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white hover:bg-primaryStrong" to={`/app/clients/${client.id}/edit`}>
-              <Edit className="h-4 w-4" />
-              Edit
-            </Link>
+            {access.canEdit && !access.readOnly ? (
+              <Link className="focus-ring inline-flex items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white hover:bg-primaryStrong" to={`/app/clients/${client.id}/edit`}>
+                <Edit className="h-4 w-4" />
+                Edit
+              </Link>
+            ) : null}
           </div>
         </div>
       </section>
+
+      {access.readOnly ? <StateCard state="permission" title="Clients are read-only" message={access.message} /> : null}
 
       <ClientSummaryTiles summary={state.summary} />
 

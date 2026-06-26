@@ -5,6 +5,7 @@ import { clientsApi } from "../../api/clients";
 import { asList, normalizeClient, normalizeUser } from "../../api/normalizers";
 import { usersApi } from "../../api/users";
 import { Button, SkeletonBlock, StateCard } from "../../components/common";
+import { useClientModuleAccess } from "./useClientModuleAccess";
 
 const initialForm = {
   displayName: "",
@@ -35,6 +36,7 @@ function validate(form) {
 export function ClientFormPage() {
   const { clientId } = useParams();
   const isEdit = Boolean(clientId);
+  const access = useClientModuleAccess();
   const navigate = useNavigate();
   const [form, setForm] = useState(initialForm);
   const [users, setUsers] = useState([]);
@@ -82,6 +84,10 @@ export function ClientFormPage() {
 
   async function handleSubmit(event) {
     event.preventDefault();
+    if (access.readOnly || (isEdit ? !access.canEdit : !access.canCreate)) {
+      setMessage("You can review clients, but changes are paused for this workspace.");
+      return;
+    }
     const validationMessage = validate(form);
     if (validationMessage) {
       setMessage(validationMessage);
@@ -118,11 +124,21 @@ export function ClientFormPage() {
       const saved = normalizeClient(unwrap(response));
       navigate(`/app/clients/${saved.id || clientId}`, { replace: true });
     } catch (error) {
-      setMessage(error?.userMessage || "We could not save this client right now. Please review the details and try again.");
+      setMessage(error?.status === 403 ? "You do not have access to save clients." : (error?.userMessage || "We could not save this client right now. Please review the details and try again."));
       setStatus("ready");
     }
   }
 
+  if (access.status === "loading") return <SkeletonBlock />;
+  if (access.unavailable || access.readOnly || (isEdit ? !access.canEdit : !access.canCreate)) {
+    return (
+      <StateCard
+        state="permission"
+        title={access.readOnly ? "Clients are read-only" : "Client changes are not available"}
+        message={access.message || "You do not have access to change client records."}
+      />
+    );
+  }
   if (status === "loading") return <SkeletonBlock />;
   if (status === "error") return <StateCard state="error" title="Client form needs attention" message={message} />;
 

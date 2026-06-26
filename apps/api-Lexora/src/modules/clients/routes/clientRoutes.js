@@ -27,25 +27,28 @@ import {
   exportClientsCsv,
   importClientsCsv,
 } from '../controllers/clientController.js';
+import { CLIENT_PERMISSIONS, requireClientAccess } from '../services/clientAccessService.js';
 
 const router = Router();
 
 router.use(authenticate);
 
 // CRUD
-router.get('/', validateListClientsQuery, getAllClients);
-router.get('/export.csv', validateListClientsQuery, exportClientsCsv);
-router.post('/import.csv', importClientsCsv);
+router.get('/', requireClientAccess(CLIENT_PERMISSIONS.read), validateListClientsQuery, getAllClients);
+router.get('/export.csv', requireClientAccess(CLIENT_PERMISSIONS.read), validateListClientsQuery, exportClientsCsv);
+router.post('/import.csv', requireClientAccess(CLIENT_PERMISSIONS.create, { write: true }), importClientsCsv);
 router.post(
   '/',
+  requireClientAccess(CLIENT_PERMISSIONS.create, { write: true }),
   rejectUnknownClientFields(clientWriteFields),
   normalizeClientPayload,
   validateCreateClient,
   createClient
 );
-router.get('/:clientId', validateClientIdParam, getClientById);
+router.get('/:clientId', requireClientAccess(CLIENT_PERMISSIONS.read), validateClientIdParam, getClientById);
 router.put(
   '/:clientId',
+  requireClientAccess(CLIENT_PERMISSIONS.edit, { write: true }),
   validateClientIdParam,
   rejectUnknownClientFields(clientWriteFields),
   normalizeClientPayload,
@@ -53,11 +56,12 @@ router.put(
   validateUpdateClient,
   updateClient
 );
-router.delete('/:clientId', validateClientIdParam, deleteClient);
+router.delete('/:clientId', requireClientAccess(CLIENT_PERMISSIONS.delete, { write: true }), validateClientIdParam, deleteClient);
 
 // Owner mapping + payment terms
 router.patch(
   '/:clientId/assign-owner',
+  requireClientAccess(CLIENT_PERMISSIONS.edit, { write: true }),
   validateClientIdParam,
   rejectUnknownClientFields(assignOwnerFields),
   normalizeClientPayload,
@@ -67,11 +71,11 @@ router.patch(
 );
 
 // Related lists
-router.get('/:clientId/cases', validateClientIdParam, validateRelatedClientQuery, listClientCases);
-router.get('/:clientId/invoices', validateClientIdParam, validateRelatedClientQuery, listClientInvoices);
-router.get('/:clientId/payments', validateClientIdParam, validateRelatedClientQuery, listClientPayments);
+router.get('/:clientId/cases', requireClientAccess(CLIENT_PERMISSIONS.read), validateClientIdParam, validateRelatedClientQuery, listClientCases);
+router.get('/:clientId/invoices', requireClientAccess(CLIENT_PERMISSIONS.read), validateClientIdParam, validateRelatedClientQuery, listClientInvoices);
+router.get('/:clientId/payments', requireClientAccess(CLIENT_PERMISSIONS.read), validateClientIdParam, validateRelatedClientQuery, listClientPayments);
 
 // Financial summary
-router.get('/:clientId/summary', validateClientIdParam, clientSummary);
+router.get('/:clientId/summary', requireClientAccess(CLIENT_PERMISSIONS.read), validateClientIdParam, clientSummary);
 
 export default router;
