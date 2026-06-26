@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { authenticate } from '../../../middleware/auth.js';
+import { requirePermission } from '../services/rbacPolicyService.js';
 import {
   acceptInvitation,
   expireInvitation,
@@ -24,6 +25,14 @@ import {
   listPlans,
   updateFeatureOverride,
 } from '../controllers/subscriptionController.js';
+import {
+  getCurrentPermissionSummary,
+  listPermissionCatalog,
+  listPolicies,
+  listRoleTemplates,
+  updateRolePermissions,
+  upsertPolicy,
+} from '../controllers/rbacController.js';
 
 const router = Router();
 
@@ -31,21 +40,27 @@ router.post('/invitations/accept', acceptInvitation);
 
 router.use(authenticate);
 router.get('/context', getWorkspaceContext);
+router.get('/permissions', listPermissionCatalog);
+router.get('/roles', listRoleTemplates);
+router.get('/permissions/me', getCurrentPermissionSummary);
+router.patch('/roles/:roleKey/permissions', requirePermission('roles.manage'), updateRolePermissions);
+router.get('/policies', requirePermission('policies.read'), listPolicies);
+router.put('/policies', requirePermission('policies.manage'), upsertPolicy);
 router.get('/plans', listPlans);
 router.get('/features', listFeatures);
 router.get('/subscription', getSubscription);
 router.get('/features/:featureKey/access', checkFeatureAccess);
-router.patch('/features/:featureKey/override', updateFeatureOverride);
+router.patch('/features/:featureKey/override', requirePermission('features.manage'), updateFeatureOverride);
 router.get('/modules/:moduleKey/access', checkModuleAccess);
 router.get('/onboarding', getOnboarding);
-router.patch('/onboarding', updateOnboarding);
-router.patch('/work-review', updateWorkReview);
+router.patch('/onboarding', requirePermission('workspace.manage'), updateOnboarding);
+router.patch('/work-review', requirePermission('workspace.manage'), updateWorkReview);
 router.get('/memberships', listMemberships);
-router.post('/invitations', inviteMember);
-router.post('/invitations/:id/resend', resendInvitation);
-router.post('/invitations/:id/expire', expireInvitation);
-router.post('/invitations/:id/revoke', revokeInvitation);
-router.patch('/memberships/:id', updateMembership);
-router.delete('/memberships/:id', removeMembership);
+router.post('/invitations', requirePermission('members.manage'), inviteMember);
+router.post('/invitations/:id/resend', requirePermission('members.manage'), resendInvitation);
+router.post('/invitations/:id/expire', requirePermission('members.manage'), expireInvitation);
+router.post('/invitations/:id/revoke', requirePermission('members.manage'), revokeInvitation);
+router.patch('/memberships/:id', requirePermission('members.manage'), updateMembership);
+router.delete('/memberships/:id', requirePermission('members.manage'), removeMembership);
 
 export default router;

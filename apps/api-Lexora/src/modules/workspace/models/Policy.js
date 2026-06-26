@@ -7,6 +7,7 @@ const PolicySchema = new mongoose.Schema(
     permissionKey: { type: String, trim: true, lowercase: true, index: true },
     effect: { type: String, enum: ['allow', 'deny'], default: 'allow', index: true },
     status: { type: String, enum: ['active', 'disabled'], default: 'active', index: true },
+    scope: { type: String, enum: ['workspace', 'assigned_matter', 'department', 'office', 'financial_only'], default: 'workspace', index: true },
     conditions: { type: mongoose.Schema.Types.Mixed },
     reason: { type: String, trim: true, maxlength: 1000 },
   },
