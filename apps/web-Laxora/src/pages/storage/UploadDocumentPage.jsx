@@ -8,6 +8,7 @@ import {
   StorageHero,
   UploadReadinessPanel,
 } from "../../components/storage/StorageWidgets";
+import { useDocumentModuleAccess } from "./useDocumentModuleAccess";
 
 const blankForm = {
   title: "",
@@ -25,6 +26,7 @@ const blankForm = {
 
 export function UploadDocumentPage() {
   const navigate = useNavigate();
+  const access = useDocumentModuleAccess();
   const [state, setState] = useState({ status: "loading", matters: [], clients: [], providers: [], issues: [], message: "" });
   const [form, setForm] = useState(blankForm);
   const [saving, setSaving] = useState(false);
@@ -97,11 +99,13 @@ export function UploadDocumentPage() {
   }
 
   if (state.status === "loading") return <SkeletonBlock />;
-  if (state.status === "error") return <StateCard state="error" title="Upload choices need attention" message={state.message} actionLabel="Retry" />;
+  if (access.unavailable) return <StateCard state="empty" title="Document upload is not available" message={access.message} />;
+  if (!access.canCreate) return <StateCard state="permission" title="Document upload is not available" message="You do not have access to this area." />;
+  if (state.status === "error") return <StateCard state="error" title="Upload choices need attention" message={state.message} actionLabel="Retry" onAction={load} />;
 
   return (
     <div className="space-y-6">
-      <StorageHero title="Add document" />
+      <StorageHero canCreate={access.canCreate} title="Add document" />
       {notice ? <Toast tone={notice.tone} title={notice.title} message={notice.message} /> : null}
       <SectionIssues issues={state.issues} />
       <UploadReadinessPanel />

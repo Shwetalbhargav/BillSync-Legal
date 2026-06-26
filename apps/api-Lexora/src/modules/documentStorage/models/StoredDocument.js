@@ -54,7 +54,7 @@ const StoredDocumentSchema = new mongoose.Schema(
 
 StoredDocumentSchema.index({ caseId: 1, createdAt: -1 });
 StoredDocumentSchema.index({ clientId: 1, status: 1, createdAt: -1 });
-StoredDocumentSchema.index({ provider: 1, storageKey: 1 }, { unique: true });
+StoredDocumentSchema.index({ workspaceId: 1, provider: 1, storageKey: 1 }, { unique: true });
 StoredDocumentSchema.index({ title: 'text', originalFileName: 'text', description: 'text', tags: 'text' });
 
 StoredDocumentSchema.plugin(workspaceScopedPlugin);

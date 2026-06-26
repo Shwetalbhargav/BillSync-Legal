@@ -1,17 +1,31 @@
 import { StoredDocument } from '../models/StoredDocument.js';
 import { Case } from '../../cases/models/Case.js';
+import { PERMISSION_DENIED_MESSAGE } from '../../workspace/services/rbacPolicyService.js';
+import { decideDocumentAccess, DOCUMENT_PERMISSIONS } from '../services/documentAccessService.js';
 
 const idString = (value) => (value === undefined || value === null ? '' : String(value._id || value));
-const managerRoles = ['admin', 'partner'];
 
-const canManageAll = (req) => managerRoles.includes(String(req.user?.role || '').toLowerCase());
+function workspaceFilter(req, extra = {}) {
+  return req.workspaceId ? { workspaceId: req.workspaceId, ...extra } : extra;
+}
 
-const caseHasAssignedUser = (caseDoc, userId) => {
-  const assignedUsers = Array.isArray(caseDoc?.assignedUsers) ? caseDoc.assignedUsers : [];
-  if (assignedUsers.some((assignedUserId) => idString(assignedUserId) === String(userId))) return true;
-  return ['leadPartnerId', 'managingLawyerId', 'primaryLawyerId']
-    .some((field) => idString(caseDoc?.[field]) === String(userId));
-};
+function caseResource(caseDoc, extra = {}) {
+  const assignedUserIds = [
+    ...(Array.isArray(caseDoc?.assignedUsers) ? caseDoc.assignedUsers : []),
+    caseDoc?.leadPartnerId,
+    caseDoc?.managingLawyerId,
+    caseDoc?.primaryLawyerId,
+  ].filter(Boolean).map(idString);
+  return {
+    resourceType: 'document',
+    matterId: caseDoc?._id,
+    caseId: caseDoc?._id,
+    clientId: caseDoc?.clientId,
+    assignedUserIds,
+    matter: { assignedUserIds },
+    ...extra,
+  };
+}
 
 const populateDocument = (query) =>
   query
@@ -34,17 +48,19 @@ const cleanTags = (tags = []) => (
 );
 
 async function assertMatterAccess({ caseId, clientId }, req, res) {
-  const caseDoc = await Case.findById(caseId).select('clientId assignedUsers leadPartnerId managingLawyerId primaryLawyerId');
+  const caseDoc = await Case.findOne(workspaceFilter(req, { _id: caseId })).select('clientId assignedUsers leadPartnerId managingLawyerId primaryLawyerId');
   if (!caseDoc) {
-    res.status(400).json({ ok: false, message: 'caseId does not reference an existing matter' });
+    res.status(400).json({ ok: false, message: 'Choose an existing matter for this document.' });
     return null;
   }
   if (String(caseDoc.clientId) !== String(clientId)) {
-    res.status(400).json({ ok: false, message: 'clientId must match the selected matter client' });
+    res.status(400).json({ ok: false, message: 'Choose the client connected to this matter.' });
     return null;
   }
-  if (!canManageAll(req) && !caseHasAssignedUser(caseDoc, req.user?.id)) {
-    res.status(403).json({ ok: false, message: 'You can only access documents for assigned matters' });
+  const permission = req.documentAccess?.authorization?.permissionKey || DOCUMENT_PERMISSIONS.read;
+  const decision = await decideDocumentAccess(req, permission, caseResource(caseDoc, { clientId }));
+  if (!decision.allowed) {
+    res.status(403).json({ ok: false, message: decision.reason || PERMISSION_DENIED_MESSAGE });
     return null;
   }
   return caseDoc;
@@ -67,7 +83,7 @@ const allowedPatchFields = [
 export const DocumentStorageController = {
   async list(req, res) {
     try {
-      const q = {};
+      const q = workspaceFilter(req);
       for (const field of ['caseId', 'clientId', 'provider', 'status', 'documentType', 'uploadedBy']) {
         if (req.query[field]) q[field] = req.query[field];
       }
@@ -76,11 +92,13 @@ export const DocumentStorageController = {
         if (req.query.from) q.createdAt.$gte = new Date(req.query.from);
         if (req.query.to) q.createdAt.$lte = new Date(req.query.to);
       }
-      if (!canManageAll(req) && !req.query.caseId) q.uploadedBy = req.user?.id;
       if (req.query.caseId) {
-        const caseDoc = await Case.findById(req.query.caseId).select('clientId assignedUsers leadPartnerId managingLawyerId primaryLawyerId');
-        if (caseDoc && !canManageAll(req) && !caseHasAssignedUser(caseDoc, req.user?.id)) {
-          return res.status(403).json({ ok: false, message: 'You can only access documents for assigned matters' });
+        const caseDoc = await Case.findOne(workspaceFilter(req, { _id: req.query.caseId })).select('clientId assignedUsers leadPartnerId managingLawyerId primaryLawyerId');
+        if (caseDoc) {
+          const decision = await decideDocumentAccess(req, DOCUMENT_PERMISSIONS.read, caseResource(caseDoc));
+          if (!decision.allowed) {
+            return res.status(403).json({ ok: false, message: decision.reason || PERMISSION_DENIED_MESSAGE });
+          }
         }
       }
       const rows = await populateDocument(StoredDocument.find(q))
@@ -113,10 +131,11 @@ export const DocumentStorageController = {
         tags: cleanTags(req.body.tags),
         description: req.body.description,
         uploadedBy: req.user.id,
+        workspaceId: req.workspaceId,
         auditTrail: [audit('created', req, { provider: req.body.provider || 'local', storageKey: req.body.storageKey })],
       });
 
-      const populated = await populateDocument(StoredDocument.findById(doc._id));
+      const populated = await populateDocument(StoredDocument.findOne(workspaceFilter(req, { _id: doc._id })));
       res.status(201).json({ ok: true, data: populated });
     } catch (err) {
       if (err?.code === 11000) return res.status(409).json({ ok: false, message: 'A document with this provider/storageKey already exists' });
@@ -126,7 +145,7 @@ export const DocumentStorageController = {
 
   async getById(req, res) {
     try {
-      const doc = await populateDocument(StoredDocument.findById(req.params.documentId));
+      const doc = await populateDocument(StoredDocument.findOne(workspaceFilter(req, { _id: req.params.documentId })));
       if (!doc) return res.status(404).json({ ok: false, message: 'Document not found' });
       const caseDoc = await assertMatterAccess({ caseId: doc.caseId, clientId: doc.clientId }, req, res);
       if (!caseDoc) return;
@@ -140,13 +159,10 @@ export const DocumentStorageController = {
 
   async update(req, res) {
     try {
-      const doc = await StoredDocument.findById(req.params.documentId);
+      const doc = await StoredDocument.findOne(workspaceFilter(req, { _id: req.params.documentId }));
       if (!doc) return res.status(404).json({ ok: false, message: 'Document not found' });
       const caseDoc = await assertMatterAccess({ caseId: doc.caseId, clientId: doc.clientId }, req, res);
       if (!caseDoc) return;
-      if (!canManageAll(req) && idString(doc.uploadedBy) !== req.user?.id) {
-        return res.status(403).json({ ok: false, message: 'Only managers or the uploader can edit document metadata' });
-      }
 
       const changes = {};
       for (const field of allowedPatchFields) {
@@ -161,7 +177,7 @@ export const DocumentStorageController = {
       doc.auditTrail.push(audit('updated', req, changes));
       await doc.save();
 
-      const populated = await populateDocument(StoredDocument.findById(doc._id));
+      const populated = await populateDocument(StoredDocument.findOne(workspaceFilter(req, { _id: doc._id })));
       res.json({ ok: true, data: populated });
     } catch (err) {
       if (err?.code === 11000) return res.status(409).json({ ok: false, message: 'A document with this provider/storageKey already exists' });
@@ -171,7 +187,7 @@ export const DocumentStorageController = {
 
   async setStatus(req, res) {
     try {
-      const doc = await StoredDocument.findById(req.params.documentId);
+      const doc = await StoredDocument.findOne(workspaceFilter(req, { _id: req.params.documentId }));
       if (!doc) return res.status(404).json({ ok: false, message: 'Document not found' });
       const caseDoc = await assertMatterAccess({ caseId: doc.caseId, clientId: doc.clientId }, req, res);
       if (!caseDoc) return;
@@ -180,7 +196,7 @@ export const DocumentStorageController = {
       if (doc.status === 'deleted') doc.deletedAt = new Date();
       doc.auditTrail.push(audit(`status:${req.body.status}`, req, { status: req.body.status }, req.body.note));
       await doc.save();
-      const populated = await populateDocument(StoredDocument.findById(doc._id));
+      const populated = await populateDocument(StoredDocument.findOne(workspaceFilter(req, { _id: doc._id })));
       res.json({ ok: true, data: populated });
     } catch (err) {
       res.status(400).json({ ok: false, message: err.message });

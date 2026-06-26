@@ -53,6 +53,10 @@ test('roles only reference known permissions', () => {
   expect(permissionKeys.has('invoice.create')).toBe(true);
   expect(permissionKeys.has('invoice.send')).toBe(true);
   expect(permissionKeys.has('payment.record')).toBe(true);
+  expect(permissionKeys.has('document.read')).toBe(true);
+  expect(permissionKeys.has('document.create')).toBe(true);
+  expect(permissionKeys.has('document.share')).toBe(true);
+  expect(permissionKeys.has('document.delete')).toBe(true);
   for (const role of CORE_ROLES) {
     expect(role.permissionKeys.every((key) => permissionKeys.has(key))).toBe(true);
   }

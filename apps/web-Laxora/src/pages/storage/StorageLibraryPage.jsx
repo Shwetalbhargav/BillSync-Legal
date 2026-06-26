@@ -9,6 +9,7 @@ import {
   StorageHero,
   StorageSummary,
 } from "../../components/storage/StorageWidgets";
+import { useDocumentModuleAccess } from "./useDocumentModuleAccess";
 
 const initialState = {
   status: "loading",
@@ -21,6 +22,7 @@ const initialState = {
 };
 
 export function StorageLibraryPage() {
+  const access = useDocumentModuleAccess();
   const [state, setState] = useState(initialState);
 
   async function load() {
@@ -38,11 +40,14 @@ export function StorageLibraryPage() {
   }, []);
 
   if (state.status === "loading") return <SkeletonBlock />;
-  if (state.status === "error") return <StateCard state="error" title="Document storage needs attention" message={state.message} actionLabel="Retry" />;
+  if (access.unavailable) return <StateCard state="empty" title="Documents are not available" message={access.message} />;
+  if (!access.canRead) return <StateCard state="permission" title="Documents are not available" message="You do not have access to this area." />;
+  if (state.status === "error") return <StateCard state="error" title="Document storage needs attention" message={state.message} actionLabel="Retry" onAction={load} />;
 
   return (
     <div className="space-y-6">
-      <StorageHero title="Storage library" />
+      <StorageHero canCreate={access.canCreate} title="Storage library" />
+      {access.readOnly ? <StateCard state="empty" title="Documents are read-only" message={access.message} /> : null}
       <SectionIssues issues={state.issues} />
       <ProviderNotConnected />
       <StorageSummary documents={state.documents} providers={state.providers} />
