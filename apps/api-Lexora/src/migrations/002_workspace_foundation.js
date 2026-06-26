@@ -38,6 +38,7 @@ export async function up(db) {
 export async function down(db) {
   for (const name of [
     'workspacemodules',
+    'workspacefeatureoverrides',
     'subscriptions',
     'policies',
     'moduleregistries',

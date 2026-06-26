@@ -4,8 +4,8 @@ import { workspaceScopedPlugin } from '../../../middleware/workspaceScopedPlugin
 const SubscriptionSchema = new mongoose.Schema(
   {
     planKey: { type: String, required: true, trim: true, lowercase: true, index: true },
-    status: { type: String, enum: ['active', 'trialing', 'past_due', 'canceled'], default: 'active', index: true },
-    source: { type: String, enum: ['migration', 'owner', 'billing_system', 'seed'], default: 'migration' },
+    status: { type: String, enum: ['active', 'trialing', 'past_due', 'canceled', 'cancelled'], default: 'active', index: true },
+    source: { type: String, enum: ['migration', 'owner', 'signup', 'billing_system', 'seed'], default: 'migration' },
     startedAt: { type: Date },
     currentPeriodStart: { type: Date },
     currentPeriodEnd: { type: Date },

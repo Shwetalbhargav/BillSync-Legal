@@ -16,6 +16,14 @@ import {
   updateOnboarding,
   updateWorkReview,
 } from '../controllers/onboardingController.js';
+import {
+  checkFeatureAccess,
+  checkModuleAccess,
+  getSubscription,
+  listFeatures,
+  listPlans,
+  updateFeatureOverride,
+} from '../controllers/subscriptionController.js';
 
 const router = Router();
 
@@ -23,6 +31,12 @@ router.post('/invitations/accept', acceptInvitation);
 
 router.use(authenticate);
 router.get('/context', getWorkspaceContext);
+router.get('/plans', listPlans);
+router.get('/features', listFeatures);
+router.get('/subscription', getSubscription);
+router.get('/features/:featureKey/access', checkFeatureAccess);
+router.patch('/features/:featureKey/override', updateFeatureOverride);
+router.get('/modules/:moduleKey/access', checkModuleAccess);
 router.get('/onboarding', getOnboarding);
 router.patch('/onboarding', updateOnboarding);
 router.patch('/work-review', updateWorkReview);

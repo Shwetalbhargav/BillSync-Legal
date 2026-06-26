@@ -7,7 +7,7 @@ import Subscription from '../models/Subscription.js';
 import WorkspaceModule from '../models/WorkspaceModule.js';
 import AuditEvent from '../models/AuditEvent.js';
 import User from '../../users/models/User.js';
-import { CORE_PLANS } from './workspaceFoundationService.js';
+import { getPlanDefinition } from './subscriptionFeatureService.js';
 import { COMMERCIAL_ROLES, normalizeRole } from '../roles.js';
 
 const INVITE_DAYS = 7;
@@ -94,7 +94,7 @@ async function uniqueSlug(name, session) {
 }
 
 function planByKey(planKey) {
-  return CORE_PLANS.find((plan) => plan.key === planKey) || CORE_PLANS[1];
+  return getPlanDefinition(planKey);
 }
 
 async function seedWorkspacePlan(workspace, planKey, session) {
@@ -125,7 +125,7 @@ export async function createWorkspaceOwnerAccount({
   mobile,
   password,
   workspaceName,
-  planKey = 'small_workspace',
+  planKey = 'professional',
   address,
   qualifications,
 }) {

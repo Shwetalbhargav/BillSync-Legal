@@ -11,3 +11,4 @@ export { default as Policy } from './models/Policy.js';
 export { default as ModuleRegistry } from './models/ModuleRegistry.js';
 export { default as WorkspaceModule } from './models/WorkspaceModule.js';
 export { default as Subscription } from './models/Subscription.js';
+export { default as WorkspaceFeatureOverride } from './models/WorkspaceFeatureOverride.js';

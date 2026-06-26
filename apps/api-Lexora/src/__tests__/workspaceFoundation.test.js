@@ -16,6 +16,7 @@ import Policy from '../modules/workspace/models/Policy.js';
 import ModuleRegistry from '../modules/workspace/models/ModuleRegistry.js';
 import WorkspaceModule from '../modules/workspace/models/WorkspaceModule.js';
 import Subscription from '../modules/workspace/models/Subscription.js';
+import WorkspaceFeatureOverride from '../modules/workspace/models/WorkspaceFeatureOverride.js';
 import { down, up } from '../migrations/002_workspace_foundation.js';
 
 function unique(values) {
@@ -34,9 +35,15 @@ test('plans only reference known features and modules', () => {
   const featureKeys = new Set(CORE_FEATURES.map((feature) => feature.key));
   const moduleKeys = new Set(CORE_MODULES.map((module) => module.key));
 
+  expect(CORE_PLANS.map((plan) => plan.key)).toEqual(['free', 'solo', 'professional', 'business', 'enterprise']);
   for (const plan of CORE_PLANS) {
     expect(plan.featureKeys.every((key) => featureKeys.has(key))).toBe(true);
     expect(plan.moduleKeys.every((key) => moduleKeys.has(key))).toBe(true);
+    expect(plan.limits).toEqual(expect.objectContaining({
+      members: expect.any(Number),
+      storageGb: expect.any(Number),
+      aiCredits: expect.any(Number),
+    }));
   }
 });
 
@@ -79,7 +86,8 @@ test('workspace foundation models validate the canonical product language', () =
   expect(new Policy({ workspaceId: '64b0000000000000000000aa', roleKey: 'owner', permissionKey: 'workspace.manage' }).validateSync()).toBeUndefined();
   expect(new ModuleRegistry({ key: 'dashboard', name: 'Dashboard' }).validateSync()).toBeUndefined();
   expect(new WorkspaceModule({ workspaceId: '64b0000000000000000000aa', moduleKey: 'dashboard' }).validateSync()).toBeUndefined();
-  expect(new Subscription({ workspaceId: '64b0000000000000000000aa', planKey: 'small_workspace' }).validateSync()).toBeUndefined();
+  expect(new Subscription({ workspaceId: '64b0000000000000000000aa', planKey: 'professional' }).validateSync()).toBeUndefined();
+  expect(new WorkspaceFeatureOverride({ workspaceId: '64b0000000000000000000aa', featureKey: 'ai.assistant', status: 'enabled' }).validateSync()).toBeUndefined();
 });
 
 test('workspace foundation migration is reversible', () => {
