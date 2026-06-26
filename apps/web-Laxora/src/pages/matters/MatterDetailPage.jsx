@@ -6,6 +6,7 @@ import { mattersApi } from "../../api/matters";
 import { asList, normalizeAssignment, normalizeMatter, normalizeTimeEntry } from "../../api/normalizers";
 import { Button, Card, CardBody, CardHeader, Dialog, SkeletonBlock, StateCard, StatusBadge } from "../../components/common";
 import { AssignmentList, MatterRollupTiles } from "../../components/matters/MatterWidgets";
+import { useMatterModuleAccess } from "./useMatterModuleAccess";
 
 function unwrap(response) {
   return response?.data || response;
@@ -131,10 +132,15 @@ function TimeEntryDetail({ entry, onClose }) {
 
 export function MatterDetailPage() {
   const { matterId } = useParams();
+  const access = useMatterModuleAccess();
   const [state, setState] = useState({ status: "loading", matter: null, assignments: [], rollup: null, timeEntries: [], message: "" });
   const [selectedTimeEntry, setSelectedTimeEntry] = useState(null);
 
   async function load() {
+    if (access.unavailable || !access.canRead) {
+      setState({ status: "permission", matter: null, assignments: [], rollup: null, timeEntries: [], message: access.message || "You do not have access to this matter." });
+      return;
+    }
     setState((current) => ({ ...current, status: "loading", message: "" }));
     setSelectedTimeEntry(null);
     try {
@@ -153,16 +159,24 @@ export function MatterDetailPage() {
         message: "",
       });
     } catch (error) {
-      setState({ status: "error", matter: null, assignments: [], rollup: null, timeEntries: [], message: error?.userMessage || "We could not load this matter right now." });
+      setState({
+        status: error?.status === 403 ? "permission" : "error",
+        matter: null,
+        assignments: [],
+        rollup: null,
+        timeEntries: [],
+        message: error?.status === 403 ? "You do not have access to this matter." : (error?.userMessage || "We could not load this matter right now."),
+      });
     }
   }
 
   useEffect(() => {
     load();
-  }, [matterId]);
+  }, [matterId, access.status, access.unavailable, access.canRead]);
 
   if (state.status === "loading") return <div className="grid gap-4 lg:grid-cols-2"><SkeletonBlock /><SkeletonBlock /></div>;
-  if (state.status === "error") return <StateCard state="error" title="Matter needs attention" message={state.message} actionLabel="Retry" />;
+  if (state.status === "permission") return <StateCard state="permission" title="Matter is not available" message={state.message} />;
+  if (state.status === "error") return <StateCard state="error" title="Matter needs attention" message={state.message} actionLabel="Retry" onAction={load} />;
 
   const matter = state.matter;
 
@@ -181,24 +195,30 @@ export function MatterDetailPage() {
             <p className="mt-2 text-sm font-semibold text-muted">Client: {matter.client}</p>
           </div>
           <div className="flex flex-col gap-2 sm:flex-row">
-            <Link className="focus-ring inline-flex items-center justify-center gap-2 rounded-lg border border-border px-4 py-2 text-sm font-semibold text-primary hover:bg-blueSoft" to={`/app/matters/${matter.id}/team`}>
-              <Users className="h-4 w-4" />
-              Team
-            </Link>
-            <Link className="focus-ring inline-flex items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white hover:bg-primaryStrong" to={`/app/matters/${matter.id}/edit`}>
-              <Edit className="h-4 w-4" />
-              Edit
-            </Link>
+            {access.canAssign && !access.readOnly ? (
+              <Link className="focus-ring inline-flex items-center justify-center gap-2 rounded-lg border border-border px-4 py-2 text-sm font-semibold text-primary hover:bg-blueSoft" to={`/app/matters/${matter.id}/team`}>
+                <Users className="h-4 w-4" />
+                Team
+              </Link>
+            ) : null}
+            {access.canEdit && !access.readOnly ? (
+              <Link className="focus-ring inline-flex items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white hover:bg-primaryStrong" to={`/app/matters/${matter.id}/edit`}>
+                <Edit className="h-4 w-4" />
+                Edit
+              </Link>
+            ) : null}
           </div>
         </div>
       </section>
+
+      {access.readOnly ? <StateCard state="permission" title="Matters are read-only" message={access.message} /> : null}
 
       <MatterRollupTiles rollup={state.rollup} />
 
       <section className="surface-card p-6">
         <div className="mb-4 flex items-center justify-between gap-3">
           <h2 className="text-base font-bold text-ink">Team assignments</h2>
-          <Link className="text-sm font-semibold text-primary hover:underline" to={`/app/matters/${matter.id}/team`}>Manage team</Link>
+          {access.canAssign && !access.readOnly ? <Link className="text-sm font-semibold text-primary hover:underline" to={`/app/matters/${matter.id}/team`}>Manage team</Link> : null}
         </div>
         <AssignmentList assignments={state.assignments} />
       </section>

@@ -5,8 +5,11 @@ import { AUTH_COOKIE_NAME, signAuthToken } from '../modules/auth/services/authTo
 const mocks = vi.hoisted(() => ({
   caseCreate: vi.fn(),
   caseFind: vi.fn(),
+  caseFindOne: vi.fn(),
   caseFindById: vi.fn(),
+  caseFindOneAndUpdate: vi.fn(),
   caseFindByIdAndUpdate: vi.fn(),
+  caseFindOneAndDelete: vi.fn(),
   caseFindByIdAndDelete: vi.fn(),
   caseUpdateOne: vi.fn(),
   caseExists: vi.fn(),
@@ -22,6 +25,7 @@ const mocks = vi.hoisted(() => ({
   assignmentFind: vi.fn(),
   assignmentFindOne: vi.fn(),
   assignmentCreate: vi.fn(),
+  assignmentFindOneAndUpdate: vi.fn(),
   assignmentFindById: vi.fn(),
   assignmentFindByIdAndUpdate: vi.fn(),
   assignmentDeleteOne: vi.fn(),
@@ -32,8 +36,11 @@ vi.mock('../modules/cases/models/Case.js', () => {
   const Case = {
     create: mocks.caseCreate,
     find: mocks.caseFind,
+    findOne: mocks.caseFindOne,
     findById: mocks.caseFindById,
+    findOneAndUpdate: mocks.caseFindOneAndUpdate,
     findByIdAndUpdate: mocks.caseFindByIdAndUpdate,
+    findOneAndDelete: mocks.caseFindOneAndDelete,
     findByIdAndDelete: mocks.caseFindByIdAndDelete,
     updateOne: mocks.caseUpdateOne,
     exists: mocks.caseExists,
@@ -47,6 +54,7 @@ vi.mock('../modules/cases/models/CaseAssignment.js', () => {
     find: mocks.assignmentFind,
     findOne: mocks.assignmentFindOne,
     create: mocks.assignmentCreate,
+    findOneAndUpdate: mocks.assignmentFindOneAndUpdate,
     findById: mocks.assignmentFindById,
     findByIdAndUpdate: mocks.assignmentFindByIdAndUpdate,
     deleteOne: mocks.assignmentDeleteOne,
@@ -96,12 +104,14 @@ const USER_ID = '64b000000000000000000013';
 const SECOND_USER_ID = '64b000000000000000000014';
 const INVOICE_ID = '64b000000000000000000015';
 const ASSIGNMENT_ID = '64b000000000000000000016';
+const WORKSPACE_ID = '64b000000000000000000017';
+const OTHER_WORKSPACE_ID = '64b000000000000000000099';
 
 let server;
 let baseUrl;
 
 const authCookie = (role = 'admin') =>
-  `${AUTH_COOKIE_NAME}=${signAuthToken({ _id: USER_ID, role, email: `${role}@example.com` })}`;
+  `${AUTH_COOKIE_NAME}=${signAuthToken({ _id: USER_ID, role, email: `${role}@example.com`, workspaceId: WORKSPACE_ID })}`;
 
 const jsonRequest = (path, options = {}, role = 'admin') =>
   fetch(`${baseUrl}${path}`, {
@@ -146,6 +156,14 @@ beforeEach(() => {
   mocks.userFindById.mockResolvedValue({ _id: USER_ID, role: 'lawyer' });
   mocks.caseCreate.mockImplementation(async (payload) => ({ _id: CASE_ID, ...payload }));
   mocks.caseFind.mockReturnValue(queryResult([]));
+  mocks.caseFindOne.mockReturnValue(queryResult({
+    _id: CASE_ID,
+    title: 'Matter',
+    clientId: CLIENT_ID,
+    openedAt: new Date('2026-05-01T00:00:00.000Z'),
+    closedAt: null,
+    workspaceId: WORKSPACE_ID,
+  }));
   mocks.caseFindById.mockReturnValue(queryResult({
     _id: CASE_ID,
     title: 'Matter',
@@ -153,7 +171,9 @@ beforeEach(() => {
     openedAt: new Date('2026-05-01T00:00:00.000Z'),
     closedAt: null,
   }));
+  mocks.caseFindOneAndUpdate.mockImplementation(async (_filter, update) => ({ _id: CASE_ID, ...update }));
   mocks.caseFindByIdAndUpdate.mockImplementation(async (_id, update) => ({ _id, ...update }));
+  mocks.caseFindOneAndDelete.mockResolvedValue({ _id: CASE_ID });
   mocks.caseFindByIdAndDelete.mockResolvedValue({ _id: CASE_ID });
   mocks.caseUpdateOne.mockResolvedValue({ modifiedCount: 1 });
   mocks.caseExists.mockResolvedValue(null);
@@ -166,6 +186,7 @@ beforeEach(() => {
   mocks.assignmentFind.mockReturnValue(queryResult([]));
   mocks.assignmentFindOne.mockResolvedValue(null);
   mocks.assignmentCreate.mockImplementation(async (payload) => ({ _id: ASSIGNMENT_ID, status: 'active', ...payload }));
+  mocks.assignmentFindOneAndUpdate.mockImplementation(async (_filter, update) => ({ _id: ASSIGNMENT_ID, ...update }));
   mocks.assignmentFindById.mockResolvedValue({
     _id: ASSIGNMENT_ID,
     caseId: CASE_ID,
@@ -183,14 +204,14 @@ test('GET /api/cases/:caseId rejects invalid case ids before hitting the databas
 
   expect(response.status).toBe(400);
   expect(body).toMatchObject({ ok: false, message: 'Validation failed' });
-  expect(mocks.caseFindById).not.toHaveBeenCalled();
+  expect(mocks.caseFindOne).not.toHaveBeenCalled();
 });
 
-test('POST /api/cases enforces RBAC for write routes', async () => {
+test('POST /api/cases enforces permission checks for write routes', async () => {
   const response = await jsonRequest('/api/cases', {
     method: 'POST',
     body: JSON.stringify({ clientId: CLIENT_ID, title: 'Matter' }),
-  }, 'intern');
+  }, 'accountant');
 
   expect(response.status).toBe(403);
   expect(mocks.caseCreate).not.toHaveBeenCalled();
@@ -235,13 +256,14 @@ test('POST /api/cases creates with the canonical payload after reference checks'
   const body = await response.json();
 
   expect(response.status).toBe(201);
-  expect(mocks.clientExists).toHaveBeenCalledWith({ _id: CLIENT_ID });
-  expect(mocks.userExists).toHaveBeenCalledWith({ _id: USER_ID });
-  expect(mocks.userExists).toHaveBeenCalledWith({ _id: SECOND_USER_ID });
+  expect(mocks.clientExists).toHaveBeenCalledWith({ workspaceId: WORKSPACE_ID, _id: CLIENT_ID });
+  expect(mocks.userExists).toHaveBeenCalledWith({ workspaceId: WORKSPACE_ID, _id: USER_ID });
+  expect(mocks.userExists).toHaveBeenCalledWith({ workspaceId: WORKSPACE_ID, _id: SECOND_USER_ID });
   expect(mocks.caseCreate).toHaveBeenCalledWith(expect.objectContaining({
     clientId: CLIENT_ID,
     title: 'Matter',
     assignedUsers: [USER_ID, SECOND_USER_ID],
+    workspaceId: WORKSPACE_ID,
   }));
   expect(body.data.title).toBe('Matter');
 });
@@ -289,6 +311,7 @@ test('GET /api/cases supports filtering and pagination', async () => {
 
   expect(response.status).toBe(200);
   expect(mocks.caseFind).toHaveBeenCalledWith(expect.objectContaining({
+    workspaceId: WORKSPACE_ID,
     clientId: CLIENT_ID,
     status: 'open',
     $or: expect.any(Array),
@@ -325,7 +348,7 @@ test('PUT /api/cases/:caseId rejects unknown payload fields', async () => {
 
   expect(response.status).toBe(400);
   expect(body.errors).toContainEqual({ field: 'client_id', message: 'client_id is not allowed' });
-  expect(mocks.caseFindByIdAndUpdate).not.toHaveBeenCalled();
+  expect(mocks.caseFindOneAndUpdate).not.toHaveBeenCalled();
 });
 
 test('PUT /api/cases/:caseId runs mongoose validators and uses an allowlisted update payload', async () => {
@@ -335,8 +358,8 @@ test('PUT /api/cases/:caseId runs mongoose validators and uses an allowlisted up
   });
 
   expect(response.status).toBe(200);
-  expect(mocks.caseFindByIdAndUpdate).toHaveBeenCalledWith(
-    CASE_ID,
+  expect(mocks.caseFindOneAndUpdate).toHaveBeenCalledWith(
+    { workspaceId: WORKSPACE_ID, _id: CASE_ID },
     { $set: { title: 'Updated Matter', status: 'pending' }, $unset: { closedAt: '' } },
     { new: true, runValidators: true }
   );
@@ -349,8 +372,8 @@ test('PUT /api/cases/:caseId sets closedAt when the regular update path closes a
   });
 
   expect(response.status).toBe(200);
-  expect(mocks.caseFindByIdAndUpdate).toHaveBeenCalledWith(
-    CASE_ID,
+  expect(mocks.caseFindOneAndUpdate).toHaveBeenCalledWith(
+    { workspaceId: WORKSPACE_ID, _id: CASE_ID },
     expect.objectContaining({
       status: 'closed',
       closedAt: expect.any(Date),
@@ -366,8 +389,8 @@ test('PATCH /api/cases/:caseId/status sets closedAt when closing', async () => {
   });
 
   expect(response.status).toBe(200);
-  expect(mocks.caseFindByIdAndUpdate).toHaveBeenCalledWith(
-    CASE_ID,
+  expect(mocks.caseFindOneAndUpdate).toHaveBeenCalledWith(
+    { workspaceId: WORKSPACE_ID, _id: CASE_ID },
     expect.objectContaining({
       status: 'closed',
       closedAt: expect.any(Date),
@@ -383,15 +406,15 @@ test('PATCH /api/cases/:caseId/status clears closedAt when reopening', async () 
   });
 
   expect(response.status).toBe(200);
-  expect(mocks.caseFindByIdAndUpdate).toHaveBeenCalledWith(
-    CASE_ID,
+  expect(mocks.caseFindOneAndUpdate).toHaveBeenCalledWith(
+    { workspaceId: WORKSPACE_ID, _id: CASE_ID },
     { $set: { status: 'open' }, $unset: { closedAt: '' } },
     { new: true, runValidators: true }
   );
 });
 
 test('DELETE /api/cases/:caseId archives instead of hard-deleting when related records exist', async () => {
-  mocks.caseFindById.mockReturnValue(queryResult({ _id: CASE_ID, title: 'Matter', closedAt: null }));
+  mocks.caseFindOne.mockReturnValue(queryResult({ _id: CASE_ID, title: 'Matter', closedAt: null, workspaceId: WORKSPACE_ID }));
   mocks.timeEntryCountDocuments.mockResolvedValue(2);
   mocks.invoiceFind.mockReturnValue(queryResult([{ _id: INVOICE_ID }]));
   mocks.paymentCountDocuments.mockResolvedValue(1);
@@ -401,6 +424,11 @@ test('DELETE /api/cases/:caseId archives instead of hard-deleting when related r
   const body = await response.json();
 
   expect(response.status).toBe(200);
+  expect(mocks.caseFindOne).toHaveBeenCalledWith({ workspaceId: WORKSPACE_ID, _id: CASE_ID });
+  expect(mocks.timeEntryCountDocuments).toHaveBeenCalledWith({ workspaceId: WORKSPACE_ID, caseId: CASE_ID });
+  expect(mocks.invoiceFind).toHaveBeenCalledWith({ workspaceId: WORKSPACE_ID, caseId: CASE_ID });
+  expect(mocks.paymentCountDocuments).toHaveBeenCalledWith({ workspaceId: WORKSPACE_ID, invoiceId: { $in: [INVOICE_ID] } });
+  expect(mocks.assignmentCountDocuments).toHaveBeenCalledWith({ workspaceId: WORKSPACE_ID, caseId: CASE_ID });
   expect(body.archived).toBe(true);
   expect(body.details).toEqual({
     timeEntries: 2,
@@ -408,15 +436,25 @@ test('DELETE /api/cases/:caseId archives instead of hard-deleting when related r
     payments: 1,
     assignments: 1,
   });
-  expect(mocks.caseFindByIdAndUpdate).toHaveBeenCalledWith(
-    CASE_ID,
+  expect(mocks.caseFindOneAndUpdate).toHaveBeenCalledWith(
+    { workspaceId: WORKSPACE_ID, _id: CASE_ID },
     expect.objectContaining({
       status: 'archived',
       closedAt: expect.any(Date),
     }),
     { new: true, runValidators: true }
   );
-  expect(mocks.caseFindByIdAndDelete).not.toHaveBeenCalled();
+  expect(mocks.caseFindOneAndDelete).not.toHaveBeenCalled();
+});
+
+test('GET /api/cases/:caseId only searches the active workspace', async () => {
+  mocks.caseFindOne.mockReturnValue(queryResult({ _id: CASE_ID, title: 'Matter', workspaceId: WORKSPACE_ID }));
+
+  const response = await jsonRequest(`/api/cases/${CASE_ID}`);
+
+  expect(response.status).toBe(200);
+  expect(mocks.caseFindOne).toHaveBeenCalledWith({ workspaceId: WORKSPACE_ID, _id: CASE_ID });
+  expect(mocks.caseFindOne).not.toHaveBeenCalledWith({ workspaceId: OTHER_WORKSPACE_ID, _id: CASE_ID });
 });
 
 test('POST /api/case-assignments rejects endAt before startAt', async () => {
@@ -455,27 +493,36 @@ test('POST /api/case-assignments rejects duplicate active assignments', async ()
 
 test('GET /api/case-assignments/:id returns a single assignment', async () => {
   const query = queryResult({ _id: ASSIGNMENT_ID, caseId: CASE_ID, userId: USER_ID });
-  mocks.assignmentFindById.mockReturnValue(query);
+  mocks.assignmentFindOne.mockReturnValue(query);
 
   const response = await jsonRequest(`/api/case-assignments/${ASSIGNMENT_ID}`);
   const body = await response.json();
 
   expect(response.status).toBe(200);
-  expect(mocks.assignmentFindById).toHaveBeenCalledWith(ASSIGNMENT_ID);
+  expect(mocks.assignmentFindOne).toHaveBeenCalledWith({ workspaceId: WORKSPACE_ID, _id: ASSIGNMENT_ID });
   expect(query.populate).toHaveBeenCalledWith('caseId', 'title status');
   expect(query.populate).toHaveBeenCalledWith('userId', 'name role email');
   expect(body.data._id).toBe(ASSIGNMENT_ID);
 });
 
 test('PUT /api/case-assignments/:id updates assignment fields with validators enabled', async () => {
+  mocks.assignmentFindOne
+    .mockResolvedValueOnce({
+      _id: ASSIGNMENT_ID,
+      caseId: CASE_ID,
+      userId: USER_ID,
+      status: 'active',
+    })
+    .mockResolvedValueOnce(null);
+
   const response = await jsonRequest(`/api/case-assignments/${ASSIGNMENT_ID}`, {
     method: 'PUT',
     body: JSON.stringify({ role: 'primary', status: 'active' }),
   });
 
   expect(response.status).toBe(200);
-  expect(mocks.assignmentFindByIdAndUpdate).toHaveBeenCalledWith(
-    ASSIGNMENT_ID,
+  expect(mocks.assignmentFindOneAndUpdate).toHaveBeenCalledWith(
+    { workspaceId: WORKSPACE_ID, _id: ASSIGNMENT_ID },
     { role: 'primary', status: 'active' },
     { new: true, runValidators: true }
   );

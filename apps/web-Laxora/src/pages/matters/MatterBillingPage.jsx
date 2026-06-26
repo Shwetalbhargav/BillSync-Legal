@@ -2,9 +2,11 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { loadMatterBilling } from "../../api/matterTabs";
 import { BillingSections, MatterTabShell, SectionIssues } from "../../components/matters/MatterTabWidgets";
+import { useMatterModuleAccess } from "./useMatterModuleAccess";
 
 export function MatterBillingPage() {
   const { matterId } = useParams();
+  const access = useMatterModuleAccess();
   const [state, setState] = useState({
     loading: true,
     error: "",
@@ -18,6 +20,10 @@ export function MatterBillingPage() {
   });
 
   async function load() {
+    if (access.unavailable || !access.canRead) {
+      setState((current) => ({ ...current, loading: false, error: access.message || "You do not have access to this matter." }));
+      return;
+    }
     setState((current) => ({ ...current, loading: true, error: "" }));
     try {
       const data = await loadMatterBilling(matterId);
@@ -25,7 +31,7 @@ export function MatterBillingPage() {
     } catch (error) {
       setState({
         loading: false,
-        error: error?.userMessage || "We could not load this matter right now.",
+        error: error?.status === 403 ? "You do not have access to this matter." : (error?.userMessage || "We could not load this matter right now."),
         matter: null,
         rollup: null,
         billables: [],
@@ -39,7 +45,7 @@ export function MatterBillingPage() {
 
   useEffect(() => {
     load();
-  }, [matterId]);
+  }, [matterId, access.status, access.unavailable, access.canRead]);
 
   return (
     <MatterTabShell activeTab="billing" error={state.error} loading={state.loading} matter={state.matter} onRetry={load}>
