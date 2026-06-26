@@ -1,0 +1,16 @@
+{
+  "name": "lexora-platform",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "engines": {
+    "node": "22.16.x",
+    "npm": ">=10"
+  },
+  "scripts": {
+    "test:packages": "node scripts/run-package-tests.mjs"
+  }
+}
