@@ -3,9 +3,11 @@ import { useParams } from "react-router-dom";
 import { storageWorkspaceApi } from "../../api";
 import { SkeletonBlock, StateCard, Toast } from "../../components/common";
 import { DocumentViewer, SectionIssues, StorageHero } from "../../components/storage/StorageWidgets";
+import { useDocumentModuleAccess } from "./useDocumentModuleAccess";
 
 export function DocumentViewerPage() {
   const { documentId } = useParams();
+  const access = useDocumentModuleAccess();
   const [state, setState] = useState({ status: "loading", document: null, issues: [], message: "" });
   const [archiving, setArchiving] = useState(false);
   const [notice, setNotice] = useState(null);
@@ -39,14 +41,17 @@ export function DocumentViewerPage() {
   }
 
   if (state.status === "loading") return <SkeletonBlock />;
-  if (state.status === "error") return <StateCard state="error" title="Document needs attention" message={state.message} actionLabel="Retry" />;
+  if (access.unavailable) return <StateCard state="empty" title="Document is not available" message={access.message} />;
+  if (!access.canRead) return <StateCard state="permission" title="Document is not available" message="You do not have access to this area." />;
+  if (state.status === "error") return <StateCard state="error" title="Document needs attention" message={state.message} actionLabel="Retry" onAction={load} />;
 
   return (
     <div className="space-y-6">
-      <StorageHero title="Document viewer" />
+      <StorageHero canCreate={access.canCreate} title="Document viewer" />
       {notice ? <Toast tone={notice.tone} title={notice.title} message={notice.message} /> : null}
+      {access.readOnly ? <StateCard state="empty" title="Document is read-only" message={access.message} /> : null}
       <SectionIssues issues={state.issues} />
-      <DocumentViewer archiving={archiving} document={state.document} onArchive={archive} />
+      <DocumentViewer archiving={archiving} canDelete={access.canDelete} document={state.document} onArchive={archive} />
     </div>
   );
 }

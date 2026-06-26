@@ -170,6 +170,10 @@ export const CORE_PERMISSIONS = [
   { key: 'matters.read', name: 'View matters', moduleKey: 'matters', action: 'read', resource: 'matter' },
   { key: 'matters.write', name: 'Manage matters', moduleKey: 'matters', action: 'write', resource: 'matter' },
   { key: 'work.write', name: 'Record work', moduleKey: 'work', action: 'write', resource: 'work' },
+  { key: 'document.read', name: 'View documents', moduleKey: 'documents', action: 'read', resource: 'document' },
+  { key: 'document.create', name: 'Create documents', moduleKey: 'documents', action: 'create', resource: 'document' },
+  { key: 'document.share', name: 'Share documents', moduleKey: 'documents', action: 'share', resource: 'document' },
+  { key: 'document.delete', name: 'Delete documents', moduleKey: 'documents', action: 'delete', resource: 'document' },
   { key: 'invoice.view', name: 'View invoices', moduleKey: 'billing', action: 'read', resource: 'invoice' },
   { key: 'invoice.create', name: 'Create invoices', moduleKey: 'billing', action: 'create', resource: 'invoice' },
   { key: 'invoice.send', name: 'Send invoices', moduleKey: 'billing', action: 'send', resource: 'invoice' },
@@ -191,7 +195,7 @@ export const CORE_ROLES = [
     key: 'lawyer',
     name: 'Lawyer',
     status: 'active',
-    permissionKeys: ['workspace.read', 'client.read', 'client.create', 'client.edit', 'client.delete', 'clients.read', 'clients.write', 'matter.read', 'matter.create', 'matter.edit', 'matter.assign', 'matters.read', 'matters.write', 'work.write', 'invoice.view', 'invoice.create', 'invoice.send', 'billing.write'],
+    permissionKeys: ['workspace.read', 'client.read', 'client.create', 'client.edit', 'client.delete', 'clients.read', 'clients.write', 'matter.read', 'matter.create', 'matter.edit', 'matter.assign', 'matters.read', 'matters.write', 'work.write', 'document.read', 'document.create', 'document.share', 'invoice.view', 'invoice.create', 'invoice.send', 'billing.write'],
   },
   {
     key: 'billing_assistant',
@@ -203,7 +207,7 @@ export const CORE_ROLES = [
     key: 'accountant',
     name: 'Accountant',
     status: 'active',
-    permissionKeys: ['workspace.read', 'invoice.view', 'payment.record', 'finance.read', 'reports.read'],
+    permissionKeys: ['workspace.read', 'document.read', 'invoice.view', 'payment.record', 'finance.read', 'reports.read'],
   },
 ];
 
@@ -242,7 +246,7 @@ export const CORE_MODULES = [
     routeBase: '/app/matters',
     requiredPlanKey: 'free',
     featureKeys: ['legal.matters'],
-    permissionKeys: ['matter.read'],
+    permissionKeys: ['document.read'],
     dependencies: ['clients'],
     navigation: { label: 'Matters', path: '/app/matters', iconKey: 'briefcase-business', section: 'primary', order: 30 },
     order: 30,

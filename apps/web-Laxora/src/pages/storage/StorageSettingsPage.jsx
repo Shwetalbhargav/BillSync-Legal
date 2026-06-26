@@ -2,8 +2,10 @@ import { useEffect, useState } from "react";
 import { storageWorkspaceApi } from "../../api";
 import { SkeletonBlock, StateCard } from "../../components/common";
 import { ProviderCards, ProviderNotConnected, SectionIssues, StorageHero } from "../../components/storage/StorageWidgets";
+import { useDocumentModuleAccess } from "./useDocumentModuleAccess";
 
 export function StorageSettingsPage() {
+  const access = useDocumentModuleAccess();
   const [state, setState] = useState({ status: "loading", providers: [], issues: [], message: "" });
 
   async function load() {
@@ -21,11 +23,13 @@ export function StorageSettingsPage() {
   }, []);
 
   if (state.status === "loading") return <SkeletonBlock />;
-  if (state.status === "error") return <StateCard state="error" title="Storage settings need attention" message={state.message} actionLabel="Retry" />;
+  if (access.unavailable) return <StateCard state="empty" title="Storage settings are not available" message={access.message} />;
+  if (!access.canRead) return <StateCard state="permission" title="Storage settings are not available" message="You do not have access to this area." />;
+  if (state.status === "error") return <StateCard state="error" title="Storage settings need attention" message={state.message} actionLabel="Retry" onAction={load} />;
 
   return (
     <div className="space-y-6">
-      <StorageHero title="Storage settings" />
+      <StorageHero canCreate={access.canCreate} title="Storage settings" />
       <SectionIssues issues={state.issues} />
       <ProviderNotConnected />
       <ProviderCards providers={state.providers} />

@@ -22,7 +22,7 @@ const typeLabels = {
   other: "Other",
 };
 
-export function StorageHero({ title = "Document storage" }) {
+export function StorageHero({ canCreate = true, title = "Document storage" }) {
   return (
     <section className="surface-card p-6">
       <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
@@ -34,12 +34,14 @@ export function StorageHero({ title = "Document storage" }) {
           </p>
         </div>
         <div className="flex flex-wrap gap-3">
-          <Link to="/app/document-storage/upload">
-            <Button type="button">
-              <UploadCloud className="h-4 w-4" />
-              Add document
-            </Button>
-          </Link>
+          {canCreate ? (
+            <Link to="/app/document-storage/upload">
+              <Button type="button">
+                <UploadCloud className="h-4 w-4" />
+                Add document
+              </Button>
+            </Link>
+          ) : null}
           <Link className="focus-ring inline-flex items-center justify-center gap-2 rounded-lg border border-border bg-panel px-4 py-2 text-sm font-semibold text-primary hover:bg-blueSoft" to="/app/storage-settings">
             <Settings className="h-4 w-4" />
             Storage settings
@@ -167,7 +169,7 @@ export function UploadReadinessPanel() {
   );
 }
 
-export function DocumentViewer({ document, onArchive, archiving }) {
+export function DocumentViewer({ canDelete = true, document, onArchive, archiving }) {
   if (!document) return null;
   return (
     <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_360px]">
@@ -203,7 +205,7 @@ export function DocumentViewer({ document, onArchive, archiving }) {
           <Detail label="Size" value={formatBytes(document.sizeBytes)} />
           <Detail label="Updated" value={formatDate(document.updatedAt)} />
         </dl>
-        <Button className="mt-6 w-full" disabled={archiving || document.status === "archived"} isLoading={archiving} onClick={onArchive} type="button" variant="secondary">
+        <Button className="mt-6 w-full" disabled={!canDelete || archiving || document.status === "archived"} isLoading={archiving} onClick={onArchive} type="button" variant="secondary">
           <Archive className="h-4 w-4" />
           Mark archived
         </Button>
