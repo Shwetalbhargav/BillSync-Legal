@@ -6,6 +6,7 @@ import { invoiceWorkspaceApi } from "../../api/invoiceWorkspace";
 import { useAuth } from "../../auth/AuthProvider";
 import { Button, SkeletonBlock, StateCard } from "../../components/common";
 import { ClientWiseInvoiceDashboard, InvoiceFilters, InvoiceHero, PipelineSummary, SectionIssues } from "../../components/invoices/InvoiceWidgets";
+import { useBillingModuleAccess } from "../billing/useBillingModuleAccess";
 
 const emptyFilters = {
   status: "",
@@ -46,7 +47,8 @@ function cleanFilters(filters) {
 }
 
 export function InvoiceListPage() {
-  const { role, user } = useAuth();
+  const { user } = useAuth();
+  const access = useBillingModuleAccess("billing");
   const [filters, setFilters] = useState(emptyFilters);
   const [state, setState] = useState({ status: "loading", invoices: [], pipeline: [], pendingByClient: [], clients: [], matters: [], issues: [], message: "" });
   const [autoCreating, setAutoCreating] = useState(false);
@@ -127,25 +129,30 @@ export function InvoiceListPage() {
   );
 
   if (state.status === "loading") return <SkeletonBlock />;
-  if (state.status === "error") return <StateCard state="error" title="Invoices need attention" message={state.message} actionLabel="Retry" />;
+  if (access.unavailable) return <StateCard state="empty" title="Invoices are not available" message={access.message} />;
+  if (!access.canViewInvoices) return <StateCard state="permission" title="Invoices are not available" message="You do not have access to this area." />;
+  if (state.status === "error") return <StateCard state="error" title="Invoices need attention" message={state.message} actionLabel="Retry" onAction={() => load()} />;
 
   return (
     <div className="space-y-6">
       <InvoiceHero count={totals.visibleInvoices.length} draftCount={totals.draftCount} dueCount={totals.dueCount} dueTotal={totals.dueTotal} total={totals.total} />
+      {access.readOnly ? <StateCard state="empty" title="Invoices are read-only" message={access.message} /> : null}
       {state.message ? <div className="rounded-lg border border-warning/30 bg-warning/10 p-3 text-sm font-semibold text-warning">{state.message}</div> : null}
       <div className="flex flex-col justify-end gap-2 sm:flex-row">
-        {String(role || "").toLowerCase() === "admin" ? (
+        {access.canCreateInvoices ? (
           <Button disabled={autoCreating} isLoading={autoCreating} onClick={autoCreateFromBillables} type="button" variant="secondary">
             <Sparkles className="h-4 w-4" />
             Auto-create from billables
           </Button>
         ) : null}
-        <Link to="/app/invoices/new">
-          <Button type="button">
-            <Plus className="h-4 w-4" />
-            New invoice
-          </Button>
-        </Link>
+        {access.canCreateInvoices ? (
+          <Link to="/app/invoices/new">
+            <Button type="button">
+              <Plus className="h-4 w-4" />
+              New invoice
+            </Button>
+          </Link>
+        ) : null}
       </div>
       <SectionIssues issues={state.issues} />
       <InvoiceFilters clients={state.clients} filters={filters} matters={filteredMatters} onChange={updateFilter} onReset={resetFilters} />

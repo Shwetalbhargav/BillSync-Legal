@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { billingApi } from "../../api/billing";
 import { SkeletonBlock, StateCard } from "../../components/common";
 import { BillableFilters, BillablesTable, BillingHero, SectionIssues } from "../../components/billing/BillingWidgets";
+import { useBillingModuleAccess } from "./useBillingModuleAccess";
 
 const emptyFilters = {
   status: "",
@@ -14,6 +15,7 @@ function cleanFilters(filters) {
 }
 
 export function BillablesPage() {
+  const access = useBillingModuleAccess("billing");
   const [filters, setFilters] = useState(emptyFilters);
   const [state, setState] = useState({ status: "loading", billables: [], clients: [], matters: [], issues: [], message: "" });
 
@@ -49,11 +51,14 @@ export function BillablesPage() {
   }, [state.billables]);
 
   if (state.status === "loading") return <SkeletonBlock />;
-  if (state.status === "error") return <StateCard state="error" title="Billables need attention" message={state.message} actionLabel="Retry" />;
+  if (access.unavailable) return <StateCard state="empty" title="Billing is not available" message={access.message} />;
+  if (!access.canViewInvoices) return <StateCard state="permission" title="Billing is not available" message="You do not have access to this area." />;
+  if (state.status === "error") return <StateCard state="error" title="Billables need attention" message={state.message} actionLabel="Retry" onAction={() => load()} />;
 
   return (
     <div className="space-y-6">
       <BillingHero amount={totals.amount} count={state.billables.length} pendingCount={totals.pendingCount} />
+      {access.readOnly ? <StateCard state="empty" title="Billing is read-only" message={access.message} /> : null}
       <SectionIssues issues={state.issues} />
       <BillableFilters clients={state.clients} filters={filters} matters={state.matters} onChange={updateFilter} onReset={resetFilters} />
       <BillablesTable billables={state.billables} />

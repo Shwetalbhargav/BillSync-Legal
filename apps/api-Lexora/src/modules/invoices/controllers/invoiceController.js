@@ -13,6 +13,18 @@ import { fromPaise, toPaise } from '../../finance/money.js';
 const FINAL_STATUSES = new Set(['finalised', 'sent', 'partial', 'paid', 'overdue', 'void', 'revised']);
 const READY_STATUSES = new Set(['approved', 'ready_to_bill']);
 
+function workspaceFilter(req, extra = {}) {
+  return req.workspaceId ? { workspaceId: req.workspaceId, ...extra } : extra;
+}
+
+function workspaceAggregateMatch(req, extra = {}) {
+  if (!req.workspaceId) return extra;
+  const workspaceId = mongoose.Types.ObjectId.isValid(req.workspaceId)
+    ? new mongoose.Types.ObjectId(req.workspaceId)
+    : req.workspaceId;
+  return { workspaceId, ...extra };
+}
+
 function assertDraft(invoice, res) {
   if (FINAL_STATUSES.has(invoice.status)) {
     res.status(409).json({ error: 'Finalised invoices are immutable. Create a revision or credit instead.' });
@@ -26,11 +38,11 @@ function assertDraft(invoice, res) {
  */
 export const getInvoiceById = async (req, res) => {
   try {
-    const invoice = await Invoice.findById(req.params.id)
+    const invoice = await Invoice.findOne(workspaceFilter(req, { _id: req.params.id }))
       .populate('clientId caseId createdBy');
     if (!invoice) return res.status(404).json({ error: 'Invoice not found' });
 
-    const lines = await InvoiceLine.find({ invoiceId: invoice._id })
+    const lines = await InvoiceLine.find(workspaceFilter(req, { invoiceId: invoice._id }))
       .populate('timeEntryId');
 
     res.json({ ...invoice.toObject(), lines });
@@ -47,7 +59,7 @@ export const getInvoiceById = async (req, res) => {
 export const getAllInvoices = async (req, res) => {
   try {
     const { clientId, caseId, status, paymentDue, userId, from, to, dueFrom, dueTo } = req.query;
-    const filter = {};
+    const filter = workspaceFilter(req);
     if (clientId) filter.clientId = clientId;
     if (caseId) filter.caseId = caseId;
     if (userId) filter.createdBy = userId;
@@ -98,7 +110,7 @@ export const generateFromApprovedTime = async (req, res) => {
       return res.status(400).json({ error: 'clientId and timeEntryIds[] are required' });
     }
 
-    const entries = await TimeEntry.find({ _id: { $in: timeEntryIds } }).session(session);
+    const entries = await TimeEntry.find(workspaceFilter(req, { _id: { $in: timeEntryIds } })).session(session);
     if (entries.length !== timeEntryIds.length) {
       return res.status(404).json({ error: 'One or more time entries not found' });
     }
@@ -132,7 +144,8 @@ export const generateFromApprovedTime = async (req, res) => {
       tax: 0,
       total: 0,
       status: 'draft',
-      createdBy
+      createdBy: createdBy || req.user?.id,
+      workspaceId: req.workspaceId,
     }], { session });
     const inv = invoice[0];
 
@@ -143,6 +156,7 @@ export const generateFromApprovedTime = async (req, res) => {
       const amount = Number((rate * qtyHours).toFixed(2));
       return {
         invoiceId: inv._id,
+        workspaceId: req.workspaceId,
         timeEntryId: e._id,
         description: e.narrative || 'Professional services',
         qtyHours,
@@ -160,12 +174,12 @@ export const generateFromApprovedTime = async (req, res) => {
 
     // Mark time entries as billed
     await TimeEntry.updateMany(
-      { _id: { $in: timeEntryIds } },
+      workspaceFilter(req, { _id: { $in: timeEntryIds } }),
       { $set: { status: 'billed' } },
       { session }
     );
     await EmailEntry.updateMany(
-      { 'meta.timeEntryId': { $in: timeEntryIds } },
+      workspaceFilter(req, { 'meta.timeEntryId': { $in: timeEntryIds } }),
       { $set: { status: 'billed', billedAt: new Date() } },
       { session }
     );
@@ -196,7 +210,7 @@ export const generateFromApprovedBillables = async (req, res) => {
   const session = await mongoose.startSession();
   session.startTransaction();
   try {
-    const billables = await Billable.find({ _id: { $in: billableIds } }).session(session);
+    const billables = await Billable.find(workspaceFilter(req, { _id: { $in: billableIds } })).session(session);
     if (billables.length !== billableIds.length) {
       await session.abortTransaction();
       return res.status(404).json({ error: 'One or more billables not found' });
@@ -251,11 +265,13 @@ export const generateFromApprovedBillables = async (req, res) => {
       currency,
       status: 'draft',
       createdBy: createdBy || req.user?.id,
+      workspaceId: req.workspaceId,
       items,
     }], { session });
 
     await InvoiceLine.insertMany(items.map((item) => ({
       invoiceId: invoice._id,
+      workspaceId: req.workspaceId,
       billableId: item.billableId,
       description: item.description,
       qtyHours: Number(((item.durationMinutes || 0) / 60).toFixed(4)),
@@ -269,7 +285,7 @@ export const generateFromApprovedBillables = async (req, res) => {
     const totals = await recalcInvoiceTotals(invoice._id, { session });
 
     await Billable.updateMany(
-      { _id: { $in: billableIds } },
+      workspaceFilter(req, { _id: { $in: billableIds } }),
       {
         $set: {
           status: 'billed',
@@ -280,7 +296,7 @@ export const generateFromApprovedBillables = async (req, res) => {
       { session }
     );
     await EmailEntry.updateMany(
-      { 'meta.billableId': { $in: billableIds } },
+      workspaceFilter(req, { 'meta.billableId': { $in: billableIds } }),
       { $set: { status: 'billed', billedAt: new Date() } },
       { session }
     );
@@ -306,10 +322,10 @@ export const autoGenerateFromApprovedBillables = async (req, res) => {
   session.startTransaction();
   try {
     const { clientId, currency = 'INR', dueDate, periodStart, periodEnd, createdBy } = req.body || {};
-    const billableFilter = {
+    const billableFilter = workspaceFilter(req, {
       status: { $in: READY_STATUSES },
       $or: [{ invoiceId: { $exists: false } }, { invoiceId: null }],
-    };
+    });
     if (clientId) billableFilter.clientId = clientId;
 
     const billables = await Billable.find(billableFilter).sort({ clientId: 1, date: 1 }).session(session);
@@ -342,10 +358,12 @@ export const autoGenerateFromApprovedBillables = async (req, res) => {
         total: 0,
         status: 'draft',
         createdBy: createdBy || req.user?.id,
+        workspaceId: req.workspaceId,
       }], { session });
 
       const lines = groupBillables.map((billable) => ({
         invoiceId: invoice._id,
+        workspaceId: req.workspaceId,
         billableId: billable._id,
         description: billable.description || billable.category || 'Professional services',
         qtyHours: Number(((Number(billable.durationMinutes || 0)) / 60).toFixed(4)),
@@ -359,7 +377,7 @@ export const autoGenerateFromApprovedBillables = async (req, res) => {
       await InvoiceLine.insertMany(lines, { session });
       const totals = await recalcInvoiceTotals(invoice._id, { session });
       await Billable.updateMany(
-        { _id: { $in: groupBillables.map((billable) => billable._id) } },
+        workspaceFilter(req, { _id: { $in: groupBillables.map((billable) => billable._id) } }),
         { $set: { status: 'billed', invoiceId: invoice._id, pushedAt: new Date() } },
         { session }
       );
@@ -392,14 +410,14 @@ export const sendInvoice = async (req, res) => {
     const { id } = req.params;
     const { dueDate, pdfUrl, to, subject, message } = req.body || {};
 
-    const inv = await Invoice.findById(id).populate('clientId caseId createdBy');
+    const inv = await Invoice.findOne(workspaceFilter(req, { _id: id })).populate('clientId caseId createdBy');
     if (!inv) return res.status(404).json({ error: 'Invoice not found' });
     if (inv.status === 'void') return res.status(400).json({ error: 'Cannot send a void invoice' });
 
     if (inv.status === 'draft' || inv.status === 'ready_to_bill') {
       await recalcInvoiceTotals(inv._id);
     }
-    const refreshed = await Invoice.findById(id).populate('clientId caseId createdBy');
+    const refreshed = await Invoice.findOne(workspaceFilter(req, { _id: id })).populate('clientId caseId createdBy');
     if (dueDate) refreshed.dueDate = new Date(dueDate);
     if (pdfUrl) refreshed.pdfUrl = pdfUrl;
     refreshed.issueDate = refreshed.issueDate || new Date();
@@ -430,10 +448,10 @@ export const sendInvoice = async (req, res) => {
 
 export const downloadInvoicePdf = async (req, res) => {
   try {
-    const invoice = await Invoice.findById(req.params.id).populate('clientId caseId createdBy');
+    const invoice = await Invoice.findOne(workspaceFilter(req, { _id: req.params.id })).populate('clientId caseId createdBy');
     if (!invoice) return res.status(404).json({ error: 'Invoice not found' });
     if (invoice.status === 'draft' || invoice.status === 'ready_to_bill') await recalcInvoiceTotals(invoice._id);
-    const refreshed = await Invoice.findById(req.params.id).populate('clientId caseId createdBy');
+    const refreshed = await Invoice.findOne(workspaceFilter(req, { _id: req.params.id })).populate('clientId caseId createdBy');
     const pdf = await buildInvoicePdfBuffer(refreshed);
     res.setHeader('Content-Type', 'application/pdf');
     res.setHeader('Content-Disposition', `attachment; filename="invoice-${refreshed.invoiceNumber || refreshed._id}.pdf"`);
@@ -446,10 +464,10 @@ export const downloadInvoicePdf = async (req, res) => {
 
 export const previewInvoiceHtml = async (req, res) => {
   try {
-    const invoice = await Invoice.findById(req.params.id).populate('clientId caseId createdBy');
+    const invoice = await Invoice.findOne(workspaceFilter(req, { _id: req.params.id })).populate('clientId caseId createdBy');
     if (!invoice) return res.status(404).json({ error: 'Invoice not found' });
     if (invoice.status === 'draft' || invoice.status === 'ready_to_bill') await recalcInvoiceTotals(invoice._id);
-    const refreshed = await Invoice.findById(req.params.id).populate('clientId caseId createdBy');
+    const refreshed = await Invoice.findOne(workspaceFilter(req, { _id: req.params.id })).populate('clientId caseId createdBy');
     const html = await buildInvoiceHtml(refreshed);
     res.setHeader('Content-Type', 'text/html; charset=utf-8');
     return res.send(html);
@@ -465,7 +483,7 @@ export const previewInvoiceHtml = async (req, res) => {
 export const voidInvoice = async (req, res) => {
   try {
     const { id } = req.params;
-    const inv = await Invoice.findById(id);
+    const inv = await Invoice.findOne(workspaceFilter(req, { _id: id }));
     if (!inv) return res.status(404).json({ error: 'Invoice not found' });
     if (inv.status === 'paid') return res.status(409).json({ error: 'Paid invoices require a refund or revision workflow' });
     inv.status = 'void';
@@ -481,7 +499,7 @@ export const finaliseInvoice = async (req, res) => {
   const session = await mongoose.startSession();
   session.startTransaction();
   try {
-    const invoice = await Invoice.findById(req.params.id).session(session);
+    const invoice = await Invoice.findOne(workspaceFilter(req, { _id: req.params.id })).session(session);
     if (!invoice) {
       await session.abortTransaction();
       return res.status(404).json({ error: 'Invoice not found' });
@@ -492,7 +510,7 @@ export const finaliseInvoice = async (req, res) => {
     }
 
     const totals = await recalcInvoiceTotals(invoice._id, { session });
-    const lines = await InvoiceLine.find({ invoiceId: invoice._id }).session(session).lean();
+    const lines = await InvoiceLine.find(workspaceFilter(req, { invoiceId: invoice._id })).session(session).lean();
     invoice.invoiceNumber = invoice.invoiceNumber || await nextInvoiceNumber(req.workspaceId || invoice.workspaceId, session);
     invoice.status = 'finalised';
     invoice.finalisedAt = new Date();
@@ -533,7 +551,7 @@ export const reviseInvoice = async (req, res) => {
   const session = await mongoose.startSession();
   session.startTransaction();
   try {
-    const original = await Invoice.findById(req.params.id).session(session);
+    const original = await Invoice.findOne(workspaceFilter(req, { _id: req.params.id })).session(session);
     if (!original) {
       await session.abortTransaction();
       return res.status(404).json({ error: 'Invoice not found' });
@@ -552,6 +570,7 @@ export const reviseInvoice = async (req, res) => {
       revisionOf: original._id,
       revisionReason: req.body?.reason,
       createdBy: req.user?.id,
+      workspaceId: req.workspaceId,
       subtotal: 0,
       total: 0,
       subtotalPaise: 0,
@@ -575,7 +594,7 @@ export const reviseInvoice = async (req, res) => {
 export const getPipeline = async (req, res) => {
   try {
     const { clientId, caseId } = req.query;
-    const match = {};
+    const match = workspaceAggregateMatch(req);
     if (clientId) match.clientId = new mongoose.Types.ObjectId(clientId);
     if (caseId) match.caseId = new mongoose.Types.ObjectId(caseId);
 
@@ -609,6 +628,7 @@ export const getPendingSummaryByClient = async (req, res) => {
     const { clientId } = req.query;
 
     const match = {
+      ...workspaceAggregateMatch(req),
       status: { $nin: ["paid", "void"] }, // treat all other statuses as pending
     };
 

@@ -6,9 +6,11 @@ import { invoiceWorkspaceApi } from "../../api/invoiceWorkspace";
 import { paymentsApi } from "../../api/payments";
 import { Button, DataTable, SkeletonBlock, StateCard, StatusBadge } from "../../components/common";
 import { InvoiceChargeBreakup, InvoiceDetailPanel, InvoiceLinesTable, SectionIssues, ShareShell, formatDate } from "../../components/invoices/InvoiceWidgets";
+import { useBillingModuleAccess } from "../billing/useBillingModuleAccess";
 
 export function InvoiceDetailPage() {
   const { invoiceId } = useParams();
+  const access = useBillingModuleAccess("billing");
   const [state, setState] = useState({ status: "loading", invoice: null, logs: [], issues: [], message: "" });
   const [sendForm, setSendForm] = useState({ to: "", subject: "", message: "" });
   const [saving, setSaving] = useState(false);
@@ -91,7 +93,9 @@ export function InvoiceDetailPage() {
   }
 
   if (state.status === "loading") return <SkeletonBlock />;
-  if (state.status === "error") return <StateCard state="error" title="Invoice needs attention" message={state.message} actionLabel="Retry" />;
+  if (access.unavailable) return <StateCard state="empty" title="Invoice is not available" message={access.message} />;
+  if (!access.canViewInvoices) return <StateCard state="permission" title="Invoice is not available" message="You do not have access to this area." />;
+  if (state.status === "error") return <StateCard state="error" title="Invoice needs attention" message={state.message} actionLabel="Retry" onAction={load} />;
 
   return (
     <div className="space-y-6">
@@ -100,8 +104,9 @@ export function InvoiceDetailPage() {
         Back to invoices
       </Link>
       {state.message ? <div className="rounded-lg border border-warning/30 bg-warning/10 p-3 text-sm font-semibold text-warning">{state.message}</div> : null}
+      {access.readOnly ? <StateCard state="empty" title="Invoice is read-only" message={access.message} /> : null}
       <SectionIssues issues={state.issues} />
-      <InvoiceDetailPanel invoice={state.invoice} onSend={sendInvoice} onVoid={voidInvoice} saving={saving} />
+      <InvoiceDetailPanel canSend={access.canSendInvoices} canVoid={access.canCreateInvoices} invoice={state.invoice} onSend={sendInvoice} onVoid={voidInvoice} saving={saving} />
       <section className="surface-card p-5">
         <h2 className="text-base font-bold text-primary">Send or share</h2>
         <div className="mt-4 grid gap-3 md:grid-cols-3">
@@ -119,8 +124,8 @@ export function InvoiceDetailPage() {
           </label>
         </div>
         <div className="mt-4 flex flex-col gap-2 sm:flex-row">
-          <Button disabled={saving || state.invoice.status === "void"} isLoading={saving} onClick={sendInvoice} type="button">Send invoice</Button>
-          <Button disabled={creatingPortal || state.invoice.status === "void"} isLoading={creatingPortal} onClick={createPaymentLink} type="button" variant="secondary">
+          <Button disabled={!access.canSendInvoices || saving || state.invoice.status === "void"} isLoading={saving} onClick={sendInvoice} type="button">Send invoice</Button>
+          <Button disabled={!access.canSendInvoices || creatingPortal || state.invoice.status === "void"} isLoading={creatingPortal} onClick={createPaymentLink} type="button" variant="secondary">
             <Link2 className="h-4 w-4" />
             Create pay now link
           </Button>
@@ -128,7 +133,7 @@ export function InvoiceDetailPage() {
             <ExternalLink className="h-4 w-4" />
             Open PDF
           </a>
-          <Link className="focus-ring inline-flex items-center justify-center rounded-lg border border-border bg-panel px-4 py-2 text-sm font-semibold text-primary hover:bg-blueSoft" to={`/app/invoices/${invoiceId}/lines`}>Edit lines</Link>
+          {access.canCreateInvoices ? <Link className="focus-ring inline-flex items-center justify-center rounded-lg border border-border bg-panel px-4 py-2 text-sm font-semibold text-primary hover:bg-blueSoft" to={`/app/invoices/${invoiceId}/lines`}>Edit lines</Link> : null}
         </div>
         {portalLink ? (
           <div className="mt-4 rounded-lg border border-success/25 bg-success/10 p-4 text-sm leading-6 text-ink">

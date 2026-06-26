@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { authenticate } from '../../../middleware/auth.js';
-import { requireFinancialMutation, requireFinancialRead } from '../../../middleware/commercialPermissions.js';
+import { BILLING_PERMISSIONS, requireBillingAccess } from '../../billing/services/billingAccessService.js';
 import {
   validateGenerateFromBillables,
   validateGenerateFromTime,
@@ -26,18 +26,18 @@ const router = Router();
 
 router.use(authenticate);
 
-router.get('/', requireFinancialRead, getAllInvoices);
-router.post('/from-time', requireFinancialMutation, validateGenerateFromTime, generateFromApprovedTime);
-router.post('/from-billables/auto', requireFinancialMutation, autoGenerateFromApprovedBillables);
-router.post('/from-billables', requireFinancialMutation, validateGenerateFromBillables, generateFromApprovedBillables);
-router.get('/__analytics/pending-by-client', requireFinancialRead, getPendingSummaryByClient);
-router.get('/__pipeline', requireFinancialRead, getPipeline);
-router.get('/:id', requireFinancialRead, getInvoiceById);
-router.get('/:id/pdf', requireFinancialRead, downloadInvoicePdf);
-router.get('/:id/document', requireFinancialRead, previewInvoiceHtml);
-router.post('/:id/finalise', requireFinancialMutation, finaliseInvoice);
-router.post('/:id/revise', requireFinancialMutation, reviseInvoice);
-router.post('/:id/send', requireFinancialMutation, validateSendInvoice, sendInvoice);
-router.post('/:id/void', requireFinancialMutation, voidInvoice);
+router.get('/', requireBillingAccess(BILLING_PERMISSIONS.invoiceView), getAllInvoices);
+router.post('/from-time', requireBillingAccess(BILLING_PERMISSIONS.invoiceCreate, { write: true }), validateGenerateFromTime, generateFromApprovedTime);
+router.post('/from-billables/auto', requireBillingAccess(BILLING_PERMISSIONS.invoiceCreate, { write: true }), autoGenerateFromApprovedBillables);
+router.post('/from-billables', requireBillingAccess(BILLING_PERMISSIONS.invoiceCreate, { write: true }), validateGenerateFromBillables, generateFromApprovedBillables);
+router.get('/__analytics/pending-by-client', requireBillingAccess(BILLING_PERMISSIONS.invoiceView), getPendingSummaryByClient);
+router.get('/__pipeline', requireBillingAccess(BILLING_PERMISSIONS.invoiceView), getPipeline);
+router.get('/:id', requireBillingAccess(BILLING_PERMISSIONS.invoiceView), getInvoiceById);
+router.get('/:id/pdf', requireBillingAccess(BILLING_PERMISSIONS.invoiceView), downloadInvoicePdf);
+router.get('/:id/document', requireBillingAccess(BILLING_PERMISSIONS.invoiceView), previewInvoiceHtml);
+router.post('/:id/finalise', requireBillingAccess(BILLING_PERMISSIONS.invoiceCreate, { write: true }), finaliseInvoice);
+router.post('/:id/revise', requireBillingAccess(BILLING_PERMISSIONS.invoiceCreate, { write: true }), reviseInvoice);
+router.post('/:id/send', requireBillingAccess(BILLING_PERMISSIONS.invoiceSend, { write: true }), validateSendInvoice, sendInvoice);
+router.post('/:id/void', requireBillingAccess(BILLING_PERMISSIONS.invoiceCreate, { write: true }), voidInvoice);
 
 export default router;

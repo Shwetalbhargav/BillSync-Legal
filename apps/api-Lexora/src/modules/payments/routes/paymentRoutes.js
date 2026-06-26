@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { authenticate } from '../../../middleware/auth.js';
-import { requireFinancialMutation, requireFinancialRead } from '../../../middleware/commercialPermissions.js';
+import { BILLING_PERMISSIONS, FINANCE_MODULE_KEY, requireBillingAccess } from '../../billing/services/billingAccessService.js';
 import {
   validateCreatePayment,
   validatePortalPayment,
@@ -35,12 +35,12 @@ router.use(authenticate);
  *  POST /api/payments/:id/reconcile
  *  DELETE /api/payments/:id
  */
-router.get('/', requireFinancialRead, listPayments);
-router.get('/finance-summary', requireFinancialRead, financeSummary);
-router.post('/', requireFinancialMutation, validateCreatePayment, createPayment);
-router.post('/write-off', requireFinancialMutation, validateWriteOff, createWriteOff);
-router.post('/portal-link/:invoiceId', requireFinancialMutation, createPortalLink);
-router.post('/:id/reconcile', requireFinancialMutation, validateReconcilePayment, reconcilePayment);
-router.delete('/:id', requireFinancialMutation, deletePayment);
+router.get('/', requireBillingAccess(BILLING_PERMISSIONS.invoiceView, { moduleKey: FINANCE_MODULE_KEY }), listPayments);
+router.get('/finance-summary', requireBillingAccess(BILLING_PERMISSIONS.invoiceView, { moduleKey: FINANCE_MODULE_KEY }), financeSummary);
+router.post('/', requireBillingAccess(BILLING_PERMISSIONS.paymentRecord, { write: true, moduleKey: FINANCE_MODULE_KEY }), validateCreatePayment, createPayment);
+router.post('/write-off', requireBillingAccess(BILLING_PERMISSIONS.paymentRecord, { write: true, moduleKey: FINANCE_MODULE_KEY }), validateWriteOff, createWriteOff);
+router.post('/portal-link/:invoiceId', requireBillingAccess(BILLING_PERMISSIONS.invoiceSend, { write: true, moduleKey: FINANCE_MODULE_KEY }), createPortalLink);
+router.post('/:id/reconcile', requireBillingAccess(BILLING_PERMISSIONS.paymentRecord, { write: true, moduleKey: FINANCE_MODULE_KEY }), validateReconcilePayment, reconcilePayment);
+router.delete('/:id', requireBillingAccess(BILLING_PERMISSIONS.paymentRecord, { write: true, moduleKey: FINANCE_MODULE_KEY }), deletePayment);
 
 export default router;

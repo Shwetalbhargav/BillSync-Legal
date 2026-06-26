@@ -4,8 +4,12 @@ import { Invoice } from '../models/Invoice.js';
 import { recalcInvoiceTotals } from '../services/invoiceTotalsService.js';
 import { toPaise } from '../../finance/money.js';
 
-async function ensureMutableInvoice(invoiceId, res) {
-  const invoice = await Invoice.findById(invoiceId).select('status');
+function workspaceFilter(req, extra = {}) {
+  return req.workspaceId ? { workspaceId: req.workspaceId, ...extra } : extra;
+}
+
+async function ensureMutableInvoice(req, invoiceId, res) {
+  const invoice = await Invoice.findOne(workspaceFilter(req, { _id: invoiceId })).select('status');
   if (!invoice) {
     res.status(404).json({ error: 'Invoice not found' });
     return false;
@@ -20,8 +24,8 @@ async function ensureMutableInvoice(invoiceId, res) {
 export const listLines = async (req, res) => {
   try {
     const { invoiceId } = req.params;
-    if (!await ensureMutableInvoice(invoiceId, res)) return;
-    const lines = await InvoiceLine.find({ invoiceId }).populate('timeEntryId');
+    if (!await ensureMutableInvoice(req, invoiceId, res)) return;
+    const lines = await InvoiceLine.find(workspaceFilter(req, { invoiceId })).populate('timeEntryId');
     res.json(lines);
   } catch (e) {
     res.status(500).json({ error: 'Failed to fetch invoice lines' });
@@ -34,7 +38,8 @@ export const addLine = async (req, res) => {
     const { description, qtyHours = 0, rate = 0, amount, timeEntryId, billableId, taxCategory } = req.body;
 
     const computed = amount != null ? Number(amount) : Number((Number(qtyHours) * Number(rate)).toFixed(2));
-    const line = await InvoiceLine.create({ invoiceId, description, qtyHours, rate, ratePaise: toPaise(rate), amount: computed, amountPaise: toPaise(computed), timeEntryId, billableId, taxCategory });
+    if (!await ensureMutableInvoice(req, invoiceId, res)) return;
+    const line = await InvoiceLine.create({ workspaceId: req.workspaceId, invoiceId, description, qtyHours, rate, ratePaise: toPaise(rate), amount: computed, amountPaise: toPaise(computed), timeEntryId, billableId, taxCategory });
     const totals = await recalcInvoiceTotals(invoiceId);
     res.status(201).json({ line, totals });
   } catch (e) {
@@ -45,7 +50,7 @@ export const addLine = async (req, res) => {
 export const updateLine = async (req, res) => {
   try {
     const { invoiceId, lineId } = req.params;
-    if (!await ensureMutableInvoice(invoiceId, res)) return;
+    if (!await ensureMutableInvoice(req, invoiceId, res)) return;
     const { description, qtyHours, rate, amount, taxCategory } = req.body;
 
     const patch = {};
@@ -61,14 +66,14 @@ export const updateLine = async (req, res) => {
     if ((qtyHours != null || rate != null) && amount == null) {
       const q = qtyHours != null ? qtyHours : undefined;
       const r = rate != null ? rate : undefined;
-      const existing = await InvoiceLine.findById(lineId);
+      const existing = await InvoiceLine.findOne(workspaceFilter(req, { _id: lineId, invoiceId }));
       const finalQty = q != null ? Number(q) : Number(existing.qtyHours || 0);
       const finalRate = r != null ? Number(r) : Number(existing.rate || 0);
       patch.amount = Number((finalQty * finalRate).toFixed(2));
       patch.amountPaise = toPaise(patch.amount);
     }
 
-    const line = await InvoiceLine.findOneAndUpdate({ _id: lineId, invoiceId }, patch, { new: true });
+    const line = await InvoiceLine.findOneAndUpdate(workspaceFilter(req, { _id: lineId, invoiceId }), patch, { new: true });
     if (!line) return res.status(404).json({ error: 'Line not found' });
     const totals = await recalcInvoiceTotals(invoiceId);
     res.json({ line, totals });
@@ -80,8 +85,8 @@ export const updateLine = async (req, res) => {
 export const deleteLine = async (req, res) => {
   try {
     const { invoiceId, lineId } = req.params;
-    if (!await ensureMutableInvoice(invoiceId, res)) return;
-    const del = await InvoiceLine.findOneAndDelete({ _id: lineId, invoiceId });
+    if (!await ensureMutableInvoice(req, invoiceId, res)) return;
+    const del = await InvoiceLine.findOneAndDelete(workspaceFilter(req, { _id: lineId, invoiceId }));
     if (!del) return res.status(404).json({ error: 'Line not found' });
     const totals = await recalcInvoiceTotals(invoiceId);
     res.json({ success: true, totals });

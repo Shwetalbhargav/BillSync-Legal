@@ -83,7 +83,7 @@ export function SectionIssues({ issues }) {
   );
 }
 
-export function PaymentEntryForm({ form, invoices, onChange, onSubmit, saving }) {
+export function PaymentEntryForm({ canRecord = true, form, invoices, onChange, onSubmit, saving }) {
   return (
     <Card>
       <CardHeader title="Record payment" description="Add a receipt against an existing invoice." />
@@ -125,13 +125,13 @@ export function PaymentEntryForm({ form, invoices, onChange, onSubmit, saving })
           Notes
           <textarea className="focus-ring mt-1 min-h-24 w-full rounded-lg border border-border bg-panel px-3 py-3" onChange={(event) => onChange("notes", event.target.value)} value={form.notes} />
         </label>
-        <Button className="mt-4 w-full sm:w-auto" disabled={saving} isLoading={saving} onClick={onSubmit} type="button">Save payment</Button>
+        <Button className="mt-4 w-full sm:w-auto" disabled={!canRecord || saving} isLoading={saving} onClick={onSubmit} type="button">Save payment</Button>
       </CardBody>
     </Card>
   );
 }
 
-export function PaymentsTable({ onFail, onReconcile, payments, savingId }) {
+export function PaymentsTable({ canRecord = true, onFail, onReconcile, payments, savingId }) {
   if (!payments.length) {
     return <StateCard state="empty" title="No payments recorded" message="Payments will appear after receipts are recorded or submitted through the client payment page." />;
   }
@@ -154,8 +154,8 @@ export function PaymentsTable({ onFail, onReconcile, payments, savingId }) {
         date: formatDate(payment.paidAt),
         action: (
           <div className="flex flex-wrap gap-2">
-            <Button disabled={savingId === payment.id} onClick={() => onReconcile(payment, "cleared")} size="sm" type="button" variant="success">Clear</Button>
-            <Button disabled={savingId === payment.id} onClick={() => onFail(payment)} size="sm" type="button" variant="danger">Mark failed</Button>
+            <Button disabled={!canRecord || savingId === payment.id} onClick={() => onReconcile(payment, "cleared")} size="sm" type="button" variant="success">Clear</Button>
+            <Button disabled={!canRecord || savingId === payment.id} onClick={() => onFail(payment)} size="sm" type="button" variant="danger">Mark failed</Button>
           </div>
         ),
       }))}
@@ -201,7 +201,7 @@ export function AgingPanel({ aging, agingByClient }) {
   );
 }
 
-export function PortalSetupPanel({ onCreate, portalLink, saving }) {
+export function PortalSetupPanel({ canCreate = true, onCreate, portalLink, saving }) {
   return (
     <section className="surface-card p-5">
       <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
@@ -210,7 +210,7 @@ export function PortalSetupPanel({ onCreate, portalLink, saving }) {
           <h2 className="text-xl font-bold text-primary">Create a payment submission link</h2>
           <p className="mt-2 text-sm leading-6 text-muted">Clients can submit payment details for reconciliation. External collection is not connected in this branch.</p>
         </div>
-        <Button disabled={saving} isLoading={saving} onClick={onCreate} type="button">
+        <Button disabled={!canCreate || saving} isLoading={saving} onClick={onCreate} type="button">
           <Link2 className="h-4 w-4" />
           Create link
         </Button>

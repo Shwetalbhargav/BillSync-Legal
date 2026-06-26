@@ -165,7 +165,7 @@ export function BillablesTable({ billables }) {
 
 export function ApprovalQueue({ billables, canApprove, onApprove, onReject, savingId }) {
   if (!canApprove) {
-    return <StateCard state="permission" title="Approval is reserved for firm reviewers" message="You can review billing details, but approvals need an administrator account in this workspace." />;
+    return <StateCard state="permission" title="Approval is not available" message="You can review billing details, but your access does not include approval changes." />;
   }
 
   if (!billables.length) {

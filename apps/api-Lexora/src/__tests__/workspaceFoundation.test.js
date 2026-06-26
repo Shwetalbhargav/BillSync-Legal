@@ -49,6 +49,10 @@ test('plans only reference known features and modules', () => {
 
 test('roles only reference known permissions', () => {
   const permissionKeys = new Set(CORE_PERMISSIONS.map((permission) => permission.key));
+  expect(permissionKeys.has('invoice.view')).toBe(true);
+  expect(permissionKeys.has('invoice.create')).toBe(true);
+  expect(permissionKeys.has('invoice.send')).toBe(true);
+  expect(permissionKeys.has('payment.record')).toBe(true);
   for (const role of CORE_ROLES) {
     expect(role.permissionKeys.every((key) => permissionKeys.has(key))).toBe(true);
   }
