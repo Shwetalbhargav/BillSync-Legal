@@ -3,29 +3,17 @@ import Permission from '../models/Permission.js';
 import Policy from '../models/Policy.js';
 import Role from '../models/Role.js';
 import { normalizeRole } from '../roles.js';
+import { idText, uniq } from '../../../../../../packages/shared/src/index.js';
+import {
+  PERMISSION_DENIED_MESSAGE,
+  normalizePermissionKey,
+  scopeMatchesPolicy,
+} from '../../../../../../packages/rbac/src/index.js';
 import { CORE_PERMISSIONS, CORE_ROLES } from './workspaceFoundationService.js';
-
-export const PERMISSION_DENIED_MESSAGE = 'You do not have access to this area.';
 
 const CORE_ROLE_BY_KEY = new Map(CORE_ROLES.map((role) => [role.key, role]));
 const CORE_PERMISSION_BY_KEY = new Map(CORE_PERMISSIONS.map((permission) => [permission.key, permission]));
-
-function uniq(values) {
-  return [...new Set(values.filter(Boolean))];
-}
-
-function idText(value) {
-  return value == null ? '' : String(value);
-}
-
-function containsId(values = [], id) {
-  const target = idText(id);
-  return Array.isArray(values) && values.map(idText).includes(target);
-}
-
-export function normalizePermissionKey(permission) {
-  return String(permission || '').trim().toLowerCase();
-}
+export { PERMISSION_DENIED_MESSAGE, normalizePermissionKey, scopeMatchesPolicy };
 
 export function publicPermission(permission) {
   if (!permission) return null;
@@ -54,43 +42,6 @@ export function publicRole(role) {
     system: obj.system !== undefined ? obj.system : true,
     description: obj.description || fallback.description,
   };
-}
-
-export function scopeMatchesPolicy({ policy, userId, user = {}, resource = {} }) {
-  const obj = typeof policy.toObject === 'function' ? policy.toObject() : policy;
-  const conditions = obj.conditions || {};
-  const scope = obj.scope || conditions.scope || 'workspace';
-
-  if (scope === 'workspace') return true;
-
-  if (scope === 'assigned_matter') {
-    return containsId(resource.assignedUserIds, userId)
-      || containsId(resource.matter?.assignedUserIds, userId)
-      || idText(resource.assignedUserId || resource.matter?.assignedUserId) === idText(userId);
-  }
-
-  if (scope === 'department') {
-    const allowed = conditions.departmentKeys || conditions.departments || [];
-    return containsId(allowed, resource.departmentKey || user.departmentKey);
-  }
-
-  if (scope === 'office') {
-    const allowed = conditions.officeKeys || conditions.offices || [];
-    return containsId(allowed, resource.officeKey || user.officeKey);
-  }
-
-  if (scope === 'practice_group') {
-    const allowed = conditions.practiceGroupKeys || conditions.practiceGroups || [];
-    return containsId(allowed, resource.practiceGroupKey || user.practiceGroupKey);
-  }
-
-  if (scope === 'financial_only') {
-    return Boolean(resource.financialOnly || resource.financial)
-      || String(resource.resourceType || '').startsWith('finance')
-      || String(resource.resourceType || '').startsWith('billing');
-  }
-
-  return false;
 }
 
 async function canReadCollections() {
