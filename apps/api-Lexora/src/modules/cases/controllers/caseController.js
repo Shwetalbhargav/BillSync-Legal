@@ -7,7 +7,6 @@ import { TimeEntry } from '../../timeEntries/models/TimeEntry.js';
 import { Invoice } from '../../invoices/models/Invoice.js';
 import { Payment } from '../../payments/models/Payment.js';
 import User from '../../users/models/User.js';
-import Firm from '../../firms/models/Firm.js';
 
 // ---------- helpers ----------
 const CASE_MUTABLE_FIELDS = [
@@ -86,6 +85,7 @@ const buildMeta = ({ page, limit }, total) => ({
   totalPages: total ? Math.ceil(total / limit) : 0,
 });
 const escapeRegex = (value) => String(value).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+const workspaceFilter = (req, extra = {}) => ({ workspaceId: req.workspaceId, ...extra });
 
 // Compute amount for a time entry if not stored
 const computeTimeAmount = (te) => {
@@ -95,11 +95,11 @@ const computeTimeAmount = (te) => {
   return +(rate * (minutes / 60)).toFixed(2);
 };
 
-const validateCaseReferences = async (payload, res) => {
+const validateCaseReferences = async (payload, req, res) => {
   const errors = [];
 
   if (hasOwn(payload, 'clientId') && payload.clientId !== null) {
-    const clientExists = await Client.exists({ _id: payload.clientId });
+    const clientExists = await Client.exists(workspaceFilter(req, { _id: payload.clientId }));
     if (!clientExists) {
       errors.push({ field: 'clientId', message: 'clientId does not reference an existing client' });
     }
@@ -107,7 +107,7 @@ const validateCaseReferences = async (payload, res) => {
 
   for (const field of USER_REFERENCE_FIELDS) {
     if (!hasOwn(payload, field) || payload[field] === null) continue;
-    const userExists = await User.exists({ _id: payload[field] });
+    const userExists = await User.exists(workspaceFilter(req, { _id: payload[field] }));
     if (!userExists) {
       errors.push({ field, message: `${field} does not reference an existing user` });
     }
@@ -123,7 +123,7 @@ const validateCaseReferences = async (payload, res) => {
       }
       seen.add(key);
 
-      const userExists = await User.exists({ _id: userId });
+      const userExists = await User.exists(workspaceFilter(req, { _id: userId }));
       if (!userExists) {
         errors.push({
           field: `assignedUsers[${index}]`,
@@ -155,11 +155,12 @@ const validateCaseDateOrder = ({ openedAt, closedAt }, res) => {
   return false;
 };
 
-const ensureUniqueCaseTitle = async ({ clientId, title, excludeCaseId }, res) => {
+const ensureUniqueCaseTitle = async ({ clientId, title, excludeCaseId, req }, res) => {
   if (!clientId || !title) return true;
 
   const query = {
     clientId,
+    workspaceId: req.workspaceId,
     title: new RegExp(`^${escapeRegex(String(title).trim())}$`, 'i'),
     status: { $ne: 'archived' },
   };
@@ -175,8 +176,8 @@ const ensureUniqueCaseTitle = async ({ clientId, title, excludeCaseId }, res) =>
   return false;
 };
 
-const ensureClientExists = async (clientId, res) => {
-  const exists = await Client.exists({ _id: clientId });
+const ensureClientExists = async (clientId, req, res) => {
+  const exists = await Client.exists(workspaceFilter(req, { _id: clientId }));
   if (!exists) {
     notFound(res, 'Client not found');
     return false;
@@ -218,12 +219,13 @@ const applyStatusLifecycle = (payload, res) => {
 export const createCase = async (req, res) => {
   try {
     const payload = pickCasePayload(req.body);
-    const refsValid = await validateCaseReferences(payload, res);
+    const refsValid = await validateCaseReferences(payload, req, res);
     if (!refsValid) return;
 
     const uniqueTitle = await ensureUniqueCaseTitle({
       clientId: payload.clientId,
       title: payload.title,
+      req,
     }, res);
     if (!uniqueTitle) return;
 
@@ -231,7 +233,7 @@ export const createCase = async (req, res) => {
     if (!lifecycle) return;
     if (!validateCaseDateOrder(lifecycle.payload, res)) return;
 
-    const doc = await Case.create(lifecycle.payload);
+    const doc = await Case.create({ ...lifecycle.payload, workspaceId: req.workspaceId });
     res.status(201).json({ ok: true, data: doc });
   } catch (err) {
     res.status(400).json({ ok: false, message: err.message });
@@ -241,10 +243,9 @@ export const createCase = async (req, res) => {
 export const getAllCases = async (req, res) => {
   try {
     const { page, limit, skip } = getPagination(req.query);
-    const q = {};
+    const q = workspaceFilter(req);
     const requesterId = req.user?.id;
     const requesterRole = String(req.user?.commercialRole || req.user?.role || '').toLowerCase();
-    const workspace = req.workspaceId ? await Firm.findById(req.workspaceId).select('restrictedMatterVisibility') : null;
 
     if (req.query.clientId) q.clientId = req.query.clientId;
     if (req.query.status) q.status = req.query.status;
@@ -255,8 +256,7 @@ export const getAllCases = async (req, res) => {
       q.$or = [{ title: pattern }, { description: pattern }, { case_type: pattern }];
     }
     if (
-      workspace?.restrictedMatterVisibility
-      && requesterRole === 'lawyer'
+      requesterRole === 'lawyer'
       && requesterId
       && mongoose.Types.ObjectId.isValid(requesterId)
     ) {
@@ -291,13 +291,12 @@ export const getAllCases = async (req, res) => {
 
 export const getCaseById = async (req, res) => {
   try {
-    const doc = await Case.findById(req.params.caseId)
+    const doc = await Case.findOne(workspaceFilter(req, { _id: req.params.caseId }))
       .populate('clientId', 'displayName')
       .populate('assignedUsers', 'name role')
       .populate('primaryLawyerId', 'name');
     if (!doc) return notFound(res, 'Case not found');
-    const workspace = req.workspaceId ? await Firm.findById(req.workspaceId).select('restrictedMatterVisibility') : null;
-    if (workspace?.restrictedMatterVisibility && String(req.user?.commercialRole || req.user?.role || '').toLowerCase() === 'lawyer') {
+    if (String(req.user?.commercialRole || req.user?.role || '').toLowerCase() === 'lawyer') {
       const requesterId = String(req.user?.id || '');
       const allowed = [
         doc.leadPartnerId,
@@ -315,11 +314,11 @@ export const getCaseById = async (req, res) => {
 
 export const updateCase = async (req, res) => {
   try {
-    const existing = await Case.findById(req.params.caseId).select('clientId title openedAt closedAt');
+    const existing = await Case.findOne(workspaceFilter(req, { _id: req.params.caseId })).select('clientId title openedAt closedAt');
     if (!existing) return notFound(res, 'Case not found');
 
     const payload = pickCasePayload(req.body);
-    const refsValid = await validateCaseReferences(payload, res);
+    const refsValid = await validateCaseReferences(payload, req, res);
     if (!refsValid) return;
 
     const lifecycle = applyStatusLifecycle(payload, res);
@@ -332,6 +331,7 @@ export const updateCase = async (req, res) => {
       clientId: nextClientId,
       title: nextTitle,
       excludeCaseId: req.params.caseId,
+      req,
     }, res);
     if (!uniqueTitle) return;
 
@@ -347,7 +347,7 @@ export const updateCase = async (req, res) => {
       ? { $set: nextPayload, $unset: { closedAt: '' } }
       : nextPayload;
 
-    const updated = await Case.findByIdAndUpdate(req.params.caseId, update, {
+    const updated = await Case.findOneAndUpdate(workspaceFilter(req, { _id: req.params.caseId }), update, {
       new: true,
       runValidators: true,
     });
@@ -360,18 +360,18 @@ export const updateCase = async (req, res) => {
 
 export const deleteCase = async (req, res) => {
   try {
-    const caseDoc = await Case.findById(req.params.caseId).select('_id status closedAt');
+    const caseDoc = await Case.findOne(workspaceFilter(req, { _id: req.params.caseId })).select('_id status closedAt');
     if (!caseDoc) return notFound(res, 'Case not found');
 
     const [timeEntries, invoices, assignments] = await Promise.all([
-      TimeEntry.countDocuments({ caseId: req.params.caseId }),
-      Invoice.find({ caseId: req.params.caseId }).select('_id'),
-      CaseAssignment.countDocuments({ caseId: req.params.caseId }),
+      TimeEntry.countDocuments(workspaceFilter(req, { caseId: req.params.caseId })),
+      Invoice.find(workspaceFilter(req, { caseId: req.params.caseId })).select('_id'),
+      CaseAssignment.countDocuments(workspaceFilter(req, { caseId: req.params.caseId })),
     ]);
 
     const invoiceIds = invoices.map((invoice) => invoice._id);
     const payments = invoiceIds.length
-      ? await Payment.countDocuments({ invoiceId: { $in: invoiceIds } })
+      ? await Payment.countDocuments(workspaceFilter(req, { invoiceId: { $in: invoiceIds } }))
       : 0;
 
     const details = {
@@ -385,7 +385,7 @@ export const deleteCase = async (req, res) => {
       const update = { status: 'archived' };
       if (!caseDoc.closedAt) update.closedAt = new Date();
 
-      const archived = await Case.findByIdAndUpdate(req.params.caseId, update, {
+      const archived = await Case.findOneAndUpdate(workspaceFilter(req, { _id: req.params.caseId }), update, {
         new: true,
         runValidators: true,
       });
@@ -399,7 +399,7 @@ export const deleteCase = async (req, res) => {
       });
     }
 
-    await Case.findByIdAndDelete(req.params.caseId);
+    await Case.findOneAndDelete(workspaceFilter(req, { _id: req.params.caseId }));
     res.json({ ok: true, deleted: true });
   } catch (err) {
     res.status(500).json({ ok: false, message: 'Failed to delete case' });
@@ -428,7 +428,7 @@ export const transitionStatus = async (req, res) => {
         $unset: { closedAt: '' },
       };
 
-    const updated = await Case.findByIdAndUpdate(req.params.caseId, update, {
+    const updated = await Case.findOneAndUpdate(workspaceFilter(req, { _id: req.params.caseId }), update, {
       new: true,
       runValidators: true,
     });
@@ -444,7 +444,7 @@ export const listCaseTimeEntries = async (req, res) => {
   try {
     const { page = 1, limit = 50 } = req.query;
     const skip = (Number(page) - 1) * Number(limit);
-    const q = { caseId: req.params.caseId };
+    const q = workspaceFilter(req, { caseId: req.params.caseId });
 
     const [items, total] = await Promise.all([
       TimeEntry.find(q).sort({ date: -1 }).skip(skip).limit(Number(limit)),
@@ -458,7 +458,7 @@ export const listCaseTimeEntries = async (req, res) => {
 
 export const listCaseInvoices = async (req, res) => {
   try {
-    const items = await Invoice.find({ caseId: req.params.caseId }).sort({ issueDate: -1 });
+    const items = await Invoice.find(workspaceFilter(req, { caseId: req.params.caseId })).sort({ issueDate: -1 });
     res.json({ ok: true, data: items });
   } catch (err) {
     res.status(400).json({ ok: false, message: err.message });
@@ -467,10 +467,10 @@ export const listCaseInvoices = async (req, res) => {
 
 export const listCasePayments = async (req, res) => {
   try {
-    const invoices = await Invoice.find({ caseId: req.params.caseId }).select('_id');
+    const invoices = await Invoice.find(workspaceFilter(req, { caseId: req.params.caseId })).select('_id');
     const invoiceIds = invoices.map(i => i._id);
     const items = invoiceIds.length
-      ? await Payment.find({ invoiceId: { $in: invoiceIds } }).sort({ receivedDate: -1 })
+      ? await Payment.find(workspaceFilter(req, { invoiceId: { $in: invoiceIds } })).sort({ receivedDate: -1 })
       : [];
     res.json({ ok: true, data: items });
   } catch (err) {
@@ -485,6 +485,7 @@ export const caseRollup = async (req, res) => {
     const clearedOnly = req.query.clearedOnly !== 'false';
 
     const wipEntries = await TimeEntry.find({
+      workspaceId: req.workspaceId,
       caseId,
       status: { $in: ['submitted', 'approved'] }
     }).select('billableMinutes rateApplied amount');
@@ -492,6 +493,7 @@ export const caseRollup = async (req, res) => {
     const wip = wipEntries.reduce((sum, te) => sum + computeTimeAmount(te), 0);
 
     const invoices = await Invoice.find({
+      workspaceId: req.workspaceId,
       caseId,
       status: { $nin: ['void', 'revised'] }
     }).select('total totalPaise balancePaise');
@@ -501,7 +503,7 @@ export const caseRollup = async (req, res) => {
     const billed = billedPaise / 100;
 
     const invoiceIds = invoices.map(i => i._id);
-    const payQuery = { invoiceId: { $in: invoiceIds } };
+    const payQuery = workspaceFilter(req, { invoiceId: { $in: invoiceIds } });
     if (clearedOnly) payQuery.status = 'cleared';
 
     const payments = invoiceIds.length
@@ -540,11 +542,11 @@ export const caseRollup = async (req, res) => {
 export const getCasesByClient = async (req, res) => {
   try {
     const { clientId } = req.params;
-    const exists = await ensureClientExists(clientId, res);
+    const exists = await ensureClientExists(clientId, req, res);
     if (!exists) return;
 
     const { page, limit, skip } = getPagination(req.query);
-    const q = { clientId };
+    const q = workspaceFilter(req, { clientId });
     if (req.query.status) q.status = req.query.status;
     if (req.query.caseType) q.case_type = new RegExp(`^${escapeRegex(req.query.caseType)}$`, 'i');
     if (req.query.caseTypeId) q.case_type_id = req.query.caseTypeId;

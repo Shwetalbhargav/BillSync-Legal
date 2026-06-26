@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { authenticate, authorize } from '../../../middleware/auth.js';
+import { authenticate } from '../../../middleware/auth.js';
 import { CaseAssignmentController } from '../controllers/caseAssignmentController.js';
 import {
   normalizeAssignmentPayload,
@@ -12,28 +12,26 @@ import {
   validateCreateCaseAssignment,
   validateUpdateCaseAssignment,
 } from '../validators/caseValidators.js';
+import { MATTER_PERMISSIONS, requireMatterAccess } from '../services/matterAccessService.js';
 
 const router = Router();
 
 router.use(authenticate);
 
-const canReadAssignments = authorize('admin', 'partner', 'lawyer', 'associate', 'intern');
-const canWriteAssignments = authorize('admin', 'partner', 'lawyer');
-
 router.post(
   '/',
-  canWriteAssignments,
+  requireMatterAccess(MATTER_PERMISSIONS.assign, { write: true }),
   rejectUnknownAssignmentCreateFields,
   normalizeAssignmentPayload,
   validateCreateCaseAssignment,
   CaseAssignmentController.assign
 );
-router.get('/', canReadAssignments, validateAssignmentQuery, CaseAssignmentController.list);
-router.get('/timeline/:caseId', canReadAssignments, validateCaseIdParam, CaseAssignmentController.staffingTimeline);
-router.get('/:id', canReadAssignments, validateAssignmentIdParam, CaseAssignmentController.getById);
+router.get('/', requireMatterAccess(MATTER_PERMISSIONS.read), validateAssignmentQuery, CaseAssignmentController.list);
+router.get('/timeline/:caseId', requireMatterAccess(MATTER_PERMISSIONS.read), validateCaseIdParam, CaseAssignmentController.staffingTimeline);
+router.get('/:id', requireMatterAccess(MATTER_PERMISSIONS.read), validateAssignmentIdParam, CaseAssignmentController.getById);
 router.put(
   '/:id',
-  canWriteAssignments,
+  requireMatterAccess(MATTER_PERMISSIONS.assign, { write: true }),
   validateAssignmentIdParam,
   rejectUnknownAssignmentUpdateFields,
   normalizeAssignmentPayload,
@@ -41,6 +39,6 @@ router.put(
   validateUpdateCaseAssignment,
   CaseAssignmentController.update
 );
-router.delete('/:id', canWriteAssignments, validateAssignmentIdParam, CaseAssignmentController.remove);
+router.delete('/:id', requireMatterAccess(MATTER_PERMISSIONS.assign, { write: true }), validateAssignmentIdParam, CaseAssignmentController.remove);
 
 export default router;

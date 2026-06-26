@@ -256,7 +256,7 @@ function providerLabel(value) {
     zoho_workdrive: "Zoho WorkDrive",
     google_drive: "Google Drive",
     onedrive: "OneDrive",
-    s3: "Firm storage",
+    s3: "Workspace storage",
     external: "External link",
   };
   return labels[value] || "Storage";

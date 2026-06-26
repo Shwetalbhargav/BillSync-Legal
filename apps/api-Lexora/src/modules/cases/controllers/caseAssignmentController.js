@@ -3,6 +3,7 @@ import { Case } from '../models/Case.js';
 import User from '../../users/models/User.js';
 
 const notFound = (res, message) => res.status(404).json({ ok: false, message });
+const workspaceFilter = (req, extra = {}) => ({ workspaceId: req.workspaceId, ...extra });
 
 const assignmentPayload = (payload = {}, fields) =>
   fields.reduce((acc, field) => {
@@ -45,9 +46,9 @@ const buildOverlapQuery = ({ caseId, userId, startAt, endAt, excludeId }) => {
   return query;
 };
 
-const validateAssignmentReferences = async ({ caseId, userId }, res) => {
+const validateAssignmentReferences = async ({ caseId, userId }, req, res) => {
   const [caseDoc, userDoc] = await Promise.all([
-    Case.findById(caseId),
+    Case.findOne(workspaceFilter(req, { _id: caseId })),
     User.findById(userId),
   ]);
 
@@ -63,16 +64,16 @@ const validateAssignmentReferences = async ({ caseId, userId }, res) => {
   return true;
 };
 
-const assertNoActiveOverlap = async ({ caseId, userId, startAt, endAt, status }, res, excludeId) => {
+const assertNoActiveOverlap = async ({ caseId, userId, startAt, endAt, status }, req, res, excludeId) => {
   if (status === 'inactive') return true;
 
-  const existing = await CaseAssignment.findOne(buildOverlapQuery({
+  const existing = await CaseAssignment.findOne(workspaceFilter(req, buildOverlapQuery({
     caseId,
     userId,
     startAt,
     endAt,
     excludeId,
-  }));
+  })));
 
   if (existing) {
     res.status(409).json({
@@ -85,16 +86,16 @@ const assertNoActiveOverlap = async ({ caseId, userId, startAt, endAt, status },
   return true;
 };
 
-const syncCaseAssignedUsers = async ({ caseId, userId, status }) => {
+const syncCaseAssignedUsers = async ({ caseId, userId, status, req }) => {
   if (status === 'inactive') {
-    const activeCount = await CaseAssignment.countDocuments({ caseId, userId, status: 'active' });
+    const activeCount = await CaseAssignment.countDocuments(workspaceFilter(req, { caseId, userId, status: 'active' }));
     if (activeCount === 0) {
-      await Case.updateOne({ _id: caseId }, { $pull: { assignedUsers: userId } });
+      await Case.updateOne(workspaceFilter(req, { _id: caseId }), { $pull: { assignedUsers: userId } });
     }
     return;
   }
 
-  await Case.updateOne({ _id: caseId }, { $addToSet: { assignedUsers: userId } });
+  await Case.updateOne(workspaceFilter(req, { _id: caseId }), { $addToSet: { assignedUsers: userId } });
 };
 
 export const CaseAssignmentController = {
@@ -102,17 +103,18 @@ export const CaseAssignmentController = {
   async assign(req, res) {
     try {
       const payload = assignmentPayload(req.body, CREATE_FIELDS);
-      const refsValid = await validateAssignmentReferences(payload, res);
+      const refsValid = await validateAssignmentReferences(payload, req, res);
       if (!refsValid) return;
 
-      const noOverlap = await assertNoActiveOverlap(payload, res);
+      const noOverlap = await assertNoActiveOverlap(payload, req, res);
       if (!noOverlap) return;
 
-      const assignment = await CaseAssignment.create(payload);
+      const assignment = await CaseAssignment.create({ ...payload, workspaceId: req.workspaceId });
       await syncCaseAssignedUsers({
         caseId: payload.caseId,
         userId: payload.userId,
         status: payload.status || 'active',
+        req,
       });
 
       res.status(201).json({ ok: true, data: assignment });
@@ -128,7 +130,7 @@ export const CaseAssignmentController = {
   async update(req, res) {
     try {
       const { id } = req.params;
-      const existing = await CaseAssignment.findById(id);
+      const existing = await CaseAssignment.findOne(workspaceFilter(req, { _id: id }));
       if (!existing) return notFound(res, 'Assignment not found');
 
       const payload = assignmentPayload(req.body, UPDATE_FIELDS);
@@ -146,10 +148,10 @@ export const CaseAssignmentController = {
         startAt: nextStartAt,
         endAt: nextEndAt,
         status: nextStatus,
-      }, res, id);
+      }, req, res, id);
       if (!noOverlap) return;
 
-      const updated = await CaseAssignment.findByIdAndUpdate(id, payload, {
+      const updated = await CaseAssignment.findOneAndUpdate(workspaceFilter(req, { _id: id }), payload, {
         new: true,
         runValidators: true,
       });
@@ -158,6 +160,7 @@ export const CaseAssignmentController = {
         caseId: existing.caseId,
         userId: existing.userId,
         status: nextStatus,
+        req,
       });
 
       res.json({ ok: true, data: updated });
@@ -171,20 +174,20 @@ export const CaseAssignmentController = {
     try {
       const { id } = req.params;
 
-      const assignment = await CaseAssignment.findById(id);
+      const assignment = await CaseAssignment.findOne(workspaceFilter(req, { _id: id }));
       if (!assignment) return notFound(res, 'Assignment not found');
 
-      await CaseAssignment.deleteOne({ _id: id });
+      await CaseAssignment.deleteOne(workspaceFilter(req, { _id: id }));
 
-      const activeCount = await CaseAssignment.countDocuments({
+      const activeCount = await CaseAssignment.countDocuments(workspaceFilter(req, {
         caseId: assignment.caseId,
         userId: assignment.userId,
         status: 'active',
-      });
+      }));
 
       if (activeCount === 0) {
         await Case.updateOne(
-          { _id: assignment.caseId },
+          workspaceFilter(req, { _id: assignment.caseId }),
           { $pull: { assignedUsers: assignment.userId } }
         );
       }
@@ -199,7 +202,7 @@ export const CaseAssignmentController = {
   async list(req, res) {
     try {
       const { caseId, userId, status } = req.query;
-      const q = {};
+      const q = workspaceFilter(req);
       if (caseId) q.caseId = caseId;
       if (userId) q.userId = userId;
       if (status) q.status = status;
@@ -217,7 +220,7 @@ export const CaseAssignmentController = {
   // GET /case-assignments/:id
   async getById(req, res) {
     try {
-      const assignment = await CaseAssignment.findById(req.params.id)
+      const assignment = await CaseAssignment.findOne(workspaceFilter(req, { _id: req.params.id }))
         .populate('caseId', 'title status')
         .populate('userId', 'name role email');
 
@@ -233,7 +236,7 @@ export const CaseAssignmentController = {
     try {
       const { caseId } = req.params;
 
-      const assignments = await CaseAssignment.find({ caseId })
+      const assignments = await CaseAssignment.find(workspaceFilter(req, { caseId }))
         .populate('userId', 'name role email')
         .sort({ startAt: 1 });
 

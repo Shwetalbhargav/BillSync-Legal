@@ -5,6 +5,7 @@ import { clientsApi } from "../../api/clients";
 import { mattersApi } from "../../api/matters";
 import { asList, normalizeClient, normalizeMatter } from "../../api/normalizers";
 import { Button, SkeletonBlock, StateCard } from "../../components/common";
+import { useMatterModuleAccess } from "./useMatterModuleAccess";
 
 const initialForm = {
   clientId: "",
@@ -37,6 +38,7 @@ function validate(form) {
 export function MatterFormPage() {
   const { matterId } = useParams();
   const isEdit = Boolean(matterId);
+  const access = useMatterModuleAccess();
   const navigate = useNavigate();
   const [clients, setClients] = useState([]);
   const [form, setForm] = useState(initialForm);
@@ -45,6 +47,11 @@ export function MatterFormPage() {
 
   useEffect(() => {
     async function load() {
+      if (access.unavailable || access.readOnly || (isEdit ? !access.canEdit : !access.canCreate)) {
+        setMessage(access.message || "You do not have access to change matters.");
+        setStatus("permission");
+        return;
+      }
       setStatus("loading");
       try {
         const clientsResponse = await clientsApi.list({ limit: 100 });
@@ -65,12 +72,12 @@ export function MatterFormPage() {
         }
         setStatus("ready");
       } catch (error) {
-        setMessage(error?.userMessage || "We could not prepare this matter form.");
-        setStatus("error");
+        setMessage(error?.status === 403 ? "You do not have access to prepare this matter form." : (error?.userMessage || "We could not prepare this matter form."));
+        setStatus(error?.status === 403 ? "permission" : "error");
       }
     }
     load();
-  }, [isEdit, matterId]);
+  }, [isEdit, matterId, access.status, access.unavailable, access.readOnly, access.canCreate, access.canEdit]);
 
   function updateField(field, value) {
     setMessage("");
@@ -79,6 +86,10 @@ export function MatterFormPage() {
 
   async function handleSubmit(event) {
     event.preventDefault();
+    if (access.readOnly || (isEdit ? !access.canEdit : !access.canCreate)) {
+      setMessage("You can review matters, but changes are paused for this workspace.");
+      return;
+    }
     const validationMessage = validate(form);
     if (validationMessage) {
       setMessage(validationMessage);
@@ -100,12 +111,13 @@ export function MatterFormPage() {
       const saved = normalizeMatter(unwrap(response));
       navigate(`/app/matters/${saved.id || matterId}`, { replace: true });
     } catch (error) {
-      setMessage(error?.userMessage || "We could not save this matter right now. Please review the details and try again.");
+      setMessage(error?.status === 403 ? "You do not have access to save matters." : (error?.userMessage || "We could not save this matter right now. Please review the details and try again."));
       setStatus("ready");
     }
   }
 
   if (status === "loading") return <SkeletonBlock />;
+  if (status === "permission") return <StateCard state="permission" title={access.readOnly ? "Matters are read-only" : "Matter changes are not available"} message={message} />;
   if (status === "error") return <StateCard state="error" title="Matter form needs attention" message={message} />;
 
   return (
