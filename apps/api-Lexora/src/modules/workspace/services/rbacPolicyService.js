@@ -79,6 +79,11 @@ export function scopeMatchesPolicy({ policy, userId, user = {}, resource = {} })
     return containsId(allowed, resource.officeKey || user.officeKey);
   }
 
+  if (scope === 'practice_group') {
+    const allowed = conditions.practiceGroupKeys || conditions.practiceGroups || [];
+    return containsId(allowed, resource.practiceGroupKey || user.practiceGroupKey);
+  }
+
   if (scope === 'financial_only') {
     return Boolean(resource.financialOnly || resource.financial)
       || String(resource.resourceType || '').startsWith('finance')

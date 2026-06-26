@@ -17,6 +17,10 @@ import ModuleRegistry from '../modules/workspace/models/ModuleRegistry.js';
 import WorkspaceModule from '../modules/workspace/models/WorkspaceModule.js';
 import Subscription from '../modules/workspace/models/Subscription.js';
 import WorkspaceFeatureOverride from '../modules/workspace/models/WorkspaceFeatureOverride.js';
+import EnterpriseApiKey from '../modules/workspace/models/EnterpriseApiKey.js';
+import EnterpriseSetting from '../modules/workspace/models/EnterpriseSetting.js';
+import EnterpriseUnit from '../modules/workspace/models/EnterpriseUnit.js';
+import EnterpriseWebhook from '../modules/workspace/models/EnterpriseWebhook.js';
 import { down, up } from '../migrations/002_workspace_foundation.js';
 
 function unique(values) {
@@ -71,6 +75,9 @@ test('roles only reference known permissions', () => {
   expect(permissionKeys.has('platform_billing.read')).toBe(true);
   expect(permissionKeys.has('platform_billing.manage')).toBe(true);
   expect(permissionKeys.has('platform_billing.pay')).toBe(true);
+  expect(permissionKeys.has('enterprise.read')).toBe(true);
+  expect(permissionKeys.has('enterprise.manage')).toBe(true);
+  expect(permissionKeys.has('enterprise.audit')).toBe(true);
   for (const role of CORE_ROLES) {
     expect(role.permissionKeys.every((key) => permissionKeys.has(key))).toBe(true);
   }
@@ -110,6 +117,10 @@ test('tenant-owned coverage map includes current retained legal ERP collections'
     'invoices',
     'invoicelines',
     'payments',
+    'enterpriseunits',
+    'enterprisesettings',
+    'enterpriseapikeys',
+    'enterprisewebhooks',
     'platforminvoices',
     'platformpayments',
     'platformusagerecords',
@@ -133,6 +144,10 @@ test('workspace foundation models validate the canonical product language', () =
   expect(new WorkspaceModule({ workspaceId: '64b0000000000000000000aa', moduleKey: 'dashboard' }).validateSync()).toBeUndefined();
   expect(new Subscription({ workspaceId: '64b0000000000000000000aa', planKey: 'professional' }).validateSync()).toBeUndefined();
   expect(new WorkspaceFeatureOverride({ workspaceId: '64b0000000000000000000aa', featureKey: 'ai.assistant', status: 'enabled' }).validateSync()).toBeUndefined();
+  expect(new EnterpriseUnit({ workspaceId: '64b0000000000000000000aa', type: 'department', key: 'corporate', name: 'Corporate' }).validateSync()).toBeUndefined();
+  expect(new EnterpriseSetting({ workspaceId: '64b0000000000000000000aa', category: 'sso' }).validateSync()).toBeUndefined();
+  expect(new EnterpriseApiKey({ workspaceId: '64b0000000000000000000aa', name: 'Reporting key' }).validateSync()).toBeUndefined();
+  expect(new EnterpriseWebhook({ workspaceId: '64b0000000000000000000aa', name: 'Matter events' }).validateSync()).toBeUndefined();
 });
 
 test('workspace foundation migration is reversible', () => {

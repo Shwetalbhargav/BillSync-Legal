@@ -28,7 +28,7 @@ describe('rbac policy service', () => {
     expect(decision.reason).toBe('You do not have access to this area.');
   });
 
-  test('policy scopes support assigned matter, department, office, workspace, and financial-only concepts', () => {
+  test('policy scopes support assigned matter, department, office, practice group, workspace, and financial-only concepts', () => {
     expect(scopeMatchesPolicy({
       policy: { scope: 'workspace' },
       userId: USER_ID,
@@ -52,6 +52,13 @@ describe('rbac policy service', () => {
       policy: { scope: 'office', conditions: { officeKeys: ['mumbai'] } },
       userId: USER_ID,
       resource: { officeKey: 'mumbai' },
+    })).toBe(true);
+
+    expect(scopeMatchesPolicy({
+      policy: { scope: 'practice_group', conditions: { practiceGroupKeys: ['disputes'] } },
+      userId: USER_ID,
+      user: { practiceGroupKey: 'disputes' },
+      resource: {},
     })).toBe(true);
 
     expect(scopeMatchesPolicy({

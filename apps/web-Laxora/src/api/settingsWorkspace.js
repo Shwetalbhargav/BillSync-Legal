@@ -105,9 +105,25 @@ function normalizePlatformBilling(response = {}) {
   };
 }
 
+function normalizeEnterprise(response = {}) {
+  const data = response?.data || response || {};
+  const emptyUnits = { departments: [], offices: [], practiceGroups: [] };
+  return {
+    enabled: Boolean(data.enabled),
+    state: data.state || (data.enabled ? "enabled" : "hidden"),
+    message: data.message || "",
+    units: data.units || emptyUnits,
+    settings: Array.isArray(data.settings) ? data.settings : [],
+    apiKeys: Array.isArray(data.apiKeys) ? data.apiKeys : [],
+    webhooks: Array.isArray(data.webhooks) ? data.webhooks : [],
+    auditEvents: Array.isArray(data.auditEvents) ? data.auditEvents : [],
+    backendGaps: Array.isArray(data.backendGaps) ? data.backendGaps : [],
+  };
+}
+
 export const settingsWorkspaceApi = {
   async load({ firmId, includeUsers = true } = {}) {
-    const [firmResult, settingsResult, usersResult, notificationResult, storageResult, permissionResult, invoiceResult, platformBillingResult] = await Promise.allSettled([
+    const [firmResult, settingsResult, usersResult, notificationResult, storageResult, permissionResult, invoiceResult, platformBillingResult, enterpriseResult] = await Promise.allSettled([
       firmId ? firmsApi.get(firmId) : Promise.resolve(DEFAULT_SETTINGS),
       firmId ? firmsApi.settings(firmId) : Promise.resolve(DEFAULT_SETTINGS),
       includeUsers ? usersApi.list({ limit: 100 }) : Promise.resolve([]),
@@ -116,6 +132,7 @@ export const settingsWorkspaceApi = {
       settleGap(backendGapAdapters.permissionMatrix),
       settleGap(backendGapAdapters.invoiceDefaults),
       request("/api/workspace/platform-billing"),
+      request("/api/workspace/enterprise"),
     ]);
 
     const firm = normalizeFirmSettings(
@@ -175,11 +192,26 @@ export const settingsWorkspaceApi = {
           payments: [],
           paymentState: { status: "not_started", message: "" },
         },
+      enterprise: enterpriseResult.status === "fulfilled"
+        ? normalizeEnterprise(enterpriseResult.value)
+        : {
+          enabled: false,
+          state: "error",
+          message: enterpriseResult.reason?.userMessage || "Enterprise controls could not be loaded right now.",
+          units: { departments: [], offices: [], practiceGroups: [] },
+          settings: [],
+          apiKeys: [],
+          webhooks: [],
+          auditEvents: [],
+          backendGaps: [],
+        },
       issues,
     };
   },
   createPlatformInvoice: () => request("/api/workspace/platform-billing/invoices/current", { method: "POST" }),
   recordPlatformPayment: (invoiceId, body) => request(`/api/workspace/platform-billing/invoices/${invoiceId}/payments`, { method: "POST", body }),
+  createEnterpriseUnit: (body) => request("/api/workspace/enterprise/units", { method: "POST", body }),
+  updateEnterpriseSetting: (category, body) => request(`/api/workspace/enterprise/settings/${category}`, { method: "PUT", body }),
   updateFirm: (firmId, body) => firmsApi.replace(firmId, body),
   updateCurrency: (firmId, body) => firmsApi.updateCurrency(firmId, body),
   updateTaxSettings: (firmId, body) => firmsApi.updateTaxSettings(firmId, body),

@@ -208,6 +208,42 @@ export const CORE_FEATURES = [
     usageMetric: 'none',
     unavailableMessage: 'People operations are not included in the current plan.',
   },
+  {
+    key: 'enterprise.foundations',
+    name: 'Enterprise Foundations',
+    category: 'enterprise',
+    status: 'active',
+    gateBehavior: 'hide',
+    usageMetric: 'none',
+    unavailableMessage: 'Enterprise controls are available on Enterprise plans.',
+  },
+  {
+    key: 'enterprise.identity',
+    name: 'Enterprise Identity',
+    category: 'enterprise',
+    status: 'active',
+    gateBehavior: 'hide',
+    usageMetric: 'none',
+    unavailableMessage: 'SSO and SCIM controls are available on Enterprise plans.',
+  },
+  {
+    key: 'enterprise.integrations',
+    name: 'Enterprise Integrations',
+    category: 'enterprise',
+    status: 'active',
+    gateBehavior: 'hide',
+    usageMetric: 'none',
+    unavailableMessage: 'API keys and webhooks are available on Enterprise plans.',
+  },
+  {
+    key: 'enterprise.governance',
+    name: 'Enterprise Governance',
+    category: 'enterprise',
+    status: 'active',
+    gateBehavior: 'hide',
+    usageMetric: 'none',
+    unavailableMessage: 'Audit, retention, and white label controls are available on Enterprise plans.',
+  },
 ];
 
 export const CORE_PERMISSIONS = [
@@ -223,6 +259,9 @@ export const CORE_PERMISSIONS = [
   { key: 'platform_billing.manage', name: 'Manage Lexora subscription billing', moduleKey: 'settings', action: 'manage', resource: 'platform_billing' },
   { key: 'platform_billing.pay', name: 'Pay Lexora subscription invoices', moduleKey: 'settings', action: 'pay', resource: 'platform_billing' },
   { key: 'features.manage', name: 'Manage feature access', moduleKey: 'settings', action: 'manage', resource: 'feature' },
+  { key: 'enterprise.read', name: 'View enterprise controls', moduleKey: 'enterprise', action: 'read', resource: 'enterprise' },
+  { key: 'enterprise.manage', name: 'Manage enterprise controls', moduleKey: 'enterprise', action: 'manage', resource: 'enterprise' },
+  { key: 'enterprise.audit', name: 'View enterprise audit logs', moduleKey: 'enterprise', action: 'read', resource: 'audit_event' },
   { key: 'client.read', name: 'View clients', moduleKey: 'clients', action: 'read', resource: 'client' },
   { key: 'client.create', name: 'Create clients', moduleKey: 'clients', action: 'create', resource: 'client' },
   { key: 'client.edit', name: 'Edit clients', moduleKey: 'clients', action: 'edit', resource: 'client' },
@@ -485,6 +524,19 @@ export const CORE_MODULES = [
     navigation: { label: 'People', path: '/app/people', iconKey: 'users', section: 'workspace', order: 140 },
     order: 140,
   },
+  {
+    key: 'enterprise',
+    name: 'Enterprise',
+    status: 'active',
+    state: 'enabled',
+    routeBase: '/app/settings/enterprise',
+    requiredPlanKey: 'enterprise',
+    featureKeys: ['enterprise.foundations', 'enterprise.identity', 'enterprise.integrations', 'enterprise.governance'],
+    permissionKeys: ['enterprise.read'],
+    dependencies: ['settings'],
+    navigation: { label: 'Enterprise', path: '/app/settings/enterprise', iconKey: 'shield-check', section: 'workspace', order: 150 },
+    order: 150,
+  },
 ];
 
 export const CORE_PLANS = [
@@ -565,6 +617,10 @@ export const TENANT_OWNED_COLLECTIONS = [
   { name: 'idleintervals', parent: { collection: 'worksessions', localField: 'workSessionId' } },
   { name: 'integrationlogs' },
   { name: 'aiusageevents', parents: [{ collection: 'users', localField: 'memberId' }] },
+  { name: 'enterpriseunits' },
+  { name: 'enterprisesettings' },
+  { name: 'enterpriseapikeys' },
+  { name: 'enterprisewebhooks' },
   { name: 'platforminvoices' },
   { name: 'platformpayments', parent: { collection: 'platforminvoices', localField: 'platformInvoiceId' } },
   { name: 'platformusagerecords' },
@@ -597,6 +653,10 @@ export const CORE_COLLECTIONS = [
   'workspacemodules',
   'workspacefeatureoverrides',
   'subscriptions',
+  'enterpriseunits',
+  'enterprisesettings',
+  'enterpriseapikeys',
+  'enterprisewebhooks',
   'platforminvoices',
   'platformpayments',
   'platformusagerecords',
@@ -655,6 +715,12 @@ export async function ensureWorkspaceFoundationIndexes(db) {
   await db.collection('workspacefeatureoverrides').createIndex({ workspaceId: 1, status: 1 });
   await db.collection('memberships').createIndex({ workspaceId: 1, userId: 1 }, { unique: true, sparse: true });
   await db.collection('memberships').createIndex({ workspaceId: 1, role: 1, status: 1 });
+  await db.collection('enterpriseunits').createIndex({ workspaceId: 1, type: 1, key: 1 }, { unique: true });
+  await db.collection('enterpriseunits').createIndex({ workspaceId: 1, type: 1, status: 1 });
+  await db.collection('enterprisesettings').createIndex({ workspaceId: 1, category: 1 }, { unique: true });
+  await db.collection('enterpriseapikeys').createIndex({ workspaceId: 1, keyPrefix: 1 }, { unique: true, sparse: true });
+  await db.collection('enterpriseapikeys').createIndex({ workspaceId: 1, status: 1, updatedAt: -1 });
+  await db.collection('enterprisewebhooks').createIndex({ workspaceId: 1, status: 1, updatedAt: -1 });
 
   await dropIndexIfCollectionExists(db, 'invoices', 'workspaceId_1_invoiceNumber_1');
   await createIndexIfCollectionExists(

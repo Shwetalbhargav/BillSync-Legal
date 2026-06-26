@@ -43,6 +43,12 @@ import {
   recordPlatformPayment,
 } from '../controllers/platformBillingController.js';
 import { PLATFORM_BILLING_PERMISSIONS } from '../services/platformBillingService.js';
+import {
+  createEnterpriseUnitController,
+  getEnterpriseFoundations,
+  updateEnterpriseSettingController,
+} from '../controllers/enterpriseController.js';
+import { ENTERPRISE_PERMISSIONS } from '../services/enterpriseFoundationService.js';
 
 const router = Router();
 
@@ -62,6 +68,9 @@ router.get('/subscription', getSubscription);
 router.get('/platform-billing', requirePermission(PLATFORM_BILLING_PERMISSIONS.read), getPlatformBilling);
 router.post('/platform-billing/invoices/current', requirePermission(PLATFORM_BILLING_PERMISSIONS.manage), createCurrentPlatformInvoice);
 router.post('/platform-billing/invoices/:invoiceId/payments', requirePermission(PLATFORM_BILLING_PERMISSIONS.pay), recordPlatformPayment);
+router.get('/enterprise', requirePermission(ENTERPRISE_PERMISSIONS.read), getEnterpriseFoundations);
+router.post('/enterprise/units', requirePermission(ENTERPRISE_PERMISSIONS.manage), createEnterpriseUnitController);
+router.put('/enterprise/settings/:category', requirePermission(ENTERPRISE_PERMISSIONS.manage), updateEnterpriseSettingController);
 router.get('/modules', listWorkspaceModules);
 router.get('/navigation', getWorkspaceNavigation);
 router.get('/features/:featureKey/access', checkFeatureAccess);

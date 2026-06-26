@@ -7,7 +7,7 @@ import Policy from '../models/Policy.js';
 import Role from '../models/Role.js';
 import { CORE_PERMISSIONS } from '../services/workspaceFoundationService.js';
 
-const POLICY_SCOPES = ['workspace', 'assigned_matter', 'department', 'office', 'financial_only'];
+const POLICY_SCOPES = ['workspace', 'assigned_matter', 'department', 'office', 'practice_group', 'financial_only'];
 
 function normalizeKey(value) {
   return String(value || '').trim().toLowerCase();
