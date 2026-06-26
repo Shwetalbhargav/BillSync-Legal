@@ -8,7 +8,7 @@ const statusTone = {
   prospect: "accent",
 };
 
-export function ClientCard({ client, onDelete }) {
+export function ClientCard({ canDelete = true, canEdit = true, client, onDelete, readOnly = false }) {
   return (
     <Card className="p-5">
       <div className="flex min-w-0 flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
@@ -36,10 +36,12 @@ export function ClientCard({ client, onDelete }) {
           <Link className="focus-ring rounded-lg border border-border px-3 py-2 text-center text-sm font-semibold text-primary hover:bg-blueSoft" to={`/app/clients/${client.id}`}>
             Open client
           </Link>
-          <Link className="focus-ring rounded-lg border border-border px-3 py-2 text-center text-sm font-semibold text-primary hover:bg-blueSoft" to={`/app/clients/${client.id}/edit`}>
-            Edit
-          </Link>
-          {onDelete ? (
+          {canEdit && !readOnly ? (
+            <Link className="focus-ring rounded-lg border border-border px-3 py-2 text-center text-sm font-semibold text-primary hover:bg-blueSoft" to={`/app/clients/${client.id}/edit`}>
+              Edit
+            </Link>
+          ) : null}
+          {onDelete && canDelete && !readOnly ? (
             <button className="focus-ring inline-flex items-center justify-center gap-2 rounded-lg border border-danger/30 px-3 py-2 text-sm font-semibold text-danger hover:bg-danger/10" onClick={() => onDelete(client)} type="button">
               <Trash2 className="h-4 w-4" />
               Delete
