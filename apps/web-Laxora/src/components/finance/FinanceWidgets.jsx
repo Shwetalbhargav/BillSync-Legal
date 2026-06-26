@@ -121,7 +121,7 @@ export function AgingSummary({ aging }) {
   );
 }
 
-export function ReportsPanel({ onDownload, onPdf, saving }) {
+export function ReportsPanel({ canExport = true, onDownload, onPdf, saving }) {
   const reports = [
     { id: "time", title: "Time entries", description: "Download reviewed time and matter work.", action: () => onDownload("time") },
     { id: "invoices", title: "Invoices", description: "Download invoice totals, dates, and delivery status.", action: () => onDownload("invoices") },
@@ -135,7 +135,7 @@ export function ReportsPanel({ onDownload, onPdf, saving }) {
         <Card key={report.id}>
           <CardHeader eyebrow="Report" title={report.title} description={report.description} />
           <CardBody>
-            <Button disabled={saving === report.id} isLoading={saving === report.id} onClick={report.action} type="button">
+            <Button disabled={!canExport || saving === report.id} isLoading={saving === report.id} onClick={report.action} type="button">
               <Download className="h-4 w-4" />
               Download
             </Button>
@@ -145,7 +145,7 @@ export function ReportsPanel({ onDownload, onPdf, saving }) {
       <Card>
         <CardHeader eyebrow="Report" title="Board pack" description="A polished PDF pack is planned for the next finance export step." />
         <CardBody>
-          <Button disabled={saving === "pdf"} isLoading={saving === "pdf"} onClick={onPdf} type="button" variant="secondary">
+          <Button disabled={!canExport || saving === "pdf"} isLoading={saving === "pdf"} onClick={onPdf} type="button" variant="secondary">
             <FileText className="h-4 w-4" />
             Check readiness
           </Button>

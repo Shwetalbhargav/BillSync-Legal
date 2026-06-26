@@ -36,6 +36,14 @@ function scopeFilters(scope, scopeId) {
   return f;
 }
 
+function workspaceAggregateMatch(req, extra = {}) {
+  if (!req.workspaceId) return extra;
+  const workspaceId = mongoose.Types.ObjectId.isValid(req.workspaceId)
+    ? new mongoose.Types.ObjectId(req.workspaceId)
+    : req.workspaceId;
+  return { workspaceId, ...extra };
+}
+
 /**
  * Compute core KPIs for the given scope and date range.
  * - revenue: sum(Payment.amount) cleared in range (apportioned by scope)
@@ -51,10 +59,10 @@ export const getKpiSummary = async (req, res) => {
     const { start, end } = toDateRange(req.query);
 
     // ---------- UTILIZATION ----------
-    const teMatch = {
+    const teMatch = workspaceAggregateMatch(req, {
       date: { $gte: start, $lt: end },
       ...scopeFilters(scope, scopeId),
-    };
+    });
     const utilAgg = await TimeEntry.aggregate([
       { $match: teMatch },
       {
@@ -86,7 +94,7 @@ export const getKpiSummary = async (req, res) => {
     const wipAgg = await TimeEntry.aggregate([
       {
         $match: {
-          ...scopeFilters(scope, scopeId),
+          ...workspaceAggregateMatch(req, scopeFilters(scope, scopeId)),
           status: 'approved',
           date: { $lt: end }, // approved but not yet billed by end of period
         },
@@ -96,10 +104,10 @@ export const getKpiSummary = async (req, res) => {
     const WIP = wipAgg[0]?.WIP || 0;
 
     // ---------- INVOICED (period) ----------
-    const invMatchPeriod = {
+    const invMatchPeriod = workspaceAggregateMatch(req, {
       issueDate: { $gte: start, $lt: end },
       status: { $ne: 'void' },
-    };
+    });
     // Filter by scope for invoices: client & case are direct; user requires join via items -> TimeEntry.userId
     if (scope === 'client') invMatchPeriod.clientId = new mongoose.Types.ObjectId(scopeId);
     if (scope === 'case') invMatchPeriod.caseId = new mongoose.Types.ObjectId(scopeId);
@@ -133,10 +141,10 @@ export const getKpiSummary = async (req, res) => {
 
     // ---------- REVENUE (payments in period, scoped) ----------
     // For user scope, attribute by invoice items -> timeentry.userId
-    const payMatch = {
+    const payMatch = workspaceAggregateMatch(req, {
       status: 'cleared',
       receivedDate: { $gte: start, $lt: end },
-    };
+    });
     let revenue = 0;
 
     if (scope === 'firm' || !scopeId) {
@@ -230,7 +238,7 @@ export const getKpiSummary = async (req, res) => {
 
     // ---------- AR (as of end of period) ----------
     // AR = invoices issued <= end (not void) minus payments received <= end
-    const invMatchToEnd = { issueDate: { $lt: end }, status: { $ne: 'void' } };
+    const invMatchToEnd = workspaceAggregateMatch(req, { issueDate: { $lt: end }, status: { $ne: 'void' } });
     if (scope === 'client' && scopeId) invMatchToEnd.clientId = new mongoose.Types.ObjectId(scopeId);
     if (scope === 'case' && scopeId) invMatchToEnd.caseId = new mongoose.Types.ObjectId(scopeId);
 
@@ -264,7 +272,7 @@ export const getKpiSummary = async (req, res) => {
     let arPaymentsSum = 0;
     if (scope === 'firm' || !scopeId) {
       const arPay = await Payment.aggregate([
-        { $match: { status: 'cleared', receivedDate: { $lt: end } } },
+        { $match: workspaceAggregateMatch(req, { status: 'cleared', receivedDate: { $lt: end } }) },
         { $group: { _id: null, total: { $sum: '$amount' } } },
       ]);
       arPaymentsSum = arPay[0]?.total || 0;
@@ -273,7 +281,7 @@ export const getKpiSummary = async (req, res) => {
       if (scope === 'client') matchInvoice.clientId = new mongoose.Types.ObjectId(scopeId);
       if (scope === 'case') matchInvoice.caseId = new mongoose.Types.ObjectId(scopeId);
       const arPay = await Payment.aggregate([
-        { $match: { status: 'cleared', receivedDate: { $lt: end } } },
+        { $match: workspaceAggregateMatch(req, { status: 'cleared', receivedDate: { $lt: end } }) },
         { $lookup: { from: 'invoices', localField: 'invoiceId', foreignField: '_id', as: 'inv' } },
         { $unwind: '$inv' },
         { $match: matchInvoice },
@@ -283,7 +291,7 @@ export const getKpiSummary = async (req, res) => {
     } else if (scope === 'user') {
       const userId = new mongoose.Types.ObjectId(scopeId);
       const arPay = await Payment.aggregate([
-        { $match: { status: 'cleared', receivedDate: { $lt: end } } },
+        { $match: workspaceAggregateMatch(req, { status: 'cleared', receivedDate: { $lt: end } }) },
         { $lookup: { from: 'invoices', localField: 'invoiceId', foreignField: '_id', as: 'inv' } },
         { $unwind: '$inv' },
         { $unwind: '$inv.items' },
@@ -388,10 +396,10 @@ export const getKpiTrend = async (req, res) => {
       if (metric === 'revenue') {
         // Switch to payments-only calculation with scope same as above
         // Quick reuse: call getKpiSummary-like path by fabricating req.query and calling Payment aggregates
-        const fakeReq = { query: { scope, scopeId, from: start.toISOString(), to: end.toISOString() } };
+          const fakeReq = { query: { scope, scopeId, from: start.toISOString(), to: end.toISOString() }, workspaceId: req.workspaceId };
         const fakeRes = { json: (x) => x };
         // Not calling handler recursively; just re-run the revenue block inline for performance/clarity.
-        const payMatch = { status: 'cleared', receivedDate: { $gte: start, $lt: end } };
+        const payMatch = workspaceAggregateMatch(req, { status: 'cleared', receivedDate: { $gte: start, $lt: end } });
         if (!scope || scope === 'firm' || !scopeId) {
           const agg = await Payment.aggregate([{ $match: payMatch }, { $group: { _id: null, revenue: { $sum: '$amount' } } }]);
           value = agg[0]?.revenue || 0;
@@ -461,7 +469,7 @@ export const getKpiTrend = async (req, res) => {
         const wipAgg = await TimeEntry.aggregate([
           {
             $match: {
-              ...scopeFilters(scope, scopeId),
+              ...workspaceAggregateMatch(req, scopeFilters(scope, scopeId)),
               status: 'approved',
               date: { $lt: end },
             },
@@ -474,7 +482,7 @@ export const getKpiTrend = async (req, res) => {
         req.query.from = undefined; req.query.to = undefined;
         const { start: s, end: e } = { start, end };
         // reuse logic from summary (trimmed)
-        const invMatchToEnd = { issueDate: { $lt: e }, status: { $ne: 'void' } };
+        const invMatchToEnd = workspaceAggregateMatch(req, { issueDate: { $lt: e }, status: { $ne: 'void' } });
         if (scope === 'client' && scopeId) invMatchToEnd.clientId = new mongoose.Types.ObjectId(scopeId);
         if (scope === 'case' && scopeId) invMatchToEnd.caseId = new mongoose.Types.ObjectId(scopeId);
         let invSum = 0;
@@ -495,14 +503,14 @@ export const getKpiTrend = async (req, res) => {
         }
         let paySum = 0;
         if (!scope || scope === 'firm' || !scopeId) {
-          const p = await Payment.aggregate([{ $match: { status: 'cleared', receivedDate: { $lt: e } } }, { $group: { _id: null, total: { $sum: '$amount' } } }]);
+          const p = await Payment.aggregate([{ $match: workspaceAggregateMatch(req, { status: 'cleared', receivedDate: { $lt: e } }) }, { $group: { _id: null, total: { $sum: '$amount' } } }]);
           paySum = p[0]?.total || 0;
         } else if (scope === 'client' || scope === 'case') {
           const m = {};
           if (scope === 'client') m.clientId = new mongoose.Types.ObjectId(scopeId);
           if (scope === 'case') m.caseId = new mongoose.Types.ObjectId(scopeId);
           const p = await Payment.aggregate([
-            { $match: { status: 'cleared', receivedDate: { $lt: e } } },
+            { $match: workspaceAggregateMatch(req, { status: 'cleared', receivedDate: { $lt: e } }) },
             { $lookup: { from: 'invoices', localField: 'invoiceId', foreignField: '_id', as: 'inv' } },
             { $unwind: '$inv' },
             { $match: m },
@@ -512,7 +520,7 @@ export const getKpiTrend = async (req, res) => {
         } else if (scope === 'user') {
           const userId = new mongoose.Types.ObjectId(scopeId);
           const p = await Payment.aggregate([
-            { $match: { status: 'cleared', receivedDate: { $lt: e } } },
+            { $match: workspaceAggregateMatch(req, { status: 'cleared', receivedDate: { $lt: e } }) },
             { $lookup: { from: 'invoices', localField: 'invoiceId', foreignField: '_id', as: 'inv' } },
             { $unwind: '$inv' },
             { $unwind: '$inv.items' },
@@ -562,7 +570,7 @@ export const getKpiTrend = async (req, res) => {
         value = Math.max(0, Number((invSum - paySum).toFixed(2)));
       } else if (metric === 'utilization') {
         const a = await TimeEntry.aggregate([
-          { $match: { ...scopeFilters(scope, scopeId), date: { $gte: start, $lt: end } } },
+          { $match: workspaceAggregateMatch(req, { ...scopeFilters(scope, scopeId), date: { $gte: start, $lt: end } }) },
           { $group: { _id: null, b: { $sum: { $ifNull: ['$billableMinutes', 0] } }, n: { $sum: { $ifNull: ['$nonbillableMinutes', 0] } } } },
           { $project: { _id: 0, u: { $cond: [{ $gt: [{ $add: ['$b', '$n'] }, 0] }, { $divide: ['$b', { $add: ['$b', '$n'] }] }, 0] } } },
         ]);
@@ -579,11 +587,11 @@ export const getKpiTrend = async (req, res) => {
         // For brevity here: reuse revenue block from 'revenue' branch above
         // (copy-paste omitted in this comment)
         // Implement minimal duplicates:
-        const payMatch = { status: 'cleared', receivedDate: { $gte: s, $lt: e } };
+        const payMatch = workspaceAggregateMatch(req, { status: 'cleared', receivedDate: { $gte: s, $lt: e } });
         if (!scope || scope === 'firm' || !scopeId) {
           const agg = await Payment.aggregate([{ $match: payMatch }, { $group: { _id: null, revenue: { $sum: '$amount' } } }]);
           rev = agg[0]?.revenue || 0;
-          const a = await Invoice.aggregate([{ $match: { issueDate: { $gte: s, $lt: e }, status: { $ne: 'void' } } }, { $group: { _id: null, inv: { $sum: '$total' } } }]);
+          const a = await Invoice.aggregate([{ $match: workspaceAggregateMatch(req, { issueDate: { $gte: s, $lt: e }, status: { $ne: 'void' } }) }, { $group: { _id: null, inv: { $sum: '$total' } } }]);
           inv = a[0]?.inv || 0;
         } else if (scope === 'client' || scope === 'case') {
           const m = {};
@@ -597,7 +605,7 @@ export const getKpiTrend = async (req, res) => {
             { $group: { _id: null, revenue: { $sum: '$amount' } } },
           ]);
           rev = agg[0]?.revenue || 0;
-          const a = await Invoice.aggregate([{ $match: { ...m, issueDate: { $gte: s, $lt: e }, status: { $ne: 'void' } } }, { $group: { _id: null, inv: { $sum: '$total' } } }]);
+          const a = await Invoice.aggregate([{ $match: workspaceAggregateMatch(req, { ...m, issueDate: { $gte: s, $lt: e }, status: { $ne: 'void' } }) }, { $group: { _id: null, inv: { $sum: '$total' } } }]);
           inv = a[0]?.inv || 0;
         } else if (scope === 'user') {
           const userId = new mongoose.Types.ObjectId(scopeId);
@@ -649,7 +657,7 @@ export const getKpiTrend = async (req, res) => {
           ]);
           rev = agg[0]?.revenue || 0;
           const a = await Invoice.aggregate([
-            { $match: { issueDate: { $gte: s, $lt: e }, status: { $ne: 'void' } } },
+            { $match: workspaceAggregateMatch(req, { issueDate: { $gte: s, $lt: e }, status: { $ne: 'void' } }) },
             { $unwind: '$items' },
             { $lookup: { from: 'timeentries', localField: 'items.billableId', foreignField: '_id', as: 'te' } },
             { $unwind: '$te' },

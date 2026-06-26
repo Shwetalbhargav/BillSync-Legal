@@ -181,6 +181,9 @@ export const CORE_PERMISSIONS = [
   { key: 'billing.write', name: 'Manage billing', moduleKey: 'billing', action: 'write', resource: 'billing' },
   { key: 'finance.read', name: 'View finance', moduleKey: 'finance', action: 'read', resource: 'finance' },
   { key: 'finance.write', name: 'Manage finance', moduleKey: 'finance', action: 'write', resource: 'finance' },
+  { key: 'report.view', name: 'View reports', moduleKey: 'reports', action: 'read', resource: 'report' },
+  { key: 'report.export', name: 'Export reports', moduleKey: 'reports', action: 'export', resource: 'report' },
+  { key: 'report.manage', name: 'Manage reports', moduleKey: 'reports', action: 'manage', resource: 'report' },
   { key: 'reports.read', name: 'View reports', moduleKey: 'reports', action: 'read', resource: 'report' },
 ];
 
@@ -195,19 +198,19 @@ export const CORE_ROLES = [
     key: 'lawyer',
     name: 'Lawyer',
     status: 'active',
-    permissionKeys: ['workspace.read', 'client.read', 'client.create', 'client.edit', 'client.delete', 'clients.read', 'clients.write', 'matter.read', 'matter.create', 'matter.edit', 'matter.assign', 'matters.read', 'matters.write', 'work.write', 'document.read', 'document.create', 'document.share', 'invoice.view', 'invoice.create', 'invoice.send', 'billing.write'],
+    permissionKeys: ['workspace.read', 'client.read', 'client.create', 'client.edit', 'client.delete', 'clients.read', 'clients.write', 'matter.read', 'matter.create', 'matter.edit', 'matter.assign', 'matters.read', 'matters.write', 'work.write', 'document.read', 'document.create', 'document.share', 'invoice.view', 'invoice.create', 'invoice.send', 'billing.write', 'report.view', 'report.export', 'reports.read'],
   },
   {
     key: 'billing_assistant',
     name: 'Billing Assistant',
     status: 'active',
-    permissionKeys: ['workspace.read', 'client.read', 'clients.read', 'invoice.view', 'invoice.create', 'invoice.send', 'payment.record', 'billing.write', 'finance.read', 'finance.write', 'reports.read'],
+    permissionKeys: ['workspace.read', 'client.read', 'clients.read', 'invoice.view', 'invoice.create', 'invoice.send', 'payment.record', 'billing.write', 'finance.read', 'finance.write', 'report.view', 'report.export', 'report.manage', 'reports.read'],
   },
   {
     key: 'accountant',
     name: 'Accountant',
     status: 'active',
-    permissionKeys: ['workspace.read', 'document.read', 'invoice.view', 'payment.record', 'finance.read', 'reports.read'],
+    permissionKeys: ['workspace.read', 'document.read', 'invoice.view', 'payment.record', 'finance.read', 'report.view', 'report.export', 'report.manage', 'reports.read'],
   },
 ];
 
@@ -311,7 +314,7 @@ export const CORE_MODULES = [
     routeBase: '/app/reports',
     requiredPlanKey: 'solo',
     featureKeys: ['reports.core'],
-    permissionKeys: ['reports.read'],
+    permissionKeys: ['report.view'],
     dependencies: ['dashboard'],
     navigation: { label: 'Reports', path: '/app/reports', iconKey: 'file-text', section: 'primary', order: 70 },
     order: 70,

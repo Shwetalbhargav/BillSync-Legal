@@ -12,20 +12,33 @@ function monthRange(yyyyMM) {
   return { start, end };
 }
 
+function workspaceFilter(workspaceId, extra = {}) {
+  if (!workspaceId) return extra;
+  return { workspaceId, ...extra };
+}
+
+function workspaceAggregateMatch(workspaceId, extra = {}) {
+  if (!workspaceId) return extra;
+  const scopedWorkspaceId = mongoose.Types.ObjectId.isValid(workspaceId)
+    ? new mongoose.Types.ObjectId(workspaceId)
+    : workspaceId;
+  return { workspaceId: scopedWorkspaceId, ...extra };
+}
+
 /**
  * Internal helper: compute KPIs and upsert snapshot.
  * NOT an Express handler.
  */
-async function computeAndUpsertCore(scope, scopeId, month) {
+async function computeAndUpsertCore(scope, scopeId, month, workspaceId = null) {
   const { start, end } = monthRange(month);
 
   // Utilization
   const utilAgg = await TimeEntry.aggregate([
     {
-      $match: {
+      $match: workspaceAggregateMatch(workspaceId, {
         date: { $gte: start, $lt: end },
         ...(scopeId ? { [`${scope}Id`]: new mongoose.Types.ObjectId(scopeId) } : {}),
-      },
+      }),
     },
     {
       $group: {
@@ -52,11 +65,11 @@ async function computeAndUpsertCore(scope, scopeId, month) {
   // WIP
   const wipAgg = await TimeEntry.aggregate([
     {
-      $match: {
+      $match: workspaceAggregateMatch(workspaceId, {
         status: 'approved',
         date: { $lt: end },
         ...(scopeId ? { [`${scope}Id`]: new mongoose.Types.ObjectId(scopeId) } : {}),
-      },
+      }),
     },
     { $group: { _id: null, w: { $sum: { $ifNull: ['$amount', 0] } } } },
   ]);
@@ -66,7 +79,7 @@ async function computeAndUpsertCore(scope, scopeId, month) {
   let invoiced = 0;
   if (scope === 'user') {
     const a = await Invoice.aggregate([
-      { $match: { issueDate: { $gte: start, $lt: end }, status: { $ne: 'void' } } },
+      { $match: workspaceAggregateMatch(workspaceId, { issueDate: { $gte: start, $lt: end }, status: { $ne: 'void' } }) },
       { $unwind: '$items' },
       {
         $lookup: {
@@ -83,7 +96,7 @@ async function computeAndUpsertCore(scope, scopeId, month) {
     ]);
     invoiced = a[0]?.total || 0;
   } else {
-    const m = { issueDate: { $gte: start, $lt: end }, status: { $ne: 'void' } };
+    const m = workspaceAggregateMatch(workspaceId, { issueDate: { $gte: start, $lt: end }, status: { $ne: 'void' } });
     if (scopeId && (scope === 'client' || scope === 'case')) {
       m[`${scope}Id`] = new mongoose.Types.ObjectId(scopeId);
     }
@@ -98,7 +111,7 @@ async function computeAndUpsertCore(scope, scopeId, month) {
   let revenue = 0;
   if (scope === 'firm' || !scopeId) {
     const p = await Payment.aggregate([
-      { $match: { status: 'cleared', receivedDate: { $gte: start, $lt: end } } },
+      { $match: workspaceAggregateMatch(workspaceId, { status: 'cleared', receivedDate: { $gte: start, $lt: end } }) },
       { $group: { _id: null, total: { $sum: '$amount' } } },
     ]);
     revenue = p[0]?.total || 0;
@@ -106,7 +119,7 @@ async function computeAndUpsertCore(scope, scopeId, month) {
     const matchInvoice = {};
     matchInvoice[`${scope}Id`] = new mongoose.Types.ObjectId(scopeId);
     const p = await Payment.aggregate([
-      { $match: { status: 'cleared', receivedDate: { $gte: start, $lt: end } } },
+      { $match: workspaceAggregateMatch(workspaceId, { status: 'cleared', receivedDate: { $gte: start, $lt: end } }) },
       {
         $lookup: {
           from: 'invoices',
@@ -123,7 +136,7 @@ async function computeAndUpsertCore(scope, scopeId, month) {
   } else if (scope === 'user') {
     const userId = new mongoose.Types.ObjectId(scopeId);
     const p = await Payment.aggregate([
-      { $match: { status: 'cleared', receivedDate: { $gte: start, $lt: end } } },
+      { $match: workspaceAggregateMatch(workspaceId, { status: 'cleared', receivedDate: { $gte: start, $lt: end } }) },
       {
         $lookup: {
           from: 'invoices',
@@ -189,7 +202,7 @@ async function computeAndUpsertCore(scope, scopeId, month) {
   let invSum = 0;
   if (scope === 'user') {
     const a = await Invoice.aggregate([
-      { $match: { issueDate: { $lt: end }, status: { $ne: 'void' } } },
+      { $match: workspaceAggregateMatch(workspaceId, { issueDate: { $lt: end }, status: { $ne: 'void' } }) },
       { $unwind: '$items' },
       {
         $lookup: {
@@ -206,7 +219,7 @@ async function computeAndUpsertCore(scope, scopeId, month) {
     ]);
     invSum = a[0]?.total || 0;
   } else {
-    const m = { issueDate: { $lt: end }, status: { $ne: 'void' } };
+    const m = workspaceAggregateMatch(workspaceId, { issueDate: { $lt: end }, status: { $ne: 'void' } });
     if (scopeId && (scope === 'client' || scope === 'case')) {
       m[`${scope}Id`] = new mongoose.Types.ObjectId(scopeId);
     }
@@ -220,7 +233,7 @@ async function computeAndUpsertCore(scope, scopeId, month) {
   let paySum = 0;
   if (scope === 'firm' || !scopeId) {
     const p = await Payment.aggregate([
-      { $match: { status: 'cleared', receivedDate: { $lt: end } } },
+      { $match: workspaceAggregateMatch(workspaceId, { status: 'cleared', receivedDate: { $lt: end } }) },
       { $group: { _id: null, total: { $sum: '$amount' } } },
     ]);
     paySum = p[0]?.total || 0;
@@ -228,7 +241,7 @@ async function computeAndUpsertCore(scope, scopeId, month) {
     const m = {};
     m[`${scope}Id`] = new mongoose.Types.ObjectId(scopeId);
     const p = await Payment.aggregate([
-      { $match: { status: 'cleared', receivedDate: { $lt: end } } },
+      { $match: workspaceAggregateMatch(workspaceId, { status: 'cleared', receivedDate: { $lt: end } }) },
       {
         $lookup: {
           from: 'invoices',
@@ -245,7 +258,7 @@ async function computeAndUpsertCore(scope, scopeId, month) {
   } else if (scope === 'user') {
     const userId = new mongoose.Types.ObjectId(scopeId);
     const p = await Payment.aggregate([
-      { $match: { status: 'cleared', receivedDate: { $lt: end } } },
+      { $match: workspaceAggregateMatch(workspaceId, { status: 'cleared', receivedDate: { $lt: end } }) },
       {
         $lookup: {
           from: 'invoices',
@@ -310,13 +323,14 @@ async function computeAndUpsertCore(scope, scopeId, month) {
   const AR = Math.max(0, Number((invSum - paySum).toFixed(2)));
   const realization = invoiced > 0 ? revenue / invoiced : 0;
 
+  const snapshotScopeId = scopeId ? new mongoose.Types.ObjectId(scopeId) : null;
   await KpiSnapshot.updateOne(
-    { scope, scopeId: scopeId ? new mongoose.Types.ObjectId(scopeId) : null, month },
-    { $set: { utilization, realization, WIP, AR, revenue } },
+    workspaceFilter(workspaceId, { scope, scopeId: snapshotScopeId, month }),
+    { $set: workspaceFilter(workspaceId, { utilization, realization, WIP, AR, revenue }) },
     { upsert: true }
   );
 
-  return { scope, scopeId, month, utilization, realization, WIP, AR, revenue };
+  return { workspaceId, scope, scopeId, month, utilization, realization, WIP, AR, revenue };
 }
 
 /**
@@ -330,7 +344,7 @@ export const computeAndUpsert = async (req, res) => {
       return res.status(400).json({ error: 'scope is required' });
     }
     const m = month || new Date().toISOString().slice(0, 7); // default current month
-    const result = await computeAndUpsertCore(scope, scopeId || null, m);
+    const result = await computeAndUpsertCore(scope, scopeId || null, m, req.workspaceId);
     res.json(result);
   } catch (err) {
     console.error('computeAndUpsert error:', err);
@@ -354,10 +368,10 @@ export const generateSnapshots = async (req, res) => {
     const results = [];
     for (const s of scopes) {
       if (s === 'firm') {
-        results.push(await computeAndUpsertCore('firm', null, month));
+        results.push(await computeAndUpsertCore('firm', null, month, req.workspaceId));
       } else if (scopeIds.length) {
         for (const id of scopeIds) {
-          results.push(await computeAndUpsertCore(s, id, month));
+          results.push(await computeAndUpsertCore(s, id, month, req.workspaceId));
         }
       } else {
         // Auto-discover distinct IDs from data within the month range
@@ -366,12 +380,12 @@ export const generateSnapshots = async (req, res) => {
         const distinctField = s === 'user' ? 'userId' : s === 'client' ? 'clientId' : 'caseId';
         const baseMatch =
           s === 'user'
-            ? { date: { $gte: start, $lt: end } }
-            : { issueDate: { $lt: end }, status: { $ne: 'void' } };
+            ? workspaceFilter(req.workspaceId, { date: { $gte: start, $lt: end } })
+            : workspaceFilter(req.workspaceId, { issueDate: { $lt: end }, status: { $ne: 'void' } });
 
         const ids = await model.distinct(distinctField, baseMatch);
         for (const id of ids) {
-          results.push(await computeAndUpsertCore(s, id, month));
+          results.push(await computeAndUpsertCore(s, id, month, req.workspaceId));
         }
       }
     }
@@ -389,7 +403,7 @@ export const generateSnapshots = async (req, res) => {
  */
 export const listSnapshots = async (req, res) => {
   try {
-    const q = {};
+    const q = workspaceFilter(req.workspaceId);
     if (req.query.month) q.month = req.query.month;
     if (req.query.scope) q.scope = req.query.scope;
     if (req.query.scopeId) q.scopeId = new mongoose.Types.ObjectId(req.query.scopeId);
@@ -406,7 +420,7 @@ export const listSnapshots = async (req, res) => {
  */
 export const getSnapshotById = async (req, res) => {
   try {
-    const doc = await KpiSnapshot.findById(req.params.id);
+    const doc = await KpiSnapshot.findOne(workspaceFilter(req.workspaceId, { _id: req.params.id }));
     if (!doc) return res.status(404).json({ error: 'Snapshot not found' });
     res.json(doc);
   } catch (err) {

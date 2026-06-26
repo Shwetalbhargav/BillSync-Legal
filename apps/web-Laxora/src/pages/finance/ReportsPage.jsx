@@ -3,6 +3,7 @@ import { financeWorkspaceApi, reportsApi } from "../../api";
 import { SkeletonBlock, StateCard, Toast } from "../../components/common";
 import { FinanceHero, KpiGrid, MetricTile, ReportsPanel, SectionIssues, formatMoney } from "../../components/finance/FinanceWidgets";
 import { BarChart3, ReceiptText, WalletCards } from "lucide-react";
+import { useReportsModuleAccess } from "./useReportsModuleAccess";
 
 const defaultFilters = {
   from: new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString().slice(0, 10),
@@ -23,6 +24,7 @@ function saveReport(text, filename) {
 }
 
 export function ReportsPage() {
+  const access = useReportsModuleAccess();
   const [filters, setFilters] = useState(defaultFilters);
   const [state, setState] = useState({ status: "loading", gst: {}, invoiceTotals: {}, billableTotals: {}, issues: [], message: "" });
   const [saving, setSaving] = useState("");
@@ -56,6 +58,10 @@ export function ReportsPage() {
   }
 
   async function downloadReport(kind) {
+    if (!access.canExport) {
+      setNotice({ tone: "warning", title: "Export is not available", message: "You can review reports, but this workspace cannot export them right now." });
+      return;
+    }
     setSaving(kind);
     setNotice(null);
     try {
@@ -73,6 +79,10 @@ export function ReportsPage() {
   }
 
   async function checkPdfReadiness() {
+    if (!access.canExport) {
+      setNotice({ tone: "warning", title: "Board pack is not available", message: "You can review reports, but this workspace cannot export board packs right now." });
+      return;
+    }
     setSaving("pdf");
     setNotice(null);
     try {
@@ -85,13 +95,17 @@ export function ReportsPage() {
     }
   }
 
+  if (access.status === "loading") return <SkeletonBlock />;
+  if (access.unavailable) return <StateCard state="empty" title="Reports are not available" message={access.message} />;
+  if (!access.canView) return <StateCard state="permission" title="Reports are not available" message="You do not have access to this area." />;
   if (state.status === "loading") return <SkeletonBlock />;
-  if (state.status === "error") return <StateCard state="error" title="Reports need attention" message={state.message} actionLabel="Retry" />;
+  if (state.status === "error") return <StateCard state="error" title="Reports need attention" message={state.message} actionLabel="Retry" onAction={() => load()} />;
 
   return (
     <div className="space-y-6">
       <FinanceHero kpi={dashboardKpi} paymentSummary={{ outstanding: state.gst.grossAmount }} />
       {notice ? <Toast tone={notice.tone} title={notice.title} message={notice.message} /> : null}
+      {access.readOnly ? <StateCard state="empty" title="Reports are read-only" message={access.message} /> : null}
       <SectionIssues issues={state.issues} />
       <section className="surface-card p-5">
         <div className="grid gap-3 md:grid-cols-3">
@@ -119,7 +133,7 @@ export function ReportsPage() {
         <MetricTile icon={WalletCards} label="Tax amount" value={formatMoney(state.gst.gstAmount)} tone="warning" />
         <MetricTile icon={BarChart3} label="Gross amount" value={formatMoney(state.gst.grossAmount)} tone="success" />
       </div>
-      <ReportsPanel onDownload={downloadReport} onPdf={checkPdfReadiness} saving={saving} />
+      <ReportsPanel canExport={access.canExport} onDownload={downloadReport} onPdf={checkPdfReadiness} saving={saving} />
     </div>
   );
 }
