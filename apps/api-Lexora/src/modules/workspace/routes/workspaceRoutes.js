@@ -18,6 +18,10 @@ import {
   updateWorkReview,
 } from '../controllers/onboardingController.js';
 import {
+  getWorkspaceNavigation,
+  listWorkspaceModules,
+} from '../controllers/moduleNavigationController.js';
+import {
   checkFeatureAccess,
   checkModuleAccess,
   getSubscription,
@@ -49,6 +53,8 @@ router.put('/policies', requirePermission('policies.manage'), upsertPolicy);
 router.get('/plans', listPlans);
 router.get('/features', listFeatures);
 router.get('/subscription', getSubscription);
+router.get('/modules', listWorkspaceModules);
+router.get('/navigation', getWorkspaceNavigation);
 router.get('/features/:featureKey/access', checkFeatureAccess);
 router.patch('/features/:featureKey/override', requirePermission('features.manage'), updateFeatureOverride);
 router.get('/modules/:moduleKey/access', checkModuleAccess);

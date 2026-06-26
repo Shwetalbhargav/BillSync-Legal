@@ -4,7 +4,7 @@ import { workspaceScopedPlugin } from '../../../middleware/workspaceScopedPlugin
 const WorkspaceModuleSchema = new mongoose.Schema(
   {
     moduleKey: { type: String, required: true, trim: true, lowercase: true, index: true },
-    status: { type: String, enum: ['enabled', 'disabled', 'not_configured'], default: 'enabled', index: true },
+    status: { type: String, enum: ['enabled', 'disabled', 'hidden', 'read_only', 'experimental', 'not_configured'], default: 'enabled', index: true },
     source: { type: String, enum: ['plan', 'owner', 'migration', 'system'], default: 'plan' },
     enabledAt: { type: Date },
     disabledAt: { type: Date },

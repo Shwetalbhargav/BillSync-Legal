@@ -251,9 +251,16 @@ export async function getWorkspaceModuleAccess({ workspaceId, moduleKey }) {
     : null;
 
   if (workspaceModule && workspaceModule.status !== 'enabled') {
+    const workspaceModuleBehavior = {
+      disabled: 'disable',
+      hidden: 'hide',
+      read_only: 'read_only',
+      experimental: 'enabled',
+      not_configured: 'disable',
+    }[workspaceModule.status] || 'disable';
     return {
-      allowed: false,
-      behavior: workspaceModule.status === 'not_configured' ? 'disable' : 'hide',
+      allowed: workspaceModule.status === 'experimental',
+      behavior: workspaceModuleBehavior,
       source: 'workspace_module',
       reason: workspaceModule.reason || 'This module is not available for this workspace.',
       plan,
