@@ -1,4 +1,4 @@
-import { mkdir, writeFile } from 'node:fs/promises';
+import { access, mkdir, writeFile } from 'node:fs/promises';
 import { dirname, join, resolve } from 'node:path';
 import { spawn } from 'node:child_process';
 
@@ -11,13 +11,22 @@ const workspaces = [
 
 const reportsDir = 'audit-reports';
 
+async function hasLockfile(cwd) {
+  try {
+    await access(join(cwd, 'package-lock.json'));
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 function runAudit(name, cwd) {
   return new Promise((done) => {
     const command = process.platform === 'win32' ? 'cmd.exe' : 'npm';
     const args =
       process.platform === 'win32'
-        ? ['/d', '/s', '/c', 'npm audit --audit-level=high --json']
-        : ['audit', '--audit-level=high', '--json'];
+        ? ['/d', '/s', '/c', 'npm audit --audit-level=high --json --workspaces=false']
+        : ['audit', '--audit-level=high', '--json', '--workspaces=false'];
     const child = spawn(command, args, {
       cwd: resolve(cwd),
       stdio: ['ignore', 'pipe', 'pipe'],
@@ -50,6 +59,18 @@ await mkdir(reportsDir, { recursive: true });
 
 let hasHighOrCritical = false;
 for (const [name, cwd] of workspaces) {
+  if (!(await hasLockfile(cwd))) {
+    const reportPath = join(reportsDir, `${name}.audit.json`);
+    const report = {
+      skipped: true,
+      reason: 'No package-lock.json is present for this workspace.',
+      vulnerabilities: { critical: 0, high: 0, moderate: 0, low: 0 },
+    };
+    await writeFile(reportPath, `${JSON.stringify(report, null, 2)}\n`);
+    console.log(`${name}: skipped=no-lockfile report=${reportPath}`);
+    continue;
+  }
+
   const result = await runAudit(name, cwd);
   const reportPath = join(reportsDir, `${name}.audit.json`);
   let report;

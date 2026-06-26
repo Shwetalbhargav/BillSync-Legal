@@ -11,6 +11,9 @@
     "npm": ">=10"
   },
   "scripts": {
-    "test:packages": "node scripts/run-package-tests.mjs"
+    "test:packages": "node scripts/run-package-tests.mjs",
+    "scan:terminology": "node scripts/terminology-scan.mjs",
+    "load:smoke": "node scripts/load-smoke.mjs",
+    "release:check": "npm run scan:terminology && npm run load:smoke && npm --prefix apps/api-Lexora run test:release-hardening"
   }
 }

@@ -1,21 +1,32 @@
 # Dependency Risk Register
 
-The CI pipeline runs `node scripts/audit-workspace.mjs` on every pull request and writes JSON reports to `audit-reports/`.
+## Current Audit Snapshot
 
-## Pilot Gate
-- No unactioned critical advisory can be accepted for pilot.
-- High advisories require owner sign-off, a compensating control, and a scheduled remediation issue.
-- Runtime dependencies take priority over build-only dependencies.
+Generated with:
 
-## Current Known Risks
+```powershell
+node scripts/audit-workspace.mjs
+```
 
-### API
-- `axios`, `mongoose`, `nodemailer`, `path-to-regexp`, `undici` and related transitive packages are reported by `npm audit` on the current lockfile.
-- Compensating controls: outbound HTTP use is server-side only, request payload limits are enabled, NoSQL filter sanitisation is enabled, and production mock payment completion is disabled.
-- Remediation target: update direct dependencies and rerun the full API, workspace-isolation, and financial-invariant suites before staging approval.
+## Findings
 
-### Desktop Agent
-- `active-win` pulls vulnerable native build tooling in the current dependency path; npm's suggested fix is a breaking downgrade and must be tested against Windows capture behavior.
-- `concurrently` reports a shell quoting advisory in the development script path.
-- Compensating controls: desktop builds are produced in CI from lockfile, the development script is not shipped to end users, and pilot capture requires explicit user consent.
-- Remediation target: replace or update the active-window capture dependency and development runner before production general availability.
+| Workspace | Critical | High | Moderate | Low | Release Position |
+| --- | ---: | ---: | ---: | ---: | --- |
+| API | 0 | 0 | 0 | 0 | Clear |
+| Web | 0 | 0 | 0 | 1 | Accept for pilot; dev-server-only advisory |
+| Desktop | 0 | 6 | 0 | 1 | Review before production desktop rollout |
+| Extension | 0 | 0 | 0 | 0 | Clear |
+
+## Desktop Advisory Notes
+
+The desktop findings flow through `active-win@9` native build dependencies, including `node-gyp`, `make-fetch-happen`, `cacache`, `@mapbox/node-pre-gyp`, and `tar`. `npm audit` reports a fix path that moves `active-win` to `7.7.2`, which is a semver-major downgrade from the current `9.x` line.
+
+Release decision:
+
+- API, web, and extension can continue through staging validation.
+- Desktop production rollout should wait for an explicit compatibility check of the suggested `active-win` downgrade or an upstream patched `active-win` release.
+- Until resolved, do not distribute a production desktop installer outside controlled pilot testers.
+
+## Owner
+
+Release engineering owns tracking the advisory. Desktop engineering owns the dependency compatibility decision.

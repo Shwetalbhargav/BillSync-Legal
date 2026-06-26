@@ -9,6 +9,7 @@ dotenv.config();
 import { errorHandler } from './middleware/errorHandler.js';
 import { notFound } from './middleware/notFound.js';
 import { rateLimit } from './middleware/rateLimit.js';
+import { securityHeaders } from './middleware/securityHeaders.js';
 import {
   rejectOwnershipFields,
   runWorkspaceContext,
@@ -25,17 +26,7 @@ const app = express();
 app.set('trust proxy', 1);
 app.use(requestContext);
 app.use(runWorkspaceContext);
-app.use((req, res, next) => {
-  res.setHeader('X-Content-Type-Options', 'nosniff');
-  res.setHeader('X-Frame-Options', 'DENY');
-  res.setHeader('Referrer-Policy', 'no-referrer');
-  res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
-  res.setHeader('Cross-Origin-Resource-Policy', 'same-site');
-  if (process.env.NODE_ENV === 'production') {
-    res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
-  }
-  next();
-});
+app.use(securityHeaders);
 app.get('/healthz', (req, res) => res.json({ ok: true, requestId: req.requestId }));
 app.get('/version', (req, res) => res.json({
   ok: true,
