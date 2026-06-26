@@ -19,6 +19,18 @@ function asObjectId(value) {
   return mongoose.Types.ObjectId.isValid(String(value)) ? new mongoose.Types.ObjectId(value) : false;
 }
 
+function workspaceFilter(req, extra = {}) {
+  return req.workspaceId ? { workspaceId: req.workspaceId, ...extra } : extra;
+}
+
+function workspaceAggregateMatch(req, extra = {}) {
+  if (!req.workspaceId) return extra;
+  const workspaceId = mongoose.Types.ObjectId.isValid(req.workspaceId)
+    ? new mongoose.Types.ObjectId(req.workspaceId)
+    : req.workspaceId;
+  return { workspaceId, ...extra };
+}
+
 function idString(value) {
   return value?._id ? String(value._id) : value ? String(value) : '';
 }
@@ -85,7 +97,7 @@ export const exportTimeEntriesCsv = async (req, res) => {
       return res.status(400).json({ error: 'Invalid clientId, caseId, or userId' });
     }
 
-    const q = {};
+    const q = workspaceFilter(req);
     if (clientObjectId) q.clientId = clientObjectId;
     if (caseObjectId) q.caseId = caseObjectId;
     if (userObjectId) q.userId = userObjectId;
@@ -162,7 +174,7 @@ export const exportInvoicesCsv = async (req, res) => {
       return res.status(400).json({ error: 'Invalid clientId or caseId' });
     }
 
-    const q = {};
+    const q = workspaceFilter(req);
     if (clientObjectId) q.clientId = clientObjectId;
     if (caseObjectId) q.caseId = caseObjectId;
     if (status) q.status = status;
@@ -255,7 +267,7 @@ export const getGstSummary = async (req, res) => {
       return res.status(400).json({ error: 'Invalid clientId or caseId' });
     }
 
-    const match = { status: { $ne: 'void' } };
+    const match = workspaceAggregateMatch(req, { status: { $ne: 'void' } });
     if (clientObjectId) match.clientId = clientObjectId;
     if (caseObjectId) match.caseId = caseObjectId;
     if (status) match.status = status;
@@ -312,7 +324,7 @@ export const exportGstCsv = async (req, res) => {
       return res.status(400).json({ error: 'Invalid clientId or caseId' });
     }
 
-    const q = { status: { $ne: 'void' } };
+    const q = workspaceFilter(req, { status: { $ne: 'void' } });
     if (clientObjectId) q.clientId = clientObjectId;
     if (caseObjectId) q.caseId = caseObjectId;
     if (status) q.status = status;
@@ -392,7 +404,7 @@ export const exportUtilizationCsv = async (req, res) => {
     const groupField = groupBy === 'user' ? '$userId' : groupBy === 'case' ? '$caseId' : '$clientId';
 
     const rows = await TimeEntry.aggregate([
-      { $match: { date: { $gte: from, $lte: to } } },
+      { $match: workspaceAggregateMatch(req, { date: { $gte: from, $lte: to } }) },
       {
         $group: {
           _id: groupField,
@@ -452,9 +464,9 @@ export const getWorkflowReports = async (req, res) => {
       return res.status(400).json({ error: 'Invalid clientId or caseId' });
     }
 
-    const workMatch = {};
-    const invoiceMatch = { status: { $nin: ['void', 'revised'] } };
-    const paymentMatch = { status: 'cleared' };
+    const workMatch = workspaceAggregateMatch(req);
+    const invoiceMatch = workspaceAggregateMatch(req, { status: { $nin: ['void', 'revised'] } });
+    const paymentMatch = workspaceAggregateMatch(req, { status: 'cleared' });
     if (clientId) {
       workMatch.clientId = clientId;
       invoiceMatch.clientId = clientId;
@@ -498,8 +510,8 @@ export const getWorkflowReports = async (req, res) => {
       ]),
       Invoice.find(invoiceMatch).select('clientId caseId issueDate dueDate status total totalPaise balancePaise').lean(),
       Payment.find(paymentMatch).select('invoiceId receivedDate amount amountPaise transactionType').lean(),
-      Client.find(clientId ? { _id: clientId } : {}).select('displayName name').lean(),
-      Case.find(caseId ? { _id: caseId } : clientId ? { clientId } : {}).select('title name clientId').lean(),
+      Client.find(workspaceFilter(req, clientId ? { _id: clientId } : {})).select('displayName name').lean(),
+      Case.find(workspaceFilter(req, caseId ? { _id: caseId } : clientId ? { clientId } : {})).select('title name clientId').lean(),
       TimeEntry.aggregate([
         { $match: workMatch },
         { $group: { _id: { userId: '$userId', activityCode: '$activityCode' }, minutes: { $sum: { $ifNull: ['$billableMinutes', 0] } }, amountPaise: { $sum: { $ifNull: ['$amountPaise', { $round: [{ $multiply: [{ $ifNull: ['$amount', 0] }, 100] }, 0] }] } } } },

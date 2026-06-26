@@ -18,8 +18,11 @@ const KpiSnapshotSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-KpiSnapshotSchema.index({ scope: 1, scopeId: 1, month: 1 }, { unique: true, partialFilterExpression: { scopeId: { $exists: true } } });
-KpiSnapshotSchema.index({ scope: 1, month: 1 });
+KpiSnapshotSchema.index(
+  { workspaceId: 1, scope: 1, scopeId: 1, month: 1 },
+  { unique: true, partialFilterExpression: { scopeId: { $exists: true } } }
+);
+KpiSnapshotSchema.index({ workspaceId: 1, scope: 1, month: 1 });
 
 KpiSnapshotSchema.plugin(workspaceScopedPlugin);
 export const KpiSnapshot = mongoose.model('KpiSnapshot', KpiSnapshotSchema);

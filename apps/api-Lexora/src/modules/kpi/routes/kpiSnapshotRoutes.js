@@ -10,6 +10,7 @@ import {
   getSnapshotById,
   computeAndUpsert
 } from '../controllers/kpiSnapshotController.js';
+import { REPORT_PERMISSIONS, requireReportAccess } from '../../reports/services/reportAccessService.js';
 
 const router = Router();
 
@@ -21,9 +22,9 @@ router.use(authenticate);
  *  GET  /api/kpi-snapshots?month=2025-09&scope=client&scopeId=<clientId>
  *  GET  /api/kpi-snapshots/<id>
  */
-router.post('/generate', validateGenerateSnapshots, generateSnapshots);
-router.get('/', listSnapshots);
-router.post('/compute-upsert', validateComputeAndUpsert, computeAndUpsert);
-router.get('/:id', getSnapshotById);
+router.post('/generate', requireReportAccess(REPORT_PERMISSIONS.manage, { write: true }), validateGenerateSnapshots, generateSnapshots);
+router.get('/', requireReportAccess(REPORT_PERMISSIONS.view), listSnapshots);
+router.post('/compute-upsert', requireReportAccess(REPORT_PERMISSIONS.manage, { write: true }), validateComputeAndUpsert, computeAndUpsert);
+router.get('/:id', requireReportAccess(REPORT_PERMISSIONS.view), getSnapshotById);
 
 export default router;

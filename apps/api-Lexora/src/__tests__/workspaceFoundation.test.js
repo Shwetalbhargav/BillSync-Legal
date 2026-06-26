@@ -57,6 +57,9 @@ test('roles only reference known permissions', () => {
   expect(permissionKeys.has('document.create')).toBe(true);
   expect(permissionKeys.has('document.share')).toBe(true);
   expect(permissionKeys.has('document.delete')).toBe(true);
+  expect(permissionKeys.has('report.view')).toBe(true);
+  expect(permissionKeys.has('report.export')).toBe(true);
+  expect(permissionKeys.has('report.manage')).toBe(true);
   for (const role of CORE_ROLES) {
     expect(role.permissionKeys.every((key) => permissionKeys.has(key))).toBe(true);
   }
