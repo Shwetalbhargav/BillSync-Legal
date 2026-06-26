@@ -60,6 +60,14 @@ test('roles only reference known permissions', () => {
   expect(permissionKeys.has('report.view')).toBe(true);
   expect(permissionKeys.has('report.export')).toBe(true);
   expect(permissionKeys.has('report.manage')).toBe(true);
+  expect(permissionKeys.has('ai.use')).toBe(true);
+  expect(permissionKeys.has('ai.client')).toBe(true);
+  expect(permissionKeys.has('ai.matter')).toBe(true);
+  expect(permissionKeys.has('ai.invoice')).toBe(true);
+  expect(permissionKeys.has('ai.document')).toBe(true);
+  expect(permissionKeys.has('ai.court')).toBe(true);
+  expect(permissionKeys.has('ai.research')).toBe(true);
+  expect(permissionKeys.has('ai.dashboard')).toBe(true);
   for (const role of CORE_ROLES) {
     expect(role.permissionKeys.every((key) => permissionKeys.has(key))).toBe(true);
   }

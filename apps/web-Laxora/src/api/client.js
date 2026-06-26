@@ -7,6 +7,7 @@ export const friendlyMessages = {
   0: "Please check your internet connection and try again.",
   400: "Please check the details and try again.",
   401: "Please sign in again to continue.",
+  402: "This workspace needs more credits before continuing.",
   403: "This area is not available for your role.",
   404: "We could not find that record.",
   409: "That item already exists.",
@@ -79,7 +80,7 @@ export async function request(path, options = {}) {
         data,
         path,
         status: response.status,
-        message: friendlyMessages[response.status],
+        message: data?.message || friendlyMessages[response.status],
       });
     }
 

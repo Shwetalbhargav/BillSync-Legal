@@ -6,6 +6,7 @@ function unwrapResult(response, fallbackTitle = "Assistant draft") {
       title: response.result.title || fallbackTitle,
       text: response.result.text || response.result.answer || "",
       citations: response.result.citations || [],
+      usage: response.aiUsage || null,
       raw: response,
     };
   }
@@ -14,6 +15,7 @@ function unwrapResult(response, fallbackTitle = "Assistant draft") {
       title: "Email draft",
       text: response.email.text,
       citations: [],
+      usage: response.aiUsage || null,
       raw: response,
     };
   }
@@ -22,6 +24,7 @@ function unwrapResult(response, fallbackTitle = "Assistant draft") {
       title: "Billable narrative",
       text: response.planned.description,
       citations: [],
+      usage: response.aiUsage || null,
       raw: response,
     };
   }
@@ -29,8 +32,13 @@ function unwrapResult(response, fallbackTitle = "Assistant draft") {
     title: fallbackTitle,
     text: "",
     citations: [],
+    usage: response?.aiUsage || null,
     raw: response,
   };
+}
+
+function unwrapData(response) {
+  return response?.data || response;
 }
 
 export const aiWorkspaceApi = {
@@ -52,5 +60,20 @@ export const aiWorkspaceApi = {
 
   async matterQuestion({ caseId, question }) {
     return unwrapResult(await aiApi.matterChat({ caseId, question }), "Matter answer");
+  },
+
+  async usage() {
+    const data = unwrapData(await aiApi.usage());
+    return {
+      limit: Number(data.limit || 0),
+      used: Number(data.used || 0),
+      remaining: Number(data.remaining || 0),
+      periodStart: data.periodStart || "",
+      byModule: Array.isArray(data.byModule) ? data.byModule : [],
+    };
+  },
+
+  async consumers() {
+    return unwrapData(await aiApi.consumers()) || [];
   },
 };
