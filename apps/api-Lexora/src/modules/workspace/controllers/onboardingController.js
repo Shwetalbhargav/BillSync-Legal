@@ -1,6 +1,5 @@
 import Workspace from '../models/Workspace.js';
 import AuditEvent from '../models/AuditEvent.js';
-import { isOwner } from '../roles.js';
 
 const STEP_FIELDS = new Set([
   'account',
@@ -49,8 +48,6 @@ export async function getOnboarding(req, res) {
 
 export async function updateOnboarding(req, res) {
   try {
-    if (!isOwner(req.user?.commercialRole || req.user?.role)) return res.status(403).json({ ok: false, message: 'Only Owners can update onboarding' });
-
     const update = pickWorkspaceSettings(req.body);
     const completedSteps = Array.isArray(req.body.completedSteps)
       ? req.body.completedSteps.filter((step) => STEP_FIELDS.has(step))
@@ -78,7 +75,6 @@ export async function updateOnboarding(req, res) {
 
 export async function updateWorkReview(req, res) {
   try {
-    if (!isOwner(req.user?.commercialRole || req.user?.role)) return res.status(403).json({ ok: false, message: 'Only Owners can update work review settings' });
     const workspace = await Workspace.findByIdAndUpdate(
       req.workspaceId,
       { $set: { workReview: { ...req.body } } },

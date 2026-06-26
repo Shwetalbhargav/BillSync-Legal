@@ -4,7 +4,12 @@ import Membership from '../models/Membership.js';
 import Invitation from '../models/Invitation.js';
 import AuditEvent from '../models/AuditEvent.js';
 import Workspace from '../models/Workspace.js';
-import { canManageMembership, COMMERCIAL_ROLES, isOwner, normalizeRole } from '../roles.js';
+import { COMMERCIAL_ROLES, normalizeRole } from '../roles.js';
+import {
+  activeOwnerCount,
+  isFinalOwnerDemotion,
+  isFinalOwnerRemoval,
+} from '../services/membershipPolicyService.js';
 import {
   acceptWorkspaceInvitation,
   createWorkspaceInvitation,
@@ -25,22 +30,6 @@ async function audit({ workspaceId, actorId, action, targetType, targetId, chang
     targetId,
     changes,
   }], options);
-}
-
-async function activeMemberCount(workspaceId, session) {
-  return Membership.countDocuments({ workspaceId, status: 'active' }).session(session);
-}
-
-async function activeOwnerCount(workspaceId, session) {
-  return Membership.countDocuments({ workspaceId, role: 'owner', status: 'active' }).session(session);
-}
-
-function requireOwner(req, res) {
-  if (!canManageMembership(req.user?.commercialRole || req.user?.role)) {
-    res.status(403).json({ ok: false, message: 'Only Owners can manage workspace membership' });
-    return false;
-  }
-  return true;
 }
 
 export async function listMemberships(req, res) {
@@ -68,7 +57,6 @@ export async function getWorkspaceContext(req, res) {
 }
 
 export async function inviteMember(req, res) {
-  if (!requireOwner(req, res)) return;
   try {
     const { email, role = 'lawyer' } = req.body || {};
     const commercialRole = normalizeRole(role);
@@ -105,7 +93,6 @@ export async function acceptInvitation(req, res) {
 }
 
 export async function resendInvitation(req, res) {
-  if (!requireOwner(req, res)) return;
   try {
     const invite = await Invitation.findById(req.params.id);
     if (!invite || invite.status !== 'pending') return res.status(404).json({ ok: false, message: 'Invitation not found' });
@@ -129,7 +116,6 @@ export async function resendInvitation(req, res) {
 }
 
 export async function expireInvitation(req, res) {
-  if (!requireOwner(req, res)) return;
   try {
     const invite = await Invitation.findById(req.params.id);
     if (!invite || invite.status !== 'pending') return res.status(404).json({ ok: false, message: 'Invitation not found' });
@@ -144,7 +130,6 @@ export async function expireInvitation(req, res) {
 }
 
 export async function revokeInvitation(req, res) {
-  if (!requireOwner(req, res)) return;
   try {
     const invite = await Invitation.findById(req.params.id);
     if (!invite || invite.status !== 'pending') return res.status(404).json({ ok: false, message: 'Invitation not found' });
@@ -159,7 +144,6 @@ export async function revokeInvitation(req, res) {
 }
 
 export async function updateMembership(req, res) {
-  if (!requireOwner(req, res)) return;
   const session = await Membership.startSession();
   try {
     const nextRole = req.body?.role ? normalizeRole(req.body.role) : null;
@@ -175,13 +159,11 @@ export async function updateMembership(req, res) {
         error.statusCode = 404;
         throw error;
       }
-      if (String(membership.userId) === String(req.user.id) && isOwner(membership.role)) {
-        const owners = await activeOwnerCount(req.workspaceId, session);
-        if (owners <= 1 && nextRole && nextRole !== 'owner') {
-          const error = new Error('Transfer ownership before demoting the final Owner');
-          error.statusCode = 409;
-          throw error;
-        }
+      const owners = await activeOwnerCount(req.workspaceId, session);
+      if (isFinalOwnerDemotion({ membership, actorUserId: req.user.id, nextRole, ownerCount: owners })) {
+        const error = new Error('Transfer ownership before demoting the final Owner');
+        error.statusCode = 409;
+        throw error;
       }
 
       const previousRole = membership.role;
@@ -212,7 +194,6 @@ export async function updateMembership(req, res) {
 }
 
 export async function removeMembership(req, res) {
-  if (!requireOwner(req, res)) return;
   const session = await Membership.startSession();
   try {
     let membership;
@@ -223,13 +204,11 @@ export async function removeMembership(req, res) {
         error.statusCode = 404;
         throw error;
       }
-      if (String(membership.userId) === String(req.user.id) && isOwner(membership.role)) {
-        const owners = await activeOwnerCount(req.workspaceId, session);
-        if (owners <= 1) {
-          const error = new Error('Transfer ownership before removing the final Owner');
-          error.statusCode = 409;
-          throw error;
-        }
+      const owners = await activeOwnerCount(req.workspaceId, session);
+      if (isFinalOwnerRemoval({ membership, actorUserId: req.user.id, ownerCount: owners })) {
+        const error = new Error('Transfer ownership before removing the final Owner');
+        error.statusCode = 409;
+        throw error;
       }
       membership.status = 'removed';
       membership.removedAt = new Date();

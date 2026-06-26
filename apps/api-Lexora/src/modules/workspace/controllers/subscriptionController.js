@@ -1,4 +1,3 @@
-import { canManageMembership } from '../roles.js';
 import {
   getFeatureCatalog,
   getPlanCatalog,
@@ -12,12 +11,6 @@ import {
 function requireWorkspace(req, res) {
   if (req.workspaceId) return true;
   res.status(400).json({ ok: false, message: 'Choose a workspace before checking plan access.' });
-  return false;
-}
-
-function requireOwner(req, res) {
-  if (canManageMembership(req.user?.commercialRole || req.user?.role)) return true;
-  res.status(403).json({ ok: false, message: 'Only Owners can update workspace feature access.' });
   return false;
 }
 
@@ -87,7 +80,7 @@ export async function checkModuleAccess(req, res) {
 }
 
 export async function updateFeatureOverride(req, res) {
-  if (!requireWorkspace(req, res) || !requireOwner(req, res)) return;
+  if (!requireWorkspace(req, res)) return;
   try {
     const row = await upsertWorkspaceFeatureOverride({
       workspaceId: req.workspaceId,
