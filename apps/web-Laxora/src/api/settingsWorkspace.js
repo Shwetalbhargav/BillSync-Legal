@@ -1,5 +1,6 @@
 import { firmsApi } from "./firms.js";
 import { backendGapAdapters } from "./gaps.js";
+import { request } from "./client.js";
 import { asList, normalizeUser, toId } from "./normalizers.js";
 import { usersApi } from "./users.js";
 
@@ -64,9 +65,49 @@ function roleLabel(role = "") {
   return role ? role.charAt(0).toUpperCase() + role.slice(1) : "Team";
 }
 
+function moneyPaise(value = 0, currency = "INR") {
+  return new Intl.NumberFormat("en-IN", { style: "currency", currency }).format(Number(value || 0) / 100);
+}
+
+function normalizePlatformBilling(response = {}) {
+  const data = response?.data || response || {};
+  const plan = data.plan || {};
+  const subscription = data.subscription || {};
+  const invoices = Array.isArray(data.invoices) ? data.invoices : [];
+  const payments = Array.isArray(data.payments) ? data.payments : [];
+  const currency = plan.price?.currency || invoices[0]?.currency || "INR";
+  return {
+    planName: plan.name || subscription.planKey || "Not selected",
+    status: subscription.status || data.state || "not_configured",
+    price: moneyPaise(plan.price?.amountPaise || 0, currency),
+    interval: plan.price?.interval || "month",
+    provider: data.provider || { configured: false, status: "not_configured", message: "Subscription payments are not connected yet." },
+    usage: data.usage || {},
+    invoices: invoices.map((invoice) => ({
+      id: invoice.id,
+      number: invoice.number,
+      status: invoice.status,
+      total: moneyPaise(invoice.totalPaise, invoice.currency || currency),
+      balance: moneyPaise(invoice.balancePaise, invoice.currency || currency),
+      dueAt: invoice.dueAt,
+      raw: invoice,
+    })),
+    payments: payments.map((payment) => ({
+      id: payment.id,
+      status: payment.status,
+      amount: moneyPaise(payment.amountPaise, payment.currency || currency),
+      failureMessage: payment.failureMessage || "",
+      receivedAt: payment.receivedAt,
+      raw: payment,
+    })),
+    paymentState: data.paymentState || { status: "not_started", message: "" },
+    raw: data,
+  };
+}
+
 export const settingsWorkspaceApi = {
   async load({ firmId, includeUsers = true } = {}) {
-    const [firmResult, settingsResult, usersResult, notificationResult, storageResult, permissionResult, invoiceResult] = await Promise.allSettled([
+    const [firmResult, settingsResult, usersResult, notificationResult, storageResult, permissionResult, invoiceResult, platformBillingResult] = await Promise.allSettled([
       firmId ? firmsApi.get(firmId) : Promise.resolve(DEFAULT_SETTINGS),
       firmId ? firmsApi.settings(firmId) : Promise.resolve(DEFAULT_SETTINGS),
       includeUsers ? usersApi.list({ limit: 100 }) : Promise.resolve([]),
@@ -74,6 +115,7 @@ export const settingsWorkspaceApi = {
       settleGap(backendGapAdapters.storageDefaults),
       settleGap(backendGapAdapters.permissionMatrix),
       settleGap(backendGapAdapters.invoiceDefaults),
+      request("/api/workspace/platform-billing"),
     ]);
 
     const firm = normalizeFirmSettings(
@@ -122,9 +164,22 @@ export const settingsWorkspaceApi = {
         permissions: permissionResult.value,
         invoices: invoiceResult.value,
       },
+      platformBilling: platformBillingResult.status === "fulfilled"
+        ? normalizePlatformBilling(platformBillingResult.value)
+        : {
+          status: "not_available",
+          message: platformBillingResult.reason?.userMessage || "Lexora subscription billing could not be loaded right now.",
+          provider: { configured: false, status: "not_configured", message: "Subscription payment setup is not connected yet." },
+          usage: {},
+          invoices: [],
+          payments: [],
+          paymentState: { status: "not_started", message: "" },
+        },
       issues,
     };
   },
+  createPlatformInvoice: () => request("/api/workspace/platform-billing/invoices/current", { method: "POST" }),
+  recordPlatformPayment: (invoiceId, body) => request(`/api/workspace/platform-billing/invoices/${invoiceId}/payments`, { method: "POST", body }),
   updateFirm: (firmId, body) => firmsApi.replace(firmId, body),
   updateCurrency: (firmId, body) => firmsApi.updateCurrency(firmId, body),
   updateTaxSettings: (firmId, body) => firmsApi.updateTaxSettings(firmId, body),

@@ -37,6 +37,12 @@ import {
   updateRolePermissions,
   upsertPolicy,
 } from '../controllers/rbacController.js';
+import {
+  createCurrentPlatformInvoice,
+  getPlatformBilling,
+  recordPlatformPayment,
+} from '../controllers/platformBillingController.js';
+import { PLATFORM_BILLING_PERMISSIONS } from '../services/platformBillingService.js';
 
 const router = Router();
 
@@ -53,6 +59,9 @@ router.put('/policies', requirePermission('policies.manage'), upsertPolicy);
 router.get('/plans', listPlans);
 router.get('/features', listFeatures);
 router.get('/subscription', getSubscription);
+router.get('/platform-billing', requirePermission(PLATFORM_BILLING_PERMISSIONS.read), getPlatformBilling);
+router.post('/platform-billing/invoices/current', requirePermission(PLATFORM_BILLING_PERMISSIONS.manage), createCurrentPlatformInvoice);
+router.post('/platform-billing/invoices/:invoiceId/payments', requirePermission(PLATFORM_BILLING_PERMISSIONS.pay), recordPlatformPayment);
 router.get('/modules', listWorkspaceModules);
 router.get('/navigation', getWorkspaceNavigation);
 router.get('/features/:featureKey/access', checkFeatureAccess);

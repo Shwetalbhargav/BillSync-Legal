@@ -219,6 +219,9 @@ export const CORE_PERMISSIONS = [
   { key: 'policies.read', name: 'View policies', moduleKey: 'settings', action: 'read', resource: 'policy' },
   { key: 'policies.manage', name: 'Manage policies', moduleKey: 'settings', action: 'manage', resource: 'policy' },
   { key: 'subscription.read', name: 'View subscription', moduleKey: 'settings', action: 'read', resource: 'subscription' },
+  { key: 'platform_billing.read', name: 'View Lexora subscription billing', moduleKey: 'settings', action: 'read', resource: 'platform_billing' },
+  { key: 'platform_billing.manage', name: 'Manage Lexora subscription billing', moduleKey: 'settings', action: 'manage', resource: 'platform_billing' },
+  { key: 'platform_billing.pay', name: 'Pay Lexora subscription invoices', moduleKey: 'settings', action: 'pay', resource: 'platform_billing' },
   { key: 'features.manage', name: 'Manage feature access', moduleKey: 'settings', action: 'manage', resource: 'feature' },
   { key: 'client.read', name: 'View clients', moduleKey: 'clients', action: 'read', resource: 'client' },
   { key: 'client.create', name: 'Create clients', moduleKey: 'clients', action: 'create', resource: 'client' },
@@ -562,6 +565,9 @@ export const TENANT_OWNED_COLLECTIONS = [
   { name: 'idleintervals', parent: { collection: 'worksessions', localField: 'workSessionId' } },
   { name: 'integrationlogs' },
   { name: 'aiusageevents', parents: [{ collection: 'users', localField: 'memberId' }] },
+  { name: 'platforminvoices' },
+  { name: 'platformpayments', parent: { collection: 'platforminvoices', localField: 'platformInvoiceId' } },
+  { name: 'platformusagerecords' },
   { name: 'invoices', parent: { collection: 'clients', localField: 'clientId' } },
   { name: 'invoicelines', parent: { collection: 'invoices', localField: 'invoiceId' } },
   { name: 'kpisnapshots', kpiScope: true },
@@ -591,6 +597,9 @@ export const CORE_COLLECTIONS = [
   'workspacemodules',
   'workspacefeatureoverrides',
   'subscriptions',
+  'platforminvoices',
+  'platformpayments',
+  'platformusagerecords',
   'memberships',
 ];
 
@@ -636,6 +645,10 @@ export async function ensureWorkspaceFoundationIndexes(db) {
   await db.collection('moduleregistries').createIndex({ key: 1 }, { unique: true });
   await db.collection('subscriptions').createIndex({ workspaceId: 1, status: 1 });
   await db.collection('subscriptions').createIndex({ workspaceId: 1, planKey: 1, status: 1 });
+  await db.collection('platforminvoices').createIndex({ workspaceId: 1, invoiceNumber: 1 }, { unique: true });
+  await db.collection('platforminvoices').createIndex({ workspaceId: 1, status: 1, dueAt: -1 });
+  await db.collection('platformpayments').createIndex({ workspaceId: 1, status: 1, receivedAt: -1 });
+  await db.collection('platformusagerecords').createIndex({ workspaceId: 1, metric: 1, periodStart: 1, periodEnd: 1 });
   await db.collection('policies').createIndex({ workspaceId: 1, roleKey: 1, permissionKey: 1 }, { unique: true, sparse: true });
   await db.collection('workspacemodules').createIndex({ workspaceId: 1, moduleKey: 1 }, { unique: true });
   await db.collection('workspacefeatureoverrides').createIndex({ workspaceId: 1, featureKey: 1 }, { unique: true });
