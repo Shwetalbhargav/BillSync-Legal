@@ -10,6 +10,13 @@ const PlanSchema = new mongoose.Schema(
     limits: {
       members: { type: Number, min: 1, default: 1 },
       workspaces: { type: Number, min: 1, default: 1 },
+      storageGb: { type: Number, min: 0, default: 1 },
+      aiCredits: { type: Number, min: 0, default: 0 },
+    },
+    usage: {
+      seats: { type: Number, min: 1, default: 1 },
+      storageGb: { type: Number, min: 0, default: 1 },
+      aiCredits: { type: Number, min: 0, default: 0 },
     },
     price: {
       currency: { type: String, trim: true, uppercase: true, default: 'INR' },

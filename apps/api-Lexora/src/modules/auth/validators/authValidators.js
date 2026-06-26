@@ -40,7 +40,7 @@ export const validateRegister = validateBody({
   email: [required, string({ max: 254 }), matches(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, "a valid email address")],
   practiceName: [string({ min: 1, max: 180 })],
   workspaceName: [string({ min: 1, max: 180 })],
-  planKey: [oneOf(['solo', 'small_workspace'])],
+  planKey: [oneOf(['free', 'solo', 'professional', 'business', 'enterprise', 'small_workspace'])],
   firmName: [string({ min: 1, max: 180 })],
   address: [string({ max: 500 })],
   qualifications: [array({ item: qualification })],

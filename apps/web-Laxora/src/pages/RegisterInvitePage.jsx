@@ -11,7 +11,7 @@ const initialForm = {
   mobile: "",
   password: "",
   workspaceName: "",
-  planKey: "small_workspace",
+  planKey: "professional",
 };
 
 const initialInvite = { email: "", role: "lawyer" };

@@ -16,8 +16,8 @@ export const planOptions = [
     memberLimit: 1,
   },
   {
-    key: "small_workspace",
-    name: "Small Workspace",
+    key: "professional",
+    name: "Professional",
     summary: "For a small team with shared clients, matters, billing, and reports.",
     memberLimit: 5,
   },

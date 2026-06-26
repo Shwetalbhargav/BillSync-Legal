@@ -1,14 +1,150 @@
 const now = () => new Date();
 
 export const CORE_FEATURES = [
-  { key: 'workspace.core', name: 'Workspace Core', category: 'platform', status: 'active' },
-  { key: 'workspace.members', name: 'Workspace Members', category: 'platform', status: 'active' },
-  { key: 'legal.clients', name: 'Clients', category: 'legal_work', status: 'active' },
-  { key: 'legal.matters', name: 'Matters', category: 'legal_work', status: 'active' },
-  { key: 'work.capture', name: 'Work Capture', category: 'work', status: 'active' },
-  { key: 'billing.core', name: 'Billing', category: 'billing', status: 'active' },
-  { key: 'finance.core', name: 'Finance', category: 'finance', status: 'active' },
-  { key: 'settings.core', name: 'Workspace Settings', category: 'settings', status: 'active' },
+  {
+    key: 'workspace.core',
+    name: 'Workspace Core',
+    category: 'platform',
+    status: 'active',
+    gateBehavior: 'disable',
+    usageMetric: 'none',
+    unavailableMessage: 'Workspace access is not available on the current subscription.',
+  },
+  {
+    key: 'workspace.members',
+    name: 'Workspace Members',
+    category: 'platform',
+    status: 'active',
+    gateBehavior: 'disable',
+    usageMetric: 'seats',
+    unavailableMessage: 'Member management is not included in the current plan.',
+  },
+  {
+    key: 'legal.clients',
+    name: 'Clients',
+    category: 'legal_work',
+    status: 'active',
+    gateBehavior: 'disable',
+    usageMetric: 'none',
+    unavailableMessage: 'Client records are not available on the current plan.',
+  },
+  {
+    key: 'legal.matters',
+    name: 'Matters',
+    category: 'legal_work',
+    status: 'active',
+    gateBehavior: 'disable',
+    usageMetric: 'none',
+    unavailableMessage: 'Matter management is not available on the current plan.',
+  },
+  {
+    key: 'work.capture',
+    name: 'Work Capture',
+    category: 'work',
+    status: 'active',
+    gateBehavior: 'read_only',
+    usageMetric: 'none',
+    unavailableMessage: 'Work capture is read-only until the workspace moves to a plan that includes it.',
+  },
+  {
+    key: 'billing.core',
+    name: 'Billing',
+    category: 'billing',
+    status: 'active',
+    gateBehavior: 'read_only',
+    usageMetric: 'none',
+    unavailableMessage: 'Billing tools are read-only on the current plan.',
+  },
+  {
+    key: 'finance.core',
+    name: 'Finance',
+    category: 'finance',
+    status: 'active',
+    gateBehavior: 'read_only',
+    usageMetric: 'none',
+    unavailableMessage: 'Finance tools are read-only on the current plan.',
+  },
+  {
+    key: 'reports.core',
+    name: 'Reports',
+    category: 'reporting',
+    status: 'active',
+    gateBehavior: 'disable',
+    usageMetric: 'none',
+    unavailableMessage: 'Reports are not included in the current plan.',
+  },
+  {
+    key: 'settings.core',
+    name: 'Workspace Settings',
+    category: 'settings',
+    status: 'active',
+    gateBehavior: 'disable',
+    usageMetric: 'none',
+    unavailableMessage: 'Workspace settings are not available on the current plan.',
+  },
+  {
+    key: 'document.storage',
+    name: 'Document Storage',
+    category: 'storage',
+    status: 'active',
+    gateBehavior: 'disable',
+    usageMetric: 'storage_gb',
+    unavailableMessage: 'Document storage is not included in the current plan.',
+  },
+  {
+    key: 'ai.assistant',
+    name: 'AI Assistant',
+    category: 'ai',
+    status: 'active',
+    gateBehavior: 'disable',
+    usageMetric: 'ai_credits',
+    unavailableMessage: 'AI assistance is not included in the current plan.',
+  },
+  {
+    key: 'ai.matter_qna',
+    name: 'Matter Q&A',
+    category: 'ai',
+    status: 'active',
+    gateBehavior: 'disable',
+    usageMetric: 'ai_credits',
+    unavailableMessage: 'Matter Q&A is not included in the current plan.',
+  },
+  {
+    key: 'integrations.zoho',
+    name: 'Zoho Integration',
+    category: 'integrations',
+    status: 'active',
+    gateBehavior: 'hide',
+    usageMetric: 'none',
+    unavailableMessage: 'Zoho integration is not included in the current plan.',
+  },
+  {
+    key: 'court.sync',
+    name: 'Court Sync',
+    category: 'integrations',
+    status: 'active',
+    gateBehavior: 'hide',
+    usageMetric: 'none',
+    unavailableMessage: 'Court sync is not included in the current plan.',
+  },
+  {
+    key: 'analytics.insights',
+    name: 'Analytics',
+    category: 'analytics',
+    status: 'active',
+    gateBehavior: 'hide',
+    usageMetric: 'none',
+    unavailableMessage: 'Analytics are not included in the current plan.',
+  },
+  {
+    key: 'people.operations',
+    name: 'People Operations',
+    category: 'operations',
+    status: 'active',
+    gateBehavior: 'hide',
+    usageMetric: 'none',
+    unavailableMessage: 'People operations are not included in the current plan.',
+  },
 ];
 
 export const CORE_PERMISSIONS = [
@@ -113,7 +249,7 @@ export const CORE_MODULES = [
     name: 'Reports',
     status: 'active',
     routeBase: '/app/reports',
-    featureKeys: ['finance.core'],
+    featureKeys: ['reports.core'],
     permissionKeys: ['reports.read'],
     order: 70,
   },
@@ -126,26 +262,123 @@ export const CORE_MODULES = [
     permissionKeys: ['workspace.manage'],
     order: 80,
   },
+  {
+    key: 'documents',
+    name: 'Documents',
+    status: 'active',
+    routeBase: '/app/storage',
+    featureKeys: ['document.storage'],
+    permissionKeys: ['matters.read'],
+    order: 90,
+  },
+  {
+    key: 'ai',
+    name: 'AI Assistant',
+    status: 'active',
+    routeBase: '/app/ai',
+    featureKeys: ['ai.assistant'],
+    permissionKeys: ['workspace.read'],
+    order: 100,
+  },
+  {
+    key: 'integrations',
+    name: 'Integrations',
+    status: 'active',
+    routeBase: '/app/integrations',
+    featureKeys: ['integrations.zoho'],
+    permissionKeys: ['workspace.manage'],
+    order: 110,
+  },
+  {
+    key: 'court-sync',
+    name: 'Court Sync',
+    status: 'active',
+    routeBase: '/app/court-sync',
+    featureKeys: ['court.sync'],
+    permissionKeys: ['matters.read'],
+    order: 120,
+  },
+  {
+    key: 'analytics',
+    name: 'Analytics',
+    status: 'active',
+    routeBase: '/app/analytics',
+    featureKeys: ['analytics.insights'],
+    permissionKeys: ['reports.read'],
+    order: 130,
+  },
+  {
+    key: 'people',
+    name: 'People Operations',
+    status: 'active',
+    routeBase: '/app/people',
+    featureKeys: ['people.operations'],
+    permissionKeys: ['workspace.manage'],
+    order: 140,
+  },
 ];
 
 export const CORE_PLANS = [
   {
+    key: 'free',
+    name: 'Free',
+    status: 'active',
+    featureKeys: ['workspace.core', 'legal.clients', 'legal.matters', 'settings.core'],
+    moduleKeys: ['dashboard', 'clients', 'matters', 'settings'],
+    limits: { members: 1, workspaces: 1, storageGb: 1, aiCredits: 0 },
+    usage: { seats: 1, storageGb: 1, aiCredits: 0 },
+    price: { currency: 'INR', amountPaise: 0, interval: 'month' },
+    metadata: { catalogOrder: 10, public: true },
+  },
+  {
     key: 'solo',
     name: 'Solo',
     status: 'active',
-    featureKeys: CORE_FEATURES.map((feature) => feature.key),
-    moduleKeys: CORE_MODULES.map((module) => module.key),
-    limits: { members: 1, workspaces: 1 },
+    featureKeys: ['workspace.core', 'legal.clients', 'legal.matters', 'work.capture', 'billing.core', 'reports.core', 'settings.core', 'document.storage', 'ai.assistant'],
+    moduleKeys: ['dashboard', 'clients', 'matters', 'work', 'billing', 'reports', 'settings', 'documents', 'ai'],
+    limits: { members: 1, workspaces: 1, storageGb: 5, aiCredits: 100 },
+    usage: { seats: 1, storageGb: 5, aiCredits: 100 },
+    price: { currency: 'INR', amountPaise: 149900, interval: 'month' },
+    metadata: { catalogOrder: 20, public: true },
   },
   {
-    key: 'small_workspace',
-    name: 'Small Workspace',
+    key: 'professional',
+    name: 'Professional',
+    status: 'active',
+    featureKeys: ['workspace.core', 'workspace.members', 'legal.clients', 'legal.matters', 'work.capture', 'billing.core', 'finance.core', 'reports.core', 'settings.core', 'document.storage', 'ai.assistant'],
+    moduleKeys: ['dashboard', 'clients', 'matters', 'work', 'billing', 'finance', 'reports', 'settings', 'documents', 'ai'],
+    limits: { members: 5, workspaces: 1, storageGb: 25, aiCredits: 500 },
+    usage: { seats: 5, storageGb: 25, aiCredits: 500 },
+    price: { currency: 'INR', amountPaise: 499900, interval: 'month' },
+    metadata: { catalogOrder: 30, public: true },
+  },
+  {
+    key: 'business',
+    name: 'Business',
+    status: 'active',
+    featureKeys: ['workspace.core', 'workspace.members', 'legal.clients', 'legal.matters', 'work.capture', 'billing.core', 'finance.core', 'reports.core', 'settings.core', 'document.storage', 'ai.assistant', 'ai.matter_qna', 'integrations.zoho', 'court.sync', 'analytics.insights'],
+    moduleKeys: ['dashboard', 'clients', 'matters', 'work', 'billing', 'finance', 'reports', 'settings', 'documents', 'ai', 'integrations', 'court-sync', 'analytics'],
+    limits: { members: 15, workspaces: 1, storageGb: 100, aiCredits: 2500 },
+    usage: { seats: 15, storageGb: 100, aiCredits: 2500 },
+    price: { currency: 'INR', amountPaise: 1299900, interval: 'month' },
+    metadata: { catalogOrder: 40, public: true },
+  },
+  {
+    key: 'enterprise',
+    name: 'Enterprise',
     status: 'active',
     featureKeys: CORE_FEATURES.map((feature) => feature.key),
     moduleKeys: CORE_MODULES.map((module) => module.key),
-    limits: { members: 5, workspaces: 1 },
+    limits: { members: 100, workspaces: 10, storageGb: 1000, aiCredits: 25000 },
+    usage: { seats: 100, storageGb: 1000, aiCredits: 25000 },
+    price: { currency: 'INR', amountPaise: 0, interval: 'pilot' },
+    metadata: { catalogOrder: 50, public: false, salesLed: true },
   },
 ];
+
+export const PLAN_ALIASES = {
+  small_workspace: 'professional',
+};
 
 export const TENANT_OWNED_COLLECTIONS = [
   { name: 'users', ownershipField: 'firmId' },
@@ -189,6 +422,7 @@ export const CORE_COLLECTIONS = [
   'policies',
   'moduleregistries',
   'workspacemodules',
+  'workspacefeatureoverrides',
   'subscriptions',
   'memberships',
 ];
@@ -237,6 +471,8 @@ export async function ensureWorkspaceFoundationIndexes(db) {
   await db.collection('subscriptions').createIndex({ workspaceId: 1, planKey: 1, status: 1 });
   await db.collection('policies').createIndex({ workspaceId: 1, roleKey: 1, permissionKey: 1 }, { unique: true, sparse: true });
   await db.collection('workspacemodules').createIndex({ workspaceId: 1, moduleKey: 1 }, { unique: true });
+  await db.collection('workspacefeatureoverrides').createIndex({ workspaceId: 1, featureKey: 1 }, { unique: true });
+  await db.collection('workspacefeatureoverrides').createIndex({ workspaceId: 1, status: 1 });
   await db.collection('memberships').createIndex({ workspaceId: 1, userId: 1 }, { unique: true, sparse: true });
   await db.collection('memberships').createIndex({ workspaceId: 1, role: 1, status: 1 });
 
@@ -445,8 +681,8 @@ export async function ensureWorkspaceSubscriptionsAndModules(db) {
   for (const workspace of workspaces) {
     const timestamp = now();
     const memberLimit = Number(workspace.limits?.members || 5);
-    const planKey = memberLimit <= 1 ? 'solo' : 'small_workspace';
-    const plan = CORE_PLANS.find((entry) => entry.key === planKey) || CORE_PLANS[1];
+    const planKey = memberLimit <= 1 ? 'solo' : 'professional';
+    const plan = CORE_PLANS.find((entry) => entry.key === planKey) || CORE_PLANS.find((entry) => entry.key === 'professional');
 
     const subscriptionResult = await db.collection('subscriptions').updateOne(
       { workspaceId: workspace._id, status: 'active' },
