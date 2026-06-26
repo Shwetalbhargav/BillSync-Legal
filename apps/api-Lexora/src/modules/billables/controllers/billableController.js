@@ -24,6 +24,10 @@ const CATEGORY_BY_CODE = {
   OTHER: 'Miscellaneous administrative legal work'
 };
 
+function workspaceFilter(req, extra = {}) {
+  return req.workspaceId ? { workspaceId: req.workspaceId, ...extra } : extra;
+}
+
 function roundToIncrement(mins, increment = 6) {
   return Math.max(increment, Math.ceil(Number(mins || 0) / increment) * increment);
 }
@@ -68,6 +72,7 @@ export const createBillable = async (req, res) => {
     const finalCategory = category || CATEGORY_BY_CODE[finalActivityCode] || 'Miscellaneous administrative legal work';
 
     const doc = await Billable.create({
+      workspaceId: req.workspaceId,
       userId, clientId, caseId,
       subject,
       description,
@@ -106,13 +111,14 @@ export const createExpense = async (req, res) => {
     } = req.body || {};
 
     if (sourceFingerprint) {
-      const duplicate = await Billable.findOne({ sourceFingerprint });
+      const duplicate = await Billable.findOne(workspaceFilter(req, { sourceFingerprint }));
       if (duplicate) {
         return res.status(409).json({ error: 'This expense source has already been captured', billable: duplicate });
       }
     }
 
     const doc = await Billable.create({
+      workspaceId: req.workspaceId,
       userId,
       clientId,
       caseId,
@@ -146,7 +152,7 @@ export const createExpense = async (req, res) => {
 
 export const listExpenses = async (req, res) => {
   try {
-    const filters = { 'expense.isExpense': true };
+    const filters = workspaceFilter(req, { 'expense.isExpense': true });
     if (req.query.clientId) filters.clientId = req.query.clientId;
     if (req.query.caseId) filters.caseId = req.query.caseId;
     if (req.query.status) filters.status = billableStatusQuery(req.query.status);
@@ -164,7 +170,7 @@ export const createFromEmail = async (req, res) => {
   try {
     const { emailEntryId } = req.params;
     const result = await runEmailEntryTransaction(async (session) => {
-      const email = await EmailEntry.findById(emailEntryId).session(session);
+      const email = await EmailEntry.findOne(workspaceFilter(req, { _id: emailEntryId })).session(session);
       if (!email) {
         const error = new Error('EmailEntry not found');
         error.statusCode = 404;
@@ -191,7 +197,7 @@ export const createFromEmail = async (req, res) => {
 // ——— Reads ————————————————————————————————————————————————
 export const getAllBillables = async (req, res) => {
   try {
-    const filters = {};
+    const filters = workspaceFilter(req);
     if (req.query.clientId)  filters.clientId = req.query.clientId;
     if (req.query.caseId)    filters.caseId = req.query.caseId;
     if (req.query.category)  filters.category = req.query.category;
@@ -205,7 +211,7 @@ export const getAllBillables = async (req, res) => {
      const q = {};
      if (caseType)   q.case_type = caseType;
      if (caseTypeId) q.case_type_id = caseTypeId;
-    const caseIds = await Case.find(q).distinct('_id');
+    const caseIds = await Case.find(workspaceFilter(req, q)).distinct('_id');
      filters.caseId = { $in: caseIds };
     }
 
@@ -230,7 +236,7 @@ export const getAllBillables = async (req, res) => {
 
 export const getBillableById = async (req, res) => {
   try {
-    const billable = await Billable.findById(req.params.id).populate('clientId caseId userId');
+    const billable = await Billable.findOne(workspaceFilter(req, { _id: req.params.id })).populate('clientId caseId userId');
     if (!billable) return res.status(404).json({ error: 'Billable not found' });
     res.json(billable);
   } catch (err) {
@@ -241,7 +247,7 @@ export const getBillableById = async (req, res) => {
 // ——— Update/Delete ————————————————————————————————————————————
 export const approveBillable = async (req, res) => {
   try {
-    const billable = await Billable.findById(req.params.id);
+    const billable = await Billable.findOne(workspaceFilter(req, { _id: req.params.id }));
     if (!billable) return res.status(404).json({ error: 'Billable not found' });
     if (billable.status === 'billed' || billable.invoiceId) {
       return res.status(409).json({ error: 'Billed entries cannot be approved again' });
@@ -269,7 +275,7 @@ export const rejectBillable = async (req, res) => {
       return res.status(400).json({ error: 'Rejection reason must be at most 500 characters' });
     }
 
-    const billable = await Billable.findById(req.params.id);
+    const billable = await Billable.findOne(workspaceFilter(req, { _id: req.params.id }));
     if (!billable) return res.status(404).json({ error: 'Billable not found' });
     if (billable.status === 'billed' || billable.invoiceId) {
       return res.status(409).json({ error: 'Billed entries cannot be rejected' });
@@ -308,7 +314,7 @@ export const updateBillable = async (req, res) => {
     let current = null;
     if (typeof patch.rate === 'number' || typeof patch.durationMinutes === 'number' || shouldResolveRate) {
       // need current or patched values to compute amount
-      current = await Billable.findById(req.params.id).select('rate durationMinutes userId clientId caseId activityCode date');
+      current = await Billable.findOne(workspaceFilter(req, { _id: req.params.id })).select('rate durationMinutes userId clientId caseId activityCode date');
       if (shouldResolveRate) {
         const resolved = await resolveBillingRate({
           userId: patch.userId ?? current?.userId,
@@ -326,7 +332,7 @@ export const updateBillable = async (req, res) => {
       }
     }
 
-    const billable = await Billable.findByIdAndUpdate(req.params.id, patch, { new: true });
+    const billable = await Billable.findOneAndUpdate(workspaceFilter(req, { _id: req.params.id }), patch, { new: true });
     if (!billable) return res.status(404).json({ error: 'Billable not found' });
     res.json(billable);
   } catch (err) {
@@ -336,7 +342,7 @@ export const updateBillable = async (req, res) => {
 
 export const deleteBillable = async (req, res) => {
   try {
-    const billable = await Billable.findByIdAndDelete(req.params.id);
+    const billable = await Billable.findOneAndDelete(workspaceFilter(req, { _id: req.params.id }));
     if (!billable) return res.status(404).json({ error: 'Billable not found' });
     res.json({ message: 'Billable deleted' });
   } catch (err) {

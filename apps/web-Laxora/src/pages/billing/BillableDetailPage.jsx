@@ -3,13 +3,13 @@ import { Link, useParams } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import { billablesApi } from "../../api/billables";
 import { billingApi } from "../../api/billing";
-import { useAuth } from "../../auth/AuthProvider";
 import { SkeletonBlock, StateCard } from "../../components/common";
 import { BillableDetailPanel, SectionIssues, SyncHistoryList } from "../../components/billing/BillingWidgets";
+import { useBillingModuleAccess } from "./useBillingModuleAccess";
 
 export function BillableDetailPage() {
   const { billableId } = useParams();
-  const { role } = useAuth();
+  const access = useBillingModuleAccess("billing");
   const [state, setState] = useState({ status: "loading", billable: null, logs: [], issues: [], message: "" });
   const [saving, setSaving] = useState(false);
 
@@ -54,7 +54,9 @@ export function BillableDetailPage() {
   }
 
   if (state.status === "loading") return <SkeletonBlock />;
-  if (state.status === "error") return <StateCard state="error" title="Billable detail needs attention" message={state.message} actionLabel="Retry" />;
+  if (access.unavailable) return <StateCard state="empty" title="Billable work is not available" message={access.message} />;
+  if (!access.canViewInvoices) return <StateCard state="permission" title="Billable work is not available" message="You do not have access to this area." />;
+  if (state.status === "error") return <StateCard state="error" title="Billable detail needs attention" message={state.message} actionLabel="Retry" onAction={load} />;
 
   return (
     <div className="space-y-6">
@@ -63,10 +65,11 @@ export function BillableDetailPage() {
         Back to billables
       </Link>
       {state.message ? <div className="rounded-lg border border-warning/30 bg-warning/10 p-3 text-sm font-semibold text-warning">{state.message}</div> : null}
+      {access.readOnly ? <StateCard state="empty" title="Billable work is read-only" message={access.message} /> : null}
       <SectionIssues issues={state.issues} />
       <BillableDetailPanel
         billable={state.billable}
-        canApprove={role === "admin"}
+        canApprove={access.canCreateInvoices}
         onApprove={approve}
         onReject={reject}
         saving={saving}

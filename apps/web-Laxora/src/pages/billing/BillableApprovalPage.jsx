@@ -1,15 +1,15 @@
 import { useEffect, useMemo, useState } from "react";
 import { billablesApi } from "../../api/billables";
 import { billingApi } from "../../api/billing";
-import { useAuth } from "../../auth/AuthProvider";
 import { SkeletonBlock, StateCard } from "../../components/common";
 import { ApprovalQueue, BillingHero } from "../../components/billing/BillingWidgets";
+import { useBillingModuleAccess } from "./useBillingModuleAccess";
 
 export function BillableApprovalPage() {
-  const { role } = useAuth();
+  const access = useBillingModuleAccess("billing");
   const [state, setState] = useState({ status: "loading", billables: [], message: "" });
   const [savingId, setSavingId] = useState("");
-  const canApprove = role === "admin";
+  const canApprove = access.canCreateInvoices;
 
   async function load() {
     setState((current) => ({ ...current, status: "loading", message: "" }));
@@ -54,11 +54,14 @@ export function BillableApprovalPage() {
   const amount = useMemo(() => state.billables.reduce((sum, item) => sum + Number(item.amount || 0), 0), [state.billables]);
 
   if (state.status === "loading") return <SkeletonBlock />;
-  if (state.status === "error") return <StateCard state="error" title="Approval queue needs attention" message={state.message} actionLabel="Retry" />;
+  if (access.unavailable) return <StateCard state="empty" title="Approval queue is not available" message={access.message} />;
+  if (!access.canViewInvoices) return <StateCard state="permission" title="Approval queue is not available" message="You do not have access to this area." />;
+  if (state.status === "error") return <StateCard state="error" title="Approval queue needs attention" message={state.message} actionLabel="Retry" onAction={load} />;
 
   return (
     <div className="space-y-6">
       <BillingHero amount={amount} count={state.billables.length} pendingCount={state.billables.length} />
+      {access.readOnly ? <StateCard state="empty" title="Approval queue is read-only" message={access.message} /> : null}
       {state.message ? <div className="rounded-lg border border-warning/30 bg-warning/10 p-3 text-sm font-semibold text-warning">{state.message}</div> : null}
       <ApprovalQueue billables={state.billables} canApprove={canApprove} onApprove={approve} onReject={reject} savingId={savingId} />
     </div>

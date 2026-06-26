@@ -346,7 +346,7 @@ export function TemplateShell({ canEdit = false }) {
   );
 }
 
-export function InvoiceDetailPanel({ invoice, onSend, onVoid, saving }) {
+export function InvoiceDetailPanel({ invoice, onSend, onVoid, saving, canSend = true, canVoid = true }) {
   return (
     <section className="surface-card p-6">
       <div className="flex min-w-0 flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
@@ -365,11 +365,11 @@ export function InvoiceDetailPanel({ invoice, onSend, onVoid, saving }) {
       </div>
       <DeliveryState invoice={invoice} />
       <div className="mt-5 flex flex-col gap-2 sm:flex-row">
-        <Button disabled={saving || invoice.status === "void"} isLoading={saving} onClick={onSend} type="button">
+        <Button disabled={!canSend || saving || invoice.status === "void"} isLoading={saving} onClick={onSend} type="button">
           <Send className="h-4 w-4" />
           Send invoice
         </Button>
-        <Button disabled={saving || invoice.status === "void"} onClick={onVoid} type="button" variant="danger">Void invoice</Button>
+        <Button disabled={!canVoid || saving || invoice.status === "void"} onClick={onVoid} type="button" variant="danger">Void invoice</Button>
       </div>
     </section>
   );

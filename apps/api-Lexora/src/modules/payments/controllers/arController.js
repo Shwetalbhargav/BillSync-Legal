@@ -5,6 +5,14 @@ import { Payment } from '../models/Payment.js';
 
 const asDate = (v) => (v ? new Date(v) : new Date());
 
+function workspaceAggregateMatch(req, extra = {}) {
+  if (!req.workspaceId) return extra;
+  const workspaceId = mongoose.Types.ObjectId.isValid(req.workspaceId)
+    ? new mongoose.Types.ObjectId(req.workspaceId)
+    : req.workspaceId;
+  return { workspaceId, ...extra };
+}
+
 export const ArController = {
   // GET /ar/aging
   // Optional: clientId, asOf (ISO date), clearedOnly=true|false
@@ -14,9 +22,9 @@ export const ArController = {
       const asOfDate = asDate(asOf);
       const paymentStatus = clearedOnly === 'false' ? undefined : 'cleared';
 
-      const match = {
+      const match = workspaceAggregateMatch(req, {
         status: { $in: ['sent', 'partial', 'overdue'] }
-      };
+      });
       if (clientId) match.clientId = new mongoose.Types.ObjectId(clientId);
 
       const pipeline = [
@@ -118,7 +126,7 @@ export const ArController = {
       const paymentStatus = clearedOnly === 'false' ? undefined : 'cleared';
 
       const pipeline = [
-        { $match: { status: { $in: ['sent', 'partial', 'overdue'] } } },
+        { $match: workspaceAggregateMatch(req, { status: { $in: ['sent', 'partial', 'overdue'] } }) },
         {
           $lookup: {
             from: 'payments',

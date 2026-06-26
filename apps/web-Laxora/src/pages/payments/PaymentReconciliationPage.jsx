@@ -2,8 +2,10 @@ import { useEffect, useMemo, useState } from "react";
 import { paymentWorkspaceApi, paymentsApi } from "../../api";
 import { SkeletonBlock, StateCard, Toast } from "../../components/common";
 import { AgingPanel, PaymentFailedState, PaymentsTable, PaymentHero, SectionIssues } from "../../components/payments/PaymentWidgets";
+import { useBillingModuleAccess } from "../billing/useBillingModuleAccess";
 
 export function PaymentReconciliationPage() {
+  const access = useBillingModuleAccess("finance");
   const [state, setState] = useState({ status: "loading", payments: [], invoices: [], summary: {}, aging: {}, agingByClient: [], issues: [], message: "" });
   const [savingId, setSavingId] = useState("");
   const [notice, setNotice] = useState(null);
@@ -41,11 +43,14 @@ export function PaymentReconciliationPage() {
   }
 
   if (state.status === "loading") return <SkeletonBlock />;
-  if (state.status === "error") return <StateCard state="error" title="Reconciliation needs attention" message={state.message} actionLabel="Retry" />;
+  if (access.unavailable) return <StateCard state="empty" title="Reconciliation is not available" message={access.message} />;
+  if (!access.canViewInvoices) return <StateCard state="permission" title="Reconciliation is not available" message="You do not have access to this area." />;
+  if (state.status === "error") return <StateCard state="error" title="Reconciliation needs attention" message={state.message} actionLabel="Retry" onAction={load} />;
 
   return (
     <div className="space-y-6">
       <PaymentHero summary={state.summary} />
+      {access.readOnly ? <StateCard state="empty" title="Reconciliation is read-only" message={access.message} /> : null}
       {notice ? <Toast tone={notice.tone} title={notice.title} message={notice.message} /> : null}
       <SectionIssues issues={state.issues} />
       {failedPayment ? <PaymentFailedState onRetry={() => reconcilePayment(failedPayment, "cleared")} /> : null}
@@ -53,7 +58,7 @@ export function PaymentReconciliationPage() {
         <h2 className="text-xl font-bold text-primary">Reconciliation queue</h2>
         <p className="mt-1 text-sm leading-6 text-muted">Review pending or failed receipts and mark them after confirmation.</p>
         <div className="mt-4">
-          <PaymentsTable payments={reviewPayments} savingId={savingId} onFail={(payment) => reconcilePayment(payment, "failed")} onReconcile={reconcilePayment} />
+          <PaymentsTable canRecord={access.canRecordPayments} payments={reviewPayments} savingId={savingId} onFail={(payment) => reconcilePayment(payment, "failed")} onReconcile={reconcilePayment} />
         </div>
       </section>
       <AgingPanel aging={state.aging} agingByClient={state.agingByClient} />

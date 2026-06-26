@@ -5,6 +5,7 @@ import { invoiceWorkspaceApi } from "../../api/invoiceWorkspace";
 import { useAuth } from "../../auth/AuthProvider";
 import { SkeletonBlock, StateCard } from "../../components/common";
 import { BuilderSourcePicker, SectionIssues, TemplateShell } from "../../components/invoices/InvoiceWidgets";
+import { useBillingModuleAccess } from "../billing/useBillingModuleAccess";
 
 const initialForm = {
   source: "time",
@@ -31,7 +32,8 @@ function buildPayload(form, userId) {
 
 export function InvoiceBuilderPage() {
   const navigate = useNavigate();
-  const { role, user } = useAuth();
+  const { user } = useAuth();
+  const access = useBillingModuleAccess("billing");
   const [form, setForm] = useState(initialForm);
   const [state, setState] = useState({ status: "loading", clients: [], matters: [], billables: [], timeEntries: [], issues: [], message: "" });
   const [saving, setSaving] = useState(false);
@@ -71,8 +73,8 @@ export function InvoiceBuilderPage() {
       setState((current) => ({ ...current, message: "Select at least one approved billable item." }));
       return;
     }
-    if (form.source === "billables" && role !== "admin") {
-      setState((current) => ({ ...current, message: "Invoices from approved billables can be created by firm administrators." }));
+    if (!access.canCreateInvoices) {
+      setState((current) => ({ ...current, message: "You do not have access to create invoices." }));
       return;
     }
 
@@ -91,7 +93,9 @@ export function InvoiceBuilderPage() {
   }
 
   if (state.status === "loading") return <SkeletonBlock />;
-  if (state.status === "error") return <StateCard state="error" title="Invoice builder needs attention" message={state.message} actionLabel="Retry" />;
+  if (access.unavailable) return <StateCard state="empty" title="Invoice builder is not available" message={access.message} />;
+  if (!access.canCreateInvoices) return <StateCard state="permission" title="Invoice builder is not available" message="You do not have access to this area." />;
+  if (state.status === "error") return <StateCard state="error" title="Invoice builder needs attention" message={state.message} actionLabel="Retry" onAction={load} />;
 
   return (
     <div className="space-y-6">
@@ -107,7 +111,7 @@ export function InvoiceBuilderPage() {
         saving={saving}
         timeEntries={state.timeEntries}
       />
-      <TemplateShell canEdit={role === "admin" || role === "partner"} />
+      <TemplateShell canEdit={access.canCreateInvoices} />
     </div>
   );
 }

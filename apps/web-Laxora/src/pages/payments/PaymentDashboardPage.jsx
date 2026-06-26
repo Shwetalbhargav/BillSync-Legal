@@ -12,6 +12,7 @@ import {
   PortalSetupPanel,
   SectionIssues,
 } from "../../components/payments/PaymentWidgets";
+import { useBillingModuleAccess } from "../billing/useBillingModuleAccess";
 
 const initialForm = {
   invoiceId: "",
@@ -36,6 +37,7 @@ function paymentBody(form) {
 }
 
 export function PaymentDashboardPage() {
+  const access = useBillingModuleAccess("finance");
   const [form, setForm] = useState(initialForm);
   const [state, setState] = useState({ status: "loading", payments: [], invoices: [], summary: {}, aging: {}, agingByClient: [], issues: [], message: "" });
   const [saving, setSaving] = useState(false);
@@ -117,18 +119,21 @@ export function PaymentDashboardPage() {
   }
 
   if (state.status === "loading") return <SkeletonBlock />;
-  if (state.status === "error") return <StateCard state="error" title="Payments need attention" message={state.message} actionLabel="Retry" />;
+  if (access.unavailable) return <StateCard state="empty" title="Payments are not available" message={access.message} />;
+  if (!access.canViewInvoices) return <StateCard state="permission" title="Payments are not available" message="You do not have access to this area." />;
+  if (state.status === "error") return <StateCard state="error" title="Payments need attention" message={state.message} actionLabel="Retry" onAction={load} />;
 
   return (
     <div className="space-y-6">
       <PaymentHero summary={state.summary} />
+      {access.readOnly ? <StateCard state="empty" title="Payments are read-only" message={access.message} /> : null}
       {notice ? <Toast tone={notice.tone} title={notice.title} message={notice.message} /> : null}
       <SectionIssues issues={state.issues} />
       {failedPayment ? <PaymentFailedState onRetry={() => reconcilePayment(failedPayment, "cleared")} /> : null}
       <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_420px]">
-        <PaymentEntryForm form={form} invoices={state.invoices} onChange={updateForm} onSubmit={savePayment} saving={saving} />
+        <PaymentEntryForm canRecord={access.canRecordPayments} form={form} invoices={state.invoices} onChange={updateForm} onSubmit={savePayment} saving={saving} />
         <div className="space-y-4">
-          <PortalSetupPanel onCreate={createPaymentPage} portalLink={portalLink} saving={saving} />
+          <PortalSetupPanel canCreate={access.canSendInvoices} onCreate={createPaymentPage} portalLink={portalLink} saving={saving} />
           <GatewayNotConnected />
           <section className="surface-card p-5">
             <p className="text-sm font-semibold uppercase tracking-wide text-accent">Selected invoice</p>
@@ -149,12 +154,12 @@ export function PaymentDashboardPage() {
             <h2 className="text-xl font-bold text-primary">Recent payments</h2>
             <p className="mt-1 text-sm text-muted">Clear receipts quickly after the firm confirms funds.</p>
           </div>
-          <Button type="button" variant="secondary" onClick={() => setForm(initialForm)}>
+          <Button disabled={!access.canRecordPayments} type="button" variant="secondary" onClick={() => setForm(initialForm)}>
             <Plus className="h-4 w-4" />
             New receipt
           </Button>
         </div>
-        <PaymentsTable payments={state.payments} savingId={savingId} onFail={(payment) => reconcilePayment(payment, "failed")} onReconcile={reconcilePayment} />
+        <PaymentsTable canRecord={access.canRecordPayments} payments={state.payments} savingId={savingId} onFail={(payment) => reconcilePayment(payment, "failed")} onReconcile={reconcilePayment} />
       </section>
       <AgingPanel aging={state.aging} agingByClient={state.agingByClient} />
     </div>

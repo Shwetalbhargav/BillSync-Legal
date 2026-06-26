@@ -5,6 +5,7 @@ import { invoicesApi } from "../../api/invoices";
 import { normalizeInvoiceLine } from "../../api/normalizers";
 import { Button, SkeletonBlock, StateCard } from "../../components/common";
 import { InvoiceLinesTable } from "../../components/invoices/InvoiceWidgets";
+import { useBillingModuleAccess } from "../billing/useBillingModuleAccess";
 
 const initialLine = {
   description: "",
@@ -26,6 +27,7 @@ function linePayload(line) {
 
 export function InvoiceLinesPage() {
   const { invoiceId } = useParams();
+  const access = useBillingModuleAccess("billing");
   const [form, setForm] = useState(initialLine);
   const [state, setState] = useState({ status: "loading", lines: [], message: "" });
   const [saving, setSaving] = useState(false);
@@ -79,7 +81,9 @@ export function InvoiceLinesPage() {
   }
 
   if (state.status === "loading") return <SkeletonBlock />;
-  if (state.status === "error") return <StateCard state="error" title="Invoice lines need attention" message={state.message} actionLabel="Retry" />;
+  if (access.unavailable) return <StateCard state="empty" title="Invoice lines are not available" message={access.message} />;
+  if (!access.canCreateInvoices) return <StateCard state="permission" title="Invoice lines are not available" message="You do not have access to this area." />;
+  if (state.status === "error") return <StateCard state="error" title="Invoice lines need attention" message={state.message} actionLabel="Retry" onAction={load} />;
 
   return (
     <div className="space-y-6">
