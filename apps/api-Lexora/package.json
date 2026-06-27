@@ -22,6 +22,7 @@
     "migrate:workspace-ids": "node src/scripts/migrateWorkspaceIds.js",
     "migrate:commercial-roles": "node src/scripts/migrateCommercialRoles.js",
     "seed:workspace-foundation": "node src/scripts/seedWorkspaceFoundation.js",
+    "seed:fresh-sample": "node src/seeds/seedFreshSampleData.js",
     "validate:workspace-foundation": "node src/scripts/validateWorkspaceFoundation.js",
     "seed:dev": "node src/seeds/seedDevData.js",
     "seed:firm": "node src/seeds/seedFirm.js",

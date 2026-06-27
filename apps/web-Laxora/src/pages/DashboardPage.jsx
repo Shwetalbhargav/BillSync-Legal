@@ -5,9 +5,9 @@ import { dashboardApi } from "../api/dashboard";
 import { useAuth } from "../auth/AuthProvider";
 import { Button, Card, CardBody, CardHeader, SkeletonBlock, StateCard, StatusBadge } from "../components/common";
 
-const demoUsers = ["Rekha Nair", "Aarav Mehta", "Nisha Rao", "Kabir Shah"];
-const demoClients = ["Apex Industries", "Zenith Tech", "Urban Habitat", "Northstar Capital"];
-const demoMatters = ["Patent infringement", "Commercial arbitration", "Lease dispute", "Funding advisory"];
+const fallbackUsers = ["Workspace owner"];
+const fallbackClients = ["First client"];
+const fallbackMatters = ["First matter"];
 
 function formatMoney(value) {
   return Number(value || 0).toLocaleString("en-IN", {
@@ -21,12 +21,26 @@ function compactNumber(value) {
   return Number(value || 0).toLocaleString("en-IN", { maximumFractionDigits: 0 });
 }
 
-function makeAnalytics(data) {
+function memberRows(workspaceContext) {
+  const rows = workspaceContext?.memberships || [];
+  const members = rows
+    .map((membership) => ({
+      name: membership.user?.name || membership.raw?.user?.name || "",
+      role: membership.role || membership.user?.role || "lawyer",
+    }))
+    .filter((member) => member.name);
+  if (members.length) return members;
+  const activeUser = workspaceContext?.activeMembership?.user;
+  if (activeUser?.name) return [{ name: activeUser.name, role: activeUser.role || workspaceContext.activeMembership.role || "lawyer" }];
+  return fallbackUsers.map((name) => ({ name, role: "owner" }));
+}
+
+function makeAnalytics(data, workspaceContext) {
   const billableTotal = data.billables.reduce((sum, item) => sum + Number(item.amount || 0), 0);
   const revenueBase = billableTotal || 1850000;
-  const matters = data.matters.length ? data.matters : demoMatters.map((title, index) => ({ id: title, title, client: demoClients[index], status: index === 2 ? "Review" : "Active" }));
-  const clients = data.clients.length ? data.clients : demoClients.map((name) => ({ id: name, name }));
-  const users = demoUsers;
+  const matters = data.matters.length ? data.matters : fallbackMatters.map((title, index) => ({ id: title, title, client: fallbackClients[index], status: "Active" }));
+  const clients = data.clients.length ? data.clients : fallbackClients.map((name) => ({ id: name, name }));
+  const users = memberRows(workspaceContext);
 
   return {
     totals: {
@@ -34,25 +48,26 @@ function makeAnalytics(data) {
       productivity: 82,
       aiUsage: 1240,
       activeMatters: matters.length,
+      activeUsers: users.length,
     },
     monthlyRevenue: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"].map((month, index) => ({
       label: month,
       value: Math.round(revenueBase * (0.1 + index * 0.025)),
     })),
-    revenueByUser: users.map((name, index) => ({
-      label: name,
+    revenueByUser: users.map((member, index) => ({
+      label: member.name,
       value: Math.round(revenueBase * ([0.32, 0.26, 0.22, 0.2][index] || 0.1)),
     })),
     revenueByClient: clients.slice(0, 4).map((client, index) => ({
       label: client.name,
       value: Math.round(revenueBase * ([0.34, 0.28, 0.21, 0.17][index] || 0.1)),
     })),
-    productivity: users.map((name, index) => ({
-      label: name,
+    productivity: users.map((member, index) => ({
+      label: member.name,
       value: [91, 84, 78, 72][index] || 68,
     })),
-    aiUsage: users.map((name, index) => ({
-      label: name,
+    aiUsage: users.map((member, index) => ({
+      label: member.name,
       value: [360, 310, 295, 275][index] || 120,
     })),
     matterRevenue: matters.slice(0, 5).map((matter, index) => ({
@@ -63,10 +78,10 @@ function makeAnalytics(data) {
       revenue: Math.round(revenueBase * ([0.24, 0.21, 0.18, 0.15, 0.1][index] || 0.08)),
       users: Math.max(2, 5 - index),
     })),
-    schedule: users.map((name, index) => ({
-      id: name,
-      name,
-      role: ["Admin", "Partner", "Associate", "Lawyer"][index] || "Lawyer",
+    schedule: users.map((member, index) => ({
+      id: member.name,
+      name: member.name,
+      role: member.role,
       activity: ["Client strategy call", "Hearing prep", "Draft review", "Research block"][index] || "Matter work",
       time: ["09:30", "11:00", "14:00", "16:30"][index] || "17:00",
       date: [5, 5, 12, 18][index] || 22,
@@ -319,7 +334,7 @@ function VideoPanel({ title, children }) {
 }
 
 export function DashboardPage() {
-  const { role, user } = useAuth();
+  const { role, user, workspaceContext } = useAuth();
   const [state, setState] = useState({ status: "loading", data: null, message: "" });
 
   async function load() {
@@ -351,7 +366,7 @@ export function DashboardPage() {
   }
 
   const data = state.data;
-  const analytics = makeAnalytics(data);
+  const analytics = makeAnalytics(data, workspaceContext);
 
   return (
     <div className="space-y-6">
@@ -373,7 +388,7 @@ export function DashboardPage() {
 
       <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         <AnalyticsCard icon={CircleDollarSign} label="Firm revenue" value={formatMoney(analytics.totals.revenue)} hint="This month across clients and matters" />
-        <AnalyticsCard icon={Users} label="Active users" value={demoUsers.length} hint="Role-based schedule visibility" />
+        <AnalyticsCard icon={Users} label="Active users" value={analytics.totals.activeUsers} hint="Role-based schedule visibility" />
         <AnalyticsCard icon={Gauge} label="Productivity" value={`${analytics.totals.productivity}%`} hint="Work meter activity average" />
         <AnalyticsCard icon={BrainCircuit} label="AI usage" value={compactNumber(analytics.totals.aiUsage)} hint="Prompts across matters this month" />
       </section>

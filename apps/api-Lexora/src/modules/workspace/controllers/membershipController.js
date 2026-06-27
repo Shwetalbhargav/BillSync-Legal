@@ -45,11 +45,19 @@ export async function listMemberships(req, res) {
 
 export async function getWorkspaceContext(req, res) {
   try {
-    const [workspace, memberships] = await Promise.all([
+    const [workspace, membershipsForUser, workspaceMemberships] = await Promise.all([
       Workspace.findById(req.workspaceId),
       getWorkspaceContextForUser(req.user.id),
+      Membership.find({ workspaceId: req.workspaceId, status: 'active' })
+        .populate('userId', 'name email mobile role commercialRole')
+        .sort({ createdAt: 1 }),
     ]);
-    const activeMembership = memberships.find((membership) => membership.workspaceId === String(req.workspaceId)) || null;
+    const workspaceMembers = workspaceMemberships.map((membership) => publicMembership(membership, workspace));
+    const memberships = workspaceMembers.length ? workspaceMembers : membershipsForUser;
+    const activeMembership = memberships.find((membership) => (
+      membership.workspaceId === String(req.workspaceId)
+      && membership.userId === String(req.user.id)
+    )) || membershipsForUser.find((membership) => membership.workspaceId === String(req.workspaceId)) || null;
     res.json({ ok: true, data: { workspace: publicWorkspace(workspace), memberships, activeMembership } });
   } catch (err) {
     res.status(500).json({ ok: false, message: 'Failed to load workspace context' });
