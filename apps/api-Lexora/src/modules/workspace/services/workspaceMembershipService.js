@@ -96,7 +96,10 @@ async function uniqueSlug(name, session) {
 const withSession = (query, session) =>
   session && query && typeof query.session === 'function' ? query.session(session) : query;
 
-const sessionOptions = (session) => (session ? { session } : undefined);
+const createOptions = (session) => ({
+  ordered: true,
+  ...(session ? { session } : {}),
+});
 
 function isTransactionUnsupported(err) {
   const message = String(err?.message || '');
@@ -148,7 +151,7 @@ async function seedWorkspacePlan(workspace, planKey, session) {
       moduleKeysSnapshot: plan.moduleKeys,
       limitsSnapshot: plan.limits,
       startedAt: new Date(),
-    }], sessionOptions(session)));
+    }], createOptions(session)));
 
   await phase('workspace_modules.create', () => WorkspaceModule.create(plan.moduleKeys.map((moduleKey) => ({
       workspaceId: workspace._id,
@@ -156,7 +159,7 @@ async function seedWorkspacePlan(workspace, planKey, session) {
       status: 'enabled',
       source: 'plan',
       enabledAt: new Date(),
-    })), sessionOptions(session)));
+    })), createOptions(session)));
 }
 
 export async function createWorkspaceOwnerAccount({
@@ -198,7 +201,7 @@ export async function createWorkspaceOwnerAccount({
         contact: { email: normalizedEmail, phone: normalizedMobile },
         limits: plan.limits,
         onboarding: { completedSteps: ['account', 'workspace', 'plan'] },
-      }], sessionOptions(session)));
+      }], createOptions(session)));
 
     await seedWorkspacePlan(workspace, plan.key, session);
 
@@ -214,7 +217,7 @@ export async function createWorkspaceOwnerAccount({
         workspaceId: workspace._id,
         passwordHash,
         qualifications,
-      }], sessionOptions(session)));
+      }], createOptions(session)));
 
     const [membership] = await phase('membership.create', () => Membership.create([{
         userId: user._id,
@@ -222,7 +225,7 @@ export async function createWorkspaceOwnerAccount({
         role: 'owner',
         status: 'active',
         acceptedAt: new Date(),
-      }], sessionOptions(session)));
+      }], createOptions(session)));
 
     await phase('audit_event.create', () => AuditEvent.create([{
         workspaceId: workspace._id,
@@ -231,7 +234,7 @@ export async function createWorkspaceOwnerAccount({
         targetType: 'workspace',
         targetId: workspace._id,
         changes: { ownerUserId: user._id, membershipId: membership._id, planKey: plan.key },
-      }], sessionOptions(session)));
+      }], createOptions(session)));
 
     return { workspace, user, membership };
   });
