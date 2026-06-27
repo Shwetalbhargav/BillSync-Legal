@@ -429,14 +429,14 @@ export function EnterpriseFoundationsPanel({ enterprise = {}, onCreateUnit, onEn
 
       <div className="mt-6 grid gap-4 lg:grid-cols-3">
         <div>
-          <h3 className="font-bold text-ink">API keys</h3>
+          <h3 className="font-bold text-ink">Access keys</h3>
           <div className="mt-3 space-y-3">
             {enterprise.apiKeys?.length ? enterprise.apiKeys.map((key) => (
               <div className="rounded-lg border border-border bg-app p-4" key={key.id}>
                 <p className="font-semibold text-ink">{key.name}</p>
                 <p className="mt-1 text-sm text-muted">{key.keyPrefix}</p>
               </div>
-            )) : <InlineNotice title="No API keys yet" message="API keys are prepared, but secure key creation is not enabled yet." />}
+            )) : <InlineNotice title="No access keys yet" message="Access keys are prepared, but secure key creation is not enabled yet." />}
           </div>
         </div>
         <div>
