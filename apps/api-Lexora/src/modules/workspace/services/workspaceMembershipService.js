@@ -105,6 +105,15 @@ function isTransactionUnsupported(err) {
     /replica set member or mongos/i.test(message);
 }
 
+async function phase(name, work) {
+  try {
+    return await work();
+  } catch (err) {
+    if (!err.phase) err.phase = name;
+    throw err;
+  }
+}
+
 async function runSignupTransaction(work) {
   let session;
   try {
@@ -130,24 +139,24 @@ function planByKey(planKey) {
 
 async function seedWorkspacePlan(workspace, planKey, session) {
   const plan = planByKey(planKey);
-  await Subscription.create([{
-    workspaceId: workspace._id,
-    planKey: plan.key,
-    status: 'active',
-    source: 'signup',
-    featureKeysSnapshot: plan.featureKeys,
-    moduleKeysSnapshot: plan.moduleKeys,
-    limitsSnapshot: plan.limits,
-    startedAt: new Date(),
-  }], sessionOptions(session));
+  await phase('subscription.create', () => Subscription.create([{
+      workspaceId: workspace._id,
+      planKey: plan.key,
+      status: 'active',
+      source: 'signup',
+      featureKeysSnapshot: plan.featureKeys,
+      moduleKeysSnapshot: plan.moduleKeys,
+      limitsSnapshot: plan.limits,
+      startedAt: new Date(),
+    }], sessionOptions(session)));
 
-  await WorkspaceModule.create(plan.moduleKeys.map((moduleKey) => ({
-    workspaceId: workspace._id,
-    moduleKey,
-    status: 'enabled',
-    source: 'plan',
-    enabledAt: new Date(),
-  })), sessionOptions(session));
+  await phase('workspace_modules.create', () => WorkspaceModule.create(plan.moduleKeys.map((moduleKey) => ({
+      workspaceId: workspace._id,
+      moduleKey,
+      status: 'enabled',
+      source: 'plan',
+      enabledAt: new Date(),
+    })), sessionOptions(session)));
 }
 
 export async function createWorkspaceOwnerAccount({
@@ -165,64 +174,64 @@ export async function createWorkspaceOwnerAccount({
   const plan = planByKey(planKey);
 
   return runSignupTransaction(async (session) => {
-    const existing = await withSession(
-      User.findOne({
-        $or: [
-          { mobile: normalizedMobile },
-          ...(normalizedEmail ? [{ email: normalizedEmail }] : []),
-        ],
-      }),
-      session,
-    );
+    const existing = await phase('user.duplicate_check', () => withSession(
+        User.findOne({
+          $or: [
+            { mobile: normalizedMobile },
+            ...(normalizedEmail ? [{ email: normalizedEmail }] : []),
+          ],
+        }),
+        session,
+      ));
     if (existing) {
       const error = new Error('An account already exists for those details. Sign in, then create or switch workspaces.');
       error.statusCode = 409;
       throw error;
     }
 
-    const [workspace] = await Workspace.create([{
-      name: String(workspaceName || `${name}'s Workspace`).trim(),
-      slug: await uniqueSlug(workspaceName || `${name}'s Workspace`, session),
-      status: 'active',
-      currency: 'INR',
-      timezone: 'Asia/Kolkata',
-      contact: { email: normalizedEmail, phone: normalizedMobile },
-      limits: plan.limits,
-      onboarding: { completedSteps: ['account', 'workspace', 'plan'] },
-    }], sessionOptions(session));
+    const [workspace] = await phase('workspace.create', async () => Workspace.create([{
+        name: String(workspaceName || `${name}'s Workspace`).trim(),
+        slug: await uniqueSlug(workspaceName || `${name}'s Workspace`, session),
+        status: 'active',
+        currency: 'INR',
+        timezone: 'Asia/Kolkata',
+        contact: { email: normalizedEmail, phone: normalizedMobile },
+        limits: plan.limits,
+        onboarding: { completedSteps: ['account', 'workspace', 'plan'] },
+      }], sessionOptions(session)));
 
     await seedWorkspacePlan(workspace, plan.key, session);
 
     const passwordHash = await bcrypt.hash(password, 10);
-    const [user] = await User.create([{
-      name,
-      email: normalizedEmail,
-      mobile: normalizedMobile,
-      address,
-      role: 'owner',
-      commercialRole: 'owner',
-      firmId: workspace._id,
-      workspaceId: workspace._id,
-      passwordHash,
-      qualifications,
-    }], sessionOptions(session));
+    const [user] = await phase('user.create', () => User.create([{
+        name,
+        email: normalizedEmail,
+        mobile: normalizedMobile,
+        address,
+        role: 'owner',
+        commercialRole: 'owner',
+        firmId: workspace._id,
+        workspaceId: workspace._id,
+        passwordHash,
+        qualifications,
+      }], sessionOptions(session)));
 
-    const [membership] = await Membership.create([{
-      userId: user._id,
-      workspaceId: workspace._id,
-      role: 'owner',
-      status: 'active',
-      acceptedAt: new Date(),
-    }], sessionOptions(session));
+    const [membership] = await phase('membership.create', () => Membership.create([{
+        userId: user._id,
+        workspaceId: workspace._id,
+        role: 'owner',
+        status: 'active',
+        acceptedAt: new Date(),
+      }], sessionOptions(session)));
 
-    await AuditEvent.create([{
-      workspaceId: workspace._id,
-      actorId: user._id,
-      action: 'workspace.created',
-      targetType: 'workspace',
-      targetId: workspace._id,
-      changes: { ownerUserId: user._id, membershipId: membership._id, planKey: plan.key },
-    }], sessionOptions(session));
+    await phase('audit_event.create', () => AuditEvent.create([{
+        workspaceId: workspace._id,
+        actorId: user._id,
+        action: 'workspace.created',
+        targetType: 'workspace',
+        targetId: workspace._id,
+        changes: { ownerUserId: user._id, membershipId: membership._id, planKey: plan.key },
+      }], sessionOptions(session)));
 
     return { workspace, user, membership };
   });

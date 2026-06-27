@@ -13,7 +13,6 @@ const AuditEventSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-AuditEventSchema.index({ workspaceId: 1, createdAt: -1 });
 AuditEventSchema.plugin(workspaceScopedPlugin);
 
 export const AuditEvent = mongoose.model('AuditEvent', AuditEventSchema);

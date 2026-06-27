@@ -21,7 +21,6 @@ const AiUsageEventSchema = new mongoose.Schema(
   { timestamps: true },
 );
 
-AiUsageEventSchema.index({ workspaceId: 1, createdAt: -1 });
 AiUsageEventSchema.index({ workspaceId: 1, memberId: 1, createdAt: -1 });
 AiUsageEventSchema.index({ workspaceId: 1, moduleKey: 1, createdAt: -1 });
 AiUsageEventSchema.plugin(workspaceScopedPlugin);

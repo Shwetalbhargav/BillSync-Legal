@@ -1,5 +1,6 @@
 import bcrypt from "bcryptjs";
 import crypto from "crypto";
+import { logger } from "../../../utils/logger.js";
 import User from "../../users/models/User.js";
 import { toSafeUser } from "../../users/utils/safeUser.js";
 import {
@@ -33,6 +34,15 @@ function normalizeName(value) {
 
 function hashResetToken(token) {
   return crypto.createHash("sha256").update(String(token)).digest("hex");
+}
+
+function withPhase(phase, work) {
+  try {
+    return work();
+  } catch (err) {
+    if (!err.phase) err.phase = phase;
+    throw err;
+  }
 }
 
 async function findLoginCandidates(query) {
@@ -69,8 +79,8 @@ export const loginUser = async (req, res) => {
     const isMatch = await bcrypt.compare(password, user.passwordHash);
     if (!isMatch) return res.status(400).json({ error: "Invalid credentials" });
 
-    const token = signAuthToken(user);
-    setAuthCookie(res, token);
+    const token = withPhase("auth_token.sign", () => signAuthToken(user));
+    withPhase("auth_cookie.set", () => setAuthCookie(res, token));
 
     res.json({
       success: true,
@@ -267,8 +277,25 @@ export const registerUser = async (req, res) => {
     if (err.statusCode) {
       return res.status(err.statusCode).json({ error: err.message });
     }
-    console.error("Register error:", err);
-    res.status(500).json({ error: "Server error" });
+    logger.error("auth.register_failed", {
+      requestId: req.requestId,
+      phase: err.phase,
+      code: err.code,
+      keyPattern: err.keyPattern,
+      validationErrors: err.errors
+        ? Object.fromEntries(Object.entries(err.errors).map(([field, error]) => [field, error.message]))
+        : undefined,
+      error: err,
+    });
+    res.status(500).json({
+      error: "Server error",
+      requestId: req.requestId,
+      ...(process.env.NODE_ENV === "production" ? {} : {
+        detail: err.message,
+        phase: err.phase,
+        code: err.code,
+      }),
+    });
   }
 };
 
