@@ -87,10 +87,41 @@ async function uniqueSlug(name, session) {
   const base = slugFromName(name);
   for (let attempt = 0; attempt < 10; attempt += 1) {
     const slug = attempt ? slugFromName(name, crypto.randomBytes(2).toString('hex')) : base;
-    const existing = await Workspace.findOne({ slug }).session(session);
+    const existing = await withSession(Workspace.findOne({ slug }), session);
     if (!existing) return slug;
   }
   return slugFromName(name, crypto.randomBytes(4).toString('hex'));
+}
+
+const withSession = (query, session) =>
+  session && query && typeof query.session === 'function' ? query.session(session) : query;
+
+const sessionOptions = (session) => (session ? { session } : undefined);
+
+function isTransactionUnsupported(err) {
+  const message = String(err?.message || '');
+  return err?.code === 20 ||
+    /Transaction numbers are only allowed/i.test(message) ||
+    /replica set member or mongos/i.test(message);
+}
+
+async function runSignupTransaction(work) {
+  let session;
+  try {
+    session = await User.startSession();
+    let result;
+    await session.withTransaction(async () => {
+      result = await work(session);
+    });
+    return result;
+  } catch (err) {
+    if (isTransactionUnsupported(err)) {
+      return work(null);
+    }
+    throw err;
+  } finally {
+    if (session) session.endSession();
+  }
 }
 
 function planByKey(planKey) {
@@ -108,7 +139,7 @@ async function seedWorkspacePlan(workspace, planKey, session) {
     moduleKeysSnapshot: plan.moduleKeys,
     limitsSnapshot: plan.limits,
     startedAt: new Date(),
-  }], { session });
+  }], sessionOptions(session));
 
   await WorkspaceModule.create(plan.moduleKeys.map((moduleKey) => ({
     workspaceId: workspace._id,
@@ -116,7 +147,7 @@ async function seedWorkspacePlan(workspace, planKey, session) {
     status: 'enabled',
     source: 'plan',
     enabledAt: new Date(),
-  })), { session });
+  })), sessionOptions(session));
 }
 
 export async function createWorkspaceOwnerAccount({
@@ -129,77 +160,72 @@ export async function createWorkspaceOwnerAccount({
   address,
   qualifications,
 }) {
-  const session = await User.startSession();
-  try {
-    let workspace;
-    let user;
-    let membership;
-    const normalizedMobile = normalizeMobile(mobile);
-    const normalizedEmail = normalizeEmail(email);
-    const plan = planByKey(planKey);
+  const normalizedMobile = normalizeMobile(mobile);
+  const normalizedEmail = normalizeEmail(email);
+  const plan = planByKey(planKey);
 
-    await session.withTransaction(async () => {
-      const existing = await User.findOne({
+  return runSignupTransaction(async (session) => {
+    const existing = await withSession(
+      User.findOne({
         $or: [
           { mobile: normalizedMobile },
           ...(normalizedEmail ? [{ email: normalizedEmail }] : []),
         ],
-      }).session(session);
-      if (existing) {
-        const error = new Error('An account already exists for those details. Sign in, then create or switch workspaces.');
-        error.statusCode = 409;
-        throw error;
-      }
+      }),
+      session,
+    );
+    if (existing) {
+      const error = new Error('An account already exists for those details. Sign in, then create or switch workspaces.');
+      error.statusCode = 409;
+      throw error;
+    }
 
-      [workspace] = await Workspace.create([{
-        name: String(workspaceName || `${name}'s Workspace`).trim(),
-        slug: await uniqueSlug(workspaceName || `${name}'s Workspace`, session),
-        status: 'active',
-        currency: 'INR',
-        timezone: 'Asia/Kolkata',
-        contact: { email: normalizedEmail, phone: normalizedMobile },
-        limits: plan.limits,
-        onboarding: { completedSteps: ['account', 'workspace', 'plan'] },
-      }], { session });
+    const [workspace] = await Workspace.create([{
+      name: String(workspaceName || `${name}'s Workspace`).trim(),
+      slug: await uniqueSlug(workspaceName || `${name}'s Workspace`, session),
+      status: 'active',
+      currency: 'INR',
+      timezone: 'Asia/Kolkata',
+      contact: { email: normalizedEmail, phone: normalizedMobile },
+      limits: plan.limits,
+      onboarding: { completedSteps: ['account', 'workspace', 'plan'] },
+    }], sessionOptions(session));
 
-      await seedWorkspacePlan(workspace, plan.key, session);
+    await seedWorkspacePlan(workspace, plan.key, session);
 
-      const passwordHash = await bcrypt.hash(password, 10);
-      [user] = await User.create([{
-        name,
-        email: normalizedEmail,
-        mobile: normalizedMobile,
-        address,
-        role: 'owner',
-        commercialRole: 'owner',
-        firmId: workspace._id,
-        workspaceId: workspace._id,
-        passwordHash,
-        qualifications,
-      }], { session });
+    const passwordHash = await bcrypt.hash(password, 10);
+    const [user] = await User.create([{
+      name,
+      email: normalizedEmail,
+      mobile: normalizedMobile,
+      address,
+      role: 'owner',
+      commercialRole: 'owner',
+      firmId: workspace._id,
+      workspaceId: workspace._id,
+      passwordHash,
+      qualifications,
+    }], sessionOptions(session));
 
-      [membership] = await Membership.create([{
-        userId: user._id,
-        workspaceId: workspace._id,
-        role: 'owner',
-        status: 'active',
-        acceptedAt: new Date(),
-      }], { session });
+    const [membership] = await Membership.create([{
+      userId: user._id,
+      workspaceId: workspace._id,
+      role: 'owner',
+      status: 'active',
+      acceptedAt: new Date(),
+    }], sessionOptions(session));
 
-      await AuditEvent.create([{
-        workspaceId: workspace._id,
-        actorId: user._id,
-        action: 'workspace.created',
-        targetType: 'workspace',
-        targetId: workspace._id,
-        changes: { ownerUserId: user._id, membershipId: membership._id, planKey: plan.key },
-      }], { session });
-    });
+    await AuditEvent.create([{
+      workspaceId: workspace._id,
+      actorId: user._id,
+      action: 'workspace.created',
+      targetType: 'workspace',
+      targetId: workspace._id,
+      changes: { ownerUserId: user._id, membershipId: membership._id, planKey: plan.key },
+    }], sessionOptions(session));
 
     return { workspace, user, membership };
-  } finally {
-    session.endSession();
-  }
+  });
 }
 
 export async function getWorkspaceContextForUser(userId) {
