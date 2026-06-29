@@ -2,8 +2,7 @@ import { Save } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { clientsApi } from "../../api/clients";
-import { asList, normalizeClient, normalizeUser } from "../../api/normalizers";
-import { usersApi } from "../../api/users";
+import { normalizeClient } from "../../api/normalizers";
 import { Button, SkeletonBlock, StateCard } from "../../components/common";
 import { useClientModuleAccess } from "./useClientModuleAccess";
 
@@ -14,7 +13,6 @@ const initialForm = {
   contactInfo: "",
   paymentTerms: "NET30",
   status: "active",
-  ownerUserId: "",
   contactName: "",
   contactEmail: "",
   contactPhone: "",
@@ -39,15 +37,8 @@ export function ClientFormPage() {
   const access = useClientModuleAccess();
   const navigate = useNavigate();
   const [form, setForm] = useState(initialForm);
-  const [users, setUsers] = useState([]);
   const [status, setStatus] = useState(isEdit ? "loading" : "ready");
   const [message, setMessage] = useState("");
-
-  useEffect(() => {
-    usersApi.list({ limit: 200 })
-      .then((response) => setUsers(asList(response).map(normalizeUser).filter((user) => ["partner", "lawyer", "associate"].includes(user.role))))
-      .catch(() => setUsers([]));
-  }, []);
 
   useEffect(() => {
     if (!isEdit) return;
@@ -61,13 +52,12 @@ export function ClientFormPage() {
           contactInfo: client.contactInfo,
           paymentTerms: client.paymentTerms,
           status: String(client.status || "active").toLowerCase(),
-          ownerUserId: client.ownerId || "",
           contactName: client.contacts?.[0]?.name || "",
           contactEmail: client.contacts?.[0]?.email || "",
-          contactPhone: client.contacts?.[0]?.phone || "",
-          contactRole: client.contacts?.[0]?.role || "",
-          zohoCrmRecordId: client.integrations?.zoho?.crmRecordId || "",
-          zohoLastSyncedAt: client.integrations?.zoho?.lastSyncedAt ? String(client.integrations.zoho.lastSyncedAt).slice(0, 10) : "",
+        contactPhone: client.contacts?.[0]?.phone || "",
+        contactRole: client.contacts?.[0]?.role || "",
+        zohoCrmRecordId: client.integrations?.zoho?.crmRecordId || "",
+        zohoLastSyncedAt: client.integrations?.zoho?.lastSyncedAt ? String(client.integrations.zoho.lastSyncedAt).slice(0, 10) : "",
         });
         setStatus("ready");
       })
@@ -103,7 +93,6 @@ export function ClientFormPage() {
         contactInfo: form.contactInfo.trim(),
         paymentTerms: form.paymentTerms,
         status: form.status,
-        ownerUserId: form.ownerUserId || null,
         contacts: [
           {
             name: form.contactName.trim(),
@@ -187,15 +176,6 @@ export function ClientFormPage() {
               <option value="active">Active</option>
               <option value="prospect">Prospect</option>
               <option value="inactive">Inactive</option>
-            </select>
-          </label>
-          <label className="block text-sm font-semibold text-ink">
-            Appointed user
-            <select className="focus-ring mt-1 w-full rounded-lg border border-border px-3 py-3" onChange={(event) => updateField("ownerUserId", event.target.value)} value={form.ownerUserId}>
-              <option value="">No appointed user</option>
-              {users.map((person) => (
-                <option key={person.id} value={person.id}>{person.name} ({person.role})</option>
-              ))}
             </select>
           </label>
         </div>
