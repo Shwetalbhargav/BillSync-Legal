@@ -1,19 +1,22 @@
 import { Plus, Search } from "lucide-react";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { clientsApi } from "../../api/clients";
 import { asList, normalizeClient, normalizeUser } from "../../api/normalizers";
 import { usersApi } from "../../api/users";
-import { Button, SkeletonBlock, StateCard } from "../../components/common";
+import { Button, SkeletonBlock, StateCard, Toast } from "../../components/common";
 import { ClientCard } from "../../components/clients/ClientWidgets";
 import { useClientModuleAccess } from "./useClientModuleAccess";
 
 export function ClientListPage() {
   const access = useClientModuleAccess();
+  const location = useLocation();
+  const navigate = useNavigate();
   const [query, setQuery] = useState("");
   const [status, setStatus] = useState("loading");
   const [clients, setClients] = useState([]);
   const [users, setUsers] = useState([]);
+  const [notice, setNotice] = useState(location.state?.notice || null);
   const [sort, setSort] = useState("az");
   const [letterFilter, setLetterFilter] = useState("");
   const [ownerFilter, setOwnerFilter] = useState("");
@@ -29,7 +32,7 @@ export function ClientListPage() {
     setStatus("loading");
     setMessage("");
     try {
-      const response = await clientsApi.list({ q: search, ownerUserId, limit: 100 });
+      const response = await clientsApi.list({ q: search, ownerUserId, limit: 200 });
       const normalized = asList(response).map(normalizeClient);
       setClients(normalized);
       setStatus(normalized.length ? "ready" : "empty");
@@ -46,6 +49,12 @@ export function ClientListPage() {
       .catch(() => setUsers([]));
     load("");
   }, [access.status, access.unavailable, access.canRead]);
+
+  useEffect(() => {
+    if (!location.state?.notice) return;
+    setNotice(location.state.notice);
+    navigate(location.pathname, { replace: true, state: null });
+  }, [location.pathname, location.state, navigate]);
 
   function handleSubmit(event) {
     event.preventDefault();
@@ -117,6 +126,7 @@ export function ClientListPage() {
         </form>
       </section>
 
+      {notice ? <Toast tone={notice.tone} title={notice.title} message={notice.message} /> : null}
       {access.readOnly && status !== "permission" ? <StateCard state="permission" title="Clients are read-only" message={access.message} /> : null}
       {status === "loading" ? <div className="grid gap-4 xl:grid-cols-2"><SkeletonBlock /><SkeletonBlock /></div> : null}
       {message && status === "ready" ? <StateCard state="permission" title="Client action blocked" message={message} /> : null}

@@ -111,7 +111,16 @@ export function ClientFormPage() {
       };
       const response = isEdit ? await clientsApi.replace(clientId, body) : await clientsApi.create(body);
       const saved = normalizeClient(unwrap(response));
-      navigate(`/app/clients/${saved.id || clientId}`, { replace: true });
+      navigate(isEdit ? `/app/clients/${saved.id || clientId}` : "/app/clients", {
+        replace: true,
+        state: {
+          notice: {
+            tone: "success",
+            title: isEdit ? "Client updated" : "Client added",
+            message: `${saved.name || form.displayName.trim()} has been saved to the client database.`,
+          },
+        },
+      });
     } catch (error) {
       setMessage(error?.status === 403 ? "You do not have access to save clients." : (error?.userMessage || "We could not save this client right now. Please review the details and try again."));
       setStatus("ready");

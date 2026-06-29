@@ -54,7 +54,7 @@ export function MatterFormPage() {
       }
       setStatus("loading");
       try {
-        const clientsResponse = await clientsApi.list({ limit: 100 });
+        const clientsResponse = await clientsApi.list({ limit: 200 });
         const clientOptions = asList(clientsResponse).map(normalizeClient);
         setClients(clientOptions);
         if (isEdit) {
