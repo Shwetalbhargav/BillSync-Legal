@@ -136,6 +136,7 @@ export function ProfilePage() {
   const [profileState, setProfileState] = useState({ status: "idle", profile: null, message: "" });
   const [profileForm, setProfileForm] = useState(() => buildProfileForm(user, {}));
   const [formMessage, setFormMessage] = useState("");
+  const [isEditingProfile, setIsEditingProfile] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [isSigningOut, setIsSigningOut] = useState(false);
@@ -233,7 +234,9 @@ export function ProfilePage() {
       const latestProfile = profileFromResponse(response) || response?.profile || profileState.profile;
       setProfileState({ status: latestProfile ? "ready" : profileState.status, profile: latestProfile, message: "" });
       setProfileForm(buildProfileForm(latestUser || fullUser, latestProfile || profile));
+      setIsEditingProfile(false);
       setFormMessage("Profile updated.");
+      setMessage("Profile updated.");
     } catch (error) {
       setFormMessage(error?.userMessage || "We could not save your profile.");
     } finally {
@@ -324,127 +327,141 @@ export function ProfilePage() {
 
       <Card>
         <CardHeader
-          eyebrow="Profile settings"
-          title="Complete your profile"
-          description="These shared details keep billing, team directory, and user profiles consistent for every role."
-          action={
-            <div className="rounded-lg bg-blueSoft p-2 text-primary">
-              <UserRound className="h-4 w-4" />
-            </div>
-          }
-        />
-        <CardBody>
-          <form className="space-y-5" onSubmit={handleProfileSave}>
-            <div className="grid gap-4 md:grid-cols-2">
-              <Field
-                label="User name"
-                onChange={(event) => setProfileForm((current) => ({ ...current, name: event.target.value }))}
-                required
-                value={profileForm.name}
-              />
-              <Field
-                label="Mobile number"
-                onChange={(event) => setProfileForm((current) => ({ ...current, mobile: event.target.value }))}
-                required
-                value={profileForm.mobile}
-              />
-              <Field
-                label="Billing rate"
-                min="0"
-                onChange={(event) => setProfileForm((current) => ({ ...current, billingRate: event.target.value }))}
-                placeholder="2500"
-                type="number"
-                value={profileForm.billingRate}
-              />
-              <TextareaField
-                label="Address"
-                onChange={(event) => setProfileForm((current) => ({ ...current, address: event.target.value }))}
-                value={profileForm.address}
-              />
-            </div>
-
-            <div className="space-y-3">
-              <div className="flex flex-wrap items-center justify-between gap-3">
-                <div>
-                  <h2 className="text-sm font-bold text-ink">Qualifications</h2>
-                  <p className="text-xs text-muted">Add degree, university, and year as stored in the user schema.</p>
-                </div>
-                <Button onClick={addQualification} size="sm" type="button" variant="secondary">
-                  <Plus className="h-4 w-4" />
-                  Add qualification
-                </Button>
-              </div>
-              <div className="space-y-3">
-                {profileForm.qualifications.map((qualification, index) => (
-                  <div className="grid gap-3 rounded-lg border border-border bg-panel p-3 md:grid-cols-[1fr_1fr_8rem_auto]" key={`qualification-${index}`}>
-                    <Field
-                      label="Degree"
-                      onChange={(event) => updateQualification(index, "degree", event.target.value)}
-                      placeholder="LLB"
-                      value={qualification.degree}
-                    />
-                    <Field
-                      label="University"
-                      onChange={(event) => updateQualification(index, "university", event.target.value)}
-                      placeholder="University name"
-                      value={qualification.university}
-                    />
-                    <Field
-                      label="Year"
-                      min="1900"
-                      onChange={(event) => updateQualification(index, "year", event.target.value)}
-                      placeholder="2024"
-                      type="number"
-                      value={qualification.year}
-                    />
-                    <div className="flex items-end">
-                      <Button
-                        aria-label="Remove qualification"
-                        className="w-full"
-                        onClick={() => removeQualification(index)}
-                        size="icon"
-                        type="button"
-                        variant="ghost"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {formMessage ? (
-              <StateCard state={formMessage.includes("updated") ? "success" : "error"} title="Profile save" message={formMessage} />
-            ) : null}
-
-            <div className="flex justify-end">
-              <Button isLoading={isSaving} type="submit">
-                <Save className="h-4 w-4" />
-                Save profile
-              </Button>
-            </div>
-          </form>
-        </CardBody>
-      </Card>
-
-      <Card>
-        <CardHeader
           eyebrow="Overview"
           title="Professional profile"
           description="Core identity, role details, and firm-facing profile information."
           action={
-            <div className="rounded-lg bg-blueSoft p-2 text-primary">
-              <Sparkles className="h-4 w-4" />
-            </div>
+            isEditingProfile ? (
+              <div className="rounded-lg bg-blueSoft p-2 text-primary">
+                <Sparkles className="h-4 w-4" />
+              </div>
+            ) : (
+              <Button
+                onClick={() => {
+                  setFormMessage("");
+                  setProfileForm(buildProfileForm(fullUser, profile));
+                  setIsEditingProfile(true);
+                }}
+                type="button"
+                variant="secondary"
+              >
+                <UserRound className="h-4 w-4" />
+                Complete profile
+              </Button>
+            )
           }
         />
         <CardBody>
-          <dl className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-            <Detail label="Name" value={fullUser.name} />
-            <Detail label="Role" value={fullUser.role} />
-            {roleDetails.map((item) => <Detail key={item.label} label={item.label} value={item.value} />)}
-          </dl>
+          {isEditingProfile ? (
+            <form className="space-y-5" onSubmit={handleProfileSave}>
+              <div className="grid gap-4 md:grid-cols-2">
+                <Field
+                  label="User name"
+                  onChange={(event) => setProfileForm((current) => ({ ...current, name: event.target.value }))}
+                  required
+                  value={profileForm.name}
+                />
+                <Field
+                  label="Mobile number"
+                  onChange={(event) => setProfileForm((current) => ({ ...current, mobile: event.target.value }))}
+                  required
+                  value={profileForm.mobile}
+                />
+                <Field
+                  label="Billing rate"
+                  min="0"
+                  onChange={(event) => setProfileForm((current) => ({ ...current, billingRate: event.target.value }))}
+                  placeholder="2500"
+                  type="number"
+                  value={profileForm.billingRate}
+                />
+                <TextareaField
+                  label="Address"
+                  onChange={(event) => setProfileForm((current) => ({ ...current, address: event.target.value }))}
+                  value={profileForm.address}
+                />
+              </div>
+
+              <div className="space-y-3">
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <div>
+                    <h2 className="text-sm font-bold text-ink">Qualifications</h2>
+                    <p className="text-xs text-muted">Add degree, university, and year as stored in the user schema.</p>
+                  </div>
+                  <Button onClick={addQualification} size="sm" type="button" variant="secondary">
+                    <Plus className="h-4 w-4" />
+                    Add qualification
+                  </Button>
+                </div>
+                <div className="space-y-3">
+                  {profileForm.qualifications.map((qualification, index) => (
+                    <div className="grid gap-3 rounded-lg border border-border bg-panel p-3 md:grid-cols-[1fr_1fr_8rem_auto]" key={`qualification-${index}`}>
+                      <Field
+                        label="Degree"
+                        onChange={(event) => updateQualification(index, "degree", event.target.value)}
+                        placeholder="LLB"
+                        value={qualification.degree}
+                      />
+                      <Field
+                        label="University"
+                        onChange={(event) => updateQualification(index, "university", event.target.value)}
+                        placeholder="University name"
+                        value={qualification.university}
+                      />
+                      <Field
+                        label="Year"
+                        min="1900"
+                        onChange={(event) => updateQualification(index, "year", event.target.value)}
+                        placeholder="2024"
+                        type="number"
+                        value={qualification.year}
+                      />
+                      <div className="flex items-end">
+                        <Button
+                          aria-label="Remove qualification"
+                          className="w-full"
+                          onClick={() => removeQualification(index)}
+                          size="icon"
+                          type="button"
+                          variant="ghost"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {formMessage ? (
+                <StateCard state={formMessage.includes("updated") ? "success" : "error"} title="Profile save" message={formMessage} />
+              ) : null}
+
+              <div className="flex flex-wrap justify-end gap-2">
+                <Button
+                  onClick={() => {
+                    setFormMessage("");
+                    setProfileForm(buildProfileForm(fullUser, profile));
+                    setIsEditingProfile(false);
+                  }}
+                  type="button"
+                  variant="secondary"
+                >
+                  Cancel
+                </Button>
+                <Button isLoading={isSaving} type="submit">
+                  <Save className="h-4 w-4" />
+                  Save profile
+                </Button>
+              </div>
+            </form>
+          ) : (
+            <dl className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+              <Detail label="Name" value={fullUser.name} />
+              <Detail label="Role" value={fullUser.role} />
+              {roleDetails.map((item) => <Detail key={item.label} label={item.label} value={item.value} />)}
+            </dl>
+          )}
         </CardBody>
       </Card>
 
