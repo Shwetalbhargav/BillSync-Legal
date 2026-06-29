@@ -5,6 +5,10 @@ import { useAuth } from "../../auth/AuthProvider";
 
 const defaultProfileImage = "/images/default-user.jpg";
 
+function membershipOptionKey(membership, index) {
+  return membership.id || membership._id || `${membership.workspaceId || "workspace"}-${membership.userId || "member"}-${index}`;
+}
+
 export function Header({ user, onLogout }) {
   const [isAccountOpen, setIsAccountOpen] = useState(false);
   const [switchError, setSwitchError] = useState("");
@@ -76,8 +80,8 @@ export function Header({ user, onLogout }) {
               onChange={handleWorkspaceChange}
               value={activeWorkspace?.id || ""}
             >
-              {memberships.map((membership) => (
-                <option key={membership.workspaceId} value={membership.workspaceId}>
+              {memberships.map((membership, index) => (
+                <option key={membershipOptionKey(membership, index)} value={membership.workspaceId}>
                   {membership.workspace?.name || "Workspace"}
                 </option>
               ))}
@@ -130,8 +134,8 @@ export function Header({ user, onLogout }) {
                     onChange={handleWorkspaceChange}
                     value={activeWorkspace?.id || ""}
                   >
-                    {memberships.map((membership) => (
-                      <option key={membership.workspaceId} value={membership.workspaceId}>
+                    {memberships.map((membership, index) => (
+                      <option key={membershipOptionKey(membership, index)} value={membership.workspaceId}>
                         {membership.workspace?.name || "Workspace"}
                       </option>
                     ))}

@@ -1,14 +1,17 @@
-import { Award, BriefcaseBusiness, GraduationCap, LogOut, Mail, MapPin, Phone, RefreshCw, ShieldCheck, Sparkles, UserRound } from "lucide-react";
+import { Award, BriefcaseBusiness, GraduationCap, LogOut, Mail, MapPin, Phone, Plus, RefreshCw, Save, ShieldCheck, Sparkles, Trash2, UserRound } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { adminApi } from "../api/admin";
 import { associateProfilesApi, internProfilesApi, lawyerProfilesApi, partnerProfilesApi } from "../api/profiles";
+import { usersApi } from "../api/users";
 import { useAuth } from "../auth/AuthProvider";
 import { Button } from "../components/common/Button";
 import { Card, CardBody, CardHeader } from "../components/common/Card";
 import { SkeletonBlock } from "../components/common/Skeleton";
 import { StateCard } from "../components/common/StateCard";
 import { StatusBadge } from "../components/common/StatusBadge";
+import { Field } from "../components/forms/Field";
+import { TextareaField } from "../components/forms/TextareaField";
 
 const profileApis = {
   admin: adminApi,
@@ -61,6 +64,38 @@ function formatQualification(item) {
   return [item.degree, item.university, item.year].filter(Boolean).join(" - ");
 }
 
+function normalizeQualificationForForm(item = {}) {
+  if (typeof item === "string") return { degree: item, university: "", year: "" };
+  return {
+    degree: item.degree || "",
+    university: item.university || "",
+    year: item.year || "",
+  };
+}
+
+function buildProfileForm(user = {}, profile = {}) {
+  const qualifications = Array.isArray(user.qualifications) && user.qualifications.length
+    ? user.qualifications.map(normalizeQualificationForForm)
+    : [{ degree: "", university: "", year: "" }];
+  return {
+    name: user.name || "",
+    mobile: user.mobile || "",
+    address: user.address || "",
+    billingRate: profile.billingRate ?? "",
+    qualifications,
+  };
+}
+
+function cleanQualifications(qualifications = []) {
+  return qualifications
+    .map((item) => ({
+      degree: String(item.degree || "").trim(),
+      university: String(item.university || "").trim(),
+      year: item.year === "" ? "" : Number(item.year),
+    }))
+    .filter((item) => item.degree || item.university || item.year);
+}
+
 function personName(person) {
   if (!person) return "";
   if (typeof person === "string") return person;
@@ -99,7 +134,10 @@ export function ProfilePage() {
   const { user, refreshCurrentUser, logout } = useAuth();
   const [message, setMessage] = useState("");
   const [profileState, setProfileState] = useState({ status: "idle", profile: null, message: "" });
+  const [profileForm, setProfileForm] = useState(() => buildProfileForm(user, {}));
+  const [formMessage, setFormMessage] = useState("");
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const [isSigningOut, setIsSigningOut] = useState(false);
   const navigate = useNavigate();
 
@@ -129,6 +167,14 @@ export function ProfilePage() {
     loadRoleProfile();
   }, [user?.id, user?.role]);
 
+  const profile = profileState.profile || {};
+  const populatedUser = userFromProfile(profile);
+  const fullUser = { ...(user || {}), ...(populatedUser || {}) };
+
+  useEffect(() => {
+    setProfileForm(buildProfileForm(fullUser, profile));
+  }, [fullUser.id, fullUser.name, fullUser.mobile, fullUser.address, JSON.stringify(fullUser.qualifications || []), profile.billingRate]);
+
   async function handleRefresh() {
     setIsRefreshing(true);
     setMessage("");
@@ -144,13 +190,61 @@ export function ProfilePage() {
     navigate("/login", { replace: true });
   }
 
+  function updateQualification(index, key, value) {
+    setProfileForm((current) => ({
+      ...current,
+      qualifications: current.qualifications.map((item, itemIndex) => (
+        itemIndex === index ? { ...item, [key]: value } : item
+      )),
+    }));
+  }
+
+  function addQualification() {
+    setProfileForm((current) => ({
+      ...current,
+      qualifications: [...current.qualifications, { degree: "", university: "", year: "" }],
+    }));
+  }
+
+  function removeQualification(index) {
+    setProfileForm((current) => {
+      const next = current.qualifications.filter((_, itemIndex) => itemIndex !== index);
+      return {
+        ...current,
+        qualifications: next.length ? next : [{ degree: "", university: "", year: "" }],
+      };
+    });
+  }
+
+  async function handleProfileSave(event) {
+    event.preventDefault();
+    setIsSaving(true);
+    setMessage("");
+    setFormMessage("");
+    try {
+      const response = await usersApi.updateMyProfileCompletion({
+        name: profileForm.name,
+        mobile: profileForm.mobile,
+        address: profileForm.address,
+        billingRate: profileForm.billingRate,
+        qualifications: cleanQualifications(profileForm.qualifications),
+      });
+      const latestUser = await refreshCurrentUser();
+      const latestProfile = profileFromResponse(response) || response?.profile || profileState.profile;
+      setProfileState({ status: latestProfile ? "ready" : profileState.status, profile: latestProfile, message: "" });
+      setProfileForm(buildProfileForm(latestUser || fullUser, latestProfile || profile));
+      setFormMessage("Profile updated.");
+    } catch (error) {
+      setFormMessage(error?.userMessage || "We could not save your profile.");
+    } finally {
+      setIsSaving(false);
+    }
+  }
+
   if (!user) {
     return <StateCard state="permission" title="Sign in needed" message="Please sign in to view your profile." />;
   }
 
-  const profile = profileState.profile || {};
-  const populatedUser = userFromProfile(profile);
-  const fullUser = { ...user, ...(populatedUser || {}) };
   const photoUrl = profile.photoUrl || fullUser.avatarUrl || fullUser.photoUrl || fullUser.raw?.photoUrl || "";
   const qualifications = fullUser.qualifications || [];
   const specialization = profile.specialization || [];
@@ -227,6 +321,112 @@ export function ProfilePage() {
       {profileState.status === "loading" ? <SkeletonBlock /> : null}
       {profileState.status === "empty" ? <StateCard state="empty" title="Role profile not completed" message={profileState.message} /> : null}
       {profileState.status === "error" ? <StateCard state="error" title="Role profile unavailable" message={profileState.message} actionLabel="Try again" onAction={() => loadRoleProfile()} /> : null}
+
+      <Card>
+        <CardHeader
+          eyebrow="Profile settings"
+          title="Complete your profile"
+          description="These shared details keep billing, team directory, and user profiles consistent for every role."
+          action={
+            <div className="rounded-lg bg-blueSoft p-2 text-primary">
+              <UserRound className="h-4 w-4" />
+            </div>
+          }
+        />
+        <CardBody>
+          <form className="space-y-5" onSubmit={handleProfileSave}>
+            <div className="grid gap-4 md:grid-cols-2">
+              <Field
+                label="User name"
+                onChange={(event) => setProfileForm((current) => ({ ...current, name: event.target.value }))}
+                required
+                value={profileForm.name}
+              />
+              <Field
+                label="Mobile number"
+                onChange={(event) => setProfileForm((current) => ({ ...current, mobile: event.target.value }))}
+                required
+                value={profileForm.mobile}
+              />
+              <Field
+                label="Billing rate"
+                min="0"
+                onChange={(event) => setProfileForm((current) => ({ ...current, billingRate: event.target.value }))}
+                placeholder="2500"
+                type="number"
+                value={profileForm.billingRate}
+              />
+              <TextareaField
+                label="Address"
+                onChange={(event) => setProfileForm((current) => ({ ...current, address: event.target.value }))}
+                value={profileForm.address}
+              />
+            </div>
+
+            <div className="space-y-3">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div>
+                  <h2 className="text-sm font-bold text-ink">Qualifications</h2>
+                  <p className="text-xs text-muted">Add degree, university, and year as stored in the user schema.</p>
+                </div>
+                <Button onClick={addQualification} size="sm" type="button" variant="secondary">
+                  <Plus className="h-4 w-4" />
+                  Add qualification
+                </Button>
+              </div>
+              <div className="space-y-3">
+                {profileForm.qualifications.map((qualification, index) => (
+                  <div className="grid gap-3 rounded-lg border border-border bg-panel p-3 md:grid-cols-[1fr_1fr_8rem_auto]" key={`qualification-${index}`}>
+                    <Field
+                      label="Degree"
+                      onChange={(event) => updateQualification(index, "degree", event.target.value)}
+                      placeholder="LLB"
+                      value={qualification.degree}
+                    />
+                    <Field
+                      label="University"
+                      onChange={(event) => updateQualification(index, "university", event.target.value)}
+                      placeholder="University name"
+                      value={qualification.university}
+                    />
+                    <Field
+                      label="Year"
+                      min="1900"
+                      onChange={(event) => updateQualification(index, "year", event.target.value)}
+                      placeholder="2024"
+                      type="number"
+                      value={qualification.year}
+                    />
+                    <div className="flex items-end">
+                      <Button
+                        aria-label="Remove qualification"
+                        className="w-full"
+                        onClick={() => removeQualification(index)}
+                        size="icon"
+                        type="button"
+                        variant="ghost"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {formMessage ? (
+              <StateCard state={formMessage.includes("updated") ? "success" : "error"} title="Profile save" message={formMessage} />
+            ) : null}
+
+            <div className="flex justify-end">
+              <Button isLoading={isSaving} type="submit">
+                <Save className="h-4 w-4" />
+                Save profile
+              </Button>
+            </div>
+          </form>
+        </CardBody>
+      </Card>
 
       <Card>
         <CardHeader
