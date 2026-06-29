@@ -6,6 +6,7 @@ import { mattersApi } from "../../api/matters";
 import { asList, normalizeClient, normalizeMatter, normalizeTask, normalizeUser } from "../../api/normalizers";
 import { tasksApi } from "../../api/tasks";
 import { usersApi } from "../../api/users";
+import { useAuth } from "../../auth/AuthProvider";
 import { Button, SkeletonBlock, StateCard } from "../../components/common";
 
 const initialForm = {
@@ -41,6 +42,7 @@ export function TaskFormPage() {
   const { taskId } = useParams();
   const isEdit = Boolean(taskId);
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [form, setForm] = useState(initialForm);
   const [matters, setMatters] = useState([]);
   const [clients, setClients] = useState([]);
@@ -53,15 +55,17 @@ export function TaskFormPage() {
       setStatus("loading");
       setMessage("");
       try {
-        const [matterResponse, clientResponse, userResponse, taskResponse] = await Promise.all([
+        const [matterResponse, clientResponse, taskResponse] = await Promise.all([
           mattersApi.list({ limit: 200 }),
           clientsApi.list({ limit: 200 }),
-          usersApi.list({ limit: 200 }),
           isEdit ? tasksApi.get(taskId) : Promise.resolve(null),
         ]);
+        const userResponse = await usersApi.list({ limit: 200 }).catch(() => null);
         const matterOptions = asList(matterResponse).map(normalizeMatter);
         const clientOptions = asList(clientResponse).map(normalizeClient);
-        const userOptions = asList(userResponse).map(normalizeUser);
+        const fallbackUser = user?.id ? [user] : [];
+        const userOptions = (userResponse ? asList(userResponse).map(normalizeUser) : fallbackUser)
+          .filter((person) => person?.id);
         setMatters(matterOptions);
         setClients(clientOptions);
         setUsers(userOptions);
@@ -78,6 +82,9 @@ export function TaskFormPage() {
             status: task.status || "todo",
           });
         }
+        if (!isEdit && !form.assignedTo && userOptions.length === 1) {
+          setForm((current) => ({ ...current, assignedTo: userOptions[0].id }));
+        }
         setStatus("ready");
       } catch (error) {
         setStatus("error");
@@ -85,7 +92,7 @@ export function TaskFormPage() {
       }
     }
     load();
-  }, [isEdit, taskId]);
+  }, [isEdit, taskId, user?.id]);
 
   const selectedMatter = useMemo(() => matters.find((matter) => matter.id === form.caseId), [form.caseId, matters]);
 
