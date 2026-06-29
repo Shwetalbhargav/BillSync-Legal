@@ -29,7 +29,7 @@ export function zohoConnectHandler(req, res) {
     return res.status(401).send('User must be logged in to connect Zoho.');
   }
   try {
-    res.redirect(buildZohoAuthUrl(userId));
+    res.redirect(buildZohoAuthUrl(userId, req.workspaceId));
   } catch (error) {
     handleZohoAuthError(res, error);
   }
@@ -41,7 +41,7 @@ export function zohoConnectUrlHandler(req, res) {
     return res.status(401).json({ ok: false, message: 'User must be logged in to connect Zoho.' });
   }
   try {
-    res.json({ ok: true, url: buildZohoAuthUrl(userId) });
+    res.json({ ok: true, url: buildZohoAuthUrl(userId, req.workspaceId) });
   } catch (error) {
     handleZohoAuthError(res, error);
   }
@@ -54,7 +54,7 @@ export async function zohoCallbackHandler(req, res) {
   }
 
   try {
-    const userId = decodeZohoState(state);
+    const { userId, workspaceId } = decodeZohoState(state);
     const tokenData = await exchangeZohoCode({
       code,
       accountsServer,
@@ -63,7 +63,7 @@ export async function zohoCallbackHandler(req, res) {
       ...tokenData,
       location,
       accountsServer,
-    });
+    }, workspaceId);
     res.send('<h3>Zoho connected successfully</h3><p>You can close this window and return to BillSync.</p>');
   } catch (error) {
     console.error('[Zoho callback]', error.response?.data || error.message);

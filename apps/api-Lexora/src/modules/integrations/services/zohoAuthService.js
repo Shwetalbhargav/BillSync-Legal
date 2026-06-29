@@ -1,5 +1,6 @@
 import axios from 'axios';
 import jwt from 'jsonwebtoken';
+import mongoose from 'mongoose';
 import ZohoConnection from '../models/ZohoConnection.js';
 import { getJwtSecret } from '../../auth/services/authTokenService.js';
 
@@ -35,10 +36,16 @@ export function validateZohoConfig() {
   return config;
 }
 
-export function encodeZohoState(userId) {
+function objectIdOrValue(value) {
+  if (!value) return value;
+  return mongoose.Types.ObjectId.isValid(value) ? new mongoose.Types.ObjectId(value) : value;
+}
+
+export function encodeZohoState(userId, workspaceId = null) {
   return jwt.sign(
     {
       sub: String(userId),
+      workspaceId: workspaceId ? String(workspaceId) : undefined,
       purpose: 'zoho_oauth',
     },
     getJwtSecret(),
@@ -51,10 +58,13 @@ export function decodeZohoState(state) {
   if (decoded.purpose !== 'zoho_oauth' || !decoded.sub) {
     throw new Error('Invalid Zoho OAuth state');
   }
-  return decoded.sub;
+  return {
+    userId: decoded.sub,
+    workspaceId: decoded.workspaceId || null,
+  };
 }
 
-export function buildZohoAuthUrl(userId) {
+export function buildZohoAuthUrl(userId, workspaceId = null) {
   const { clientId, redirectUri, accountsServer, scopes } = validateZohoConfig();
   const params = new URLSearchParams({
     scope: scopes,
@@ -62,7 +72,7 @@ export function buildZohoAuthUrl(userId) {
     response_type: 'code',
     access_type: 'offline',
     redirect_uri: redirectUri,
-    state: encodeZohoState(userId),
+    state: encodeZohoState(userId, workspaceId),
     prompt: 'consent',
   });
   return `${accountsServer}/oauth/v2/auth?${params.toString()}`;
@@ -105,27 +115,32 @@ export async function refreshZohoAccessToken(connection) {
   return connection;
 }
 
-export async function saveZohoConnection(userId, payload) {
+export async function saveZohoConnection(userId, payload, workspaceId = null) {
   const expiresIn = Number(payload.expires_in || 3600);
-  const doc = await ZohoConnection.findOneAndUpdate(
-    { userId },
+  const update = {
+    userId: objectIdOrValue(userId),
+    location: payload.location || 'us',
+    accountsServer: payload.accountsServer,
+    apiDomain: payload.api_domain,
+    accessToken: payload.access_token,
+    refreshToken: payload.refresh_token,
+    tokenType: payload.token_type || 'Bearer',
+    accessTokenExpiresAt: new Date(Date.now() + expiresIn * 1000),
+    scopes: String(getZohoConfig().scopes).split(',').map((scope) => scope.trim()).filter(Boolean),
+    raw: payload,
+  };
+  if (workspaceId) {
+    update.workspaceId = objectIdOrValue(workspaceId);
+  }
+
+  const result = await ZohoConnection.collection.findOneAndUpdate(
+    { userId: objectIdOrValue(userId) },
     {
-      $set: {
-        userId,
-        location: payload.location || 'us',
-        accountsServer: payload.accountsServer,
-        apiDomain: payload.api_domain,
-        accessToken: payload.access_token,
-        refreshToken: payload.refresh_token,
-        tokenType: payload.token_type || 'Bearer',
-        accessTokenExpiresAt: new Date(Date.now() + expiresIn * 1000),
-        scopes: String(getZohoConfig().scopes).split(',').map((scope) => scope.trim()).filter(Boolean),
-        raw: payload,
-      },
+      $set: update,
     },
-    { upsert: true, new: true, setDefaultsOnInsert: true }
+    { upsert: true, returnDocument: 'after' }
   );
-  return doc;
+  return result.value;
 }
 
 export async function getValidZohoConnection(userId) {

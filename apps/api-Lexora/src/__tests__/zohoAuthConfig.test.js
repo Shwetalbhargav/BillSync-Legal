@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, test } from 'vitest';
-import { buildZohoAuthUrl, validateZohoConfig } from '../modules/integrations/services/zohoAuthService.js';
+import { buildZohoAuthUrl, decodeZohoState, validateZohoConfig } from '../modules/integrations/services/zohoAuthService.js';
 
 const ZOHO_ENV_KEYS = [
   'API_BASE_URL',
@@ -47,11 +47,15 @@ describe('Zoho OAuth configuration', () => {
   test('builds auth URL with the configured production callback', () => {
     setValidZohoEnv();
 
-    const url = new URL(buildZohoAuthUrl('64b0000000000000000000aa'));
+    const url = new URL(buildZohoAuthUrl('64b0000000000000000000aa', '64b0000000000000000000bb'));
 
     expect(url.origin).toBe('https://accounts.zoho.in');
     expect(url.searchParams.get('redirect_uri')).toBe('https://billsync-legal.onrender.com/api/integrations/zoho/callback');
     expect(url.searchParams.get('access_type')).toBe('offline');
     expect(url.searchParams.get('prompt')).toBe('consent');
+    expect(decodeZohoState(url.searchParams.get('state'))).toMatchObject({
+      userId: '64b0000000000000000000aa',
+      workspaceId: '64b0000000000000000000bb',
+    });
   });
 });
