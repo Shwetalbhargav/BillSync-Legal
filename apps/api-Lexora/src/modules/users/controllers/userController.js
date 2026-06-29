@@ -25,6 +25,48 @@ function modelForRole(role) {
   }
 }
 
+function normalizeQualification(item) {
+  if (!item || typeof item !== 'object') return null;
+  const degree = typeof item.degree === 'string' ? item.degree.trim() : '';
+  const university = typeof item.university === 'string' ? item.university.trim() : '';
+  const parsedYear = item.year === '' || item.year === null || item.year === undefined ? null : Number(item.year);
+  const year = Number.isInteger(parsedYear) && parsedYear >= 1900 && parsedYear <= 2200 ? parsedYear : undefined;
+  if (!degree && !university && year === undefined) return null;
+  return {
+    ...(degree ? { degree } : {}),
+    ...(university ? { university } : {}),
+    ...(year !== undefined ? { year } : {}),
+  };
+}
+
+function cleanProfileCompletionPayload(body = {}) {
+  const userUpdates = {};
+  const profileUpdates = {};
+
+  if (typeof body.name === 'string') {
+    const name = body.name.trim();
+    if (name) userUpdates.name = name;
+  }
+  if (typeof body.mobile === 'string') {
+    const mobile = body.mobile.trim();
+    if (mobile) userUpdates.mobile = mobile;
+  }
+  if (typeof body.address === 'string') {
+    userUpdates.address = body.address.trim();
+  }
+  if (Array.isArray(body.qualifications)) {
+    userUpdates.qualifications = body.qualifications.map(normalizeQualification).filter(Boolean);
+  }
+  if (body.billingRate !== undefined && body.billingRate !== null && body.billingRate !== '') {
+    const billingRate = Number(body.billingRate);
+    if (Number.isFinite(billingRate) && billingRate >= 0) {
+      profileUpdates.billingRate = billingRate;
+    }
+  }
+
+  return { userUpdates, profileUpdates };
+}
+
 function firstQueryValue(value) {
   return Array.isArray(value) ? value[0] : value;
 }
@@ -178,6 +220,50 @@ export const getMe = async (req, res) => {
     res.json({ success: true, user: toSafeUser(me), isAdmin: !!admin, adminRole: admin?.role || null });
   } catch (err) {
     console.error('getMe error:', err);
+    res.status(500).json({ error: 'Server error' });
+  }
+};
+
+/**
+ * PATCH /api/users/me/profile-completion
+ * Lets signed-in users complete the shared profile fields without broader admin edit access.
+ */
+export const updateMyProfileCompletion = async (req, res) => {
+  try {
+    const me = await User.findById(req.user.id);
+    if (!me) return res.status(404).json({ error: 'User not found' });
+
+    const { userUpdates, profileUpdates } = cleanProfileCompletionPayload(req.body);
+    if (!Object.keys(userUpdates).length && !Object.keys(profileUpdates).length) {
+      return res.status(400).json({ error: 'No supported profile fields were provided' });
+    }
+
+    Object.assign(me, userUpdates);
+    const savedUser = Object.keys(userUpdates).length ? await me.save() : me;
+
+    let profile = null;
+    const Model = modelForRole(savedUser.role);
+    if (Model && Object.keys(profileUpdates).length) {
+      profile = await Model.findOneAndUpdate(
+        { userId: savedUser._id },
+        { $set: profileUpdates, $setOnInsert: { userId: savedUser._id } },
+        { new: true, upsert: true, setDefaultsOnInsert: true }
+      ).populate?.('userId', '-passwordHash');
+    } else if (Model) {
+      profile = await Model.findOne({ userId: savedUser._id }).populate('userId', '-passwordHash');
+    }
+
+    res.json({
+      success: true,
+      user: toSafeUser(savedUser),
+      profile,
+      defaultRate: profile?.billingRate ?? null,
+    });
+  } catch (err) {
+    if (err.code === 11000) {
+      return res.status(409).json({ error: 'A user with those profile details already exists' });
+    }
+    console.error('updateMyProfileCompletion error:', err);
     res.status(500).json({ error: 'Server error' });
   }
 };

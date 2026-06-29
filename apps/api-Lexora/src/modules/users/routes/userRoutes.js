@@ -15,6 +15,7 @@ import {
   upsertUserProfile,
   getUserDefaultRate,
   getMyScopes,
+  updateMyProfileCompletion,
 } from '../controllers/userController.js';
 
 const router = Router();
@@ -39,6 +40,7 @@ router.get('/', authorize('admin', 'partner'), listUsers);
 
 router.get('/me/self', getMyScopes); // keep /me route unshadowed
 router.get('/me', getMe);
+router.patch('/me/profile-completion', updateMyProfileCompletion);
 
 router.get('/:id', getUserById);
 router.put('/:id', authorize('admin', 'partner'), validateUpdateUser, updateUser);
