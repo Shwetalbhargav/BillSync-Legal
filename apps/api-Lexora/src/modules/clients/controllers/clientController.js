@@ -237,6 +237,10 @@ export const getClientById = async (req, res) => {
 export const createClient = async (req, res) => {
   try {
     const payload = pickClientPayload(req.body);
+    const requesterRole = String(req.user?.role || '').toLowerCase();
+    if (!payload.ownerUserId && requesterRole !== 'admin' && mongoose.Types.ObjectId.isValid(req.user?.id)) {
+      payload.ownerUserId = req.user.id;
+    }
     const refsValid = await validateReferenceIds(payload, res);
     if (!refsValid) return;
 
