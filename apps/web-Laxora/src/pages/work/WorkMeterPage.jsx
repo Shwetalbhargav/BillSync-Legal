@@ -30,7 +30,7 @@ const initialForm = {
   billable: true,
 };
 
-const privilegedMeterRoles = new Set(["admin", "partner"]);
+const privilegedMeterRoles = new Set(["admin", "owner", "partner"]);
 const internalMeterTools = new Set(["manual", "billbot_ai", "other"]);
 const workspaceProviders = new Set(["google", "zoho", "microsoft"]);
 
