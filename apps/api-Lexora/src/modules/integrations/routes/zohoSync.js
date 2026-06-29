@@ -26,6 +26,26 @@ function resolveUserId(req) {
   return req.user?.id || req.user?._id?.toString();
 }
 
+function handleZohoError(res, error) {
+  if (error.code === 'ZOHO_NOT_CONNECTED') {
+    return res.status(409).json({
+      ok: false,
+      reason: error.code,
+      message: error.message,
+      action: 'Connect Zoho from /api/integrations/zoho/connect-url before using sync endpoints.',
+    });
+  }
+  if (error.code === 'ZOHO_CONFIG_INVALID') {
+    return res.status(503).json({
+      ok: false,
+      reason: error.code,
+      message: error.message,
+      missing: error.missing || [],
+    });
+  }
+  return res.status(500).json({ ok: false, message: error.message });
+}
+
 router.get('/modules', async (req, res) => {
   const userId = resolveUserId(req);
   if (!userId) return res.status(401).json({ message: 'userId is required' });
@@ -33,7 +53,7 @@ router.get('/modules', async (req, res) => {
     const modules = await getZohoModules(userId);
     res.json({ ok: true, data: modules });
   } catch (error) {
-    res.status(500).json({ ok: false, message: error.message });
+    handleZohoError(res, error);
   }
 });
 
@@ -44,7 +64,7 @@ router.get('/modules/:moduleApiName/fields', async (req, res) => {
     const fields = await getZohoModuleFields(userId, req.params.moduleApiName);
     res.json({ ok: true, data: fields });
   } catch (error) {
-    res.status(500).json({ ok: false, message: error.message });
+    handleZohoError(res, error);
   }
 });
 
@@ -81,7 +101,7 @@ router.post('/sync/clients/:clientId/contacts', async (req, res) => {
     const contacts = await ensureClientContactsInZoho(userId, client, syncedClient.recordId);
     res.json({ ok: true, data: contacts, accountRecordId: syncedClient.recordId });
   } catch (error) {
-    res.status(500).json({ ok: false, message: error.message });
+    handleZohoError(res, error);
   }
 });
 
@@ -146,7 +166,7 @@ router.get('/:moduleApiName/:recordId/attachments', async (req, res) => {
     const data = await getZohoAttachments(userId, req.params.moduleApiName, req.params.recordId);
     res.json({ ok: true, data });
   } catch (error) {
-    res.status(500).json({ ok: false, message: error.message });
+    handleZohoError(res, error);
   }
 });
 
@@ -157,7 +177,7 @@ router.post('/:moduleApiName/:recordId/attachments', async (req, res) => {
     const data = await uploadZohoAttachment(userId, req.params.moduleApiName, req.params.recordId, req.body || {});
     res.json({ ok: true, data });
   } catch (error) {
-    res.status(500).json({ ok: false, message: error.message });
+    handleZohoError(res, error);
   }
 });
 
@@ -173,7 +193,7 @@ router.get('/:moduleApiName/:recordId/related/:relatedListApiName', async (req, 
     );
     res.json({ ok: true, data });
   } catch (error) {
-    res.status(500).json({ ok: false, message: error.message });
+    handleZohoError(res, error);
   }
 });
 
@@ -184,7 +204,7 @@ router.get('/activities/:moduleApiName', async (req, res) => {
     const data = await listZohoActivityRecords(userId, req.params.moduleApiName, req.query || {});
     res.json({ ok: true, data });
   } catch (error) {
-    res.status(500).json({ ok: false, message: error.message });
+    handleZohoError(res, error);
   }
 });
 
@@ -195,7 +215,7 @@ router.post('/activities/:moduleApiName', async (req, res) => {
     const data = await createZohoActivity(userId, req.params.moduleApiName, req.body || {});
     res.status(201).json({ ok: true, data });
   } catch (error) {
-    res.status(500).json({ ok: false, message: error.message });
+    handleZohoError(res, error);
   }
 });
 
@@ -209,7 +229,7 @@ router.post('/workdrive/link', async (req, res) => {
     const linked = await linkCaseToWorkDrive(userId, caseId, { folderId, folderUrl });
     res.json({ ok: true, data: linked });
   } catch (error) {
-    res.status(500).json({ ok: false, message: error.message });
+    handleZohoError(res, error);
   }
 });
 

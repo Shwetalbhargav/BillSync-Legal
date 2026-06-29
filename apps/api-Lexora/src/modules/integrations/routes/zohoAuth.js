@@ -5,12 +5,34 @@ import { fetchZohoCurrentUser } from '../services/zohoCrmService.js';
 
 const router = express.Router();
 
+function handleZohoAuthError(res, error) {
+  if (error.code === 'ZOHO_CONFIG_INVALID') {
+    return res.status(503).json({
+      ok: false,
+      connected: false,
+      reason: error.code,
+      message: error.message,
+      missing: error.missing || [],
+    });
+  }
+  return res.status(500).json({
+    ok: false,
+    connected: false,
+    reason: error.code || 'unknown_error',
+    message: error.message,
+  });
+}
+
 export function zohoConnectHandler(req, res) {
   const userId = req.user?.id || req.user?._id?.toString();
   if (!userId) {
     return res.status(401).send('User must be logged in to connect Zoho.');
   }
-  res.redirect(buildZohoAuthUrl(userId));
+  try {
+    res.redirect(buildZohoAuthUrl(userId));
+  } catch (error) {
+    handleZohoAuthError(res, error);
+  }
 }
 
 export function zohoConnectUrlHandler(req, res) {
@@ -18,7 +40,11 @@ export function zohoConnectUrlHandler(req, res) {
   if (!userId) {
     return res.status(401).json({ ok: false, message: 'User must be logged in to connect Zoho.' });
   }
-  res.json({ ok: true, url: buildZohoAuthUrl(userId) });
+  try {
+    res.json({ ok: true, url: buildZohoAuthUrl(userId) });
+  } catch (error) {
+    handleZohoAuthError(res, error);
+  }
 }
 
 export async function zohoCallbackHandler(req, res) {
@@ -62,11 +88,12 @@ export async function zohoStatusHandler(req, res) {
       zohoUser: me,
     });
   } catch (error) {
-    const code = error.code === 'ZOHO_NOT_CONNECTED' ? 404 : 500;
+    const code = error.code === 'ZOHO_NOT_CONNECTED' ? 404 : error.code === 'ZOHO_CONFIG_INVALID' ? 503 : 500;
     res.status(code).json({
       connected: false,
       reason: error.code || 'unknown_error',
       message: error.message,
+      missing: error.missing || undefined,
       connectUrl: `${getZohoConfig().accountsServer}/oauth/v2/auth`,
     });
   }

@@ -12,10 +12,27 @@ export function getZohoConfig() {
   return {
     clientId: process.env.ZOHO_CLIENT_ID,
     clientSecret: process.env.ZOHO_CLIENT_SECRET,
-    redirectUri: process.env.ZOHO_REDIRECT_URI,
+    redirectUri: process.env.ZOHO_REDIRECT_URI || `${String(process.env.API_BASE_URL || '').replace(/\/$/, '')}/api/integrations/zoho/callback`,
     accountsServer: process.env.ZOHO_ACCOUNTS_SERVER || 'https://accounts.zoho.in',
     scopes: process.env.ZOHO_SCOPES || DEFAULT_SCOPES,
   };
+}
+
+export function validateZohoConfig() {
+  const config = getZohoConfig();
+  const missing = [];
+  if (!config.clientId) missing.push('ZOHO_CLIENT_ID');
+  if (!config.clientSecret) missing.push('ZOHO_CLIENT_SECRET');
+  if (!config.redirectUri || !/^https?:\/\/.+\/api\/integrations\/zoho\/callback$/i.test(config.redirectUri)) {
+    missing.push('ZOHO_REDIRECT_URI');
+  }
+  if (missing.length) {
+    const error = new Error(`Zoho OAuth is not configured correctly: ${missing.join(', ')}`);
+    error.code = 'ZOHO_CONFIG_INVALID';
+    error.missing = missing;
+    throw error;
+  }
+  return config;
 }
 
 export function encodeZohoState(userId) {
@@ -38,7 +55,7 @@ export function decodeZohoState(state) {
 }
 
 export function buildZohoAuthUrl(userId) {
-  const { clientId, redirectUri, accountsServer, scopes } = getZohoConfig();
+  const { clientId, redirectUri, accountsServer, scopes } = validateZohoConfig();
   const params = new URLSearchParams({
     scope: scopes,
     client_id: clientId,
@@ -52,7 +69,7 @@ export function buildZohoAuthUrl(userId) {
 }
 
 export async function exchangeZohoCode({ code, accountsServer }) {
-  const { clientId, clientSecret, redirectUri } = getZohoConfig();
+  const { clientId, clientSecret, redirectUri } = validateZohoConfig();
   const body = new URLSearchParams({
     grant_type: 'authorization_code',
     client_id: clientId,
@@ -68,7 +85,7 @@ export async function exchangeZohoCode({ code, accountsServer }) {
 }
 
 export async function refreshZohoAccessToken(connection) {
-  const { clientId, clientSecret } = getZohoConfig();
+  const { clientId, clientSecret } = validateZohoConfig();
   const body = new URLSearchParams({
     refresh_token: connection.refreshToken,
     client_id: clientId,
