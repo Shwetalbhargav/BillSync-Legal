@@ -1,5 +1,6 @@
 // src/controllers/userController.js (updated)
 import bcrypt from 'bcryptjs';
+import mongoose from 'mongoose';
 import User from '../models/User.js';
 import Admin from '../models/admin.js';
 import LawyerProfile from '../models/LawyerProfile.js';
@@ -7,6 +8,9 @@ import AssociateProfile from '../models/AssociateProfile.js';
 import PartnerProfile from '../models/PartnerProfile.js';
 import InternProfile from '../models/InternProfile.js';
 import { toSafeUser } from '../utils/safeUser.js';
+
+const LIST_USER_SORT_FIELDS = new Set(['name', 'email', 'mobile', 'role', 'commercialRole', 'createdAt', 'updatedAt']);
+const MAX_LIST_USER_LIMIT = 100;
 
 /**
  * Helpers
@@ -19,6 +23,37 @@ function modelForRole(role) {
     case 'intern': return InternProfile;
     default: return null;
   }
+}
+
+function firstQueryValue(value) {
+  return Array.isArray(value) ? value[0] : value;
+}
+
+function cleanQueryString(value) {
+  const first = firstQueryValue(value);
+  if (first === undefined || first === null) return '';
+  return String(first).trim();
+}
+
+function escapeRegex(value) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function parsePositiveInteger(value, fallback, { max = Number.MAX_SAFE_INTEGER } = {}) {
+  const normalized = cleanQueryString(value);
+  if (!normalized) return fallback;
+  if (!/^\d+$/.test(normalized)) return null;
+  const parsed = Number(normalized);
+  if (!Number.isSafeInteger(parsed) || parsed < 1 || parsed > max) return null;
+  return parsed;
+}
+
+function parseUserSort(value) {
+  const normalized = cleanQueryString(value) || 'name';
+  const direction = normalized.startsWith('-') ? '-' : '';
+  const field = direction ? normalized.slice(1) : normalized;
+  if (!LIST_USER_SORT_FIELDS.has(field)) return null;
+  return `${direction}${field}`;
 }
 
 /**
@@ -79,24 +114,38 @@ export const deleteUser = async (req, res) => {
  */
 export const listUsers = async (req, res) => {
   try {
-    const { role, q, firmId, page = 1, limit = 20, sort = 'name' } = req.query;
+    const role = cleanQueryString(req.query.role);
+    const q = cleanQueryString(req.query.q);
+    const firmId = cleanQueryString(req.query.firmId);
+    const page = parsePositiveInteger(req.query.page, 1);
+    const limit = parsePositiveInteger(req.query.limit, 20, { max: MAX_LIST_USER_LIMIT });
+    const sort = parseUserSort(req.query.sort);
+
+    if (!page) return res.status(400).json({ error: 'page must be a positive integer' });
+    if (!limit) return res.status(400).json({ error: `limit must be a positive integer up to ${MAX_LIST_USER_LIMIT}` });
+    if (!sort) return res.status(400).json({ error: 'sort is not supported' });
+    if (firmId && !mongoose.Types.ObjectId.isValid(firmId)) {
+      return res.status(400).json({ error: 'firmId must be a valid ObjectId' });
+    }
+
     const filter = {};
     if (role) filter.role = role;
     if (firmId) filter.firmId = firmId;
     if (q) {
+      const escaped = escapeRegex(q);
       filter.$or = [
-        { name: { $regex: q, $options: 'i' } },
-        { mobile: { $regex: q, $options: 'i' } },
-        { address: { $regex: q, $options: 'i' } },
+        { name: { $regex: escaped, $options: 'i' } },
+        { mobile: { $regex: escaped, $options: 'i' } },
+        { address: { $regex: escaped, $options: 'i' } },
       ];
     }
     const projection = { passwordHash: 0 };
-    const skip = (Number(page) - 1) * Number(limit);
+    const skip = (page - 1) * limit;
     const [items, total] = await Promise.all([
-      User.find(filter, projection).sort(sort).skip(skip).limit(Number(limit)),
+      User.find(filter, projection).sort(sort).skip(skip).limit(limit),
       User.countDocuments(filter),
     ]);
-    res.json({ success: true, page: Number(page), limit: Number(limit), total, items });
+    res.json({ success: true, page, limit, total, items });
   } catch (err) {
     console.error('listUsers error:', err);
     res.status(500).json({ error: 'Server error' });
