@@ -1,0 +1,60 @@
+name: API Tests
+
+on:
+  pull_request:
+    paths:
+      - "api-test-project/**"
+      - "outputs/api_inventory/lexora_api_inventory.xlsx"
+      - "apps/api-Lexora/**"
+
+jobs:
+  generate-and-test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: api-test-project
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+          cache-dependency-path: "api-test-project/package.json"
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Generate Postman collection
+        run: npm run generate
+
+      - name: Run staging API tests
+        if: ${{ secrets.STAGING_BASE_URL != '' && secrets.STAGING_LOGIN_USERNAME != '' && secrets.STAGING_LOGIN_PASSWORD != '' }}
+        env:
+          STAGING_BASE_URL: ${{ secrets.STAGING_BASE_URL }}
+          STAGING_LOGIN_USERNAME: ${{ secrets.STAGING_LOGIN_USERNAME }}
+          STAGING_LOGIN_PASSWORD: ${{ secrets.STAGING_LOGIN_PASSWORD }}
+        run: >
+          npx newman run postman/lexora-api-tests.postman_collection.json
+          -e postman/staging.postman_environment.json
+          --env-var "baseUrl=${STAGING_BASE_URL}"
+          --env-var "loginUsername=${STAGING_LOGIN_USERNAME}"
+          --env-var "loginPassword=${STAGING_LOGIN_PASSWORD}"
+          --reporters cli,json,htmlextra
+          --reporter-json-export reports/results.json
+          --reporter-htmlextra-export reports/report.html
+
+      - name: Explain skipped staging tests
+        if: ${{ !(secrets.STAGING_BASE_URL != '' && secrets.STAGING_LOGIN_USERNAME != '' && secrets.STAGING_LOGIN_PASSWORD != '') }}
+        run: echo "Skipping staging API tests because staging secrets are not configured."
+
+      - name: Upload Newman reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: newman-api-test-reports
+          path: api-test-project/reports/
+          if-no-files-found: ignore

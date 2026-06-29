@@ -1,0 +1,408 @@
+{
+  "_": {
+    "postman_variable_scope": "environment",
+    "postman_exported_using": "Lexora API generator"
+  },
+  "id": "72c845ba-297c-4401-8f5f-d345f61585db",
+  "name": "Lexora Staging",
+  "values": [
+    {
+      "type": "any",
+      "value": "https://billsync-legal.onrender.com",
+      "key": "baseUrl"
+    },
+    {
+      "type": "any",
+      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhM2Y4YzgyZDQ5NjRlMTliYTI0YjM2OSIsInJvbGUiOiJvd25lciIsImVtYWlsIjoibmlzaGFAc3RlcmxpbmdsZWdhbC50ZXN0Iiwid29ya3NwYWNlSWQiOiI2YTNmOGM4MmQ0OTY0ZTE5YmEyNGIzNGYiLCJ0b2tlblZlcnNpb24iOjAsInB1cnBvc2UiOiJkZXNrdG9wX2FnZW50IiwiaWF0IjoxNzgyNjM0MjgzLCJleHAiOjE3ODI3MjA2ODMsImF1ZCI6ImJpbGxib3QtZGVza3RvcCIsImlzcyI6ImJpbGxib3QtbGVnYWwifQ.6h5_Al2opUtt_ujAASQYPD1P6c2Y_J0kRcXzU5H3ujc",
+      "key": "token"
+    },
+    {
+      "type": "any",
+      "value": "Nisha Sterling",
+      "key": "loginName"
+    },
+    {
+      "type": "any",
+      "value": "9100001001",
+      "key": "loginMobile"
+    },
+    {
+      "type": "any",
+      "value": "",
+      "key": "loginUsername"
+    },
+    {
+      "type": "any",
+      "value": "Demo@12345",
+      "key": "loginPassword"
+    },
+    {
+      "type": "any",
+      "value": "owner",
+      "key": "loginRole"
+    },
+    {
+      "type": "any",
+      "value": "6a3f8c82d4964e19ba24b34f",
+      "key": "loginWorkspaceId"
+    },
+    {
+      "type": "any",
+      "value": "3000",
+      "key": "responseTimeLimitMs"
+    },
+    {
+      "type": "any",
+      "value": "false",
+      "key": "runDestructiveTests"
+    },
+    {
+      "type": "any",
+      "value": "6a3f8c82d4964e19ba24b37e",
+      "key": "clientId"
+    },
+    {
+      "type": "any",
+      "value": "6a3f8c82d4964e19ba24b384",
+      "key": "caseId"
+    },
+    {
+      "type": "any",
+      "value": "6a3f8c83d4964e19ba24b394",
+      "key": "invoiceId"
+    },
+    {
+      "type": "any",
+      "value": "6a3f8c83d4964e19ba24b394",
+      "key": "invoicesId"
+    },
+    {
+      "type": "any",
+      "value": "billing",
+      "key": "moduleKey"
+    },
+    {
+      "type": "any",
+      "value": "billing",
+      "key": "featureKey"
+    },
+    {
+      "type": "any",
+      "value": "workspace",
+      "key": "scope"
+    },
+    {
+      "type": "any",
+      "value": "6a3f8c82d4964e19ba24b34f",
+      "key": "scopeId"
+    },
+    {
+      "type": "any",
+      "value": "2026-04-01",
+      "key": "from"
+    },
+    {
+      "type": "any",
+      "value": "2026-06-30",
+      "key": "to"
+    },
+    {
+      "type": "any",
+      "value": "2026-06",
+      "key": "month"
+    },
+    {
+      "type": "any",
+      "value": "",
+      "key": "activityId"
+    },
+    {
+      "type": "any",
+      "value": "",
+      "key": "adminId"
+    },
+    {
+      "type": "any",
+      "value": "",
+      "key": "billablesId"
+    },
+    {
+      "type": "any",
+      "value": "",
+      "key": "caseAssignmentsId"
+    },
+    {
+      "type": "any",
+      "value": "",
+      "key": "emailEntriesId"
+    },
+    {
+      "type": "any",
+      "value": "",
+      "key": "firmId"
+    },
+    {
+      "type": "any",
+      "value": "",
+      "key": "integrationLogsId"
+    },
+    {
+      "type": "any",
+      "value": "",
+      "key": "lineId"
+    },
+    {
+      "type": "any",
+      "value": "",
+      "key": "paymentsId"
+    },
+    {
+      "type": "any",
+      "value": "",
+      "key": "rateCardsId"
+    },
+    {
+      "type": "any",
+      "value": "",
+      "key": "taskId"
+    },
+    {
+      "type": "any",
+      "value": "",
+      "key": "usersId"
+    },
+    {
+      "type": "any",
+      "value": "",
+      "key": "membershipsId"
+    },
+    {
+      "type": "any",
+      "value": "",
+      "key": "workSessionsId"
+    },
+    {
+      "type": "any",
+      "value": "",
+      "key": "caseType"
+    },
+    {
+      "type": "any",
+      "value": "",
+      "key": "caseTypeId"
+    },
+    {
+      "type": "any",
+      "value": "",
+      "key": "id"
+    },
+    {
+      "type": "any",
+      "value": "",
+      "key": "userId"
+    },
+    {
+      "type": "any",
+      "value": "",
+      "key": "category"
+    },
+    {
+      "type": "any",
+      "value": "",
+      "key": "status"
+    },
+    {
+      "type": "any",
+      "value": "",
+      "key": "q"
+    },
+    {
+      "type": "any",
+      "value": "",
+      "key": "clearedOnly"
+    },
+    {
+      "type": "any",
+      "value": "",
+      "key": "page"
+    },
+    {
+      "type": "any",
+      "value": "",
+      "key": "limit"
+    },
+    {
+      "type": "any",
+      "value": "",
+      "key": "ownerUserId"
+    },
+    {
+      "type": "any",
+      "value": "",
+      "key": "documentId"
+    },
+    {
+      "type": "any",
+      "value": "",
+      "key": "userEmail"
+    },
+    {
+      "type": "any",
+      "value": "",
+      "key": "recipient"
+    },
+    {
+      "type": "any",
+      "value": "",
+      "key": "source"
+    },
+    {
+      "type": "any",
+      "value": "",
+      "key": "domain"
+    },
+    {
+      "type": "any",
+      "value": "",
+      "key": "skip"
+    },
+    {
+      "type": "any",
+      "value": "",
+      "key": "platform"
+    },
+    {
+      "type": "any",
+      "value": "",
+      "key": "billableId"
+    },
+    {
+      "type": "any",
+      "value": "",
+      "key": "groupBy"
+    },
+    {
+      "type": "any",
+      "value": "",
+      "key": "moduleApiName"
+    },
+    {
+      "type": "any",
+      "value": "",
+      "key": "recordId"
+    },
+    {
+      "type": "any",
+      "value": "",
+      "key": "relatedListApiName"
+    },
+    {
+      "type": "any",
+      "value": "",
+      "key": "paymentDue"
+    },
+    {
+      "type": "any",
+      "value": "",
+      "key": "dueFrom"
+    },
+    {
+      "type": "any",
+      "value": "",
+      "key": "dueTo"
+    },
+    {
+      "type": "any",
+      "value": "",
+      "key": "kpiSnapshotsId"
+    },
+    {
+      "type": "any",
+      "value": "",
+      "key": "months"
+    },
+    {
+      "type": "any",
+      "value": "",
+      "key": "metric"
+    },
+    {
+      "type": "any",
+      "value": "",
+      "key": "specialization"
+    },
+    {
+      "type": "any",
+      "value": "",
+      "key": "portalToken"
+    },
+    {
+      "type": "any",
+      "value": "",
+      "key": "activityCode"
+    },
+    {
+      "type": "any",
+      "value": "",
+      "key": "activeOn"
+    },
+    {
+      "type": "any",
+      "value": "",
+      "key": "at"
+    },
+    {
+      "type": "any",
+      "value": "",
+      "key": "matterId"
+    },
+    {
+      "type": "any",
+      "value": "",
+      "key": "role"
+    },
+    {
+      "type": "any",
+      "value": "",
+      "key": "sort"
+    },
+    {
+      "type": "any",
+      "value": "",
+      "key": "timeEntriesId"
+    },
+    {
+      "type": "any",
+      "value": "",
+      "key": "roleKey"
+    },
+    {
+      "type": "any",
+      "value": "",
+      "key": "leaveRequestsId"
+    },
+    {
+      "type": "any",
+      "value": "",
+      "key": "emailEntryId"
+    },
+    {
+      "type": "any",
+      "value": "",
+      "key": "reconcileId"
+    },
+    {
+      "type": "any",
+      "value": "",
+      "key": "idleIntervalsId"
+    },
+    {
+      "type": "any",
+      "value": "",
+      "key": "invitationsId"
+    }
+  ],
+  "_postman_variable_scope": "environment",
+  "_postman_exported_at": "2026-06-28T08:11:23.272Z",
+  "_postman_exported_using": "Newman/6.2.2"
+}

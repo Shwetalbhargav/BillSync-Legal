@@ -1,0 +1,19 @@
+{
+  "name": "lexora-api-test-project",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Generated Postman/Newman API automation suite for Lexora.",
+  "type": "commonjs",
+  "scripts": {
+    "generate": "node scripts/generate-postman-collection.js",
+    "validate:inventory": "node scripts/validate-inventory.js",
+    "test:staging": "newman run postman/lexora-api-tests.postman_collection.json -e postman/staging.postman_environment.json --reporters cli,json,htmlextra --reporter-json-export reports/results.json --reporter-htmlextra-export reports/report.html",
+    "test:production-smoke": "newman run postman/lexora-api-tests.postman_collection.json -e postman/production-smoke.postman_environment.json --folder Smoke --reporters cli,json --reporter-json-export reports/production-smoke-results.json"
+  },
+  "dependencies": {
+    "newman": "^6.2.1",
+    "newman-reporter-htmlextra": "^1.23.1",
+    "xlsx": "^0.18.5"
+  },
+  "devDependencies": {}
+}
