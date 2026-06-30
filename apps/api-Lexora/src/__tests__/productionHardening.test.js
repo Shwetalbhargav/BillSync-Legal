@@ -133,12 +133,13 @@ describe('production hardening release checks', () => {
     expect(mutatingRoutes.every((line) => line.includes('requirePermission('))).toBe(true);
   });
 
-  test('enterprise-only route mounting is flag gated in production', () => {
+  test('attendance route mounting is flag gated in production', () => {
     const routes = readRepoFile('apps/api-Lexora/src/routes/index.js');
     expect(routes).toContain("process.env.ENABLE_ENTERPRISE_MODULES");
     expect(routes).toContain("process.env.NODE_ENV !== 'production'");
     expect(routes).toContain("if (enterpriseModulesEnabled) router.use('/attendance'");
-    expect(routes).toContain("if (enterpriseModulesEnabled) router.use('/analytics'");
+    expect(routes).toContain("router.use('/analytics', analyticsRoutes)");
+    expect(routes).toContain("router.use('/revenue', revenueRoutes)");
   });
 
   test('CI and operations docs include release-critical checks', () => {
