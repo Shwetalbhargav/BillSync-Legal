@@ -64,7 +64,7 @@ export function TaskFormPage() {
           clientsApi.list({ limit: 200 }),
           isEdit ? tasksApi.get(taskId) : Promise.resolve(null),
         ]);
-        const userResponse = await usersApi.list({ limit: 200 }).catch(() => null);
+        const userResponse = await usersApi.list({ limit: 100 }).catch(() => null);
         const matterOptions = asList(matterResponse).map(normalizeMatter);
         const clientOptions = asList(clientResponse).map(normalizeClient);
         const fallbackUser = user?.id ? [user] : [];

@@ -88,6 +88,13 @@ const toolNames = {
   other: "Other tool",
 };
 
+function isInactiveWorkSessionError(error) {
+  return error?.status === 409 && (
+    error?.data?.code === "WORK_SESSION_NOT_ACTIVE"
+    || /active session/i.test(error?.data?.message || error?.message || "")
+  );
+}
+
 function isExternalMeterTool(workTool) {
   return Boolean(workTool && !internalMeterTools.has(workTool));
 }
@@ -197,6 +204,7 @@ export function WorkMeterPage() {
   const sessionRef = useRef(null);
   const lastMouseMoveCountAtRef = useRef(0);
   const lastActivityTickAtRef = useRef(Date.now());
+  const meterIngestActiveRef = useRef(false);
   const flushActivityRef = useRef(async () => {});
   const flushAppUsageRef = useRef(async () => {});
   const activityBucketRef = useRef({
@@ -207,6 +215,15 @@ export function WorkMeterPage() {
     lastInteractionAt: Date.now(),
   });
   const appUsageBucketRef = useRef({ startedAt: new Date() });
+
+  function stopBackgroundMeter(sessionId) {
+    meterIngestActiveRef.current = false;
+    flushActivityRef.current = async () => {};
+    flushAppUsageRef.current = async () => {};
+    setSession((current) => current?.id === sessionId ? null : current);
+    setStatus((current) => current === "saving" ? current : "ready");
+    setMessage("This work session is no longer active. Meter capture has been stopped.");
+  }
 
   async function load() {
     setStatus("loading");
@@ -308,6 +325,7 @@ export function WorkMeterPage() {
 
   useEffect(() => {
     if (!session?.id || session.status !== "running") return undefined;
+    meterIngestActiveRef.current = true;
     activityBucketRef.current = {
       windowStart: new Date(),
       keyboardCount: 0,
@@ -337,6 +355,7 @@ export function WorkMeterPage() {
     }, 1000);
 
     async function flushBucket() {
+      if (!meterIngestActiveRef.current || sessionRef.current?.id !== session.id || sessionRef.current?.status !== "running") return;
       const bucket = activityBucketRef.current;
       const windowEnd = new Date();
       const sampleSeconds = Math.max(1, Math.round((windowEnd.getTime() - new Date(bucket.windowStart).getTime()) / 1000));
@@ -363,12 +382,17 @@ export function WorkMeterPage() {
       setLiveActivity({ keyboardCount: 0, mouseCount: 0, activeSeconds: 0 });
       try {
         await activitySamplesApi.createForSession(session.id, body);
-      } catch {
+      } catch (error) {
+        if (isInactiveWorkSessionError(error)) {
+          stopBackgroundMeter(session.id);
+          return;
+        }
         setIssues((current) => [...new Set([...(current || []), "Activity percentage could not be refreshed yet."])]);
       }
     }
 
     async function flushAppUsage() {
+      if (!meterIngestActiveRef.current || sessionRef.current?.id !== session.id || sessionRef.current?.status !== "running") return;
       const bucket = appUsageBucketRef.current;
       const endedAt = new Date();
       const durationSeconds = Math.max(1, Math.round((endedAt.getTime() - new Date(bucket.startedAt).getTime()) / 1000));
@@ -391,7 +415,11 @@ export function WorkMeterPage() {
           platform: "web",
           sourceApp: "web_meter",
         });
-      } catch {
+      } catch (error) {
+        if (isInactiveWorkSessionError(error)) {
+          stopBackgroundMeter(session.id);
+          return;
+        }
         setIssues((current) => [...new Set([...(current || []), "App and website history could not be refreshed yet."])]);
       }
     }
@@ -404,10 +432,9 @@ export function WorkMeterPage() {
       window.clearInterval(secondTimer);
       window.clearInterval(flushTimer);
       window.clearInterval(appUsageTimer);
+      meterIngestActiveRef.current = false;
       flushActivityRef.current = async () => {};
       flushAppUsageRef.current = async () => {};
-      flushBucket();
-      flushAppUsage();
     };
   }, [session?.id, session?.status, session?.workTool]);
 
@@ -514,6 +541,7 @@ export function WorkMeterPage() {
     setStatus("saving");
     try {
       const response = session.status === "paused" ? await workSessionsApi.resume(session.id) : await workSessionsApi.pause(session.id, { reason: "User paused work" });
+      if (session.status !== "paused") meterIngestActiveRef.current = false;
       setSession(normalizeWorkSession(response?.data ? response.data : response));
       setStatus("ready");
     } catch (error) {
@@ -538,6 +566,7 @@ export function WorkMeterPage() {
         createTimeEntry: true,
         submitTimeEntry,
       });
+      meterIngestActiveRef.current = false;
       const savedEntry = response?.timeEntry ? normalizeTimeEntry(response.timeEntry) : null;
       if (savedEntry) {
         setLastSavedEntry({
@@ -581,6 +610,7 @@ export function WorkMeterPage() {
     setStatus("saving");
     try {
       await workSessionsApi.discard(session.id, { reason: "Discarded by user" });
+      meterIngestActiveRef.current = false;
       setSession(null);
       setStatus("ready");
     } catch (error) {

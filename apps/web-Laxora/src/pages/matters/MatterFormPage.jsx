@@ -61,7 +61,7 @@ export function MatterFormPage() {
       try {
         const [clientsResponse, usersResponse] = await Promise.all([
           clientsApi.list({ limit: 200 }),
-          usersApi.list({ limit: 200 }).catch(() => null),
+          usersApi.list({ limit: 100 }).catch(() => null),
         ]);
         const clientOptions = asList(clientsResponse).map(normalizeClient);
         const fallbackUsers = user?.id ? [user] : [];

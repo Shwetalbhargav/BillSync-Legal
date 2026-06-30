@@ -72,7 +72,7 @@ export const billingApi = {
   async loadRateCards(params = {}) {
     const [rateCardsResult, usersResult, mattersResult] = await Promise.allSettled([
       rateCardsApi.list(params),
-      usersApi.list({ limit: 200 }),
+      usersApi.list({ limit: 100 }),
       mattersApi.list({ limit: 200 }),
     ]);
 

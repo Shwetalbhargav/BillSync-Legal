@@ -44,7 +44,7 @@ export function ClientListPage() {
   }
 
   useEffect(() => {
-    usersApi.list({ limit: 200 })
+    usersApi.list({ limit: 100 })
       .then((response) => setUsers(asList(response).map(normalizeUser).filter((user) => ["partner", "lawyer", "associate"].includes(user.role))))
       .catch(() => setUsers([]));
     load("");

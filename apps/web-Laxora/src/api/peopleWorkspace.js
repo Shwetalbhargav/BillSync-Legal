@@ -103,7 +103,7 @@ function summarizePeople(users, entries, sessions) {
 export const peopleWorkspaceApi = {
   async loadDashboard(params = {}) {
     const [usersResult, entriesResult, sessionsResult, attendanceResult, activityResult, appUsageResult, idleResult] = await Promise.allSettled([
-      usersApi.list({ limit: 200 }),
+      usersApi.list({ limit: 100 }),
       timeEntriesApi.list(params),
       workSessionsApi.list(params),
       backendGapAdapters.attendanceOverview.load(),
