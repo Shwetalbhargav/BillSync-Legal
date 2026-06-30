@@ -11,6 +11,7 @@ import { computeRatedAmount, resolveBillingRate } from '../../rates/services/rat
 import { intervalsForSession, payableMinutesAfterIdle } from '../../idleIntervals/services/idleIntervalService.js';
 
 const DEFAULT_MAX_WORK_SESSION_MINUTES = 180;
+const privilegedWorkSessionRoles = new Set(['admin', 'owner', 'partner']);
 
 const idString = (value) => {
   if (value === undefined || value === null) return '';
@@ -18,7 +19,7 @@ const idString = (value) => {
 };
 
 const canAccessSession = (session, req) =>
-  ['admin', 'partner'].includes(String(req.user?.role || '').toLowerCase()) || idString(session?.userId) === req.user?.id;
+  privilegedWorkSessionRoles.has(String(req.user?.role || '').toLowerCase()) || idString(session?.userId) === req.user?.id;
 
 const assertSessionAccess = (session, req, res) => {
   if (canAccessSession(session, req)) return true;
@@ -176,7 +177,7 @@ export const WorkSessionController = {
       if (String(caseDoc.clientId) !== String(req.body.clientId)) {
         return res.status(400).json({ ok: false, code: 'WORK_SESSION_CLIENT_MISMATCH', message: 'clientId must match the selected matter client' });
       }
-      if (req.user?.role !== 'admin' && !caseHasAssignedUser(caseDoc, userId)) {
+      if (!privilegedWorkSessionRoles.has(String(req.user?.role || '').toLowerCase()) && !caseHasAssignedUser(caseDoc, userId)) {
         const assignment = await CaseAssignment.findOne({ caseId: req.body.caseId, userId, status: 'active' });
         if (!assignment) {
           return res.status(403).json({ ok: false, code: 'WORK_SESSION_MATTER_FORBIDDEN', message: 'You can only start work on assigned matters' });
@@ -266,7 +267,7 @@ export const WorkSessionController = {
   async list(req, res) {
     try {
       const q = {};
-      if (['admin', 'partner'].includes(String(req.user?.role || '').toLowerCase())) {
+      if (privilegedWorkSessionRoles.has(String(req.user?.role || '').toLowerCase())) {
         if (req.query.userId) q.userId = req.query.userId;
       } else {
         q.userId = req.user?.id;

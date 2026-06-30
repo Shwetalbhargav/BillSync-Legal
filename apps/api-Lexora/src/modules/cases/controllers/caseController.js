@@ -35,6 +35,7 @@ const CASE_MUTABLE_FIELDS = [
 const USER_REFERENCE_FIELDS = ['leadPartnerId', 'managingLawyerId', 'primaryLawyerId'];
 const DEFAULT_LIMIT = 25;
 const MAX_LIMIT = 200;
+const PRIVILEGED_MATTER_ROLES = new Set(['admin', 'owner', 'partner']);
 
 const hasOwn = (obj, key) => Object.prototype.hasOwnProperty.call(obj, key);
 
@@ -219,6 +220,11 @@ const applyStatusLifecycle = (payload, res) => {
 export const createCase = async (req, res) => {
   try {
     const payload = pickCasePayload(req.body);
+    const requesterRole = String(req.user?.role || '').toLowerCase();
+    if (!PRIVILEGED_MATTER_ROLES.has(requesterRole) && mongoose.Types.ObjectId.isValid(req.user?.id)) {
+      payload.assignedUsers = [...new Set([...(payload.assignedUsers || []).map(String), req.user.id])];
+      if (!payload.primaryLawyerId) payload.primaryLawyerId = req.user.id;
+    }
     const refsValid = await validateCaseReferences(payload, req, res);
     if (!refsValid) return;
 

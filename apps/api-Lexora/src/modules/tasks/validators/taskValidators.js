@@ -32,6 +32,8 @@ export const validateCreateTask = validateBody({
 export const validateUpdateTask = validateBody({
   title: [string({ min: 1, max: 240 })],
   description: [string({ max: 2000 })],
+  caseId: [objectId()],
+  clientId: [objectId()],
   assignedTo: [objectId()],
   dueDate: [date()],
   priority: [oneOf(taskPriorities)],

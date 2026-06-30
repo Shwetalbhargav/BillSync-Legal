@@ -50,7 +50,7 @@ async function validateReferences({ caseId, clientId, assignedTo }) {
 
 function taskPatch(body, actorId) {
   const patch = {};
-  for (const field of ['title', 'description', 'assignedTo', 'dueDate', 'priority', 'status']) {
+  for (const field of ['title', 'description', 'caseId', 'clientId', 'assignedTo', 'dueDate', 'priority', 'status']) {
     if (Object.prototype.hasOwnProperty.call(body, field)) patch[field] = body[field] || undefined;
   }
   if (Object.prototype.hasOwnProperty.call(body, 'checklist')) {
@@ -125,10 +125,14 @@ export const TaskController = {
       if (!task) return res.status(404).json({ ok: false, message: 'Task not found' });
       if (!canEditTask(task, req)) return res.status(403).json({ ok: false, message: 'You can only edit assigned or created tasks' });
 
-      if (req.body.assignedTo) {
-        const assignee = await User.exists({ _id: req.body.assignedTo });
-        if (!assignee) {
-          return res.status(400).json({ ok: false, message: 'Validation failed', errors: [{ field: 'assignedTo', message: 'assignedTo does not reference an existing user' }] });
+      if (req.body.caseId || req.body.clientId || req.body.assignedTo) {
+        const referenceErrors = await validateReferences({
+          caseId: req.body.caseId || task.caseId,
+          clientId: req.body.clientId || task.clientId,
+          assignedTo: req.body.assignedTo || task.assignedTo,
+        });
+        if (referenceErrors.length) {
+          return res.status(400).json({ ok: false, message: 'Validation failed', errors: referenceErrors });
         }
       }
 
