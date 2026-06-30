@@ -16,9 +16,9 @@ jobs:
       matrix:
         node-version: ['22.16.0']
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
           node-version: ${{ matrix.node-version }}
           cache: npm
@@ -91,7 +91,7 @@ jobs:
         run: npm run scan:terminology
 
       - name: Upload audit reports
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: dependency-audit-reports
           path: audit-reports/*.audit.json
