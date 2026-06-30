@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Check, Pencil, X } from "lucide-react";
 import { invoicesApi } from "../../api/invoices";
 import { normalizeInvoiceLine } from "../../api/normalizers";
 import { Button, SkeletonBlock, StateCard } from "../../components/common";
-import { InvoiceLinesTable } from "../../components/invoices/InvoiceWidgets";
+import { formatMoney } from "../../components/invoices/InvoiceWidgets";
 import { useBillingModuleAccess } from "../billing/useBillingModuleAccess";
 
 const initialLine = {
@@ -29,6 +29,8 @@ export function InvoiceLinesPage() {
   const { invoiceId } = useParams();
   const access = useBillingModuleAccess("billing");
   const [form, setForm] = useState(initialLine);
+  const [editingId, setEditingId] = useState("");
+  const [editForm, setEditForm] = useState(initialLine);
   const [state, setState] = useState({ status: "loading", lines: [], message: "" });
   const [saving, setSaving] = useState(false);
 
@@ -51,6 +53,27 @@ export function InvoiceLinesPage() {
     setForm((current) => ({ ...current, [field]: value }));
   }
 
+  function updateEditField(field, value) {
+    setState((current) => ({ ...current, message: "" }));
+    setEditForm((current) => ({ ...current, [field]: value }));
+  }
+
+  function startEdit(line) {
+    setEditingId(line.id);
+    setEditForm({
+      description: line.description || "",
+      qtyHours: String(line.qtyHours ?? ""),
+      rate: String(line.rate ?? ""),
+      amount: String(line.amount ?? ""),
+      taxCategory: line.taxCategory || "GST",
+    });
+  }
+
+  function cancelEdit() {
+    setEditingId("");
+    setEditForm(initialLine);
+  }
+
   async function addLine() {
     if (!form.description.trim() || !form.qtyHours || !form.rate) {
       setState((current) => ({ ...current, message: "Add a description, hours, and rate before saving." }));
@@ -63,6 +86,23 @@ export function InvoiceLinesPage() {
       await load();
     } catch (error) {
       setState((current) => ({ ...current, message: error?.userMessage || "We could not add this line right now." }));
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  async function saveLine(line) {
+    if (!editForm.description.trim() || !editForm.qtyHours || !editForm.rate) {
+      setState((current) => ({ ...current, message: "Add a description, hours, and rate before saving." }));
+      return;
+    }
+    setSaving(true);
+    try {
+      await invoicesApi.updateLine(invoiceId, line.id, linePayload(editForm));
+      cancelEdit();
+      await load();
+    } catch (error) {
+      setState((current) => ({ ...current, message: error?.userMessage || "We could not update this line right now." }));
     } finally {
       setSaving(false);
     }
@@ -118,12 +158,83 @@ export function InvoiceLinesPage() {
         </div>
         <Button className="mt-4" disabled={saving} isLoading={saving} onClick={addLine} type="button">Add line</Button>
       </section>
-      <InvoiceLinesTable lines={state.lines} />
-      {state.lines.length ? (
-        <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-3">
-          {state.lines.map((line) => <Button disabled={saving} key={line.id} onClick={() => removeLine(line)} type="button" variant="danger">Remove {line.description}</Button>)}
-        </div>
-      ) : null}
+      <section className="surface-card overflow-x-auto p-5">
+        {state.lines.length ? (
+          <table className="w-full min-w-[900px] border-separate border-spacing-0 text-left text-sm">
+            <thead>
+              <tr className="text-xs font-bold uppercase tracking-wide text-muted">
+                <th className="border-b border-border px-3 py-2">Line</th>
+                <th className="border-b border-border px-3 py-2 text-right">Hours</th>
+                <th className="border-b border-border px-3 py-2 text-right">Rate</th>
+                <th className="border-b border-border px-3 py-2">Tax</th>
+                <th className="border-b border-border px-3 py-2 text-right">Amount</th>
+                <th className="border-b border-border px-3 py-2 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {state.lines.map((line) => {
+                const editing = editingId === line.id;
+                return (
+                  <tr key={line.id}>
+                    <td className="border-b border-border px-3 py-3">
+                      {editing ? (
+                        <input className="focus-ring w-full rounded-lg border border-border bg-panel px-3 py-2" onChange={(event) => updateEditField("description", event.target.value)} value={editForm.description} />
+                      ) : (
+                        <p className="break-words font-semibold text-ink">{line.description}</p>
+                      )}
+                    </td>
+                    <td className="border-b border-border px-3 py-3 text-right">
+                      {editing ? (
+                        <input className="focus-ring w-24 rounded-lg border border-border bg-panel px-3 py-2 text-right" min="0" onChange={(event) => updateEditField("qtyHours", event.target.value)} type="number" value={editForm.qtyHours} />
+                      ) : (
+                        <span className="font-semibold text-ink">{Number(line.qtyHours || 0).toFixed(2)}</span>
+                      )}
+                    </td>
+                    <td className="border-b border-border px-3 py-3 text-right">
+                      {editing ? (
+                        <input className="focus-ring w-28 rounded-lg border border-border bg-panel px-3 py-2 text-right" min="0" onChange={(event) => updateEditField("rate", event.target.value)} type="number" value={editForm.rate} />
+                      ) : (
+                        <span className="text-muted">{formatMoney(line.rate)}</span>
+                      )}
+                    </td>
+                    <td className="border-b border-border px-3 py-3">
+                      {editing ? (
+                        <input className="focus-ring w-28 rounded-lg border border-border bg-panel px-3 py-2" onChange={(event) => updateEditField("taxCategory", event.target.value)} value={editForm.taxCategory} />
+                      ) : (
+                        <span className="text-muted">{line.taxCategory || "GST"}</span>
+                      )}
+                    </td>
+                    <td className="border-b border-border px-3 py-3 text-right">
+                      {editing ? (
+                        <input className="focus-ring w-28 rounded-lg border border-border bg-panel px-3 py-2 text-right" min="0" onChange={(event) => updateEditField("amount", event.target.value)} placeholder="Auto" type="number" value={editForm.amount} />
+                      ) : (
+                        <span className="font-bold text-primary">{formatMoney(line.amount)}</span>
+                      )}
+                    </td>
+                    <td className="border-b border-border px-3 py-3">
+                      <div className="flex justify-end gap-2">
+                        {editing ? (
+                          <>
+                            <Button disabled={saving} isLoading={saving} onClick={() => saveLine(line)} size="sm" type="button" variant="success"><Check className="h-4 w-4" />Save</Button>
+                            <Button disabled={saving} onClick={cancelEdit} size="sm" type="button" variant="secondary"><X className="h-4 w-4" />Cancel</Button>
+                          </>
+                        ) : (
+                          <>
+                            <Button disabled={saving} onClick={() => startEdit(line)} size="sm" type="button" variant="secondary"><Pencil className="h-4 w-4" />Edit</Button>
+                            <Button disabled={saving} onClick={() => removeLine(line)} size="sm" type="button" variant="danger">Remove</Button>
+                          </>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        ) : (
+          <StateCard state="empty" title="No invoice lines yet" message="Lines will appear after an invoice is generated or edited." />
+        )}
+      </section>
     </div>
   );
 }
