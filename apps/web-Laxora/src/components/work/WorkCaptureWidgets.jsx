@@ -151,9 +151,13 @@ export function WorkMeterPanel({
   const effectiveWorkTool = getWorkToolForType(form.activityType, form.workTool);
   const selectedTool = toolMeta[effectiveWorkTool] || toolMeta.manual;
   const SelectedToolIcon = selectedTool.icon;
+  const selectedMatter = matters.find((item) => item.id === form.caseId);
+  const selectedTask = tasks.find((item) => item.id === form.taskId);
   const selectedClientName = selectedName(clients, form.clientId, "name");
-  const selectedMatterName = selectedName(matters, form.caseId, "title");
-  const selectedTaskName = selectedName(tasks, form.taskId, "title");
+  const selectedMatterName = selectedMatter?.title || "";
+  const selectedMatterAssignee = selectedMatter?.assignedLabel || "";
+  const selectedTaskName = selectedTask?.title || "";
+  const selectedTaskAssignee = selectedTask?.assignee || "";
   const selectedWorkspaceName = optionLabel(workspaceProviderOptions, form.workspaceProvider, "Google Workspace");
   const activeSeconds = Number(liveActivity?.activeSeconds || 0);
   return (
@@ -256,7 +260,9 @@ export function WorkMeterPanel({
                   <div className="mt-4 space-y-3 text-sm">
                     <p className="rounded-lg bg-white p-3"><span className="font-bold text-primary">Client:</span> {selectedClientName || "Select client"}</p>
                     <p className="rounded-lg bg-white p-3"><span className="font-bold text-primary">Matter:</span> {selectedMatterName || "Select matter"}</p>
+                    <p className="rounded-lg bg-white p-3"><span className="font-bold text-primary">Matter assigned:</span> {selectedMatterAssignee || "Unassigned"}</p>
                     <p className="rounded-lg bg-white p-3"><span className="font-bold text-primary">Task:</span> {selectedTaskName || "No linked task"}</p>
+                    <p className="rounded-lg bg-white p-3"><span className="font-bold text-primary">Task assigned:</span> {selectedTaskAssignee || "No linked task"}</p>
                     <p className="rounded-lg bg-white p-3"><span className="font-bold text-primary">Workspace:</span> {selectedWorkspaceName}</p>
                   </div>
                   <Button className="mt-4 w-full" disabled={isSaving} isLoading={isSaving} onClick={onStart} type="button">
@@ -272,6 +278,7 @@ export function WorkMeterPanel({
                     <p><span className="font-bold text-primary">Client:</span> {session.client || "Not set"}</p>
                     <p><span className="font-bold text-primary">Matter:</span> {session.matter || "Not set"}</p>
                     <p><span className="font-bold text-primary">Task:</span> {session.task || "No linked task"}</p>
+                    <p><span className="font-bold text-primary">Assigned user:</span> {session.user || session.completedBy || "Current user"}</p>
                     <p><span className="font-bold text-primary">Work:</span> {session.activityType || "Work"}{session.workTool ? ` with ${session.workTool.replaceAll("_", " ")}` : ""}</p>
                   </div>
                 </div>

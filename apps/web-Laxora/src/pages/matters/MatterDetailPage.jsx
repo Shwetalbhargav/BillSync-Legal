@@ -193,6 +193,7 @@ export function MatterDetailPage() {
             </div>
             <p className="mt-3 max-w-3xl text-sm leading-6 text-muted">{matter.description || "No description has been added yet."}</p>
             <p className="mt-2 text-sm font-semibold text-muted">Client: {matter.client}</p>
+            <p className="mt-2 text-sm font-semibold text-muted">Assigned to: {matter.assignedLabel || "Unassigned"}</p>
           </div>
           <div className="flex flex-col gap-2 sm:flex-row">
             {access.canAssign && !access.readOnly ? (

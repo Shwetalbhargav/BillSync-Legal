@@ -117,7 +117,7 @@ export function ClientFormPage() {
           notice: {
             tone: "success",
             title: isEdit ? "Client updated" : "Client added",
-            message: `${saved.name || form.displayName.trim()} has been saved to the client database.`,
+            message: `${saved.name || form.displayName.trim()} has been saved to client records.`,
           },
         },
       });

@@ -50,6 +50,13 @@ export function normalizeUser(user = {}) {
 export function normalizeMatter(item = {}) {
   const client = item.clientId || item.client || {};
   const primary = item.primaryLawyerId || item.primaryLawyer || {};
+  const assignedUsers = Array.isArray(item.assignedUsers) ? item.assignedUsers : [];
+  const assignedUserNames = assignedUsers
+    .map((assignedUser) => assignedUser?.name || assignedUser?.email || "")
+    .filter(Boolean);
+  const assignedUserIds = assignedUsers
+    .map((assignedUser) => toId(assignedUser) || (typeof assignedUser === "string" ? assignedUser : assignedUser?.userId || ""))
+    .filter(Boolean);
   return {
     id: toId(item),
     title: safeText(item.title || item.name || item.caseName || item.matterName, "Untitled matter"),
@@ -63,7 +70,10 @@ export function normalizeMatter(item = {}) {
     integrations: item.integrations || {},
     openedAt: item.openedAt || "",
     closedAt: item.closedAt || "",
-    assignedUsers: Array.isArray(item.assignedUsers) ? item.assignedUsers : [],
+    assignedUsers,
+    assignedUserIds,
+    assignedUserNames,
+    assignedLabel: assignedUserNames.length ? assignedUserNames.join(", ") : primary.name || item.ownerName || "",
     updatedAt: item.updatedAt || item.lastActivityAt || item.createdAt || "",
     raw: item,
   };

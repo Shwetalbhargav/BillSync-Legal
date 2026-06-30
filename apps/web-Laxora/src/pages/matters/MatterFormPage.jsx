@@ -3,7 +3,9 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { clientsApi } from "../../api/clients";
 import { mattersApi } from "../../api/matters";
-import { asList, normalizeClient, normalizeMatter } from "../../api/normalizers";
+import { asList, normalizeClient, normalizeMatter, normalizeUser } from "../../api/normalizers";
+import { usersApi } from "../../api/users";
+import { useAuth } from "../../auth/AuthProvider";
 import { Button, SkeletonBlock, StateCard } from "../../components/common";
 import { useMatterModuleAccess } from "./useMatterModuleAccess";
 
@@ -16,6 +18,7 @@ const initialForm = {
   case_type: "",
   openedAt: "",
   closedAt: "",
+  assignedUsers: [],
 };
 
 function unwrap(response) {
@@ -40,7 +43,9 @@ export function MatterFormPage() {
   const isEdit = Boolean(matterId);
   const access = useMatterModuleAccess();
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [clients, setClients] = useState([]);
+  const [users, setUsers] = useState([]);
   const [form, setForm] = useState(initialForm);
   const [status, setStatus] = useState("loading");
   const [message, setMessage] = useState("");
@@ -54,9 +59,16 @@ export function MatterFormPage() {
       }
       setStatus("loading");
       try {
-        const clientsResponse = await clientsApi.list({ limit: 200 });
+        const [clientsResponse, usersResponse] = await Promise.all([
+          clientsApi.list({ limit: 200 }),
+          usersApi.list({ limit: 200 }).catch(() => null),
+        ]);
         const clientOptions = asList(clientsResponse).map(normalizeClient);
+        const fallbackUsers = user?.id ? [user] : [];
+        const userOptions = (usersResponse ? asList(usersResponse).map(normalizeUser) : fallbackUsers)
+          .filter((person) => person?.id);
         setClients(clientOptions);
+        setUsers(userOptions);
         if (isEdit) {
           const matter = normalizeMatter(unwrap(await mattersApi.get(matterId)));
           setForm({
@@ -68,7 +80,10 @@ export function MatterFormPage() {
             case_type: matter.matterType,
             openedAt: dateInput(matter.openedAt),
             closedAt: dateInput(matter.closedAt),
+            assignedUsers: matter.assignedUserIds,
           });
+        } else if (userOptions.length <= 1 && user?.id) {
+          setForm((current) => ({ ...current, assignedUsers: [user.id] }));
         }
         setStatus("ready");
       } catch (error) {
@@ -77,11 +92,16 @@ export function MatterFormPage() {
       }
     }
     load();
-  }, [isEdit, matterId, access.status, access.unavailable, access.readOnly, access.canCreate, access.canEdit]);
+  }, [isEdit, matterId, access.status, access.unavailable, access.readOnly, access.canCreate, access.canEdit, user?.id]);
 
   function updateField(field, value) {
     setMessage("");
     setForm((current) => ({ ...current, [field]: value }));
+  }
+
+  function updateAssignedUsers(event) {
+    const selected = Array.from(event.target.selectedOptions).map((option) => option.value).filter(Boolean);
+    updateField("assignedUsers", selected);
   }
 
   async function handleSubmit(event) {
@@ -106,6 +126,7 @@ export function MatterFormPage() {
         case_type: form.case_type.trim(),
         openedAt: form.openedAt || undefined,
         closedAt: form.closedAt || undefined,
+        assignedUsers: form.assignedUsers,
       };
       const response = isEdit ? await mattersApi.replace(matterId, body) : await mattersApi.create(body);
       const saved = normalizeMatter(unwrap(response));
@@ -175,6 +196,17 @@ export function MatterFormPage() {
           <label className="block text-sm font-semibold text-ink md:col-span-2">
             Closed date
             <input className="focus-ring mt-1 w-full rounded-lg border border-border px-3 py-3" onChange={(event) => updateField("closedAt", event.target.value)} type="date" value={form.closedAt} />
+          </label>
+          <label className="block text-sm font-semibold text-ink md:col-span-2">
+            Assigned team
+            {users.length > 1 ? (
+              <select className="focus-ring mt-1 min-h-28 w-full rounded-lg border border-border px-3 py-3" multiple onChange={updateAssignedUsers} value={form.assignedUsers}>
+                {users.map((person) => <option key={person.id} value={person.id}>{person.name}</option>)}
+              </select>
+            ) : (
+              <input className="focus-ring mt-1 w-full rounded-lg border border-border bg-surface px-3 py-3" readOnly value={users[0]?.name || user?.name || "Current lawyer"} />
+            )}
+            <p className="mt-1 text-xs font-semibold text-muted">{users.length > 1 ? "Hold Ctrl or Shift to assign more than one team member." : "Solo lawyer matters are assigned to the logged-in lawyer by default."}</p>
           </label>
         </div>
         <div className="flex flex-col gap-3 sm:flex-row sm:justify-end">

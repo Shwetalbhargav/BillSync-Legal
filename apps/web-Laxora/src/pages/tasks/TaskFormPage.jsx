@@ -38,6 +38,10 @@ function validate(form) {
   return "";
 }
 
+function userOptionLabel(person) {
+  return person?.name || person?.email || "Team member";
+}
+
 export function TaskFormPage() {
   const { taskId } = useParams();
   const isEdit = Boolean(taskId);
@@ -66,6 +70,7 @@ export function TaskFormPage() {
         const fallbackUser = user?.id ? [user] : [];
         const userOptions = (userResponse ? asList(userResponse).map(normalizeUser) : fallbackUser)
           .filter((person) => person?.id);
+        if (!userOptions.length && user?.id) userOptions.push(user);
         setMatters(matterOptions);
         setClients(clientOptions);
         setUsers(userOptions);
@@ -82,8 +87,9 @@ export function TaskFormPage() {
             status: task.status || "todo",
           });
         }
-        if (!isEdit && !form.assignedTo && userOptions.length === 1) {
-          setForm((current) => ({ ...current, assignedTo: userOptions[0].id }));
+        if (!isEdit && !form.assignedTo) {
+          const defaultAssigneeId = userOptions.length <= 1 ? (userOptions[0]?.id || user?.id || "") : "";
+          if (defaultAssigneeId) setForm((current) => ({ ...current, assignedTo: defaultAssigneeId }));
         }
         setStatus("ready");
       } catch (error) {
@@ -101,7 +107,13 @@ export function TaskFormPage() {
     setForm((current) => {
       if (field === "caseId") {
         const matter = matters.find((item) => item.id === value);
-        return { ...current, caseId: value, clientId: matter?.clientId || current.clientId };
+        const matterAssigneeId = matter?.assignedUserIds?.length === 1 ? matter.assignedUserIds[0] : "";
+        return {
+          ...current,
+          caseId: value,
+          clientId: matter?.clientId || current.clientId,
+          assignedTo: current.assignedTo || matterAssigneeId || (users.length <= 1 ? users[0]?.id || user?.id || "" : ""),
+        };
       }
       return { ...current, [field]: value };
     });
@@ -175,8 +187,9 @@ export function TaskFormPage() {
             Assigned to
             <select className="focus-ring mt-1 w-full rounded-lg border border-border px-3 py-3" onChange={(event) => updateField("assignedTo", event.target.value)} value={form.assignedTo}>
               <option value="">Select team member</option>
-              {users.map((user) => <option key={user.id} value={user.id}>{user.name}</option>)}
+              {users.map((user) => <option key={user.id} value={user.id}>{userOptionLabel(user)}</option>)}
             </select>
+            {users.length <= 1 ? <p className="mt-1 text-xs font-semibold text-muted">Solo lawyer tasks are assigned to the logged-in lawyer by default.</p> : null}
           </label>
           <label className="block text-sm font-semibold text-ink">
             Due date
@@ -202,7 +215,12 @@ export function TaskFormPage() {
             </select>
           </label>
         </div>
-        {selectedMatter ? <p className="rounded-lg bg-blueSoft p-3 text-sm font-semibold text-primary">Selected matter client: {selectedMatter.client}</p> : null}
+        {selectedMatter ? (
+          <div className="rounded-lg bg-blueSoft p-3 text-sm font-semibold text-primary">
+            <p>Selected matter client: {selectedMatter.client}</p>
+            <p className="mt-1">Matter assigned to: {selectedMatter.assignedLabel || "No matter assignee set"}</p>
+          </div>
+        ) : null}
         <div className="flex flex-col gap-3 sm:flex-row sm:justify-end">
           <Link className="focus-ring inline-flex justify-center rounded-lg border border-border px-4 py-2 text-sm font-semibold text-primary hover:bg-blueSoft" to={isEdit ? `/app/tasks/${taskId}` : "/app/tasks"}>
             Cancel

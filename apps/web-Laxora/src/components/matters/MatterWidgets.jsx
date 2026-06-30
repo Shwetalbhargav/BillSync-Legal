@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { BriefcaseBusiness, CalendarDays, ReceiptText, UserRound } from "lucide-react";
+import { BriefcaseBusiness, CalendarDays, Edit, ReceiptText, UserRound } from "lucide-react";
 import { Card, CardBody, CardHeader, StatusBadge } from "../common";
 
 const statusTone = {
@@ -30,11 +30,18 @@ export function MatterCard({ matter }) {
           <div className="mt-3 flex flex-wrap gap-2 text-xs font-semibold text-muted">
             <span className="inline-flex items-center gap-1"><CalendarDays className="h-4 w-4" /> Opened {dateText(matter.openedAt)}</span>
             <span className="inline-flex items-center gap-1"><ReceiptText className="h-4 w-4" /> {matter.billingType}</span>
+            <span className="inline-flex items-center gap-1"><UserRound className="h-4 w-4" /> {matter.assignedLabel || "Unassigned"}</span>
           </div>
         </div>
-        <Link className="focus-ring rounded-lg border border-border px-3 py-2 text-center text-sm font-semibold text-primary hover:bg-blueSoft" to={`/app/matters/${matter.id}`}>
-          Open matter
-        </Link>
+        <div className="flex shrink-0 flex-col gap-2 sm:flex-row">
+          <Link className="focus-ring rounded-lg border border-border px-3 py-2 text-center text-sm font-semibold text-primary hover:bg-blueSoft" to={`/app/matters/${matter.id}`}>
+            Open
+          </Link>
+          <Link className="focus-ring inline-flex items-center justify-center gap-2 rounded-lg border border-border px-3 py-2 text-sm font-semibold text-primary hover:bg-blueSoft" to={`/app/matters/${matter.id}/edit`}>
+            <Edit className="h-4 w-4" />
+            Edit
+          </Link>
+        </div>
       </div>
     </Card>
   );

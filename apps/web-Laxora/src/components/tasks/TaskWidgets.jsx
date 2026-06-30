@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { CalendarDays, CheckCircle2, Clock3, Gauge, PlayCircle, UserRound } from "lucide-react";
+import { CalendarDays, CheckCircle2, Clock3, Edit, Gauge, PlayCircle, UserRound } from "lucide-react";
 import { Button, Card, CardBody, CardHeader, DataTable, StateCard, StatusBadge } from "../common";
 
 const statusTone = {
@@ -57,7 +57,11 @@ export function TaskCard({ task, onStatusChange }) {
         </div>
         <div className="flex shrink-0 flex-col gap-2">
           <Link className="focus-ring rounded-lg border border-border px-3 py-2 text-center text-sm font-semibold text-primary hover:bg-blueSoft" to={`/app/tasks/${task.id}`}>
-            Open task
+            Open
+          </Link>
+          <Link className="focus-ring inline-flex items-center justify-center gap-2 rounded-lg border border-border px-3 py-2 text-sm font-semibold text-primary hover:bg-blueSoft" to={`/app/tasks/${task.id}/edit`}>
+            <Edit className="h-4 w-4" />
+            Edit
           </Link>
           {onStatusChange ? (
             <Button onClick={() => onStatusChange(task, task.status === "done" ? "todo" : "done")} size="sm" type="button" variant="secondary">
