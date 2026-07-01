@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
-import { ArrowLeft, Copy, ExternalLink, Link2 } from "lucide-react";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { ArrowLeft, CheckCircle2, Copy, Edit3, ExternalLink, GitBranch, Link2 } from "lucide-react";
 import { invoicesApi } from "../../api/invoices";
 import { invoiceWorkspaceApi } from "../../api/invoiceWorkspace";
 import { normalizeInvoice } from "../../api/normalizers";
@@ -11,6 +11,7 @@ import { useBillingModuleAccess } from "../billing/useBillingModuleAccess";
 
 export function InvoiceDetailPage() {
   const { invoiceId } = useParams();
+  const navigate = useNavigate();
   const access = useBillingModuleAccess("billing");
   const [state, setState] = useState({ status: "loading", invoice: null, logs: [], issues: [], message: "" });
   const [sendForm, setSendForm] = useState({ to: "", subject: "", message: "" });
@@ -75,6 +76,39 @@ export function InvoiceDetailPage() {
     } finally {
       setSaving(false);
     }
+  }
+
+  async function finaliseInvoice() {
+    setSaving(true);
+    try {
+      await invoicesApi.finalise(invoiceId, {});
+      await load();
+    } catch (error) {
+      setState((current) => ({ ...current, message: error?.userMessage || "We could not finalise this invoice. Check advocate registration and invoice lines." }));
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  async function reviseInvoice() {
+    setSaving(true);
+    try {
+      const response = await invoicesApi.revise(invoiceId, { reason: "Created from invoice detail" });
+      const revision = response?.revision || response?.data?.revision;
+      navigateToRevision(revision?.id || revision?._id);
+    } catch (error) {
+      setState((current) => ({ ...current, message: error?.userMessage || "We could not create a revision right now." }));
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  function navigateToRevision(revisionId) {
+    if (revisionId) {
+      navigate(`/app/invoices/${revisionId}`);
+      return;
+    }
+    load();
   }
 
   async function createPaymentLink() {
@@ -143,7 +177,25 @@ export function InvoiceDetailPage() {
             <ExternalLink className="h-4 w-4" />
             Open PDF
           </a>
-          {access.canCreateInvoices ? <Link className="focus-ring inline-flex items-center justify-center rounded-lg border border-border bg-panel px-4 py-2 text-sm font-semibold text-primary hover:bg-blueSoft" to={`/app/invoices/${invoiceId}/lines`}>Edit lines</Link> : null}
+          {access.canCreateInvoices && ["draft", "ready_to_bill"].includes(state.invoice.status) ? (
+            <>
+              <Link className="focus-ring inline-flex items-center justify-center gap-2 rounded-lg border border-border bg-panel px-4 py-2 text-sm font-semibold text-primary hover:bg-blueSoft" to={`/app/invoices/${invoiceId}/edit`}>
+                <Edit3 className="h-4 w-4" />
+                Edit details
+              </Link>
+              <Link className="focus-ring inline-flex items-center justify-center rounded-lg border border-border bg-panel px-4 py-2 text-sm font-semibold text-primary hover:bg-blueSoft" to={`/app/invoices/${invoiceId}/lines`}>Edit lines</Link>
+              <Button disabled={saving} isLoading={saving} onClick={finaliseInvoice} type="button" variant="success">
+                <CheckCircle2 className="h-4 w-4" />
+                Finalise
+              </Button>
+            </>
+          ) : null}
+          {access.canCreateInvoices && !["draft", "ready_to_bill"].includes(state.invoice.status) && state.invoice.status !== "void" ? (
+            <Button disabled={saving} isLoading={saving} onClick={reviseInvoice} type="button" variant="secondary">
+              <GitBranch className="h-4 w-4" />
+              Create revision
+            </Button>
+          ) : null}
         </div>
         {portalLink ? (
           <div className="mt-4 rounded-lg border border-success/25 bg-success/10 p-4 text-sm leading-6 text-ink">

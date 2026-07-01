@@ -3,13 +3,13 @@ import { NavLink } from "react-router-dom";
 import { Menu, Scale } from "lucide-react";
 import { useAuth } from "../../auth/AuthProvider";
 import { canAccess } from "../../constants/permissions";
-import { navigationItems } from "../../routes/routeConfig";
+import { navigationItems, withPinnedNavigationItems } from "../../routes/routeConfig";
 
 export function Sidebar({ collapsed = false, onToggleSidebar, role }) {
   const { moduleNavigation } = useAuth();
   const hasDynamicItems = moduleNavigation.status === "ready" && moduleNavigation.items.length > 0;
   const fallbackItems = navigationItems.filter((item) => canAccess(role, item.moduleKey));
-  const items = (hasDynamicItems ? moduleNavigation.items : fallbackItems).filter((item) => item.state !== "hidden");
+  const items = withPinnedNavigationItems(hasDynamicItems ? moduleNavigation.items : fallbackItems, role).filter((item) => item.state !== "hidden");
   const isLoading = moduleNavigation.status === "loading";
   const isEmpty = moduleNavigation.status === "ready" && items.length === 0;
   const isFallback = moduleNavigation.status === "error";

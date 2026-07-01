@@ -4,9 +4,14 @@ import { BILLING_PERMISSIONS, requireBillingAccess } from '../../billing/service
 import {
   validateGenerateFromBillables,
   validateGenerateFromTime,
+  validateCreateInvoice,
+  validateUpdateInvoice,
   validateSendInvoice,
 } from '../validators/invoiceValidators.js';
 import {
+  createInvoice,
+  updateInvoice,
+  deleteInvoice,
   getAllInvoices,
   getInvoiceById,
   generateFromApprovedTime,
@@ -27,12 +32,15 @@ const router = Router();
 router.use(authenticate);
 
 router.get('/', requireBillingAccess(BILLING_PERMISSIONS.invoiceView), getAllInvoices);
+router.post('/', requireBillingAccess(BILLING_PERMISSIONS.invoiceCreate, { write: true }), validateCreateInvoice, createInvoice);
 router.post('/from-time', requireBillingAccess(BILLING_PERMISSIONS.invoiceCreate, { write: true }), validateGenerateFromTime, generateFromApprovedTime);
 router.post('/from-billables/auto', requireBillingAccess(BILLING_PERMISSIONS.invoiceCreate, { write: true }), autoGenerateFromApprovedBillables);
 router.post('/from-billables', requireBillingAccess(BILLING_PERMISSIONS.invoiceCreate, { write: true }), validateGenerateFromBillables, generateFromApprovedBillables);
 router.get('/__analytics/pending-by-client', requireBillingAccess(BILLING_PERMISSIONS.invoiceView), getPendingSummaryByClient);
 router.get('/__pipeline', requireBillingAccess(BILLING_PERMISSIONS.invoiceView), getPipeline);
 router.get('/:id', requireBillingAccess(BILLING_PERMISSIONS.invoiceView), getInvoiceById);
+router.patch('/:id', requireBillingAccess(BILLING_PERMISSIONS.invoiceCreate, { write: true }), validateUpdateInvoice, updateInvoice);
+router.delete('/:id', requireBillingAccess(BILLING_PERMISSIONS.invoiceCreate, { write: true }), deleteInvoice);
 router.get('/:id/pdf', requireBillingAccess(BILLING_PERMISSIONS.invoiceView), downloadInvoicePdf);
 router.get('/:id/document', requireBillingAccess(BILLING_PERMISSIONS.invoiceView), previewInvoiceHtml);
 router.post('/:id/finalise', requireBillingAccess(BILLING_PERMISSIONS.invoiceCreate, { write: true }), finaliseInvoice);

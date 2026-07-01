@@ -2,13 +2,13 @@ import clsx from "clsx";
 import { NavLink } from "react-router-dom";
 import { useAuth } from "../../auth/AuthProvider";
 import { canAccess } from "../../constants/permissions";
-import { navigationItems } from "../../routes/routeConfig";
+import { navigationItems, withPinnedNavigationItems } from "../../routes/routeConfig";
 
 export function BottomNav({ role }) {
   const { moduleNavigation } = useAuth();
   const hasDynamicItems = moduleNavigation.status === "ready" && moduleNavigation.items.length > 0;
   const fallbackItems = navigationItems.filter((item) => canAccess(role, item.moduleKey));
-  const items = (hasDynamicItems ? moduleNavigation.items : fallbackItems)
+  const items = withPinnedNavigationItems(hasDynamicItems ? moduleNavigation.items : fallbackItems, role)
     .filter((item) => item.state !== "hidden")
     .slice(0, 5);
 

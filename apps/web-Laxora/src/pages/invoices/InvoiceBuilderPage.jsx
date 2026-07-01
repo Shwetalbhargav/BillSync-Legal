@@ -8,7 +8,7 @@ import { BuilderSourcePicker, SectionIssues, TemplateShell } from "../../compone
 import { useBillingModuleAccess } from "../billing/useBillingModuleAccess";
 
 const initialForm = {
-  source: "time",
+  source: "manual",
   templateType: "standard",
   clientId: "",
   caseId: "",
@@ -23,6 +23,10 @@ const initialForm = {
   taxNote: "Tax on this supply may be payable by the recipient under reverse charge mechanism, where applicable.",
   paymentDetailsNote: "",
   invoiceNotes: "",
+  professionalDescription: "Professional fee for legal services",
+  professionalAmount: "",
+  professionalServiceDate: "",
+  professionalPeriodLabel: "",
 };
 
 function buildPayload(form, userId) {
@@ -75,6 +79,10 @@ export function InvoiceBuilderPage() {
       setState((current) => ({ ...current, message: "Select a client before creating the invoice." }));
       return;
     }
+    if (form.source === "manual" && !form.professionalAmount) {
+      setState((current) => ({ ...current, message: "Add a professional fee amount before creating a manual invoice." }));
+      return;
+    }
     if (form.source === "time" && !form.timeEntryIds.length) {
       setState((current) => ({ ...current, message: "Select at least one approved time entry." }));
       return;
@@ -91,10 +99,22 @@ export function InvoiceBuilderPage() {
     setSaving(true);
     try {
       const base = buildPayload(form, user?.id);
-      const invoice = form.source === "billables"
-        ? await invoicesApi.fromBillables({ ...base, billableIds: form.billableIds })
-        : await invoicesApi.fromTime({ ...base, timeEntryIds: form.timeEntryIds });
+      const invoice = form.source === "manual"
+        ? await invoicesApi.create(base)
+        : form.source === "billables"
+          ? await invoicesApi.fromBillables({ ...base, billableIds: form.billableIds })
+          : await invoicesApi.fromTime({ ...base, timeEntryIds: form.timeEntryIds });
       const invoiceId = invoice.id || invoice._id;
+      if (form.source === "manual" && invoiceId) {
+        await invoicesApi.createLine(invoiceId, {
+          lineType: "professional_fee",
+          serviceDate: form.professionalServiceDate || undefined,
+          periodLabel: form.professionalPeriodLabel || undefined,
+          description: form.professionalDescription.trim() || "Professional fee for legal services",
+          amount: Number(form.professionalAmount || 0),
+          taxCategory: "Professional fee",
+        });
+      }
       const selectedExpenses = state.expenses.filter((expense) => form.expenseIds.includes(expense.id));
       if (invoiceId && selectedExpenses.length) {
         await Promise.all(selectedExpenses.map((expense) => invoicesApi.createLine(invoiceId, {

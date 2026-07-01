@@ -86,6 +86,32 @@ export const navigationItems = [
   { label: "Settings", path: "/app/settings", icon: Settings, iconKey: "settings", moduleKey: "settings", state: "enabled" },
 ];
 
+const pinnedNavigationPaths = new Set(["/app/invoices"]);
+
+export function withPinnedNavigationItems(items = [], role) {
+  const paths = new Set(items.map((item) => item.path));
+  const pinned = navigationItems.filter((item) => (
+    pinnedNavigationPaths.has(item.path)
+    && canPinnedItemAccess(role, item.moduleKey)
+    && !paths.has(item.path)
+  ));
+  return [...items, ...pinned];
+}
+
+function canPinnedItemAccess(role, moduleKey) {
+  const roleName = String(role || "").toLowerCase();
+  const grants = {
+    owner: ["billing"],
+    admin: ["billing"],
+    partner: ["billing"],
+    lawyer: ["billing"],
+    associate: ["billing"],
+    billing_assistant: ["billing"],
+    accountant: ["billing"],
+  }[roleName] || [];
+  return grants.includes(moduleKey);
+}
+
 const rawAppRoutes = [
   { path: "/app/dashboard", title: "Dashboard", module: "Daily Work", moduleKey: "dashboard", roleGroup: "All roles", icon: Gauge },
   { path: "/app/profile", title: "My Profile", module: "Workspace", moduleKey: "dashboard", roleGroup: "All roles", icon: UserRound },
@@ -139,6 +165,7 @@ const rawAppRoutes = [
   { path: "/app/invoices", title: "Invoices", module: "Billing", moduleKey: "billing", roleGroup: "Admin, Partner", icon: ReceiptText },
   { path: "/app/invoices/new", title: "Invoice Builder", module: "Billing", moduleKey: "billing", roleGroup: "Admin, Partner", icon: ReceiptText },
   { path: "/app/invoices/:invoiceId", title: "Invoice Detail", module: "Billing", moduleKey: "billing", roleGroup: "Admin, Partner", icon: ReceiptText },
+  { path: "/app/invoices/:invoiceId/edit", title: "Edit Invoice", module: "Billing", moduleKey: "billing", roleGroup: "Admin, Partner", icon: ReceiptText },
   { path: "/app/invoices/:invoiceId/lines", title: "Invoice Lines", module: "Billing", moduleKey: "billing", roleGroup: "Admin, Partner", icon: ReceiptText },
   { path: "/app/payments", title: "Payments", module: "Finance", moduleKey: "finance", roleGroup: "Admin, Partner", icon: CreditCard },
   { path: "/app/reconciliation", title: "Payment Reconciliation", module: "Finance", moduleKey: "finance", roleGroup: "Admin, Partner", icon: WalletCards },

@@ -252,7 +252,7 @@ export function PipelineSummary({ pipeline, pendingByClient }) {
 }
 
 export function BuilderSourcePicker({ advocates = [], billables, clients, expenses = [], form, matters, onChange, onGenerate, saving, timeEntries }) {
-  const sourceItems = form.source === "billables" ? billables : timeEntries;
+  const sourceItems = form.source === "billables" ? billables : form.source === "time" ? timeEntries : [];
   const selectedWork = sourceItems.filter((item) => (form.source === "billables" ? form.billableIds : form.timeEntryIds).includes(item.id));
   const selectedExpenses = expenses.filter((expense) => form.expenseIds.includes(expense.id));
   const selectedClient = clients.find((client) => client.id === form.clientId);
@@ -276,6 +276,7 @@ export function BuilderSourcePicker({ advocates = [], billables, clients, expens
             <label className="block text-sm font-semibold text-ink">
               Source
               <select className="focus-ring mt-1 w-full rounded-lg border border-border bg-panel px-3 py-3" onChange={(event) => onChange("source", event.target.value)} value={form.source}>
+                <option value="manual">Manual professional fee</option>
                 <option value="time">Approved time</option>
                 <option value="billables">Approved billables</option>
               </select>
@@ -322,7 +323,11 @@ export function BuilderSourcePicker({ advocates = [], billables, clients, expens
         </BuilderStep>
 
         <BuilderStep icon={Clock3} title="3. Select approved work entries">
-          <SelectableWorkList form={form} items={sourceItems} onChange={onChange} source={form.source} />
+          {form.source === "manual" ? (
+            <ManualFeeFields form={form} onChange={onChange} />
+          ) : (
+            <SelectableWorkList form={form} items={sourceItems} onChange={onChange} source={form.source} />
+          )}
         </BuilderStep>
 
         <BuilderStep icon={Receipt} title="4. Select approved reimbursable expenses">
@@ -365,6 +370,29 @@ export function BuilderSourcePicker({ advocates = [], billables, clients, expens
         matter={selectedMatter}
         work={selectedWork}
       />
+    </div>
+  );
+}
+
+function ManualFeeFields({ form, onChange }) {
+  return (
+    <div className="grid gap-3 md:grid-cols-2">
+      <label className="block text-sm font-semibold text-ink md:col-span-2">
+        Professional fee description
+        <input className="focus-ring mt-1 w-full rounded-lg border border-border bg-app px-3 py-3" onChange={(event) => onChange("professionalDescription", event.target.value)} value={form.professionalDescription || ""} />
+      </label>
+      <label className="block text-sm font-semibold text-ink">
+        Service date
+        <input className="focus-ring mt-1 w-full rounded-lg border border-border bg-app px-3 py-3" onChange={(event) => onChange("professionalServiceDate", event.target.value)} type="date" value={form.professionalServiceDate || ""} />
+      </label>
+      <label className="block text-sm font-semibold text-ink">
+        Period label
+        <input className="focus-ring mt-1 w-full rounded-lg border border-border bg-app px-3 py-3" onChange={(event) => onChange("professionalPeriodLabel", event.target.value)} placeholder="June 2026" value={form.professionalPeriodLabel || ""} />
+      </label>
+      <label className="block text-sm font-semibold text-ink">
+        Amount
+        <input className="focus-ring mt-1 w-full rounded-lg border border-border bg-app px-3 py-3" min="0" onChange={(event) => onChange("professionalAmount", event.target.value)} placeholder="75000" type="number" value={form.professionalAmount || ""} />
+      </label>
     </div>
   );
 }
@@ -456,7 +484,9 @@ function SelectableExpenseList({ expenses, form, onChange }) {
 }
 
 function InvoiceBuilderPreview({ client, expenses, form, matter, work }) {
-  const workTotal = work.reduce((sum, item) => sum + Number(item.amount || 0), 0);
+  const workTotal = form.source === "manual"
+    ? Number(form.professionalAmount || 0)
+    : work.reduce((sum, item) => sum + Number(item.amount || 0), 0);
   const expenseTotal = expenses.reduce((sum, item) => sum + Number(item.amount || 0), 0);
   const total = workTotal + expenseTotal;
   const taxLabel = {
@@ -478,7 +508,7 @@ function InvoiceBuilderPreview({ client, expenses, form, matter, work }) {
         <PreviewRow label="Client" value={client?.legalBillingName || client?.name || "Not selected"} />
         <PreviewRow label="Matter" value={matter?.title || "All selected work"} />
         <PreviewRow label="Due date" value={formatDate(form.dueDate)} />
-        <PreviewRow label="Professional fees" value={`${work.length} item(s) - ${formatMoney(workTotal)}`} />
+        <PreviewRow label="Professional fees" value={`${form.source === "manual" ? 1 : work.length} item(s) - ${formatMoney(workTotal)}`} />
         <PreviewRow label="Reimbursable expenses" value={`${expenses.length} item(s) - ${formatMoney(expenseTotal)}`} />
         <div className="rounded-lg border border-border bg-panel p-4">
           <p className="text-xs font-bold uppercase tracking-wide text-muted">Total payable preview</p>

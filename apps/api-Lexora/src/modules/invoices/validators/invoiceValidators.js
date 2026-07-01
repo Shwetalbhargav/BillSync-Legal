@@ -1,4 +1,4 @@
-import { array, date, number, objectId, oneOf, required, string, validateBody } from '../../../middleware/validate.js';
+import { array, boolean, date, number, objectId, oneOf, required, string, validateBody } from '../../../middleware/validate.js';
 
 const templateTypes = ['standard', 'solo_advocate_fee_invoice'];
 const taxTreatments = ['rcm_applicable', 'gst_charged', 'gst_not_applicable', 'gst_exempt'];
@@ -38,6 +38,37 @@ export const validateSendInvoice = validateBody({
   to: [string({ max: 320 })],
   subject: [string({ max: 300 })],
   message: [string({ max: 2000 })],
+});
+
+export const validateCreateInvoice = validateBody({
+  clientId: [required, objectId()],
+  caseId: [objectId()],
+  currency: [string({ min: 3, max: 3 })],
+  dueDate: [date()],
+  periodStart: [date()],
+  periodEnd: [date()],
+  createdBy: [objectId()],
+  templateType: [oneOf(templateTypes)],
+  taxTreatment: [oneOf(taxTreatments)],
+  taxNote: [string({ max: 1000 })],
+  taxName: [string({ max: 80 })],
+  taxRatePct: [number({ min: 0, max: 100 })],
+});
+
+export const validateUpdateInvoice = validateBody({
+  clientId: [objectId()],
+  caseId: [objectId()],
+  currency: [string({ min: 3, max: 3 })],
+  dueDate: [date()],
+  periodStart: [date()],
+  periodEnd: [date()],
+  templateType: [oneOf(templateTypes)],
+  taxTreatment: [oneOf(taxTreatments)],
+  taxNote: [string({ max: 1000 })],
+  taxName: [string({ max: 80 })],
+  taxRatePct: [number({ min: 0, max: 100 })],
+  taxInclusive: [boolean()],
+  pdfUrl: [string({ max: 2000 })],
 });
 
 export const validateInvoiceLine = validateBody({

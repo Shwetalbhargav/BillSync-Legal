@@ -35,6 +35,127 @@ function assertDraft(invoice, res) {
 }
 
 /**
+ * POST /api/invoices
+ * Creates a draft invoice shell. Lines can be added through /:id/lines.
+ */
+export const createInvoice = async (req, res) => {
+  try {
+    const {
+      clientId,
+      caseId,
+      currency = 'INR',
+      dueDate,
+      periodStart,
+      periodEnd,
+      createdBy,
+      templateType = 'standard',
+      taxTreatment,
+      taxNote,
+      taxName,
+      taxRatePct,
+    } = req.body;
+
+    const invoice = await Invoice.create({
+      clientId,
+      caseId: caseId || undefined,
+      periodStart: periodStart || undefined,
+      periodEnd: periodEnd || undefined,
+      issueDate: new Date(),
+      dueDate: dueDate || undefined,
+      currency,
+      templateType,
+      taxTreatment: taxTreatment || undefined,
+      taxNote: taxNote || undefined,
+      taxName: taxName || undefined,
+      taxRatePct: taxRatePct ?? undefined,
+      subtotal: 0,
+      subtotalPaise: 0,
+      tax: 0,
+      taxPaise: 0,
+      total: 0,
+      totalPaise: 0,
+      balancePaise: 0,
+      status: 'draft',
+      createdBy: createdBy || req.user?.id,
+      workspaceId: req.workspaceId,
+    });
+
+    res.status(201).json(invoice);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Failed to create invoice' });
+  }
+};
+
+/**
+ * PATCH /api/invoices/:id
+ */
+export const updateInvoice = async (req, res) => {
+  try {
+    const invoice = await Invoice.findOne(workspaceFilter(req, { _id: req.params.id }));
+    if (!invoice) return res.status(404).json({ error: 'Invoice not found' });
+    if (!assertDraft(invoice, res)) return;
+
+    const allowed = [
+      'clientId',
+      'caseId',
+      'currency',
+      'dueDate',
+      'periodStart',
+      'periodEnd',
+      'templateType',
+      'taxTreatment',
+      'taxNote',
+      'taxName',
+      'taxRatePct',
+      'taxInclusive',
+      'pdfUrl',
+    ];
+    for (const field of allowed) {
+      if (Object.prototype.hasOwnProperty.call(req.body || {}, field)) {
+        invoice[field] = req.body[field] === '' ? undefined : req.body[field];
+      }
+    }
+    await invoice.save();
+    const totals = await recalcInvoiceTotals(invoice._id);
+    const refreshed = await Invoice.findOne(workspaceFilter(req, { _id: invoice._id })).populate('clientId caseId createdBy');
+    res.json({ ...refreshed.toObject(), ...totals });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Failed to update invoice' });
+  }
+};
+
+/**
+ * DELETE /api/invoices/:id
+ */
+export const deleteInvoice = async (req, res) => {
+  const session = await mongoose.startSession();
+  session.startTransaction();
+  try {
+    const invoice = await Invoice.findOne(workspaceFilter(req, { _id: req.params.id })).session(session);
+    if (!invoice) {
+      await session.abortTransaction();
+      return res.status(404).json({ error: 'Invoice not found' });
+    }
+    if (!assertDraft(invoice, res)) {
+      await session.abortTransaction();
+      return;
+    }
+    await InvoiceLine.deleteMany(workspaceFilter(req, { invoiceId: invoice._id })).session(session);
+    await invoice.deleteOne({ session });
+    await session.commitTransaction();
+    res.json({ success: true });
+  } catch (error) {
+    await session.abortTransaction();
+    console.error(error);
+    res.status(500).json({ error: 'Failed to delete invoice' });
+  } finally {
+    session.endSession();
+  }
+};
+
+/**
  * GET /api/invoices/:id
  */
 export const getInvoiceById = async (req, res) => {
@@ -573,6 +694,12 @@ export const reviseInvoice = async (req, res) => {
       clientId: original.clientId,
       caseId: original.caseId,
       currency: original.currency,
+      templateType: original.templateType,
+      taxTreatment: original.taxTreatment,
+      taxNote: original.taxNote,
+      taxName: original.taxName,
+      taxRatePct: original.taxRatePct,
+      taxInclusive: original.taxInclusive,
       status: 'draft',
       revisionOf: original._id,
       revisionReason: req.body?.reason,

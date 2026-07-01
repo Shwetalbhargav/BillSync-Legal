@@ -31,6 +31,7 @@ import { GlobalSearchPage } from "./pages/GlobalSearchPage";
 import { HelpCenterPage } from "./pages/HelpCenterPage";
 import { InvoiceBuilderPage } from "./pages/invoices/InvoiceBuilderPage";
 import { InvoiceDetailPage } from "./pages/invoices/InvoiceDetailPage";
+import { InvoiceEditPage } from "./pages/invoices/InvoiceEditPage";
 import { InvoiceLinesPage } from "./pages/invoices/InvoiceLinesPage";
 import { InvoiceListPage } from "./pages/invoices/InvoiceListPage";
 import { CloudIntegrationsPage } from "./pages/integrations/CloudIntegrationsPage";
@@ -218,6 +219,7 @@ function ProtectedPage({ route }) {
   if (route.path === "/app/invoices") return <InvoiceListPage />;
   if (route.path === "/app/invoices/new") return <InvoiceBuilderPage />;
   if (route.path === "/app/invoices/:invoiceId") return <InvoiceDetailPage />;
+  if (route.path === "/app/invoices/:invoiceId/edit") return <InvoiceEditPage />;
   if (route.path === "/app/invoices/:invoiceId/lines") return <InvoiceLinesPage />;
   if (route.path === "/app/payments") return <PaymentDashboardPage />;
   if (route.path === "/app/reconciliation") return <PaymentReconciliationPage />;
