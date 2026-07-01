@@ -3,6 +3,11 @@
 import mongoose from "mongoose";
 import PartnerProfile from "../models/PartnerProfile.js";
 import User from "../models/User.js";
+import {
+  collectRegistrationAuditChanges,
+  normalizeProfessionalRegistration,
+  validateProfessionalRegistration,
+} from "../utils/professionalRegistration.js";
 
 const isValidId = (id) => mongoose.isValidObjectId(id);
 
@@ -80,7 +85,14 @@ export const updateMyPartnerProfile = async (req, res) => {
     const profile = await PartnerProfile.findOne({ userId: req.user.id });
     if (!profile) return res.status(404).json({ error: "Partner profile not found" });
 
-    Object.assign(profile, req.body);
+    const updates = normalizeProfessionalRegistration(req.body);
+    const validationErrors = validateProfessionalRegistration(updates);
+    if (validationErrors.length) return res.status(400).json({ error: validationErrors[0].message, errors: validationErrors });
+
+    const before = profile.toObject();
+    Object.assign(profile, updates);
+    const auditEntries = collectRegistrationAuditChanges(before, profile.toObject(), req.user.id);
+    if (auditEntries.length) profile.registrationAuditTrail.push(...auditEntries);
     const updated = await profile.save();
     res.json({ success: true, profile: updated });
   } catch (err) {

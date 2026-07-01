@@ -26,8 +26,14 @@ const CLIENT_WRITE_FIELDS = new Set([
   'email',
   'phone',
   'contactInfo',
+  'legalBillingName',
   'billingAddress',
   'gst',
+  'gstin',
+  'contactPerson',
+  'invoiceEmail',
+  'businessEntityType',
+  'rcmApplicabilityHint',
   'notes',
   'ownerUserId',
   'paymentTerms',
@@ -131,16 +137,18 @@ export const requireClientBodyFields = (allowedFields = CLIENT_WRITE_FIELDS) => 
 export const normalizeClientPayload = (req, _res, next) => {
   const body = req.body || {};
 
-  for (const field of ['displayName', 'name', 'email', 'phone', 'contactInfo', 'ownerUserId', 'paymentTerms', 'status', 'notes']) {
+  for (const field of ['displayName', 'name', 'email', 'phone', 'contactInfo', 'legalBillingName', 'gstin', 'contactPerson', 'invoiceEmail', 'businessEntityType', 'rcmApplicabilityHint', 'ownerUserId', 'paymentTerms', 'status', 'notes']) {
     if (typeof body[field] === 'string') body[field] = body[field].trim();
   }
 
   if (body.email) body.email = body.email.toLowerCase();
+  if (body.invoiceEmail) body.invoiceEmail = body.invoiceEmail.toLowerCase();
+  if (body.gstin) body.gstin = body.gstin.toUpperCase();
   if (body.paymentTerms) body.paymentTerms = body.paymentTerms.toUpperCase();
   if (body.status) body.status = body.status.toLowerCase();
   if (body.ownerUserId === '') body.ownerUserId = null;
 
-  for (const field of ['name', 'email', 'phone', 'contactInfo', 'paymentTerms', 'status']) {
+  for (const field of ['name', 'email', 'phone', 'contactInfo', 'legalBillingName', 'gstin', 'contactPerson', 'invoiceEmail', 'businessEntityType', 'rcmApplicabilityHint', 'paymentTerms', 'status']) {
     if (body[field] === '') delete body[field];
   }
 
@@ -171,8 +179,14 @@ export const validateCreateClient = validateBody({
   email: [string({ max: 254 }), email()],
   phone: [string({ max: 40 })],
   contactInfo: [string({ max: 500 })],
+  legalBillingName: [string({ max: 180 })],
   billingAddress: [plainObjectWhenPresent()],
   gst: [plainObjectWhenPresent()],
+  gstin: [string({ max: 15 })],
+  contactPerson: [string({ max: 160 })],
+  invoiceEmail: [string({ max: 254 }), email()],
+  businessEntityType: [oneOf(['individual', 'proprietorship', 'partnership', 'llp', 'company', 'trust', 'government', 'other'])],
+  rcmApplicabilityHint: [string({ max: 500 })],
   notes: [string({ max: 4000 })],
   ownerUserId: [nullableObjectId()],
   paymentTerms: [string({ max: 40 }), oneOf(PAYMENT_TERMS)],
@@ -187,8 +201,14 @@ export const validateUpdateClient = validateBody({
   email: [string({ max: 254 }), email()],
   phone: [string({ max: 40 })],
   contactInfo: [string({ max: 500 })],
+  legalBillingName: [string({ max: 180 })],
   billingAddress: [plainObjectWhenPresent()],
   gst: [plainObjectWhenPresent()],
+  gstin: [string({ max: 15 })],
+  contactPerson: [string({ max: 160 })],
+  invoiceEmail: [string({ max: 254 }), email()],
+  businessEntityType: [oneOf(['individual', 'proprietorship', 'partnership', 'llp', 'company', 'trust', 'government', 'other'])],
+  rcmApplicabilityHint: [string({ max: 500 })],
   notes: [string({ max: 4000 })],
   ownerUserId: [nullableObjectId()],
   paymentTerms: [string({ max: 40 }), oneOf(PAYMENT_TERMS)],

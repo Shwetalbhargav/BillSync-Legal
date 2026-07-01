@@ -4,25 +4,43 @@ import { ArrowLeft, Check, Pencil, X } from "lucide-react";
 import { invoicesApi } from "../../api/invoices";
 import { normalizeInvoiceLine } from "../../api/normalizers";
 import { Button, SkeletonBlock, StateCard } from "../../components/common";
-import { formatMoney } from "../../components/invoices/InvoiceWidgets";
+import { formatDate, formatMoney } from "../../components/invoices/InvoiceWidgets";
 import { useBillingModuleAccess } from "../billing/useBillingModuleAccess";
 
 const initialLine = {
+  lineType: "professional_fee",
+  serviceDate: "",
+  periodLabel: "",
   description: "",
   qtyHours: "",
   rate: "",
   amount: "",
+  receiptDocumentId: "",
   taxCategory: "GST",
 };
 
 function linePayload(line) {
   return {
+    lineType: line.lineType || "professional_fee",
+    ...(line.serviceDate ? { serviceDate: line.serviceDate } : {}),
+    ...(line.periodLabel ? { periodLabel: line.periodLabel.trim() } : {}),
     description: line.description.trim(),
     qtyHours: Number(line.qtyHours || 0),
     rate: Number(line.rate || 0),
     ...(line.amount ? { amount: Number(line.amount) } : {}),
+    ...(line.receiptDocumentId ? { receiptDocumentId: line.receiptDocumentId.trim() } : {}),
     taxCategory: line.taxCategory || "GST",
   };
+}
+
+function lineNeedsHours(line) {
+  return (line.lineType || "hourly") === "hourly";
+}
+
+function isValidLine(line) {
+  if (!line.description.trim()) return false;
+  if (lineNeedsHours(line)) return Boolean(line.qtyHours) && Boolean(line.rate);
+  return Boolean(line.amount);
 }
 
 export function InvoiceLinesPage() {
@@ -61,10 +79,14 @@ export function InvoiceLinesPage() {
   function startEdit(line) {
     setEditingId(line.id);
     setEditForm({
+      lineType: line.lineType || "hourly",
+      serviceDate: line.serviceDate ? String(line.serviceDate).slice(0, 10) : "",
+      periodLabel: line.periodLabel || "",
       description: line.description || "",
       qtyHours: String(line.qtyHours ?? ""),
       rate: String(line.rate ?? ""),
       amount: String(line.amount ?? ""),
+      receiptDocumentId: line.receiptDocumentId || "",
       taxCategory: line.taxCategory || "GST",
     });
   }
@@ -75,8 +97,8 @@ export function InvoiceLinesPage() {
   }
 
   async function addLine() {
-    if (!form.description.trim() || !form.qtyHours || !form.rate) {
-      setState((current) => ({ ...current, message: "Add a description, hours, and rate before saving." }));
+    if (!isValidLine(form)) {
+      setState((current) => ({ ...current, message: lineNeedsHours(form) ? "Add a description, hours, and rate before saving." : "Add a description and amount before saving." }));
       return;
     }
     setSaving(true);
@@ -92,8 +114,8 @@ export function InvoiceLinesPage() {
   }
 
   async function saveLine(line) {
-    if (!editForm.description.trim() || !editForm.qtyHours || !editForm.rate) {
-      setState((current) => ({ ...current, message: "Add a description, hours, and rate before saving." }));
+    if (!isValidLine(editForm)) {
+      setState((current) => ({ ...current, message: lineNeedsHours(editForm) ? "Add a description, hours, and rate before saving." : "Add a description and amount before saving." }));
       return;
     }
     setSaving(true);
@@ -138,22 +160,42 @@ export function InvoiceLinesPage() {
       </section>
       {state.message ? <div className="rounded-lg border border-warning/30 bg-warning/10 p-3 text-sm font-semibold text-warning">{state.message}</div> : null}
       <section className="surface-card p-5">
-        <div className="grid gap-3 md:grid-cols-5">
+        <div className="grid gap-3 md:grid-cols-6">
+          <label className="block text-sm font-semibold text-ink">
+            Line type
+            <select className="focus-ring mt-1 w-full rounded-lg border border-border bg-panel px-3 py-3" onChange={(event) => updateField("lineType", event.target.value)} value={form.lineType}>
+              <option value="professional_fee">Professional fee</option>
+              <option value="reimbursable_expense">Reimbursable expense</option>
+              <option value="hourly">Hourly</option>
+            </select>
+          </label>
+          <label className="block text-sm font-semibold text-ink">
+            Service date
+            <input className="focus-ring mt-1 w-full rounded-lg border border-border bg-panel px-3 py-3" onChange={(event) => updateField("serviceDate", event.target.value)} type="date" value={form.serviceDate} />
+          </label>
           <label className="block text-sm font-semibold text-ink md:col-span-2">
             Description
             <input className="focus-ring mt-1 w-full rounded-lg border border-border bg-panel px-3 py-3" onChange={(event) => updateField("description", event.target.value)} value={form.description} />
           </label>
           <label className="block text-sm font-semibold text-ink">
             Hours
-            <input className="focus-ring mt-1 w-full rounded-lg border border-border bg-panel px-3 py-3" min="0" onChange={(event) => updateField("qtyHours", event.target.value)} type="number" value={form.qtyHours} />
+            <input className="focus-ring mt-1 w-full rounded-lg border border-border bg-panel px-3 py-3" disabled={!lineNeedsHours(form)} min="0" onChange={(event) => updateField("qtyHours", event.target.value)} type="number" value={form.qtyHours} />
           </label>
           <label className="block text-sm font-semibold text-ink">
             Rate
-            <input className="focus-ring mt-1 w-full rounded-lg border border-border bg-panel px-3 py-3" min="0" onChange={(event) => updateField("rate", event.target.value)} type="number" value={form.rate} />
+            <input className="focus-ring mt-1 w-full rounded-lg border border-border bg-panel px-3 py-3" disabled={!lineNeedsHours(form)} min="0" onChange={(event) => updateField("rate", event.target.value)} type="number" value={form.rate} />
           </label>
           <label className="block text-sm font-semibold text-ink">
             Amount
             <input className="focus-ring mt-1 w-full rounded-lg border border-border bg-panel px-3 py-3" min="0" onChange={(event) => updateField("amount", event.target.value)} type="number" value={form.amount} />
+          </label>
+          <label className="block text-sm font-semibold text-ink md:col-span-2">
+            Period label
+            <input className="focus-ring mt-1 w-full rounded-lg border border-border bg-panel px-3 py-3" onChange={(event) => updateField("periodLabel", event.target.value)} placeholder="June 2026" value={form.periodLabel} />
+          </label>
+          <label className="block text-sm font-semibold text-ink md:col-span-2">
+            Receipt document reference
+            <input className="focus-ring mt-1 w-full rounded-lg border border-border bg-panel px-3 py-3" disabled={form.lineType !== "reimbursable_expense"} onChange={(event) => updateField("receiptDocumentId", event.target.value)} placeholder="Document id" value={form.receiptDocumentId} />
           </label>
         </div>
         <Button className="mt-4" disabled={saving} isLoading={saving} onClick={addLine} type="button">Add line</Button>
@@ -164,6 +206,8 @@ export function InvoiceLinesPage() {
             <thead>
               <tr className="text-xs font-bold uppercase tracking-wide text-muted">
                 <th className="border-b border-border px-3 py-2">Line</th>
+                <th className="border-b border-border px-3 py-2">Type</th>
+                <th className="border-b border-border px-3 py-2">Date/Period</th>
                 <th className="border-b border-border px-3 py-2 text-right">Hours</th>
                 <th className="border-b border-border px-3 py-2 text-right">Rate</th>
                 <th className="border-b border-border px-3 py-2">Tax</th>
@@ -180,19 +224,43 @@ export function InvoiceLinesPage() {
                       {editing ? (
                         <input className="focus-ring w-full rounded-lg border border-border bg-panel px-3 py-2" onChange={(event) => updateEditField("description", event.target.value)} value={editForm.description} />
                       ) : (
-                        <p className="break-words font-semibold text-ink">{line.description}</p>
+                        <>
+                          <p className="break-words font-semibold text-ink">{line.description}</p>
+                          {line.receiptDocumentId ? <p className="mt-1 text-xs font-semibold text-muted">Receipt: {line.receiptDocumentId}</p> : null}
+                        </>
+                      )}
+                    </td>
+                    <td className="border-b border-border px-3 py-3">
+                      {editing ? (
+                        <select className="focus-ring w-44 rounded-lg border border-border bg-panel px-3 py-2" onChange={(event) => updateEditField("lineType", event.target.value)} value={editForm.lineType}>
+                          <option value="professional_fee">Professional fee</option>
+                          <option value="reimbursable_expense">Reimbursable expense</option>
+                          <option value="hourly">Hourly</option>
+                        </select>
+                      ) : (
+                        <span className="text-muted">{line.lineType === "reimbursable_expense" ? "Expense" : line.lineType === "professional_fee" ? "Professional fee" : "Hourly"}</span>
+                      )}
+                    </td>
+                    <td className="border-b border-border px-3 py-3">
+                      {editing ? (
+                        <div className="grid gap-2">
+                          <input className="focus-ring w-36 rounded-lg border border-border bg-panel px-3 py-2" onChange={(event) => updateEditField("serviceDate", event.target.value)} type="date" value={editForm.serviceDate} />
+                          <input className="focus-ring w-36 rounded-lg border border-border bg-panel px-3 py-2" onChange={(event) => updateEditField("periodLabel", event.target.value)} placeholder="Period" value={editForm.periodLabel} />
+                        </div>
+                      ) : (
+                        <span className="text-muted">{formatDate(line.serviceDate) !== "Not set" ? formatDate(line.serviceDate) : line.periodLabel || "Not set"}</span>
                       )}
                     </td>
                     <td className="border-b border-border px-3 py-3 text-right">
                       {editing ? (
-                        <input className="focus-ring w-24 rounded-lg border border-border bg-panel px-3 py-2 text-right" min="0" onChange={(event) => updateEditField("qtyHours", event.target.value)} type="number" value={editForm.qtyHours} />
+                        <input className="focus-ring w-24 rounded-lg border border-border bg-panel px-3 py-2 text-right" disabled={!lineNeedsHours(editForm)} min="0" onChange={(event) => updateEditField("qtyHours", event.target.value)} type="number" value={editForm.qtyHours} />
                       ) : (
                         <span className="font-semibold text-ink">{Number(line.qtyHours || 0).toFixed(2)}</span>
                       )}
                     </td>
                     <td className="border-b border-border px-3 py-3 text-right">
                       {editing ? (
-                        <input className="focus-ring w-28 rounded-lg border border-border bg-panel px-3 py-2 text-right" min="0" onChange={(event) => updateEditField("rate", event.target.value)} type="number" value={editForm.rate} />
+                        <input className="focus-ring w-28 rounded-lg border border-border bg-panel px-3 py-2 text-right" disabled={!lineNeedsHours(editForm)} min="0" onChange={(event) => updateEditField("rate", event.target.value)} type="number" value={editForm.rate} />
                       ) : (
                         <span className="text-muted">{formatMoney(line.rate)}</span>
                       )}

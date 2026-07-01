@@ -12,6 +12,10 @@ import { useMatterModuleAccess } from "./useMatterModuleAccess";
 const initialForm = {
   clientId: "",
   title: "",
+  caseRefNo: "",
+  courtOrAuthority: "",
+  clientFileReference: "",
+  assignedAdvocate: "",
   description: "",
   status: "open",
   billingType: "hourly",
@@ -74,6 +78,10 @@ export function MatterFormPage() {
           setForm({
             clientId: matter.clientId,
             title: matter.title,
+            caseRefNo: matter.caseRefNo,
+            courtOrAuthority: matter.courtOrAuthority,
+            clientFileReference: matter.clientFileReference,
+            assignedAdvocate: matter.assignedAdvocate?._id || matter.assignedAdvocate || "",
             description: matter.description,
             status: String(matter.status || "open").toLowerCase(),
             billingType: matter.billingType,
@@ -120,6 +128,10 @@ export function MatterFormPage() {
       const body = {
         clientId: form.clientId,
         title: form.title.trim(),
+        caseRefNo: form.caseRefNo.trim(),
+        courtOrAuthority: form.courtOrAuthority.trim(),
+        clientFileReference: form.clientFileReference.trim(),
+        assignedAdvocate: form.assignedAdvocate || undefined,
         description: form.description.trim(),
         status: form.status,
         billingType: form.billingType,
@@ -162,6 +174,31 @@ export function MatterFormPage() {
           Matter title
           <input className="focus-ring mt-1 w-full rounded-lg border border-border px-3 py-3" onChange={(event) => updateField("title", event.target.value)} placeholder="Matter title" value={form.title} />
         </label>
+        <section className="rounded-lg border border-border p-4">
+          <h2 className="text-sm font-bold text-primary">Invoice matter details</h2>
+          <p className="mt-1 text-xs font-semibold text-muted">Used on invoices and professional documents.</p>
+          <div className="mt-3 grid gap-4 md:grid-cols-2">
+            <label className="block text-sm font-semibold text-ink">
+              Case/ref number
+              <input className="focus-ring mt-1 w-full rounded-lg border border-border px-3 py-3" onChange={(event) => updateField("caseRefNo", event.target.value)} placeholder="CS/42/2026" value={form.caseRefNo} />
+            </label>
+            <label className="block text-sm font-semibold text-ink">
+              Court/authority
+              <input className="focus-ring mt-1 w-full rounded-lg border border-border px-3 py-3" onChange={(event) => updateField("courtOrAuthority", event.target.value)} placeholder="High Court, tribunal, authority" value={form.courtOrAuthority} />
+            </label>
+            <label className="block text-sm font-semibold text-ink">
+              Client file reference
+              <input className="focus-ring mt-1 w-full rounded-lg border border-border px-3 py-3" onChange={(event) => updateField("clientFileReference", event.target.value)} placeholder="Client internal file ref" value={form.clientFileReference} />
+            </label>
+            <label className="block text-sm font-semibold text-ink">
+              Assigned advocate
+              <select className="focus-ring mt-1 w-full rounded-lg border border-border px-3 py-3" onChange={(event) => updateField("assignedAdvocate", event.target.value)} value={form.assignedAdvocate}>
+                <option value="">Use assigned team/default</option>
+                {users.filter((person) => ["lawyer", "partner", "admin"].includes(person.role)).map((person) => <option key={person.id} value={person.id}>{person.name}</option>)}
+              </select>
+            </label>
+          </div>
+        </section>
         <label className="block text-sm font-semibold text-ink">
           Description
           <textarea className="focus-ring mt-1 min-h-28 w-full rounded-lg border border-border px-3 py-3" onChange={(event) => updateField("description", event.target.value)} placeholder="Short matter description" value={form.description} />

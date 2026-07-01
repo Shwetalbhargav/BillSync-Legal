@@ -20,6 +20,7 @@ export const assignmentStatuses = ['active', 'inactive'];
 const CASE_WRITE_FIELDS = new Set([
   'clientId',
   'matterNumber',
+  'caseRefNo',
   'title',
   'description',
   'status',
@@ -28,6 +29,7 @@ const CASE_WRITE_FIELDS = new Set([
   'leadPartnerId',
   'managingLawyerId',
   'primaryLawyerId',
+  'assignedAdvocate',
   'assignedUsers',
   'billingType',
   'fixedFeeAmount',
@@ -35,6 +37,8 @@ const CASE_WRITE_FIELDS = new Set([
   'fixedFeeDescription',
   'case_type',
   'case_type_id',
+  'courtOrAuthority',
+  'clientFileReference',
   'court',
   'caseDetails',
   'importantDates',
@@ -161,6 +165,7 @@ export const normalizeCasePayload = (req, _res, next) => {
     'clientId',
     'matterNumber',
     'title',
+    'caseRefNo',
     'description',
     'status',
     'billingType',
@@ -168,8 +173,11 @@ export const normalizeCasePayload = (req, _res, next) => {
     'leadPartnerId',
     'managingLawyerId',
     'primaryLawyerId',
+    'assignedAdvocate',
     'case_type',
     'case_type_id',
+    'courtOrAuthority',
+    'clientFileReference',
   ]);
 
   if (body.status) body.status = body.status.toLowerCase();
@@ -177,7 +185,7 @@ export const normalizeCasePayload = (req, _res, next) => {
   if (body.case_type_id === '') delete body.case_type_id;
   if (body.assignedUsers === null) body.assignedUsers = [];
 
-  for (const field of ['leadPartnerId', 'managingLawyerId', 'primaryLawyerId']) {
+  for (const field of ['leadPartnerId', 'managingLawyerId', 'primaryLawyerId', 'assignedAdvocate']) {
     if (body[field] === '') delete body[field];
   }
 
@@ -241,6 +249,7 @@ export const validateCreateCase = validateBody({
   clientId: [required, objectId()],
   title: [required, string({ min: 1, max: 180 })],
   matterNumber: [string({ max: 80 })],
+  caseRefNo: [string({ max: 120 })],
   description: [string({ max: 4000 })],
   status: [oneOf(caseStatuses)],
   openedAt: [date()],
@@ -252,9 +261,12 @@ export const validateCreateCase = validateBody({
   leadPartnerId: [nullableObjectId()],
   managingLawyerId: [nullableObjectId()],
   primaryLawyerId: [nullableObjectId()],
+  assignedAdvocate: [nullableObjectId()],
   assignedUsers: [array({ item: objectId() })],
   case_type: [string({ max: 120 })],
   case_type_id: [nullableObjectId()],
+  courtOrAuthority: [string({ max: 240 })],
+  clientFileReference: [string({ max: 160 })],
   court: [plainObjectWhenPresent()],
   caseDetails: [plainObjectWhenPresent()],
   importantDates: [plainObjectWhenPresent()],
@@ -264,6 +276,7 @@ export const validateUpdateCase = validateBody({
   clientId: [objectId()],
   title: [stringWhenPresent({ min: 1, max: 180 })],
   matterNumber: [string({ max: 80 })],
+  caseRefNo: [string({ max: 120 })],
   description: [string({ max: 4000 })],
   status: [oneOf(caseStatuses)],
   openedAt: [date()],
@@ -275,9 +288,12 @@ export const validateUpdateCase = validateBody({
   leadPartnerId: [nullableObjectId()],
   managingLawyerId: [nullableObjectId()],
   primaryLawyerId: [nullableObjectId()],
+  assignedAdvocate: [nullableObjectId()],
   assignedUsers: [array({ item: objectId() })],
   case_type: [string({ max: 120 })],
   case_type_id: [nullableObjectId()],
+  courtOrAuthority: [string({ max: 240 })],
+  clientFileReference: [string({ max: 160 })],
   court: [plainObjectWhenPresent()],
   caseDetails: [plainObjectWhenPresent()],
   importantDates: [plainObjectWhenPresent()],

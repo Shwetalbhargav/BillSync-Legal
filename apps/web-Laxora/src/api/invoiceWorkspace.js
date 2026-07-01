@@ -4,14 +4,18 @@ import { backendGapAdapters } from "./gaps.js";
 import { integrationLogsApi } from "./integrations.js";
 import { invoicesApi } from "./invoices.js";
 import { mattersApi } from "./matters.js";
+import { expensesApi } from "./expenses.js";
 import { timeEntriesApi } from "./timeEntries.js";
+import { usersApi } from "./users.js";
 import {
   asList,
   normalizeBillable,
   normalizeClient,
+  normalizeExpense,
   normalizeIntegrationLog,
   normalizeInvoice,
   normalizeMatter,
+  normalizeUser,
   normalizeTimeEntry,
 } from "./normalizers.js";
 
@@ -63,11 +67,13 @@ export const invoiceWorkspaceApi = {
   },
 
   async loadBuilderOptions() {
-    const [clientsResult, mattersResult, billablesResult, timeResult] = await Promise.allSettled([
+    const [clientsResult, mattersResult, billablesResult, timeResult, expensesResult, usersResult] = await Promise.allSettled([
       clientsApi.list({ limit: 200 }),
       mattersApi.list({ limit: 200 }),
       billablesApi.approved({ limit: 100 }),
       timeEntriesApi.list({ status: "approved", limit: 100 }),
+      expensesApi.approved({ limit: 100 }),
+      usersApi.list({ limit: 200 }),
     ]);
 
     return {
@@ -75,12 +81,16 @@ export const invoiceWorkspaceApi = {
       matters: asList(settledValue(mattersResult, [])).map(normalizeMatter),
       billables: asList(settledValue(billablesResult, [])).map(normalizeBillable),
       timeEntries: asList(settledValue(timeResult, [])).map(normalizeTimeEntry),
+      expenses: asList(settledValue(expensesResult, [])).map(normalizeExpense),
+      advocates: asList(settledValue(usersResult, [])).map(normalizeUser).filter((item) => ["lawyer", "partner", "admin"].includes(item.role)),
       templateGap: backendGapAdapters.invoiceTemplates,
       issues: [
         issueMessage(clientsResult, "Clients could not be refreshed."),
         issueMessage(mattersResult, "Matters could not be refreshed."),
         issueMessage(billablesResult, "Approved billable work could not be refreshed."),
         issueMessage(timeResult, "Approved time could not be refreshed."),
+        issueMessage(expensesResult, "Approved reimbursable expenses could not be refreshed."),
+        issueMessage(usersResult, "Issuing advocates could not be refreshed."),
       ].filter(Boolean),
     };
   },

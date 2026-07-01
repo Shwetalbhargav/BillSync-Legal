@@ -82,6 +82,14 @@ function buildProfileForm(user = {}, profile = {}) {
     mobile: user.mobile || "",
     address: user.address || "",
     billingRate: profile.billingRate ?? "",
+    stateBarCouncil: profile.stateBarCouncil || "",
+    enrolmentNo: profile.enrolmentNo || "",
+    enrolmentDate: profile.enrolmentDate ? String(profile.enrolmentDate).slice(0, 10) : "",
+    pan: profile.pan || "",
+    gstin: profile.gstin || "",
+    gstRegistrationStatus: profile.gstRegistrationStatus || "not_applicable",
+    professionalAddress: profile.professionalAddress || "",
+    signatureImageUrl: profile.signatureImageUrl || "",
     qualifications,
   };
 }
@@ -100,6 +108,13 @@ function personName(person) {
   if (!person) return "";
   if (typeof person === "string") return person;
   return person.name || [person.firstName, person.lastName].filter(Boolean).join(" ") || person.email || "";
+}
+
+function maskRegistration(value, visibleStart = 2, visibleEnd = 1) {
+  if (!value) return "";
+  const text = String(value);
+  if (text.length <= visibleStart + visibleEnd) return "****";
+  return `${text.slice(0, visibleStart)}${"*".repeat(Math.max(4, text.length - visibleStart - visibleEnd))}${text.slice(-visibleEnd)}`;
 }
 
 function ListSection({ emptyText = "Not added yet", items = [], renderItem, title, icon: Icon = BriefcaseBusiness }) {
@@ -232,8 +247,24 @@ export function ProfilePage() {
       });
       const latestUser = await refreshCurrentUser();
       const latestProfile = profileFromResponse(response) || response?.profile || profileState.profile;
-      setProfileState({ status: latestProfile ? "ready" : profileState.status, profile: latestProfile, message: "" });
-      setProfileForm(buildProfileForm(latestUser || fullUser, latestProfile || profile));
+      const api = profileApis[fullUser.role];
+      let savedProfile = latestProfile;
+      if (["lawyer", "partner"].includes(fullUser.role) && api?.updateMe) {
+        const profileResponse = await api.updateMe({
+          billingRate: profileForm.billingRate,
+          stateBarCouncil: profileForm.stateBarCouncil,
+          enrolmentNo: profileForm.enrolmentNo,
+          enrolmentDate: profileForm.enrolmentDate || undefined,
+          pan: profileForm.pan,
+          gstin: profileForm.gstin,
+          gstRegistrationStatus: profileForm.gstRegistrationStatus,
+          professionalAddress: profileForm.professionalAddress,
+          signatureImageUrl: profileForm.signatureImageUrl,
+        });
+        savedProfile = profileFromResponse(profileResponse) || savedProfile;
+      }
+      setProfileState({ status: savedProfile ? "ready" : profileState.status, profile: savedProfile, message: "" });
+      setProfileForm(buildProfileForm(latestUser || fullUser, savedProfile || profile));
       setIsEditingProfile(false);
       setFormMessage("Profile updated.");
       setMessage("Profile updated.");
@@ -255,6 +286,16 @@ export function ProfilePage() {
   const achievements = profile.achievements || [];
   const publications = profile.publications || [];
   const billingRate = formatMoney(profile.billingRate);
+  const registrationDetails = [
+    { label: "State Bar Council", value: profile.stateBarCouncil },
+    { label: "Enrolment No.", value: profile.enrolmentNo },
+    { label: "Enrolment Date", value: profile.enrolmentDate ? new Date(profile.enrolmentDate).toLocaleDateString("en-IN") : "" },
+    { label: "PAN", value: maskRegistration(profile.pan, 3, 1) },
+    { label: "GSTIN", value: maskRegistration(profile.gstin, 2, 2) || "Not applicable" },
+    { label: "GST status", value: profile.gstRegistrationStatus },
+    { label: "Professional address", value: profile.professionalAddress },
+    { label: "Signature", value: profile.signatureImageUrl ? "Signature image linked" : "" },
+  ];
   const roleDetails = [
     profile.title ? { label: "Title", value: profile.title } : null,
     profile.experienceYears != null ? { label: "Experience", value: `${profile.experienceYears} years` } : null,
@@ -382,6 +423,32 @@ export function ProfilePage() {
                 />
               </div>
 
+              {["lawyer", "partner"].includes(fullUser.role) ? (
+                <div className="space-y-3 rounded-lg border border-border bg-panel p-4">
+                  <div>
+                    <h2 className="text-sm font-bold text-ink">Professional Registration</h2>
+                    <p className="text-xs text-muted">Used on invoices and professional documents.</p>
+                  </div>
+                  <div className="grid gap-4 md:grid-cols-2">
+                    <Field label="State Bar Council" onChange={(event) => setProfileForm((current) => ({ ...current, stateBarCouncil: event.target.value }))} value={profileForm.stateBarCouncil} />
+                    <Field label="Enrolment No." onChange={(event) => setProfileForm((current) => ({ ...current, enrolmentNo: event.target.value }))} value={profileForm.enrolmentNo} />
+                    <Field label="Enrolment Date" onChange={(event) => setProfileForm((current) => ({ ...current, enrolmentDate: event.target.value }))} type="date" value={profileForm.enrolmentDate} />
+                    <Field label="PAN" onChange={(event) => setProfileForm((current) => ({ ...current, pan: event.target.value.toUpperCase() }))} placeholder="ABCDE1234F" value={profileForm.pan} />
+                    <Field label="GSTIN" onChange={(event) => setProfileForm((current) => ({ ...current, gstin: event.target.value.toUpperCase() }))} placeholder="22AAAAA0000A1Z5" value={profileForm.gstin} />
+                    <label className="block text-sm font-semibold text-ink">
+                      GST registration status
+                      <select className="focus-ring mt-1 w-full rounded-lg border border-border bg-panel px-3 py-3" onChange={(event) => setProfileForm((current) => ({ ...current, gstRegistrationStatus: event.target.value }))} value={profileForm.gstRegistrationStatus}>
+                        <option value="registered">Registered</option>
+                        <option value="unregistered">Unregistered</option>
+                        <option value="not_applicable">Not applicable</option>
+                      </select>
+                    </label>
+                    <TextareaField label="Professional address" onChange={(event) => setProfileForm((current) => ({ ...current, professionalAddress: event.target.value }))} value={profileForm.professionalAddress} />
+                    <Field label="Signature image URL" onChange={(event) => setProfileForm((current) => ({ ...current, signatureImageUrl: event.target.value }))} value={profileForm.signatureImageUrl} />
+                  </div>
+                </div>
+              ) : null}
+
               <div className="space-y-3">
                 <div className="flex flex-wrap items-center justify-between gap-3">
                   <div>
@@ -456,11 +523,24 @@ export function ProfilePage() {
               </div>
             </form>
           ) : (
-            <dl className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-              <Detail label="Name" value={fullUser.name} />
-              <Detail label="Role" value={fullUser.role} />
-              {roleDetails.map((item) => <Detail key={item.label} label={item.label} value={item.value} />)}
-            </dl>
+            <div className="space-y-5">
+              <dl className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+                <Detail label="Name" value={fullUser.name} />
+                <Detail label="Role" value={fullUser.role} />
+                {roleDetails.map((item) => <Detail key={item.label} label={item.label} value={item.value} />)}
+              </dl>
+              {["lawyer", "partner"].includes(fullUser.role) ? (
+                <div>
+                  <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+                    <h2 className="text-sm font-bold text-ink">Professional Registration</h2>
+                    <StatusBadge>Used on invoices and professional documents.</StatusBadge>
+                  </div>
+                  <dl className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+                    {registrationDetails.map((item) => <Detail key={item.label} label={item.label} value={item.value} />)}
+                  </dl>
+                </div>
+              ) : null}
+            </div>
           )}
         </CardBody>
       </Card>

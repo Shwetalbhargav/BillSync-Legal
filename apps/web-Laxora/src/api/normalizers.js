@@ -65,6 +65,10 @@ export function normalizeMatter(item = {}) {
     status: safeText(item.status || item.stage, "Active"),
     owner: primary.name || item.ownerName || item.owner?.name || "",
     billingType: item.billingType || "hourly",
+    caseRefNo: item.caseRefNo || item.caseDetails?.courtCaseNumber || "",
+    courtOrAuthority: item.courtOrAuthority || item.court?.name || "",
+    clientFileReference: item.clientFileReference || "",
+    assignedAdvocate: item.assignedAdvocate || "",
     matterType: item.case_type || "",
     description: item.description || "",
     integrations: item.integrations || {},
@@ -108,6 +112,13 @@ export function normalizeClient(item = {}) {
     contactInfo: item.contactInfo || "",
     status: item.status || "Active",
     paymentTerms: item.paymentTerms || "NET30",
+    legalBillingName: item.legalBillingName || item.gst?.legalName || "",
+    billingAddress: item.billingAddress || {},
+    gstin: item.gstin || item.gst?.gstin || "",
+    contactPerson: item.contactPerson || "",
+    invoiceEmail: item.invoiceEmail || "",
+    businessEntityType: item.businessEntityType || "",
+    rcmApplicabilityHint: item.rcmApplicabilityHint || "",
     firmId: item.firmId || "",
     ownerId: toId(owner) || item.ownerUserId || "",
     ownerName: owner.name || item.ownerName || "",
@@ -222,6 +233,14 @@ export function normalizeInvoice(item = {}) {
     deliveryStatus: item.deliveryStatus || "not_sent",
     deliveryError: item.deliveryError || "",
     pdfUrl: item.pdfUrl || "",
+    templateType: item.templateType || "standard",
+    taxTreatment: item.taxTreatment || item.taxTreatmentSnapshot?.treatment || "",
+    taxNote: item.taxNote || item.taxTreatmentSnapshot?.note || "",
+    advocateSnapshot: item.advocateSnapshot || {},
+    clientBillingSnapshot: item.clientBillingSnapshot || {},
+    matterSnapshot: item.matterSnapshot || {},
+    paymentDetailsSnapshot: item.paymentDetailsSnapshot || {},
+    taxTreatmentSnapshot: item.taxTreatmentSnapshot || {},
     lines: lines.map(normalizeInvoiceLine),
     raw: item,
   };
@@ -231,12 +250,40 @@ export function normalizeInvoiceLine(item = {}) {
   return {
     id: toId(item),
     description: safeText(item.description, "Professional services"),
+    lineType: item.lineType || "hourly",
+    serviceDate: item.serviceDate || "",
+    periodLabel: item.periodLabel || "",
+    receiptDocumentId: item.receiptDocumentId || "",
     qtyHours: Number(item.qtyHours ?? Number(item.durationMinutes || 0) / 60),
     rate: normalizeMoney(item.rate),
     amount: normalizeMoney(item.amount),
     taxCategory: item.taxCategory || "GST",
     timeEntryId: item.timeEntryId?._id || item.timeEntryId || "",
     billableId: item.billableId?._id || item.billableId || "",
+    raw: item,
+  };
+}
+
+export function normalizeExpense(item = {}) {
+  const client = item.clientId || item.client || {};
+  const matter = item.caseId || item.matter || {};
+  const paidBy = item.paidByUserId || item.paidBy || {};
+  return {
+    id: toId(item),
+    client: client.displayName || client.name || item.clientName || "",
+    clientId: toId(client) || item.clientId || "",
+    matter: matter.title || matter.name || item.caseName || item.matterName || "",
+    matterId: toId(matter) || item.caseId || "",
+    paidBy: paidBy.name || item.paidByName || "",
+    paidByUserId: toId(paidBy) || item.paidByUserId || "",
+    category: item.category || "other",
+    description: safeText(item.description, "Reimbursable expense"),
+    amount: item.amountPaise != null ? Number(item.amountPaise || 0) / 100 : normalizeMoney(item.amount),
+    amountPaise: Number(item.amountPaise ?? Math.round(normalizeMoney(item.amount) * 100)),
+    date: item.date || item.createdAt || "",
+    status: String(item.status || "draft").toLowerCase(),
+    receiptDocumentId: item.receiptDocumentId?._id || item.receiptDocumentId || "",
+    invoiceId: item.invoiceId || "",
     raw: item,
   };
 }

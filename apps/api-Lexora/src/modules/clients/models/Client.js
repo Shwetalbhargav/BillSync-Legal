@@ -39,6 +39,7 @@ const ClientSchema = new mongoose.Schema(
     email: { type: String, trim: true, lowercase: true },
     phone: { type: String, trim: true },
     contactInfo: { type: String },
+    legalBillingName: { type: String, trim: true },
     billingAddress: {
       line1: { type: String, trim: true },
       line2: { type: String, trim: true },
@@ -54,6 +55,15 @@ const ClientSchema = new mongoose.Schema(
       registered: { type: Boolean, default: false },
       treatment: { type: String, enum: ['gst', 'no_gst', 'export', 'sez'], default: 'gst' },
     },
+    gstin: { type: String, trim: true, uppercase: true },
+    contactPerson: { type: String, trim: true },
+    invoiceEmail: { type: String, trim: true, lowercase: true },
+    businessEntityType: {
+      type: String,
+      enum: ['individual', 'proprietorship', 'partnership', 'llp', 'company', 'trust', 'government', 'other'],
+      default: 'individual',
+    },
+    rcmApplicabilityHint: { type: String, trim: true },
     notes: { type: String, trim: true },
 
     firmId: { type: mongoose.Schema.Types.ObjectId, ref: 'Firm' },

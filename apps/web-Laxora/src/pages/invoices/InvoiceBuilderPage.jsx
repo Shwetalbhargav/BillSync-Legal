@@ -9,6 +9,7 @@ import { useBillingModuleAccess } from "../billing/useBillingModuleAccess";
 
 const initialForm = {
   source: "time",
+  templateType: "standard",
   clientId: "",
   caseId: "",
   dueDate: "",
@@ -16,6 +17,12 @@ const initialForm = {
   periodEnd: "",
   timeEntryIds: [],
   billableIds: [],
+  expenseIds: [],
+  issuingAdvocateId: "",
+  taxTreatment: "gst_charged",
+  taxNote: "Tax on this supply may be payable by the recipient under reverse charge mechanism, where applicable.",
+  paymentDetailsNote: "",
+  invoiceNotes: "",
 };
 
 function buildPayload(form, userId) {
@@ -25,8 +32,11 @@ function buildPayload(form, userId) {
     ...(form.dueDate ? { dueDate: form.dueDate } : {}),
     ...(form.periodStart ? { periodStart: form.periodStart } : {}),
     ...(form.periodEnd ? { periodEnd: form.periodEnd } : {}),
-    ...(userId ? { createdBy: userId } : {}),
+    ...(form.issuingAdvocateId || userId ? { createdBy: form.issuingAdvocateId || userId } : {}),
     currency: "INR",
+    templateType: form.templateType,
+    taxTreatment: form.taxTreatment,
+    taxNote: form.taxNote,
   };
 }
 
@@ -35,7 +45,7 @@ export function InvoiceBuilderPage() {
   const { user } = useAuth();
   const access = useBillingModuleAccess("billing");
   const [form, setForm] = useState(initialForm);
-  const [state, setState] = useState({ status: "loading", clients: [], matters: [], billables: [], timeEntries: [], issues: [], message: "" });
+  const [state, setState] = useState({ status: "loading", clients: [], matters: [], billables: [], timeEntries: [], expenses: [], advocates: [], issues: [], message: "" });
   const [saving, setSaving] = useState(false);
 
   async function load() {
@@ -44,7 +54,7 @@ export function InvoiceBuilderPage() {
       const data = await invoiceWorkspaceApi.loadBuilderOptions();
       setState({ status: "ready", message: "", ...data });
     } catch (error) {
-      setState({ status: "error", clients: [], matters: [], billables: [], timeEntries: [], issues: [], message: error?.userMessage || "We could not prepare the invoice builder." });
+      setState({ status: "error", clients: [], matters: [], billables: [], timeEntries: [], expenses: [], advocates: [], issues: [], message: error?.userMessage || "We could not prepare the invoice builder." });
     }
   }
 
@@ -84,7 +94,19 @@ export function InvoiceBuilderPage() {
       const invoice = form.source === "billables"
         ? await invoicesApi.fromBillables({ ...base, billableIds: form.billableIds })
         : await invoicesApi.fromTime({ ...base, timeEntryIds: form.timeEntryIds });
-      navigate(`/app/invoices/${invoice.id || invoice._id}`);
+      const invoiceId = invoice.id || invoice._id;
+      const selectedExpenses = state.expenses.filter((expense) => form.expenseIds.includes(expense.id));
+      if (invoiceId && selectedExpenses.length) {
+        await Promise.all(selectedExpenses.map((expense) => invoicesApi.createLine(invoiceId, {
+          lineType: "reimbursable_expense",
+          serviceDate: expense.date || undefined,
+          description: `${expense.description}${expense.receiptDocumentId ? ` (Receipt: ${expense.receiptDocumentId})` : ""}`,
+          amount: expense.amount,
+          receiptDocumentId: expense.receiptDocumentId || undefined,
+          taxCategory: "Reimbursement",
+        })));
+      }
+      navigate(`/app/invoices/${invoiceId}`);
     } catch (error) {
       setState((current) => ({ ...current, message: error?.userMessage || "We could not create this invoice. Check the selected work and try again." }));
     } finally {
@@ -104,14 +126,16 @@ export function InvoiceBuilderPage() {
       <BuilderSourcePicker
         billables={state.billables}
         clients={state.clients}
+        expenses={state.expenses}
         form={form}
+        advocates={state.advocates}
         matters={state.matters}
         onChange={updateField}
         onGenerate={generate}
         saving={saving}
         timeEntries={state.timeEntries}
       />
-      <TemplateShell canEdit={access.canCreateInvoices} />
+      <TemplateShell canEdit={access.canCreateInvoices} selectedTemplate={form.templateType} />
     </div>
   );
 }

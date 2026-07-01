@@ -6,6 +6,7 @@ import { TimeEntry } from '../../timeEntries/models/TimeEntry.js';
 import Billable from '../../billables/models/Billable.js';
 import { EmailEntry } from '../../emailEntries/models/EmailEntry.js';
 import { buildInvoiceHtml, buildInvoicePdfBuffer, emailInvoice } from '../services/invoiceDeliveryService.js';
+import { assertSoloAdvocateReady, buildInvoiceSnapshots } from '../services/invoiceSnapshotService.js';
 import { recalcInvoiceTotals } from '../services/invoiceTotalsService.js';
 import { nextInvoiceNumber } from '../../finance/sequenceService.js';
 import { fromPaise, toPaise } from '../../finance/money.js';
@@ -102,7 +103,7 @@ export const generateFromApprovedTime = async (req, res) => {
   const session = await mongoose.startSession();
   session.startTransaction();
   try {
-    const { clientId, caseId, timeEntryIds = [], currency = 'INR', dueDate, periodStart, periodEnd, createdBy } = req.body;
+    const { clientId, caseId, timeEntryIds = [], currency = 'INR', dueDate, periodStart, periodEnd, createdBy, templateType = 'standard', taxTreatment, taxNote } = req.body;
 
     if (!clientId || !Array.isArray(timeEntryIds) || timeEntryIds.length === 0) {
       await session.abortTransaction();
@@ -140,6 +141,9 @@ export const generateFromApprovedTime = async (req, res) => {
       issueDate: new Date(),
       dueDate: dueDate || undefined,
       currency,
+      templateType,
+      taxTreatment: taxTreatment || undefined,
+      taxNote: taxNote || undefined,
       subtotal: 0,
       tax: 0,
       total: 0,
@@ -158,6 +162,9 @@ export const generateFromApprovedTime = async (req, res) => {
         invoiceId: inv._id,
         workspaceId: req.workspaceId,
         timeEntryId: e._id,
+        lineType: templateType === 'solo_advocate_fee_invoice' ? 'professional_fee' : 'hourly',
+        serviceDate: e.workDate || e.date,
+        periodLabel: periodStart || periodEnd ? [periodStart, periodEnd].filter(Boolean).join(' to ') : undefined,
         description: e.narrative || 'Professional services',
         qtyHours,
         rate,
@@ -201,7 +208,7 @@ export const generateFromApprovedTime = async (req, res) => {
  * Generates a draft invoice from APPROVED Billables and marks them billed.
  */
 export const generateFromApprovedBillables = async (req, res) => {
-  const { clientId, caseId, billableIds = [], currency = 'INR', dueDate, periodStart, periodEnd, createdBy } = req.body;
+  const { clientId, caseId, billableIds = [], currency = 'INR', dueDate, periodStart, periodEnd, createdBy, templateType = 'standard', taxTreatment, taxNote } = req.body;
 
   if (!clientId || !Array.isArray(billableIds) || billableIds.length === 0) {
     return res.status(400).json({ error: 'clientId and billableIds[] are required' });
@@ -263,6 +270,9 @@ export const generateFromApprovedBillables = async (req, res) => {
       issueDate: new Date(),
       dueDate: dueDate || undefined,
       currency,
+      templateType,
+      taxTreatment: taxTreatment || undefined,
+      taxNote: taxNote || undefined,
       status: 'draft',
       createdBy: createdBy || req.user?.id,
       workspaceId: req.workspaceId,
@@ -365,6 +375,9 @@ export const autoGenerateFromApprovedBillables = async (req, res) => {
         invoiceId: invoice._id,
         workspaceId: req.workspaceId,
         billableId: billable._id,
+        lineType: templateType === 'solo_advocate_fee_invoice' ? 'professional_fee' : 'hourly',
+        serviceDate: billable.date,
+        periodLabel: periodStart || periodEnd ? [periodStart, periodEnd].filter(Boolean).join(' to ') : undefined,
         description: billable.description || billable.category || 'Professional services',
         qtyHours: Number(((Number(billable.durationMinutes || 0)) / 60).toFixed(4)),
         rate: Number(billable.rate || 0),
@@ -421,6 +434,10 @@ export const sendInvoice = async (req, res) => {
     if (dueDate) refreshed.dueDate = new Date(dueDate);
     if (pdfUrl) refreshed.pdfUrl = pdfUrl;
     refreshed.issueDate = refreshed.issueDate || new Date();
+    if (!refreshed.invoiceNumber) refreshed.invoiceNumber = await nextInvoiceNumber(req.workspaceId || refreshed.workspaceId);
+    const snapshots = await buildInvoiceSnapshots(refreshed, { actorId: req.user?.id });
+    if (refreshed.templateType === 'solo_advocate_fee_invoice') assertSoloAdvocateReady(snapshots);
+    Object.assign(refreshed, snapshots);
     refreshed.status = 'sent';
     refreshed.sentAt = new Date();
     refreshed.deliveryStatus = 'sent';
@@ -510,31 +527,21 @@ export const finaliseInvoice = async (req, res) => {
     }
 
     const totals = await recalcInvoiceTotals(invoice._id, { session });
-    const lines = await InvoiceLine.find(workspaceFilter(req, { invoiceId: invoice._id })).session(session).lean();
+    invoice.subtotal = totals.subtotal;
+    invoice.tax = totals.tax;
+    invoice.total = totals.total;
+    invoice.subtotalPaise = totals.subtotalPaise;
+    invoice.taxPaise = totals.taxPaise;
+    invoice.totalPaise = totals.totalPaise;
+    const snapshots = await buildInvoiceSnapshots(invoice, { actorId: req.user?.id, session });
+    if (invoice.templateType === 'solo_advocate_fee_invoice') assertSoloAdvocateReady(snapshots);
     invoice.invoiceNumber = invoice.invoiceNumber || await nextInvoiceNumber(req.workspaceId || invoice.workspaceId, session);
     invoice.status = 'finalised';
     invoice.finalisedAt = new Date();
     invoice.finalisedBy = req.user?.id;
-    invoice.subtotalPaise = totals.subtotalPaise;
-    invoice.taxPaise = totals.taxPaise;
-    invoice.totalPaise = totals.totalPaise;
     invoice.balancePaise = totals.totalPaise;
-    invoice.immutableSnapshot = {
-      lines: lines.map((line) => ({
-        description: line.description,
-        qtyHours: line.qtyHours,
-        ratePaise: line.ratePaise || toPaise(line.rate),
-        amountPaise: line.amountPaise || toPaise(line.amount),
-        taxCategory: line.taxCategory,
-        source: { timeEntryId: line.timeEntryId, billableId: line.billableId },
-      })),
-      taxSettings: {
-        taxName: invoice.taxName,
-        taxRatePct: invoice.taxRatePct,
-        taxInclusive: invoice.taxInclusive,
-      },
-      totals,
-    };
+    Object.assign(invoice, snapshots);
+    invoice.immutableSnapshot.totals = totals;
     await invoice.save({ session });
     await session.commitTransaction();
     res.json(invoice);

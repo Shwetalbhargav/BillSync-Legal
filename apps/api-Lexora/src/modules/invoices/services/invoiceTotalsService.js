@@ -17,6 +17,14 @@ function normalizeTaxSettings(settings = {}) {
 }
 
 export async function getInvoiceTaxSettings(invoice, session) {
+  if (['rcm_applicable', 'gst_not_applicable', 'gst_exempt'].includes(invoice?.taxTreatment)) {
+    return normalizeTaxSettings({
+      taxName: invoice.taxName || 'GST',
+      taxRatePct: 0,
+      inclusive: false,
+    });
+  }
+
   if (invoice?.taxRatePct != null || invoice?.taxName || invoice?.taxInclusive != null) {
     return normalizeTaxSettings({
       taxName: invoice.taxName,
@@ -84,6 +92,10 @@ export async function recalcInvoiceTotals(invoiceId, { session } = {}) {
   const items = lines.map((line) => ({
     billableId: line.billableId,
     timeEntryId: line.timeEntryId,
+    lineType: line.lineType || 'hourly',
+    serviceDate: line.serviceDate,
+    periodLabel: line.periodLabel,
+    receiptDocumentId: line.receiptDocumentId,
     description: line.description,
     durationMinutes: roundMoney((Number(line.qtyHours) || 0) * 60),
     qtyHours: line.qtyHours,

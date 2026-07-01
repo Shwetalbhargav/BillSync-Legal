@@ -11,6 +11,18 @@ const initialForm = {
   email: "",
   phone: "",
   contactInfo: "",
+  legalBillingName: "",
+  billingLine1: "",
+  billingLine2: "",
+  billingCity: "",
+  billingState: "",
+  billingPostalCode: "",
+  billingCountry: "India",
+  gstin: "",
+  contactPerson: "",
+  invoiceEmail: "",
+  businessEntityType: "individual",
+  rcmApplicabilityHint: "",
   paymentTerms: "NET30",
   status: "active",
   contactName: "",
@@ -50,6 +62,18 @@ export function ClientFormPage() {
           email: client.email,
           phone: client.phone,
           contactInfo: client.contactInfo,
+          legalBillingName: client.legalBillingName,
+          billingLine1: client.billingAddress?.line1 || "",
+          billingLine2: client.billingAddress?.line2 || "",
+          billingCity: client.billingAddress?.city || "",
+          billingState: client.billingAddress?.state || "",
+          billingPostalCode: client.billingAddress?.postalCode || "",
+          billingCountry: client.billingAddress?.country || "India",
+          gstin: client.gstin,
+          contactPerson: client.contactPerson,
+          invoiceEmail: client.invoiceEmail,
+          businessEntityType: client.businessEntityType || "individual",
+          rcmApplicabilityHint: client.rcmApplicabilityHint,
           paymentTerms: client.paymentTerms,
           status: String(client.status || "active").toLowerCase(),
           contactName: client.contacts?.[0]?.name || "",
@@ -91,6 +115,20 @@ export function ClientFormPage() {
         email: form.email.trim(),
         phone: form.phone.trim(),
         contactInfo: form.contactInfo.trim(),
+        legalBillingName: form.legalBillingName.trim(),
+        billingAddress: {
+          line1: form.billingLine1.trim(),
+          line2: form.billingLine2.trim(),
+          city: form.billingCity.trim(),
+          state: form.billingState.trim(),
+          postalCode: form.billingPostalCode.trim(),
+          country: form.billingCountry.trim() || "India",
+        },
+        gstin: form.gstin.trim().toUpperCase(),
+        contactPerson: form.contactPerson.trim(),
+        invoiceEmail: form.invoiceEmail.trim(),
+        businessEntityType: form.businessEntityType,
+        rcmApplicabilityHint: form.rcmApplicabilityHint.trim(),
         paymentTerms: form.paymentTerms,
         status: form.status,
         contacts: [
@@ -188,6 +226,73 @@ export function ClientFormPage() {
             </select>
           </label>
         </div>
+        <section className="rounded-lg border border-border p-4">
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <h2 className="text-sm font-bold text-primary">Invoice billing details</h2>
+              <p className="mt-1 text-xs font-semibold text-muted">Used on invoices and professional documents.</p>
+            </div>
+          </div>
+          <div className="mt-3 grid gap-4 md:grid-cols-2">
+            <label className="block text-sm font-semibold text-ink">
+              Legal billing name
+              <input className="focus-ring mt-1 w-full rounded-lg border border-border px-3 py-3" onChange={(event) => updateField("legalBillingName", event.target.value)} placeholder="Legal entity name" value={form.legalBillingName} />
+            </label>
+            <label className="block text-sm font-semibold text-ink">
+              Invoice email
+              <input className="focus-ring mt-1 w-full rounded-lg border border-border px-3 py-3" onChange={(event) => updateField("invoiceEmail", event.target.value)} placeholder="billing@example.com" value={form.invoiceEmail} />
+            </label>
+            <label className="block text-sm font-semibold text-ink">
+              GSTIN
+              <input className="focus-ring mt-1 w-full rounded-lg border border-border px-3 py-3" onChange={(event) => updateField("gstin", event.target.value.toUpperCase())} placeholder="27ABCDE1234F1Z5" value={form.gstin} />
+            </label>
+            <label className="block text-sm font-semibold text-ink">
+              Contact person
+              <input className="focus-ring mt-1 w-full rounded-lg border border-border px-3 py-3" onChange={(event) => updateField("contactPerson", event.target.value)} placeholder="Billing contact" value={form.contactPerson} />
+            </label>
+            <label className="block text-sm font-semibold text-ink">
+              Business/entity type
+              <select className="focus-ring mt-1 w-full rounded-lg border border-border px-3 py-3" onChange={(event) => updateField("businessEntityType", event.target.value)} value={form.businessEntityType}>
+                <option value="individual">Individual</option>
+                <option value="proprietorship">Proprietorship</option>
+                <option value="partnership">Partnership</option>
+                <option value="llp">LLP</option>
+                <option value="company">Company</option>
+                <option value="trust">Trust</option>
+                <option value="government">Government</option>
+                <option value="other">Other</option>
+              </select>
+            </label>
+            <label className="block text-sm font-semibold text-ink">
+              RCM applicability hint
+              <input className="focus-ring mt-1 w-full rounded-lg border border-border px-3 py-3" onChange={(event) => updateField("rcmApplicabilityHint", event.target.value)} placeholder="Recipient may be liable under RCM" value={form.rcmApplicabilityHint} />
+            </label>
+            <label className="block text-sm font-semibold text-ink">
+              Billing address line 1
+              <input className="focus-ring mt-1 w-full rounded-lg border border-border px-3 py-3" onChange={(event) => updateField("billingLine1", event.target.value)} value={form.billingLine1} />
+            </label>
+            <label className="block text-sm font-semibold text-ink">
+              Billing address line 2
+              <input className="focus-ring mt-1 w-full rounded-lg border border-border px-3 py-3" onChange={(event) => updateField("billingLine2", event.target.value)} value={form.billingLine2} />
+            </label>
+            <label className="block text-sm font-semibold text-ink">
+              City
+              <input className="focus-ring mt-1 w-full rounded-lg border border-border px-3 py-3" onChange={(event) => updateField("billingCity", event.target.value)} value={form.billingCity} />
+            </label>
+            <label className="block text-sm font-semibold text-ink">
+              State
+              <input className="focus-ring mt-1 w-full rounded-lg border border-border px-3 py-3" onChange={(event) => updateField("billingState", event.target.value)} value={form.billingState} />
+            </label>
+            <label className="block text-sm font-semibold text-ink">
+              Postal code
+              <input className="focus-ring mt-1 w-full rounded-lg border border-border px-3 py-3" onChange={(event) => updateField("billingPostalCode", event.target.value)} value={form.billingPostalCode} />
+            </label>
+            <label className="block text-sm font-semibold text-ink">
+              Country
+              <input className="focus-ring mt-1 w-full rounded-lg border border-border px-3 py-3" onChange={(event) => updateField("billingCountry", event.target.value)} value={form.billingCountry} />
+            </label>
+          </div>
+        </section>
         <section className="rounded-lg border border-border p-4">
           <h2 className="text-sm font-bold text-primary">Primary contact</h2>
           <div className="mt-3 grid gap-4 md:grid-cols-2">

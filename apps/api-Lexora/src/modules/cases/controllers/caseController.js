@@ -12,6 +12,7 @@ import User from '../../users/models/User.js';
 const CASE_MUTABLE_FIELDS = [
   'clientId',
   'matterNumber',
+  'caseRefNo',
   'title',
   'description',
   'status',
@@ -20,6 +21,7 @@ const CASE_MUTABLE_FIELDS = [
   'leadPartnerId',
   'managingLawyerId',
   'primaryLawyerId',
+  'assignedAdvocate',
   'assignedUsers',
   'billingType',
   'fixedFeeAmount',
@@ -27,12 +29,14 @@ const CASE_MUTABLE_FIELDS = [
   'fixedFeeDescription',
   'case_type',
   'case_type_id',
+  'courtOrAuthority',
+  'clientFileReference',
   'court',
   'caseDetails',
   'importantDates',
 ];
 
-const USER_REFERENCE_FIELDS = ['leadPartnerId', 'managingLawyerId', 'primaryLawyerId'];
+const USER_REFERENCE_FIELDS = ['leadPartnerId', 'managingLawyerId', 'primaryLawyerId', 'assignedAdvocate'];
 const DEFAULT_LIMIT = 25;
 const MAX_LIMIT = 200;
 const PRIVILEGED_MATTER_ROLES = new Set(['admin', 'owner', 'partner']);

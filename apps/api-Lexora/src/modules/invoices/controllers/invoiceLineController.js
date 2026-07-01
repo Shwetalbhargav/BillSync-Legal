@@ -35,11 +35,11 @@ export const listLines = async (req, res) => {
 export const addLine = async (req, res) => {
   try {
     const { invoiceId } = req.params;
-    const { description, qtyHours = 0, rate = 0, amount, timeEntryId, billableId, taxCategory } = req.body;
+    const { description, qtyHours = 0, rate = 0, amount, timeEntryId, billableId, taxCategory, lineType = 'hourly', serviceDate, periodLabel, receiptDocumentId } = req.body;
 
     const computed = amount != null ? Number(amount) : Number((Number(qtyHours) * Number(rate)).toFixed(2));
     if (!await ensureMutableInvoice(req, invoiceId, res)) return;
-    const line = await InvoiceLine.create({ workspaceId: req.workspaceId, invoiceId, description, qtyHours, rate, ratePaise: toPaise(rate), amount: computed, amountPaise: toPaise(computed), timeEntryId, billableId, taxCategory });
+    const line = await InvoiceLine.create({ workspaceId: req.workspaceId, invoiceId, description, qtyHours, rate, ratePaise: toPaise(rate), amount: computed, amountPaise: toPaise(computed), timeEntryId, billableId, taxCategory, lineType, serviceDate, periodLabel, receiptDocumentId });
     const totals = await recalcInvoiceTotals(invoiceId);
     res.status(201).json({ line, totals });
   } catch (e) {
@@ -51,7 +51,7 @@ export const updateLine = async (req, res) => {
   try {
     const { invoiceId, lineId } = req.params;
     if (!await ensureMutableInvoice(req, invoiceId, res)) return;
-    const { description, qtyHours, rate, amount, taxCategory } = req.body;
+    const { description, qtyHours, rate, amount, taxCategory, lineType, serviceDate, periodLabel, receiptDocumentId } = req.body;
 
     const patch = {};
     if (description != null) patch.description = description;
@@ -63,6 +63,10 @@ export const updateLine = async (req, res) => {
       patch.amountPaise = toPaise(amount);
     }
     if (taxCategory != null) patch.taxCategory = taxCategory;
+    if (lineType != null) patch.lineType = lineType;
+    if (serviceDate != null) patch.serviceDate = serviceDate;
+    if (periodLabel != null) patch.periodLabel = periodLabel;
+    if (receiptDocumentId != null) patch.receiptDocumentId = receiptDocumentId;
     if ((qtyHours != null || rate != null) && amount == null) {
       const q = qtyHours != null ? qtyHours : undefined;
       const r = rate != null ? rate : undefined;

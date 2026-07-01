@@ -29,6 +29,32 @@ function invoiceNumber(invoice) {
   return invoice.invoiceNumber || String(invoice._id);
 }
 
+function dateOnly(value) {
+  if (!value) return 'Not set';
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? 'Not set' : date.toISOString().slice(0, 10);
+}
+
+function amountInWords(value) {
+  const amount = Math.round(Number(value || 0));
+  if (!amount) return 'Zero rupees only';
+  const ones = ['', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen'];
+  const tens = ['', '', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety'];
+  const underHundred = (n) => n < 20 ? ones[n] : [tens[Math.floor(n / 10)], ones[n % 10]].filter(Boolean).join(' ');
+  const underThousand = (n) => {
+    const hundred = Math.floor(n / 100);
+    const rest = n % 100;
+    return [hundred ? `${ones[hundred]} hundred` : '', rest ? underHundred(rest) : ''].filter(Boolean).join(' ');
+  };
+  const parts = [
+    [Math.floor(amount / 10000000), 'crore'],
+    [Math.floor((amount % 10000000) / 100000), 'lakh'],
+    [Math.floor((amount % 100000) / 1000), 'thousand'],
+    [amount % 1000, ''],
+  ].filter(([count]) => count);
+  return `${parts.map(([count, label]) => [underThousand(count), label].filter(Boolean).join(' ')).join(' ')} rupees only`.replace(/^./, (c) => c.toUpperCase());
+}
+
 async function invoiceLines(invoice) {
   const snapshotLines = invoice.immutableSnapshot?.lines;
   if (Array.isArray(snapshotLines) && snapshotLines.length) {
@@ -37,9 +63,17 @@ async function invoiceLines(invoice) {
       qtyHours: line.qtyHours ?? line.quantityHours ?? 0,
       rate: line.rate ?? (line.ratePaise != null ? fromPaise(line.ratePaise) : 0),
       amount: line.amount ?? (line.amountPaise != null ? fromPaise(line.amountPaise) : 0),
+      lineType: line.lineType || 'hourly',
+      serviceDate: line.serviceDate,
+      periodLabel: line.periodLabel,
+      receiptDocumentId: line.receiptDocumentId,
     }));
   }
   return InvoiceLine.find({ invoiceId: invoice._id }).sort({ createdAt: 1 }).lean();
+}
+
+function snapshotOrPopulated(invoice, key, fallback = {}) {
+  return invoice[key] && Object.keys(invoice[key] || {}).length ? invoice[key] : fallback;
 }
 
 function lineAmount(line, key, paiseKey) {
@@ -82,6 +116,32 @@ function rect(x, y, width, height, { fill = null, stroke = '0.86 0.89 0.93', lin
 
 export async function buildInvoiceHtml(invoice) {
   const lines = await invoiceLines(invoice);
+  if (invoice.templateType === 'solo_advocate_fee_invoice') {
+    const advocate = snapshotOrPopulated(invoice, 'advocateSnapshot', {});
+    const client = snapshotOrPopulated(invoice, 'clientBillingSnapshot', { name: clientName(invoice) });
+    const matter = snapshotOrPopulated(invoice, 'matterSnapshot', {});
+    const tax = snapshotOrPopulated(invoice, 'taxTreatmentSnapshot', {});
+    const services = lines.filter((line) => line.lineType !== 'reimbursable_expense');
+    const expenses = lines.filter((line) => line.lineType === 'reimbursable_expense');
+    const row = (line) => `<tr><td>${line.serviceDate || line.periodLabel || ''}</td><td>${line.description || 'Professional services'}</td><td class="num">${money(line.amount, invoice.currency)}</td></tr>`;
+    return `<!doctype html>
+<html><head><meta charset="utf-8" /><title>Professional Fee Invoice ${invoiceNumber(invoice)}</title>
+<style>
+body{font-family:Arial,sans-serif;color:#172033;margin:36px}.box{border:1px solid #d7dde8;padding:18px;margin-top:16px}.muted{color:#667085}.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}h1{letter-spacing:.08em;text-align:center;font-size:20px;margin:20px 0}table{width:100%;border-collapse:collapse;margin-top:12px}th,td{border-bottom:1px solid #e5e7eb;padding:10px;text-align:left}th{background:#f4f7fb}.num{text-align:right}.total{margin-left:auto;width:340px}.sig{margin-top:36px;text-align:right}
+</style></head><body>
+<div><strong>${advocate.name || 'Advocate'}</strong><br/><span class="muted">${advocate.address || ''}</span><br/>Enrolment: ${advocate.enrolmentNo || 'Not set'} | PAN: ${advocate.pan || 'Not set'} | GSTIN: ${advocate.gstin || 'Not applicable'}</div>
+<h1>PROFESSIONAL FEE INVOICE</h1>
+<div class="grid"><div class="box"><strong>Billed to</strong><br/>${client.name || clientName(invoice)}<br/>${client.billingAddress || ''}<br/>GSTIN: ${client.gstin || 'Not available'}</div><div class="box"><strong>Invoice No.</strong> ${invoiceNumber(invoice)}<br/><strong>Invoice Date:</strong> ${dateOnly(invoice.issueDate)}<br/><strong>Due Date:</strong> ${dateOnly(invoice.dueDate)}</div></div>
+<div class="box"><strong>Matter details</strong><br/>${matter.title || invoice.caseId?.title || 'Matter not set'}<br/>Case Ref: ${matter.caseRefNo || matter.matterNumber || 'Not set'}<br/>Court/Authority: ${matter.courtOrAuthority || 'Not set'}<br/>Client file ref: ${matter.clientFileReference || 'Not set'}</div>
+<h2>Professional services</h2><table><thead><tr><th>Date/Period</th><th>Description</th><th class="num">Amount</th></tr></thead><tbody>${services.map(row).join('') || '<tr><td colspan="3">No professional fee lines</td></tr>'}</tbody></table>
+<h2>Reimbursable expenses</h2><table><thead><tr><th>Date</th><th>Description / Receipt reference</th><th class="num">Amount</th></tr></thead><tbody>${expenses.map(row).join('') || '<tr><td colspan="3">No reimbursable expenses</td></tr>'}</tbody></table>
+<table class="total"><tr><td>Subtotal</td><td class="num">${money(invoice.subtotal, invoice.currency)}</td></tr><tr><td>${invoice.taxName || 'GST'}</td><td class="num">${money(invoice.tax, invoice.currency)}</td></tr><tr><th>Total payable</th><th class="num">${money(invoice.total, invoice.currency)}</th></tr></table>
+<p><strong>Amount in words:</strong> ${amountInWords(invoice.total)}</p>
+<div class="box"><strong>GST/RCM note:</strong> ${tax.note || invoice.taxNote || ''}</div>
+<div class="box"><strong>Payment details</strong><br/>Currency: ${invoice.currency || 'INR'}</div>
+<div class="sig">For ${advocate.name || 'Advocate'}<br/><br/><strong>Authorised signature</strong></div>
+</body></html>`;
+  }
   const rows = lines.map((line) => `
     <tr>
       <td>${line.description || 'Professional services'}</td>
@@ -133,8 +193,82 @@ export async function buildInvoicePdfBuffer(invoice) {
     qtyHours: Number(line.qtyHours ?? line.quantityHours ?? 0),
     rate: lineAmount(line, 'rate', 'ratePaise'),
     amount: lineAmount(line, 'amount', 'amountPaise'),
+    lineType: line.lineType || 'hourly',
+    serviceDate: line.serviceDate,
+    periodLabel: line.periodLabel,
+    receiptDocumentId: line.receiptDocumentId,
   }));
   const currency = invoice.currency || 'INR';
+  if (invoice.templateType === 'solo_advocate_fee_invoice') {
+    const advocate = snapshotOrPopulated(invoice, 'advocateSnapshot', {});
+    const client = snapshotOrPopulated(invoice, 'clientBillingSnapshot', { name: clientName(invoice) });
+    const matter = snapshotOrPopulated(invoice, 'matterSnapshot', {});
+    const tax = snapshotOrPopulated(invoice, 'taxTreatmentSnapshot', {});
+    const services = lines.filter((line) => line.lineType !== 'reimbursable_expense');
+    const expenses = lines.filter((line) => line.lineType === 'reimbursable_expense');
+    const ops = [
+      rect(36, 36, 540, 720, { stroke: '0.70 0.76 0.84' }),
+      rect(36, 708, 540, 48, { fill: '0.93 0.96 1', stroke: '0.70 0.76 0.84' }),
+      textAt(advocate.name || 'Advocate', 54, 736, { font: 'F2', size: 13 }),
+      textAt(wrapText(advocate.address || '', 80)[0] || '', 54, 720, { size: 8 }),
+      textAt(`Enrolment: ${advocate.enrolmentNo || 'Not set'} | PAN: ${advocate.pan || 'Not set'} | GSTIN: ${advocate.gstin || 'Not applicable'}`, 54, 702, { size: 8 }),
+      textAt('PROFESSIONAL FEE INVOICE', 178, 674, { font: 'F2', size: 16 }),
+      rect(54, 596, 236, 58, { stroke: '0.82 0.86 0.92' }),
+      textAt('BILLED TO', 66, 634, { font: 'F2', size: 8 }),
+      textAt(client.name || clientName(invoice), 66, 620, { font: 'F2', size: 10 }),
+      textAt(wrapText(client.billingAddress || '', 36)[0] || '', 66, 606, { size: 8 }),
+      textAt(`GSTIN: ${client.gstin || 'Not available'}`, 66, 592, { size: 8 }),
+      rect(322, 596, 236, 58, { stroke: '0.82 0.86 0.92' }),
+      textAt(`Invoice No: ${invoiceNumber(invoice)}`, 334, 634, { font: 'F2', size: 9 }),
+      textAt(`Invoice Date: ${dateOnly(invoice.issueDate)}`, 334, 618, { size: 9 }),
+      textAt(`Due Date: ${dateOnly(invoice.dueDate)}`, 334, 602, { size: 9 }),
+      rect(54, 528, 504, 52, { fill: '0.98 0.99 1', stroke: '0.82 0.86 0.92' }),
+      textAt('MATTER DETAILS', 66, 562, { font: 'F2', size: 8 }),
+      textAt(wrapText(matter.title || invoice.caseId?.title || 'Matter not set', 74)[0], 66, 548, { font: 'F2', size: 9 }),
+      textAt(`Case Ref: ${matter.caseRefNo || matter.matterNumber || 'Not set'} | Court/Authority: ${matter.courtOrAuthority || 'Not set'}`, 66, 534, { size: 8 }),
+      textAt(`Client file ref: ${matter.clientFileReference || 'Not set'}`, 66, 520, { size: 8 }),
+    ];
+
+    function drawTable(title, rows, yStart) {
+      let y = yStart;
+      ops.push(textAt(title, 54, y, { font: 'F2', size: 10 }));
+      y -= 20;
+      ops.push(rect(54, y - 6, 504, 22, { fill: '0.94 0.96 0.99', stroke: '0.78 0.83 0.90' }));
+      ops.push(textAt('Date/Period', 66, y, { font: 'F2', size: 8 }));
+      ops.push(textAt('Description', 154, y, { font: 'F2', size: 8 }));
+      ops.push(textAt('Amount', 504, y, { font: 'F2', size: 8 }));
+      y -= 24;
+      const printable = rows.length ? rows : [{ description: 'No entries', amount: 0 }];
+      printable.slice(0, 5).forEach((line) => {
+        const desc = wrapText(line.description || 'Professional services', 48).slice(0, 2);
+        const rowHeight = 20 + (desc.length - 1) * 10;
+        ops.push(rect(54, y - rowHeight + 10, 504, rowHeight, { stroke: '0.90 0.92 0.95' }));
+        ops.push(textAt(line.serviceDate || line.periodLabel || '', 66, y, { size: 8 }));
+        desc.forEach((text, index) => ops.push(textAt(text, 154, y - index * 10, { size: 8 })));
+        ops.push(textAt(`${currency} ${pdfMoney(line.amount)}`, 474, y, { font: 'F2', size: 8 }));
+        y -= rowHeight;
+      });
+      return y - 16;
+    }
+
+    let y = drawTable('Professional services', services, 496);
+    y = drawTable('Reimbursable expenses', expenses, y);
+    const totalsTop = Math.max(y, 174);
+    ops.push(rect(318, totalsTop - 88, 240, 88, { fill: '0.98 0.99 1', stroke: '0.78 0.83 0.90' }));
+    ops.push(textAt('Subtotal', 334, totalsTop - 20, { size: 9 }));
+    ops.push(textAt(`${currency} ${pdfMoney(invoice.subtotal)}`, 452, totalsTop - 20, { font: 'F2', size: 9 }));
+    ops.push(textAt(invoice.taxName || 'GST', 334, totalsTop - 42, { size: 9 }));
+    ops.push(textAt(`${currency} ${pdfMoney(invoice.tax)}`, 452, totalsTop - 42, { font: 'F2', size: 9 }));
+    ops.push(textAt('Total payable', 334, totalsTop - 68, { font: 'F2', size: 11 }));
+    ops.push(textAt(`${currency} ${pdfMoney(invoice.total)}`, 438, totalsTop - 68, { font: 'F2', size: 11 }));
+    ops.push(textAt(`Amount in words: ${amountInWords(invoice.total)}`, 54, 132, { font: 'F2', size: 8 }));
+    wrapText(`GST/RCM note: ${tax.note || invoice.taxNote || ''}`, 92).slice(0, 2).forEach((line, index) => {
+      ops.push(textAt(line, 54, 112 - index * 10, { size: 8 }));
+    });
+    ops.push(textAt(`For ${advocate.name || 'Advocate'}`, 410, 82, { font: 'F2', size: 9 }));
+    ops.push(textAt('Authorised signature', 410, 58, { size: 8 }));
+    return buildPdf(ops.join('\n'));
+  }
   const ops = [
     rect(36, 36, 540, 720, { stroke: '0.78 0.83 0.90' }),
     textAt('BillSync Legal', 54, 730, { font: 'F2', size: 11 }),
@@ -178,7 +312,10 @@ export async function buildInvoicePdfBuffer(invoice) {
   ops.push(textAt('Total', 334, totalsTop - 82, { font: 'F2', size: 12 }));
   ops.push(textAt(`${currency} ${pdfMoney(invoice.total)}`, 438, totalsTop - 82, { font: 'F2', size: 12 }));
 
-  const textOps = ops.join('\n');
+  return buildPdf(ops.join('\n'));
+}
+
+function buildPdf(textOps) {
   const objects = [
     '<< /Type /Catalog /Pages 2 0 R >>',
     '<< /Type /Pages /Kids [3 0 R] /Count 1 >>',

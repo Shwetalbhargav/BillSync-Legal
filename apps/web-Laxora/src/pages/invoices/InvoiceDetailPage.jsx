@@ -6,7 +6,7 @@ import { invoiceWorkspaceApi } from "../../api/invoiceWorkspace";
 import { normalizeInvoice } from "../../api/normalizers";
 import { paymentsApi } from "../../api/payments";
 import { Button, DataTable, SkeletonBlock, StateCard, StatusBadge } from "../../components/common";
-import { InvoiceChargeBreakup, InvoiceDetailPanel, InvoiceLinesTable, SectionIssues, ShareShell, formatDate } from "../../components/invoices/InvoiceWidgets";
+import { AdvocateInvoiceDetailSections, AdvocateInvoiceSnapshot, InvoiceChargeBreakup, InvoiceDetailPanel, InvoiceLinesTable, SectionIssues, ShareShell, formatDate } from "../../components/invoices/InvoiceWidgets";
 import { useBillingModuleAccess } from "../billing/useBillingModuleAccess";
 
 export function InvoiceDetailPage() {
@@ -115,6 +115,8 @@ export function InvoiceDetailPage() {
       {access.readOnly ? <StateCard state="empty" title="Invoice is read-only" message={access.message} /> : null}
       <SectionIssues issues={state.issues} />
       <InvoiceDetailPanel canSend={access.canSendInvoices} canVoid={access.canCreateInvoices} invoice={state.invoice} onSend={sendInvoice} onVoid={voidInvoice} saving={saving} />
+      <AdvocateInvoiceSnapshot invoice={state.invoice} />
+      <AdvocateInvoiceDetailSections invoice={state.invoice} />
       <section className="surface-card p-5">
         <h2 className="text-base font-bold text-primary">Send or share</h2>
         <div className="mt-4 grid gap-3 md:grid-cols-3">

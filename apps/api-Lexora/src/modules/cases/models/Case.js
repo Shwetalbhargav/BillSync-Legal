@@ -7,6 +7,7 @@ const CaseSchema = new mongoose.Schema(
   {
     clientId: { type: mongoose.Schema.Types.ObjectId, ref: 'Client', required: true, index: true },
     matterNumber: { type: String, trim: true, index: true },
+    caseRefNo: { type: String, trim: true, index: true },
     title: { type: String, required: true, trim: true },
     name: { type: String }, // deprecated
     description: { type: String },
@@ -18,6 +19,7 @@ const CaseSchema = new mongoose.Schema(
     leadPartnerId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     managingLawyerId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     primaryLawyerId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+    assignedAdvocate: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     assignedUsers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
 
     billingType: { type: String, enum: ['hourly', 'fixed_fee', 'contingency', 'retainer'], default: 'hourly' },
@@ -33,6 +35,8 @@ const CaseSchema = new mongoose.Schema(
       courtroom: { type: String, trim: true },
       judge: { type: String, trim: true },
     },
+    courtOrAuthority: { type: String, trim: true },
+    clientFileReference: { type: String, trim: true },
     caseDetails: {
       courtCaseNumber: { type: String, trim: true },
       filingNumber: { type: String, trim: true },

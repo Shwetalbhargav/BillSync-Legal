@@ -15,6 +15,12 @@ const InvoiceSchema = new mongoose.Schema(
     dueDate: { type: Date },
 
     currency: { type: String, default: 'INR' },
+    templateType: {
+      type: String,
+      enum: ['standard', 'solo_advocate_fee_invoice'],
+      default: 'standard',
+      index: true,
+    },
     invoiceNumber: { type: String, trim: true },
     revisionOf: { type: mongoose.Schema.Types.ObjectId, ref: 'Invoice' },
     revisionReason: { type: String, trim: true },
@@ -34,6 +40,16 @@ const InvoiceSchema = new mongoose.Schema(
       taxAmount: { type: Number, default: 0 },
       grossAmount: { type: Number, default: 0 },
     },
+    taxTreatment: {
+      type: String,
+      enum: ['rcm_applicable', 'gst_charged', 'gst_not_applicable', 'gst_exempt'],
+      default: 'gst_charged',
+    },
+    taxNote: {
+      type: String,
+      trim: true,
+      default: 'Tax on this supply may be payable by the recipient under reverse charge mechanism, where applicable.',
+    },
     total: { type: Number, required: true },
     totalPaise: { type: Number, required: true, default: 0 },
     balancePaise: { type: Number, default: 0 },
@@ -44,6 +60,11 @@ const InvoiceSchema = new mongoose.Schema(
       taxSettings: { type: mongoose.Schema.Types.Mixed },
       totals: { type: mongoose.Schema.Types.Mixed },
     },
+    advocateSnapshot: { type: mongoose.Schema.Types.Mixed },
+    clientBillingSnapshot: { type: mongoose.Schema.Types.Mixed },
+    matterSnapshot: { type: mongoose.Schema.Types.Mixed },
+    paymentDetailsSnapshot: { type: mongoose.Schema.Types.Mixed },
+    taxTreatmentSnapshot: { type: mongoose.Schema.Types.Mixed },
 
     status: { type: String, enum: ['draft', 'ready_to_bill', 'finalised', 'sent', 'partial', 'paid', 'overdue', 'void', 'revised'], default: 'draft', index: true },
     pdfUrl: { type: String },
@@ -72,6 +93,10 @@ const InvoiceSchema = new mongoose.Schema(
       { 
         billableId: { type: mongoose.Schema.Types.ObjectId, ref: 'Billable', index: true  },
         timeEntryId: { type: mongoose.Schema.Types.ObjectId, ref: 'TimeEntry', index: true },
+        lineType: { type: String, enum: ['hourly', 'professional_fee', 'reimbursable_expense'], default: 'hourly' },
+        serviceDate: Date,
+        periodLabel: String,
+        receiptDocumentId: { type: mongoose.Schema.Types.ObjectId, ref: 'StoredDocument' },
         description: String,
         durationMinutes: Number,
         qtyHours: Number,
