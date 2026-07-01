@@ -105,10 +105,11 @@ function tokenize(value = '') {
     ?.filter((word) => !STOP_WORDS.has(word)) || [];
 }
 
-function scoreEntry(entry, queryTokens, context = {}) {
+function scoreEntry(entry, queryTokens, context = {}, input = '') {
   const haystack = `${entry.title} ${entry.keywords.join(' ')} ${entry.routes.join(' ')} ${entry.answer.join(' ')}`.toLowerCase();
   const tokenScore = queryTokens.reduce((score, token) => score + (haystack.includes(token) ? 1 : 0), 0);
-  const pathScore = entry.routes.some((route) => String(context.currentPath || '').startsWith(route)) ? 2 : 0;
+  const wantsCurrentScreenHelp = /\b(here|screen|page|use|using|do|guide|help|workflow|where|how)\b/i.test(input);
+  const pathScore = (tokenScore > 0 || wantsCurrentScreenHelp) && entry.routes.some((route) => String(context.currentPath || '').startsWith(route)) ? 2 : 0;
   const query = queryTokens.join(' ');
   const intentBoost =
     entry.id === 'chrome-extension' && (query.includes('extension') || query.includes('gmail') || query.includes('chrome')) ? 4 :
@@ -121,11 +122,11 @@ function scoreEntry(entry, queryTokens, context = {}) {
 function selectEntries(input, context) {
   const queryTokens = tokenize(input);
   const ranked = APP_GUIDE_ENTRIES
-    .map((entry) => ({ entry, score: scoreEntry(entry, queryTokens, context) }))
+    .map((entry) => ({ entry, score: scoreEntry(entry, queryTokens, context, input) }))
     .sort((a, b) => b.score - a.score || a.entry.title.localeCompare(b.entry.title));
 
   const matches = ranked.filter((item) => item.score > 0).slice(0, 2).map((item) => item.entry);
-  return matches.length ? matches : [APP_GUIDE_ENTRIES.find((entry) => entry.id === 'daily-work')];
+  return matches;
 }
 
 const SCREEN_NAMES = {
@@ -319,6 +320,14 @@ export async function buildAppGuideAnswer({ input, context = {}, requestUser = {
   }
 
   const matches = selectEntries(input, context);
+  if (!matches.length) {
+    return {
+      title: 'Question outside BillSync',
+      text: 'I can only answer questions about BillSync Legal workflows, firm data, matters, tasks, work capture, documents, billing, finance, and app setup. Please ask a BillSync-related question.',
+      citations: [],
+    };
+  }
+
   const primary = matches[0];
   const secondary = matches[1];
   const currentPath = context.currentPath ? `\n\nYou are currently on: ${SCREEN_NAMES[context.currentPath] || 'this screen'}` : '';

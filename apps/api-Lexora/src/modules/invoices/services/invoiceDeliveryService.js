@@ -14,6 +14,13 @@ function money(value, currency = 'INR') {
   return `${currency} ${Number(value || 0).toFixed(2)}`;
 }
 
+function pdfMoney(value) {
+  return Number(value || 0).toLocaleString('en-IN', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+}
+
 function clientName(invoice) {
   return invoice.clientId?.displayName || invoice.clientId?.name || 'Client';
 }
@@ -33,6 +40,44 @@ async function invoiceLines(invoice) {
     }));
   }
   return InvoiceLine.find({ invoiceId: invoice._id }).sort({ createdAt: 1 }).lean();
+}
+
+function lineAmount(line, key, paiseKey) {
+  if (line[key] != null) return Number(line[key] || 0);
+  if (line[paiseKey] != null) return fromPaise(line[paiseKey]);
+  return 0;
+}
+
+function wrapText(value, maxChars) {
+  const words = String(value || '').replace(/\s+/g, ' ').trim().split(' ').filter(Boolean);
+  const lines = [];
+  let current = '';
+  words.forEach((word) => {
+    if (!current) {
+      current = word;
+      return;
+    }
+    if (`${current} ${word}`.length <= maxChars) {
+      current = `${current} ${word}`;
+      return;
+    }
+    lines.push(current);
+    current = word;
+  });
+  if (current) lines.push(current);
+  return lines.length ? lines : [''];
+}
+
+function textAt(text, x, y, { font = 'F1', size = 10 } = {}) {
+  return `BT /${font} ${size} Tf ${x} ${y} Td (${escapeText(text)}) Tj ET`;
+}
+
+function rect(x, y, width, height, { fill = null, stroke = '0.86 0.89 0.93', lineWidth = 0.8 } = {}) {
+  const ops = ['q', `${lineWidth} w`];
+  if (fill) ops.push(`${fill} rg`, `${x} ${y} ${width} ${height} re f`);
+  if (stroke) ops.push(`${stroke} RG`, `${x} ${y} ${width} ${height} re S`);
+  ops.push('Q');
+  return ops.join('\n');
 }
 
 export async function buildInvoiceHtml(invoice) {
@@ -83,29 +128,63 @@ export async function buildInvoiceHtml(invoice) {
 }
 
 export async function buildInvoicePdfBuffer(invoice) {
-  const lines = await invoiceLines(invoice);
-  const pageLines = [
-    `Invoice ${invoiceNumber(invoice)}`,
-    `Bill To: ${clientName(invoice)}`,
-    `Issue Date: ${invoice.issueDate ? invoice.issueDate.toISOString().slice(0, 10) : ''}`,
-    `Due Date: ${invoice.dueDate ? invoice.dueDate.toISOString().slice(0, 10) : ''}`,
-    '',
-    'Description                         Hours      Rate       Amount',
-    ...lines.slice(0, 24).map((line) => {
-      const description = String(line.description || 'Professional services').slice(0, 32).padEnd(34);
-      return `${description}${Number(line.qtyHours || 0).toFixed(2).padStart(7)} ${Number(line.rate || 0).toFixed(2).padStart(10)} ${Number(line.amount || 0).toFixed(2).padStart(11)}`;
-    }),
-    '',
-    `Taxable subtotal: ${money(invoice.subtotal, invoice.currency)}`,
-    `${invoice.taxName || 'GST'} (${Number(invoice.taxRatePct || 0).toFixed(2)}%): ${money(invoice.tax, invoice.currency)}`,
-    `Total: ${money(invoice.total, invoice.currency)}`,
+  const lines = (await invoiceLines(invoice)).map((line) => ({
+    description: line.description || line.snapshot?.description || 'Professional services',
+    qtyHours: Number(line.qtyHours ?? line.quantityHours ?? 0),
+    rate: lineAmount(line, 'rate', 'ratePaise'),
+    amount: lineAmount(line, 'amount', 'amountPaise'),
+  }));
+  const currency = invoice.currency || 'INR';
+  const ops = [
+    rect(36, 36, 540, 720, { stroke: '0.78 0.83 0.90' }),
+    textAt('BillSync Legal', 54, 730, { font: 'F2', size: 11 }),
+    textAt(`Invoice ${invoiceNumber(invoice)}`, 54, 696, { font: 'F2', size: 22 }),
+    textAt(`Bill To: ${clientName(invoice)}`, 54, 670, { font: 'F2', size: 11 }),
+    textAt(`Issue Date: ${invoice.issueDate ? invoice.issueDate.toISOString().slice(0, 10) : 'Not set'}`, 392, 696, { size: 10 }),
+    textAt(`Due Date: ${invoice.dueDate ? invoice.dueDate.toISOString().slice(0, 10) : 'Not set'}`, 392, 680, { size: 10 }),
+    rect(54, 620, 504, 28, { fill: '0.95 0.97 1', stroke: '0.78 0.83 0.90' }),
+    textAt('Description', 66, 630, { font: 'F2', size: 9 }),
+    textAt('Hours', 342, 630, { font: 'F2', size: 9 }),
+    textAt('Rate', 410, 630, { font: 'F2', size: 9 }),
+    textAt('Amount', 500, 630, { font: 'F2', size: 9 }),
   ];
-  const textOps = pageLines.map((line, index) => `BT /F1 10 Tf 50 ${760 - index * 18} Td (${escapeText(line)}) Tj ET`).join('\n');
+
+  let y = 596;
+  const rows = lines.length ? lines : [{ description: 'No line items', qtyHours: 0, rate: 0, amount: 0 }];
+  rows.slice(0, 18).forEach((line) => {
+    const descriptionLines = wrapText(line.description, 48).slice(0, 2);
+    const rowHeight = 24 + (descriptionLines.length - 1) * 11;
+    ops.push(rect(54, y - rowHeight + 12, 504, rowHeight, { stroke: '0.90 0.92 0.95' }));
+    descriptionLines.forEach((text, index) => {
+      ops.push(textAt(text, 66, y - index * 11, { size: 9 }));
+    });
+    ops.push(textAt(Number(line.qtyHours || 0).toFixed(2), 342, y, { size: 9 }));
+    ops.push(textAt(pdfMoney(line.rate), 398, y, { size: 9 }));
+    ops.push(textAt(pdfMoney(line.amount), 486, y, { size: 9 }));
+    y -= rowHeight;
+  });
+  if (lines.length > 18) {
+    ops.push(textAt(`+ ${lines.length - 18} more line item(s) in invoice detail`, 66, y - 4, { size: 9 }));
+    y -= 24;
+  }
+
+  const totalsTop = Math.max(y - 8, 160);
+  ops.push(rect(318, totalsTop - 98, 240, 98, { fill: '0.98 0.99 1', stroke: '0.78 0.83 0.90' }));
+  ops.push(textAt('Taxable subtotal', 334, totalsTop - 22, { size: 10 }));
+  ops.push(textAt(`${currency} ${pdfMoney(invoice.subtotal)}`, 452, totalsTop - 22, { font: 'F2', size: 10 }));
+  ops.push(textAt(`${invoice.taxName || 'GST'} (${Number(invoice.taxRatePct || 0).toFixed(2)}%)`, 334, totalsTop - 46, { size: 10 }));
+  ops.push(textAt(`${currency} ${pdfMoney(invoice.tax)}`, 452, totalsTop - 46, { font: 'F2', size: 10 }));
+  ops.push('0.78 0.83 0.90 RG 334 ' + (totalsTop - 62) + ' m 542 ' + (totalsTop - 62) + ' l S');
+  ops.push(textAt('Total', 334, totalsTop - 82, { font: 'F2', size: 12 }));
+  ops.push(textAt(`${currency} ${pdfMoney(invoice.total)}`, 438, totalsTop - 82, { font: 'F2', size: 12 }));
+
+  const textOps = ops.join('\n');
   const objects = [
     '<< /Type /Catalog /Pages 2 0 R >>',
     '<< /Type /Pages /Kids [3 0 R] /Count 1 >>',
-    '<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 4 0 R >> >> /Contents 5 0 R >>',
+    '<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 4 0 R /F2 5 0 R >> >> /Contents 6 0 R >>',
     '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>',
+    '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>',
     `<< /Length ${Buffer.byteLength(textOps)} >>\nstream\n${textOps}\nendstream`,
   ];
   let pdf = '%PDF-1.4\n';
@@ -130,6 +209,9 @@ function createTransporter() {
       port: Number(process.env.SMTP_PORT || 587),
       secure: String(process.env.SMTP_SECURE || '').toLowerCase() === 'true',
       auth: process.env.SMTP_USER ? { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS } : undefined,
+      connectionTimeout: Number(process.env.SMTP_CONNECTION_TIMEOUT_MS || 8000),
+      greetingTimeout: Number(process.env.SMTP_GREETING_TIMEOUT_MS || 8000),
+      socketTimeout: Number(process.env.SMTP_SOCKET_TIMEOUT_MS || 12000),
     });
   }
   return nodemailer.createTransport({ jsonTransport: true });

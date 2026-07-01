@@ -3,6 +3,7 @@ import { Link, useParams } from "react-router-dom";
 import { ArrowLeft, Copy, ExternalLink, Link2 } from "lucide-react";
 import { invoicesApi } from "../../api/invoices";
 import { invoiceWorkspaceApi } from "../../api/invoiceWorkspace";
+import { normalizeInvoice } from "../../api/normalizers";
 import { paymentsApi } from "../../api/payments";
 import { Button, DataTable, SkeletonBlock, StateCard, StatusBadge } from "../../components/common";
 import { InvoiceChargeBreakup, InvoiceDetailPanel, InvoiceLinesTable, SectionIssues, ShareShell, formatDate } from "../../components/invoices/InvoiceWidgets";
@@ -44,12 +45,19 @@ export function InvoiceDetailPage() {
     }
     setSaving(true);
     try {
-      await invoicesApi.send(invoiceId, {
+      const response = await invoicesApi.send(invoiceId, {
         to: sendForm.to.trim(),
         subject: sendForm.subject.trim() || undefined,
         message: sendForm.message.trim() || undefined,
       });
-      await load();
+      const updatedInvoice = normalizeInvoice(response?.data || response);
+      setState((current) => ({
+        ...current,
+        invoice: { ...current.invoice, ...updatedInvoice, lines: current.invoice?.lines || updatedInvoice.lines },
+        message: updatedInvoice.deliveryStatus === "failed"
+          ? updatedInvoice.deliveryError || "Delivery needs attention. Review the recipient and try again."
+          : "Invoice sent and marked for billing follow-up.",
+      }));
     } catch (error) {
       setState((current) => ({ ...current, message: error?.userMessage || "We could not send this invoice right now." }));
     } finally {

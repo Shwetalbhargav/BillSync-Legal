@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { AlertCircle, Archive, CloudOff, DatabaseBackup, ExternalLink, FileText, FolderOpen, Settings, UploadCloud } from "lucide-react";
-import { Button, Card, CardBody, CardHeader, DataTable, StateCard, StatusBadge } from "../common";
+import { Button, DataTable, StateCard, StatusBadge } from "../common";
 
 const providerLabels = {
   local: "BillSync record",
@@ -110,17 +110,17 @@ export function StorageSummary({ documents = [], providers = [] }) {
 
 export function ProviderCards({ providers = [] }) {
   return (
-    <div className="grid gap-4 lg:grid-cols-3">
+    <div className="grid items-stretch gap-4 sm:grid-cols-2 xl:grid-cols-3">
       {providers.map((provider) => (
-        <Card key={provider.id}>
-          <CardHeader
-            title={provider.name}
-            action={<StatusBadge tone={provider.status === "available" ? "success" : "warning"}>{provider.status === "available" ? "Ready" : "Needs setup"}</StatusBadge>}
-          />
-          <CardBody>
-            <p className="text-sm leading-6 text-muted">{provider.detail}</p>
-          </CardBody>
-        </Card>
+        <section className="flex h-full min-h-[168px] min-w-0 flex-col rounded-lg border border-border bg-panel p-4" key={provider.id}>
+          <div className="flex min-w-0 items-start justify-between gap-3">
+            <div className="min-w-0">
+              <p className="break-words text-base font-bold text-primary">{provider.name}</p>
+            </div>
+            <StatusBadge tone={provider.status === "available" ? "success" : "warning"}>{provider.status === "available" ? "Ready" : "Needs setup"}</StatusBadge>
+          </div>
+          <p className="mt-4 min-w-0 flex-1 break-words text-sm leading-6 text-muted">{provider.detail}</p>
+        </section>
       ))}
     </div>
   );

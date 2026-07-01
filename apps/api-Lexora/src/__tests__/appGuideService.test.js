@@ -51,4 +51,15 @@ describe('app guide assistant answers', () => {
     expect(result.text).toContain('Commercial disputes');
     expect(result.text).toContain('I will keep this professional');
   });
+
+  test('declines unrelated questions instead of guessing a workflow', async () => {
+    const result = await buildAppGuideAnswer({
+      input: 'what is the weather in India?',
+      context: { currentPath: '/app/dashboard' },
+    });
+
+    expect(result.title).toBe('Question outside BillSync');
+    expect(result.text).toContain('I can only answer questions about BillSync Legal');
+    expect(result.text).not.toContain('start from My Tasks or My Work Today');
+  });
 });

@@ -162,19 +162,19 @@ export function WorkMeterPanel({
   const activeSeconds = Number(liveActivity?.activeSeconds || 0);
   return (
     <>
-      <section className="surface-card overflow-hidden">
-        <div className="grid gap-0 xl:grid-cols-[0.8fr_1.2fr]">
-          <div className="min-w-0 border-b border-border bg-gradient-to-br from-blueSoft via-white to-white p-6 xl:border-b-0 xl:border-r">
+      <section className="surface-card overflow-visible">
+        <div className="grid gap-0 2xl:grid-cols-[minmax(280px,0.72fr)_minmax(0,1.28fr)]">
+          <div className="min-w-0 border-b border-border bg-blueSoft/45 p-5 sm:p-6 2xl:border-b-0 2xl:border-r">
             <p className="text-sm font-semibold uppercase tracking-wide text-accent">Work Meter</p>
             <h1 className="mt-1 text-2xl font-bold text-primary md:text-3xl">{running ? "Work in progress" : "Ready to start"}</h1>
             <p className="mt-2 max-w-2xl text-sm leading-6 text-muted">Capture focused work with matter context and save it for review.</p>
-            <div className="mt-6 rounded-lg border border-border bg-white p-5 shadow-soft">
+            <div className="mt-6 rounded-lg border border-border bg-white p-4 shadow-soft sm:p-5">
               <div className="flex items-center gap-4">
-                <div className="rounded-lg bg-blueSoft p-4 text-primary">
+                <div className="shrink-0 rounded-lg bg-blueSoft p-3 text-primary sm:p-4">
                   <Timer className="h-8 w-8" />
                 </div>
                 <div className="min-w-0">
-                  <p className="safe-text text-4xl font-bold text-primary">{elapsedLabel}</p>
+                  <p className="safe-text text-3xl font-bold text-primary sm:text-4xl">{elapsedLabel}</p>
                   <p className="mt-1 text-sm font-semibold text-muted">{running ? session.status : "No active meter"}</p>
                 </div>
               </div>
@@ -188,9 +188,9 @@ export function WorkMeterPanel({
             </div>
             <p className="mt-4 max-w-2xl text-xs font-semibold leading-5 text-muted">No keystrokes, screenshots, page text, or document text are saved.</p>
           </div>
-          <div className="min-w-0 p-6">
+          <div className="min-w-0 p-4 sm:p-6">
             {!running ? (
-              <div className="grid gap-6 2xl:grid-cols-[minmax(460px,1fr)_minmax(320px,0.72fr)]">
+              <div className="grid min-w-0 gap-6 2xl:grid-cols-[minmax(0,1fr)_minmax(300px,0.72fr)]">
                 <div className="space-y-4">
                   {validation ? <div className="rounded-lg border border-warning/30 bg-warning/10 p-3 text-sm font-semibold text-warning">{validation}</div> : null}
                   <div className="grid gap-4 sm:grid-cols-2">
@@ -247,7 +247,7 @@ export function WorkMeterPanel({
                     <textarea className="focus-ring mt-1 min-h-24 w-full rounded-lg border border-border px-3 py-3" onChange={(event) => onChange("narrative", event.target.value)} placeholder="Short note for review" value={form.narrative} />
                   </label>
                 </div>
-                <aside className="rounded-lg border border-border bg-surface p-5">
+                <aside className="min-w-0 rounded-lg border border-border bg-surface p-4 sm:p-5">
                   <div className="flex items-start gap-4">
                     <span className="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-primary text-white">
                       <SelectedToolIcon className="h-5 w-5" />
@@ -258,12 +258,12 @@ export function WorkMeterPanel({
                     </div>
                   </div>
                   <div className="mt-4 space-y-3 text-sm">
-                    <p className="rounded-lg bg-white p-3"><span className="font-bold text-primary">Client:</span> {selectedClientName || "Select client"}</p>
-                    <p className="rounded-lg bg-white p-3"><span className="font-bold text-primary">Matter:</span> {selectedMatterName || "Select matter"}</p>
-                    <p className="rounded-lg bg-white p-3"><span className="font-bold text-primary">Matter assigned:</span> {selectedMatterAssignee || "Unassigned"}</p>
-                    <p className="rounded-lg bg-white p-3"><span className="font-bold text-primary">Task:</span> {selectedTaskName || "No linked task"}</p>
-                    <p className="rounded-lg bg-white p-3"><span className="font-bold text-primary">Task assigned:</span> {selectedTaskAssignee || "No linked task"}</p>
-                    <p className="rounded-lg bg-white p-3"><span className="font-bold text-primary">Workspace:</span> {selectedWorkspaceName}</p>
+                    <p className="min-w-0 break-words rounded-lg bg-white p-3"><span className="font-bold text-primary">Client:</span> {selectedClientName || "Select client"}</p>
+                    <p className="min-w-0 break-words rounded-lg bg-white p-3"><span className="font-bold text-primary">Matter:</span> {selectedMatterName || "Select matter"}</p>
+                    <p className="min-w-0 break-words rounded-lg bg-white p-3"><span className="font-bold text-primary">Matter assigned:</span> {selectedMatterAssignee || "Unassigned"}</p>
+                    <p className="min-w-0 break-words rounded-lg bg-white p-3"><span className="font-bold text-primary">Task:</span> {selectedTaskName || "No linked task"}</p>
+                    <p className="min-w-0 break-words rounded-lg bg-white p-3"><span className="font-bold text-primary">Task assigned:</span> {selectedTaskAssignee || "No linked task"}</p>
+                    <p className="min-w-0 break-words rounded-lg bg-white p-3"><span className="font-bold text-primary">Workspace:</span> {selectedWorkspaceName}</p>
                   </div>
                   <Button className="mt-4 w-full" disabled={isSaving} isLoading={isSaving} onClick={onStart} type="button">
                     <Play className="h-4 w-4" />
@@ -282,7 +282,7 @@ export function WorkMeterPanel({
                     <p><span className="font-bold text-primary">Work:</span> {session.activityType || "Work"}{session.workTool ? ` with ${session.workTool.replaceAll("_", " ")}` : ""}</p>
                   </div>
                 </div>
-                <div className="grid gap-3 sm:grid-cols-3">
+                <div className="grid gap-3 md:grid-cols-3">
                   <Button disabled={isSaving} onClick={onPauseResume} type="button" variant="secondary">
                     {session.status === "paused" ? <Play className="h-4 w-4" /> : <Pause className="h-4 w-4" />}
                     {session.status === "paused" ? "Resume" : "Pause"}
