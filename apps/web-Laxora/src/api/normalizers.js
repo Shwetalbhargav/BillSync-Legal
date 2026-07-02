@@ -165,6 +165,8 @@ export function normalizeBillable(item = {}) {
   const matter = item.caseId || item.case || {};
   const client = item.clientId || item.client || {};
   const user = item.userId || item.user || {};
+  const isExpense = Boolean(item.expense?.isExpense);
+  const source = isExpense ? "Expense" : item.activityId ? "Auto capture" : "Manual";
   return {
     id: toId(item),
     subject: item.subject || "",
@@ -182,6 +184,8 @@ export function normalizeBillable(item = {}) {
     rate: normalizeMoney(item.rate),
     amount: normalizeMoney(item.amount || item.total),
     status: String(item.status || "pending").toLowerCase(),
+    source,
+    needsRate: !isExpense && normalizeMoney(item.amount || item.total) <= 0,
     date: item.date || item.createdAt || "",
     approvedAt: item.approvedAt || "",
     rejectedAt: item.rejectedAt || "",

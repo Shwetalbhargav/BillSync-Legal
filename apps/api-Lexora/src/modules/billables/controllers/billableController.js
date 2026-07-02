@@ -41,6 +41,7 @@ export const createBillable = async (req, res) => {
       // either durationHours or durationMinutes is acceptable:
       durationHours, durationMinutes,
       rate, // optional; will fallback to user/firm
+      amount,
       activityCode, category, subject,
       status // optional; defaults to 'pending'
     } = req.body;
@@ -67,7 +68,13 @@ export const createBillable = async (req, res) => {
         : Math.round((Number(durationHours || 0) * 60));
 
     const durationMinsRounded = roundToIncrement(mins, 6);
-    const amount = Number(((durationMinsRounded / 60) * finalRate).toFixed(2));
+    const explicitAmount = amount == null ? null : Number(amount);
+    if ((finalRate == null || Number(finalRate) === 0) && explicitAmount != null && durationMinsRounded > 0) {
+      finalRate = Number(((explicitAmount / durationMinsRounded) * 60).toFixed(2));
+    }
+    const finalAmount = explicitAmount != null
+      ? Number(explicitAmount.toFixed(2))
+      : Number(((durationMinsRounded / 60) * finalRate).toFixed(2));
 
     const finalCategory = category || CATEGORY_BY_CODE[finalActivityCode] || 'Miscellaneous administrative legal work';
     const finalStatus = normalizeBillableStatus(status);
@@ -80,7 +87,7 @@ export const createBillable = async (req, res) => {
       date: workDate,
       durationMinutes: durationMinsRounded,
       rate: finalRate,
-      amount,
+      amount: finalAmount,
       activityCode: finalActivityCode,
       category: finalCategory,
       status: finalStatus,

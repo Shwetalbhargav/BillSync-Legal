@@ -17,6 +17,7 @@ const initialForm = {
   narrative: "",
   billableMinutes: "",
   nonbillableMinutes: "0",
+  rate: "",
   amount: "",
   vendor: "",
   date: "",
@@ -46,6 +47,9 @@ function validate(form, user) {
   const total = Number(form.billableMinutes || 0) + Number(form.nonbillableMinutes || 0);
   if (total < 1) return "Enter the time spent.";
   if (form.billingAction === "ready_to_bill" && Number(form.billableMinutes || 0) < 1) return "Ready to Bill entries need billable minutes.";
+  if (form.billingAction === "ready_to_bill" && Number(form.rate || 0) <= 0 && Number(form.amount || 0) <= 0) {
+    return "Enter a rate or amount before adding this work to Ready to Bill.";
+  }
   return "";
 }
 
@@ -89,6 +93,7 @@ export function ManualTimeEntryPage() {
           entryType: value,
           billableMinutes: value === "expense" ? "" : current.billableMinutes,
           nonbillableMinutes: value === "expense" ? "0" : current.nonbillableMinutes,
+          rate: value === "expense" ? "" : current.rate,
           amount: value === "expense" ? current.amount : "",
         };
       }
@@ -108,6 +113,9 @@ export function ManualTimeEntryPage() {
       const date = form.date ? new Date(form.date).toISOString() : undefined;
       const type = entryTypeByValue[form.entryType] || entryTypeByValue.other;
       const description = form.narrative.trim();
+      const billableMinutes = Number(form.billableMinutes || 0);
+      const rate = Number(form.rate || 0);
+      const amount = Number(form.amount || 0) || Number(((billableMinutes / 60) * rate).toFixed(2));
 
       if (form.entryType === "expense") {
         await billablesApi.createExpense({
@@ -133,8 +141,10 @@ export function ManualTimeEntryPage() {
           userId: user.id,
           subject: form.subject.trim() || type.label,
           description,
-          durationMinutes: Number(form.billableMinutes || 0),
+          durationMinutes: billableMinutes,
           date,
+          rate,
+          amount,
           activityCode: type.activityCode,
           category: type.category,
           status: "approved",
@@ -149,8 +159,10 @@ export function ManualTimeEntryPage() {
         userId: user.id,
         activityCode: type.activityCode,
         narrative: description,
-        billableMinutes: Number(form.billableMinutes || 0),
+        billableMinutes,
         nonbillableMinutes: Number(form.nonbillableMinutes || 0),
+        rateApplied: rate || undefined,
+        amount: amount || undefined,
         date,
         status: "draft",
       });
@@ -222,6 +234,12 @@ export function ManualTimeEntryPage() {
             </label>
             <label className="block text-sm font-semibold text-ink">Work date
               <input className="focus-ring mt-1 w-full rounded-lg border border-border px-3 py-3" onChange={(event) => updateField("date", event.target.value)} type="date" value={form.date} />
+            </label>
+            <label className="block text-sm font-semibold text-ink">Rate per hour
+              <input className="focus-ring mt-1 w-full rounded-lg border border-border px-3 py-3" min="0" onChange={(event) => updateField("rate", event.target.value)} step="0.01" type="number" value={form.rate} />
+            </label>
+            <label className="block text-sm font-semibold text-ink">Amount
+              <input className="focus-ring mt-1 w-full rounded-lg border border-border px-3 py-3" min="0" onChange={(event) => updateField("amount", event.target.value)} placeholder={form.rate && form.billableMinutes ? String(((Number(form.billableMinutes || 0) / 60) * Number(form.rate || 0)).toFixed(2)) : "Auto from rate"} step="0.01" type="number" value={form.amount} />
             </label>
           </div>
         )}

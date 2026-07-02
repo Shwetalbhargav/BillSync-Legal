@@ -444,6 +444,7 @@ function SelectableWorkList({ form, items, onChange, source }) {
             <span className="block break-words text-sm font-bold text-primary">{item.description || item.title}</span>
             <span className="mt-1 block text-xs font-semibold text-muted">{item.client || "Client not set"} - {item.matter || "Matter not set"}</span>
             <span className="mt-1 block text-sm font-bold text-ink">{formatMoney(item.amount || 0)}</span>
+            {Number(item.amount || 0) <= 0 || item.needsRate ? <span className="mt-1 block text-xs font-bold text-warning">Needs rate or amount before invoicing</span> : null}
           </span>
         </label>
       ))}

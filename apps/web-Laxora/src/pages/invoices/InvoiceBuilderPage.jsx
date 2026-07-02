@@ -72,10 +72,11 @@ export function InvoiceBuilderPage() {
       (!form.clientId || item.clientId === form.clientId)
       && (!form.caseId || item.matterId === form.caseId)
     );
+    const isChargeable = (item) => Number(item.amount || 0) > 0 && !item.needsRate;
     setForm((current) => ({
       ...current,
-      billableIds: state.billables.filter(matchesSelection).map((item) => item.id),
-      timeEntryIds: state.timeEntries.filter(matchesSelection).map((item) => item.id),
+      billableIds: state.billables.filter((item) => matchesSelection(item) && isChargeable(item)).map((item) => item.id),
+      timeEntryIds: state.timeEntries.filter((item) => matchesSelection(item) && isChargeable(item)).map((item) => item.id),
       expenseIds: state.expenses.filter(matchesSelection).map((item) => item.id),
     }));
   }, [form.clientId, form.caseId, state.status, state.billables, state.timeEntries, state.expenses]);
@@ -109,6 +110,15 @@ export function InvoiceBuilderPage() {
     }
     if (form.source === "billables" && !form.billableIds.length) {
       setState((current) => ({ ...current, message: "Select at least one approved billable item." }));
+      return;
+    }
+    const selectedSourceItems = form.source === "billables"
+      ? state.billables.filter((item) => form.billableIds.includes(item.id))
+      : form.source === "time"
+        ? state.timeEntries.filter((item) => form.timeEntryIds.includes(item.id))
+        : [];
+    if (selectedSourceItems.some((item) => Number(item.amount || 0) <= 0 || item.needsRate)) {
+      setState((current) => ({ ...current, message: "One or more selected work entries has Rs 0. Add a rate or amount on the billable before generating the invoice." }));
       return;
     }
     if (form.source === "manual" && !form.professionalAmount) {

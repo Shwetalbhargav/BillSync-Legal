@@ -4,8 +4,10 @@ import { Button, Card, CardBody, CardHeader, DataTable, StateCard, StatusBadge }
 
 export const billableStatuses = [
   { label: "All", value: "" },
+  { label: "Draft", value: "draft" },
   { label: "Pending", value: "pending" },
   { label: "Ready to Bill", value: "approved" },
+  { label: "Excluded", value: "excluded" },
   { label: "Rejected", value: "rejected" },
   { label: "Billed", value: "billed" },
 ];
@@ -145,6 +147,7 @@ export function BillablesTable({ billables }) {
       columns={[
         { key: "description", label: "Work" },
         { key: "matter", label: "Matter" },
+        { key: "source", label: "Source" },
         { key: "status", label: "Status" },
         { key: "time", label: "Time" },
         { key: "amount", label: "Amount" },
@@ -154,7 +157,13 @@ export function BillablesTable({ billables }) {
         id: billable.id,
         description: <Link className="break-words font-bold text-primary hover:underline" to={`/app/billables/${billable.id}`}>{billable.description}</Link>,
         matter: billable.matter || "Matter not set",
-        status: <StatusBadge tone={statusTone(billable.status)}>{billable.status}</StatusBadge>,
+        source: <StatusBadge tone="neutral">{billable.source || "Billable"}</StatusBadge>,
+        status: (
+          <div className="flex flex-col gap-1">
+            <StatusBadge tone={statusTone(billable.status)}>{billable.status}</StatusBadge>
+            {billable.needsRate ? <span className="text-xs font-bold text-warning">Needs rate</span> : null}
+          </div>
+        ),
         time: formatMinutes(billable.minutes),
         amount: formatMoney(billable.amount),
         date: formatDate(billable.date),
