@@ -13,14 +13,18 @@ const categories = [
   'Miscellaneous administrative legal work',
 ];
 const statuses = ['draft', 'pending', 'ready_to_bill', 'approved', 'billed', 'excluded', 'rejected', 'Pending', 'Logged', 'Failed'];
+const activityCodes = ['EMAIL', 'CALL', 'MEETING', 'DOC_REVIEW', 'RESEARCH', 'NEGOTIATION', 'ADMIN', 'OTHER'];
 
 export const validateCreateBillable = validateBody({
   caseId: [required, objectId()],
   clientId: [required, objectId()],
   userId: [required, objectId()],
   category: [oneOf(categories)],
+  activityCode: [oneOf(activityCodes)],
+  subject: [string({ max: 500 })],
   description: [required, string({ min: 1, max: 4000 })],
-  durationMinutes: [required, number({ min: 0 })],
+  durationMinutes: [number({ min: 0 })],
+  durationHours: [number({ min: 0 })],
   rate: [number({ min: 0 })],
   amount: [number({ min: 0 })],
   date: [date()],
@@ -33,6 +37,8 @@ export const validateUpdateBillable = validateBody({
   clientId: [objectId()],
   userId: [objectId()],
   category: [oneOf(categories)],
+  activityCode: [oneOf(activityCodes)],
+  subject: [string({ max: 500 })],
   description: [string({ min: 1, max: 4000 })],
   durationMinutes: [number({ min: 0 })],
   rate: [number({ min: 0 })],

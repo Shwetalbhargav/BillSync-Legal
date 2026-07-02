@@ -70,6 +70,7 @@ export const createBillable = async (req, res) => {
     const amount = Number(((durationMinsRounded / 60) * finalRate).toFixed(2));
 
     const finalCategory = category || CATEGORY_BY_CODE[finalActivityCode] || 'Miscellaneous administrative legal work';
+    const finalStatus = normalizeBillableStatus(status);
 
     const doc = await Billable.create({
       workspaceId: req.workspaceId,
@@ -82,7 +83,9 @@ export const createBillable = async (req, res) => {
       amount,
       activityCode: finalActivityCode,
       category: finalCategory,
-      status: normalizeBillableStatus(status)
+      status: finalStatus,
+      approvedAt: finalStatus === 'approved' ? new Date() : undefined,
+      approvedBy: finalStatus === 'approved' ? req.user?.id : undefined,
     });
 
     res.status(201).json(doc);
@@ -117,6 +120,7 @@ export const createExpense = async (req, res) => {
       }
     }
 
+    const finalStatus = approvalRequired ? 'pending' : billable ? 'approved' : 'excluded';
     const doc = await Billable.create({
       workspaceId: req.workspaceId,
       userId,
@@ -129,7 +133,9 @@ export const createExpense = async (req, res) => {
       amount: Number(amount || 0),
       category: 'Miscellaneous administrative legal work',
       activityCode: 'OTHER',
-      status: approvalRequired ? 'pending' : billable ? 'ready_to_bill' : 'excluded',
+      status: finalStatus,
+      approvedAt: finalStatus === 'approved' ? new Date() : undefined,
+      approvedBy: finalStatus === 'approved' ? req.user?.id : undefined,
       sourceFingerprint,
       expense: {
         isExpense: true,

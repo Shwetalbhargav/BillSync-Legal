@@ -54,6 +54,7 @@ export const navigationIconMap = {
   "circle-dollar-sign": CircleDollarSign,
   "credit-card": CreditCard,
   "database-backup": DatabaseBackup,
+  "file-clock": FileClock,
   "file-text": FileText,
   "gavel": Gavel,
   "layout-dashboard": LayoutDashboard,
@@ -77,6 +78,7 @@ export const navigationItems = [
   { label: "Matters", path: "/app/matters", icon: BriefcaseBusiness, iconKey: "briefcase-business", moduleKey: "matters", state: "enabled" },
   { label: "Tasks", path: "/app/tasks", icon: CheckSquare, iconKey: "check-square", moduleKey: "tasks", state: "enabled" },
   { label: "Work", path: "/app/work-meter", icon: Timer, iconKey: "timer", moduleKey: "work", state: "enabled" },
+  { label: "Add Work", path: "/app/time-entry/new", icon: FileClock, iconKey: "file-clock", moduleKey: "work", state: "enabled" },
   { label: "Review Work", path: "/app/submit-work", icon: CheckCircle2, iconKey: "check-circle-2", moduleKey: "work", state: "enabled" },
   { label: "Billing", path: "/app/billables", icon: CircleDollarSign, iconKey: "circle-dollar-sign", moduleKey: "billing", state: "enabled" },
   { label: "Invoices", path: "/app/invoices", icon: ReceiptText, iconKey: "receipt-text", moduleKey: "billing", state: "enabled" },
@@ -86,7 +88,7 @@ export const navigationItems = [
   { label: "Settings", path: "/app/settings", icon: Settings, iconKey: "settings", moduleKey: "settings", state: "enabled" },
 ];
 
-const pinnedNavigationPaths = new Set(["/app/invoices"]);
+const pinnedNavigationPaths = new Set(["/app/time-entry/new", "/app/invoices"]);
 
 export function withPinnedNavigationItems(items = [], role) {
   const paths = new Set(items.map((item) => item.path));
