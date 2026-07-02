@@ -66,13 +66,18 @@ export const invoiceWorkspaceApi = {
     };
   },
 
-  async loadBuilderOptions() {
+  async loadBuilderOptions(params = {}) {
+    const workParams = {
+      limit: 500,
+      ...(params.clientId ? { clientId: params.clientId } : {}),
+      ...(params.caseId ? { caseId: params.caseId } : {}),
+    };
     const [clientsResult, mattersResult, billablesResult, timeResult, expensesResult, usersResult] = await Promise.allSettled([
       clientsApi.list({ limit: 200 }),
       mattersApi.list({ limit: 200 }),
-      billablesApi.approved({ limit: 100 }),
-      timeEntriesApi.list({ status: "approved", limit: 100 }),
-      expensesApi.approved({ limit: 100 }),
+      billablesApi.approved(workParams),
+      timeEntriesApi.list({ ...workParams, status: "approved" }),
+      expensesApi.approved(workParams),
       usersApi.list({ limit: 200 }),
     ]);
 

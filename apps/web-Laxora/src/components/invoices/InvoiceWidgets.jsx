@@ -252,9 +252,17 @@ export function PipelineSummary({ pipeline, pendingByClient }) {
 }
 
 export function BuilderSourcePicker({ advocates = [], billables, clients, expenses = [], form, matters, onChange, onGenerate, saving, timeEntries }) {
-  const sourceItems = form.source === "billables" ? billables : form.source === "time" ? timeEntries : [];
+  const matchesSelection = (item) => (
+    (!form.clientId || item.clientId === form.clientId)
+    && (!form.caseId || item.matterId === form.caseId)
+  );
+  const filteredBillables = billables.filter(matchesSelection);
+  const filteredTimeEntries = timeEntries.filter(matchesSelection);
+  const filteredExpenses = expenses.filter(matchesSelection);
+  const filteredMatters = form.clientId ? matters.filter((matter) => matter.clientId === form.clientId) : matters;
+  const sourceItems = form.source === "billables" ? filteredBillables : form.source === "time" ? filteredTimeEntries : [];
   const selectedWork = sourceItems.filter((item) => (form.source === "billables" ? form.billableIds : form.timeEntryIds).includes(item.id));
-  const selectedExpenses = expenses.filter((expense) => form.expenseIds.includes(expense.id));
+  const selectedExpenses = filteredExpenses.filter((expense) => form.expenseIds.includes(expense.id));
   const selectedClient = clients.find((client) => client.id === form.clientId);
   const selectedMatter = matters.find((matter) => matter.id === form.caseId);
   return (
@@ -276,9 +284,9 @@ export function BuilderSourcePicker({ advocates = [], billables, clients, expens
             <label className="block text-sm font-semibold text-ink">
               Source
               <select className="focus-ring mt-1 w-full rounded-lg border border-border bg-panel px-3 py-3" onChange={(event) => onChange("source", event.target.value)} value={form.source}>
-                <option value="manual">Manual professional fee</option>
-                <option value="time">Approved time</option>
                 <option value="billables">Approved billables</option>
+                <option value="time">Approved time</option>
+                <option value="manual">Manual professional fee</option>
               </select>
             </label>
           </div>
@@ -297,7 +305,7 @@ export function BuilderSourcePicker({ advocates = [], billables, clients, expens
               Matter
               <select className="focus-ring mt-1 w-full rounded-lg border border-border bg-panel px-3 py-3" onChange={(event) => onChange("caseId", event.target.value)} value={form.caseId}>
                 <option value="">All selected work</option>
-                {matters.map((matter) => <option key={matter.id} value={matter.id}>{matter.title}</option>)}
+                {filteredMatters.map((matter) => <option key={matter.id} value={matter.id}>{matter.title}</option>)}
               </select>
             </label>
             <label className="block text-sm font-semibold text-ink">
@@ -323,6 +331,11 @@ export function BuilderSourcePicker({ advocates = [], billables, clients, expens
         </BuilderStep>
 
         <BuilderStep icon={Clock3} title="3. Select approved work entries">
+          {form.clientId ? (
+            <p className="mb-3 rounded-lg bg-blueSoft p-3 text-sm font-semibold text-primary">
+              Matching approved work is selected automatically. Clear any item you do not want on this invoice.
+            </p>
+          ) : null}
           {form.source === "manual" ? (
             <ManualFeeFields form={form} onChange={onChange} />
           ) : (
@@ -331,7 +344,7 @@ export function BuilderSourcePicker({ advocates = [], billables, clients, expens
         </BuilderStep>
 
         <BuilderStep icon={Receipt} title="4. Select approved reimbursable expenses">
-          <SelectableExpenseList expenses={expenses} form={form} onChange={onChange} />
+          <SelectableExpenseList expenses={filteredExpenses} form={form} onChange={onChange} />
         </BuilderStep>
 
         <BuilderStep icon={WalletCards} title="5. Configure GST/RCM and payment details">
@@ -360,7 +373,7 @@ export function BuilderSourcePicker({ advocates = [], billables, clients, expens
           </div>
         </BuilderStep>
 
-        <Button className="mt-6 w-full sm:w-auto" disabled={saving} isLoading={saving} onClick={onGenerate} type="button">Create invoice</Button>
+        <Button className="mt-6 w-full sm:w-auto" disabled={saving} isLoading={saving} onClick={onGenerate} type="button">Generate invoice</Button>
       </section>
 
       <InvoiceBuilderPreview

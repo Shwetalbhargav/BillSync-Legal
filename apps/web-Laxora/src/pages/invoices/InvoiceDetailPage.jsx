@@ -14,7 +14,7 @@ export function InvoiceDetailPage() {
   const navigate = useNavigate();
   const access = useBillingModuleAccess("billing");
   const [state, setState] = useState({ status: "loading", invoice: null, logs: [], issues: [], message: "" });
-  const [sendForm, setSendForm] = useState({ to: "", subject: "", message: "" });
+  const [sendForm, setSendForm] = useState({ channel: "email", to: "", phone: "", subject: "", message: "" });
   const [saving, setSaving] = useState(false);
   const [portalLink, setPortalLink] = useState(null);
   const [creatingPortal, setCreatingPortal] = useState(false);
@@ -40,6 +40,10 @@ export function InvoiceDetailPage() {
   }
 
   async function sendInvoice() {
+    if (sendForm.channel === "whatsapp") {
+      sendViaWhatsApp();
+      return;
+    }
     if (!sendForm.to.trim()) {
       setState((current) => ({ ...current, message: "Add a recipient before sending." }));
       return;
@@ -76,6 +80,20 @@ export function InvoiceDetailPage() {
     } finally {
       setSaving(false);
     }
+  }
+
+  function sendViaWhatsApp() {
+    const phone = sendForm.phone.replace(/\D/g, "");
+    if (!phone) {
+      setState((current) => ({ ...current, message: "Add a WhatsApp number before sharing." }));
+      return;
+    }
+    const invoice = state.invoice;
+    const pdfUrl = invoicesApi.pdfUrl(invoiceId);
+    const text = sendForm.message.trim()
+      || `Invoice ${invoice.number} for ${invoice.client || "your matter"} is ready. Total: ${invoice.total}. PDF: ${pdfUrl}`;
+    window.open(`https://wa.me/${phone}?text=${encodeURIComponent(text)}`, "_blank", "noopener,noreferrer");
+    setState((current) => ({ ...current, message: "WhatsApp share opened. Send the prepared message to the client." }));
   }
 
   async function finaliseInvoice() {
@@ -155,20 +173,34 @@ export function InvoiceDetailPage() {
         <h2 className="text-base font-bold text-primary">Send or share</h2>
         <div className="mt-4 grid gap-3 md:grid-cols-3">
           <label className="block text-sm font-semibold text-ink">
-            Recipient
-            <input className="focus-ring mt-1 w-full rounded-lg border border-border bg-panel px-3 py-3" onChange={(event) => updateSendField("to", event.target.value)} placeholder="client@example.com" value={sendForm.to} />
+            Send by
+            <select className="focus-ring mt-1 w-full rounded-lg border border-border bg-panel px-3 py-3" onChange={(event) => updateSendField("channel", event.target.value)} value={sendForm.channel}>
+              <option value="email">Email</option>
+              <option value="whatsapp">WhatsApp</option>
+            </select>
+          </label>
+          <label className="block text-sm font-semibold text-ink">
+            {sendForm.channel === "whatsapp" ? "WhatsApp number" : "Recipient email"}
+            <input
+              className="focus-ring mt-1 w-full rounded-lg border border-border bg-panel px-3 py-3"
+              onChange={(event) => updateSendField(sendForm.channel === "whatsapp" ? "phone" : "to", event.target.value)}
+              placeholder={sendForm.channel === "whatsapp" ? "919999999999" : "client@example.com"}
+              value={sendForm.channel === "whatsapp" ? sendForm.phone : sendForm.to}
+            />
           </label>
           <label className="block text-sm font-semibold text-ink">
             Subject
-            <input className="focus-ring mt-1 w-full rounded-lg border border-border bg-panel px-3 py-3" onChange={(event) => updateSendField("subject", event.target.value)} placeholder="Invoice for review" value={sendForm.subject} />
+            <input className="focus-ring mt-1 w-full rounded-lg border border-border bg-panel px-3 py-3" disabled={sendForm.channel === "whatsapp"} onChange={(event) => updateSendField("subject", event.target.value)} placeholder="Invoice for review" value={sendForm.subject} />
           </label>
-          <label className="block text-sm font-semibold text-ink">
+          <label className="block text-sm font-semibold text-ink md:col-span-3">
             Message
             <input className="focus-ring mt-1 w-full rounded-lg border border-border bg-panel px-3 py-3" onChange={(event) => updateSendField("message", event.target.value)} placeholder="Short note" value={sendForm.message} />
           </label>
         </div>
         <div className="mt-4 flex flex-col gap-2 sm:flex-row">
-          <Button disabled={!access.canSendInvoices || saving || state.invoice.status === "void"} isLoading={saving} onClick={sendInvoice} type="button">Send invoice</Button>
+          <Button disabled={!access.canSendInvoices || saving || state.invoice.status === "void"} isLoading={saving} onClick={sendInvoice} type="button">
+            {sendForm.channel === "whatsapp" ? "Open WhatsApp" : "Send email"}
+          </Button>
           <Button disabled={!access.canSendInvoices || creatingPortal || state.invoice.status === "void"} isLoading={creatingPortal} onClick={createPaymentLink} type="button" variant="secondary">
             <Link2 className="h-4 w-4" />
             Create pay now link

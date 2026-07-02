@@ -452,7 +452,7 @@ export const autoGenerateFromApprovedBillables = async (req, res) => {
   const session = await mongoose.startSession();
   session.startTransaction();
   try {
-    const { clientId, currency = 'INR', dueDate, periodStart, periodEnd, createdBy } = req.body || {};
+    const { clientId, currency = 'INR', dueDate, periodStart, periodEnd, createdBy, templateType = 'standard', taxTreatment, taxNote } = req.body || {};
     const billableFilter = workspaceFilter(req, {
       status: { $in: READY_STATUSES },
       $or: [{ invoiceId: { $exists: false } }, { invoiceId: null }],
@@ -484,6 +484,9 @@ export const autoGenerateFromApprovedBillables = async (req, res) => {
         issueDate: new Date(),
         dueDate: dueDate || undefined,
         currency,
+        templateType,
+        taxTreatment: taxTreatment || undefined,
+        taxNote: taxNote || undefined,
         subtotal: 0,
         tax: 0,
         total: 0,

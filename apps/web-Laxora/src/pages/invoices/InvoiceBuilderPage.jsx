@@ -8,7 +8,7 @@ import { BuilderSourcePicker, SectionIssues, TemplateShell } from "../../compone
 import { useBillingModuleAccess } from "../billing/useBillingModuleAccess";
 
 const initialForm = {
-  source: "manual",
+  source: "billables",
   templateType: "standard",
   clientId: "",
   caseId: "",
@@ -52,10 +52,10 @@ export function InvoiceBuilderPage() {
   const [state, setState] = useState({ status: "loading", clients: [], matters: [], billables: [], timeEntries: [], expenses: [], advocates: [], issues: [], message: "" });
   const [saving, setSaving] = useState(false);
 
-  async function load() {
+  async function load(params = {}) {
     setState((current) => ({ ...current, status: "loading", message: "" }));
     try {
-      const data = await invoiceWorkspaceApi.loadBuilderOptions();
+      const data = await invoiceWorkspaceApi.loadBuilderOptions(params);
       setState({ status: "ready", message: "", ...data });
     } catch (error) {
       setState({ status: "error", clients: [], matters: [], billables: [], timeEntries: [], expenses: [], advocates: [], issues: [], message: error?.userMessage || "We could not prepare the invoice builder." });
@@ -66,8 +66,32 @@ export function InvoiceBuilderPage() {
     load();
   }, []);
 
+  useEffect(() => {
+    if (state.status !== "ready") return;
+    const matchesSelection = (item) => (
+      (!form.clientId || item.clientId === form.clientId)
+      && (!form.caseId || item.matterId === form.caseId)
+    );
+    setForm((current) => ({
+      ...current,
+      billableIds: state.billables.filter(matchesSelection).map((item) => item.id),
+      timeEntryIds: state.timeEntries.filter(matchesSelection).map((item) => item.id),
+      expenseIds: state.expenses.filter(matchesSelection).map((item) => item.id),
+    }));
+  }, [form.clientId, form.caseId, state.status, state.billables, state.timeEntries, state.expenses]);
+
   function updateField(field, value) {
     setState((current) => ({ ...current, message: "" }));
+    if (field === "clientId") {
+      load(value ? { clientId: value } : {});
+      setForm((current) => ({ ...current, clientId: value, caseId: "", timeEntryIds: [], billableIds: [], expenseIds: [] }));
+      return;
+    }
+    if (field === "caseId") {
+      load({ ...(form.clientId ? { clientId: form.clientId } : {}), ...(value ? { caseId: value } : {}) });
+      setForm((current) => ({ ...current, caseId: value, timeEntryIds: [], billableIds: [], expenseIds: [] }));
+      return;
+    }
     setForm((current) => {
       if (field === "source") return { ...current, source: value, timeEntryIds: [], billableIds: [] };
       return { ...current, [field]: value };
@@ -79,16 +103,16 @@ export function InvoiceBuilderPage() {
       setState((current) => ({ ...current, message: "Select a client before creating the invoice." }));
       return;
     }
-    if (form.source === "manual" && !form.professionalAmount) {
-      setState((current) => ({ ...current, message: "Add a professional fee amount before creating a manual invoice." }));
-      return;
-    }
     if (form.source === "time" && !form.timeEntryIds.length) {
       setState((current) => ({ ...current, message: "Select at least one approved time entry." }));
       return;
     }
     if (form.source === "billables" && !form.billableIds.length) {
       setState((current) => ({ ...current, message: "Select at least one approved billable item." }));
+      return;
+    }
+    if (form.source === "manual" && !form.professionalAmount) {
+      setState((current) => ({ ...current, message: "Add a professional fee amount before creating a manual invoice." }));
       return;
     }
     if (!access.canCreateInvoices) {
