@@ -103,11 +103,12 @@ export function withPinnedNavigationItems(items = [], role) {
 function canPinnedItemAccess(role, moduleKey) {
   const roleName = String(role || "").toLowerCase();
   const grants = {
-    owner: ["billing"],
-    admin: ["billing"],
-    partner: ["billing"],
-    lawyer: ["billing"],
-    associate: ["billing"],
+    owner: ["billing", "work"],
+    admin: ["billing", "work"],
+    partner: ["billing", "work"],
+    lawyer: ["billing", "work"],
+    associate: ["billing", "work"],
+    intern: ["work"],
     billing_assistant: ["billing"],
     accountant: ["billing"],
   }[roleName] || [];
